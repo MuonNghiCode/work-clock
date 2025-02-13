@@ -7,6 +7,8 @@ import ErrorPage from "./pages/ErrorPage/ErrorPage";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import ProtectedRoute from "./routers/ProtectedRoute/ProtectedRoute";
 import LoginPage from "./pages/LoginPage/LoginPage";
+import AdminProject from "./layouts/AdminLayout/AdminProject";
+
 
 const router = createBrowserRouter([
   {
@@ -22,12 +24,15 @@ const router = createBrowserRouter([
   {
     path: "/admin",
     element: (
-      <ProtectedRoute requireAdmin={false}>
+      // <ProtectedRoute requireAdmin={false}>
         <AdminLayout />
-      </ProtectedRoute>
+      // </ProtectedRoute> 
     ),
     errorElement: <ErrorPage />,
-    children: [{ path: "/admin", element: <div>Admin Dashboard</div> }],
+    children: [{ path: "/admin", element: <AdminProject/> }
+    
+  ],
+    
   },
   {
     path: "/approval",
