@@ -50,6 +50,16 @@ const router = createBrowserRouter([
     children: [{ path: "/finance", element: <div>Finance Dashboard</div> }],
   },
   {
+    path: "/user",
+    element: (
+      <ProtectedRoute requireFinance={true}>
+        <FinanceLayout />
+      </ProtectedRoute>
+    ),
+    errorElement: <ErrorPage />,
+    children: [{ path: "/user", element: <div>User Dashboard</div> }],
+  },
+  {
     path: "/login",
     element: <LoginPage />,
   },
