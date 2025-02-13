@@ -1,9 +1,24 @@
 @import url("https://fonts.googleapis.com/css2?family=Squada+One&display=swap");
 @import "tailwindcss";
-
+@layer theme, base, components, utilities;
 :root {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: "Squada One", sans-serif;
+}
+
+@layer theme {
+  .bg-brand-orange {
+    background-color: #ff914d;
+  }
+  .bg-brand-grandient {
+    background: linear-gradient(90deg, #feb78a 0%, #ff914d 100%);
+  }
+  .shadow-orange-header {
+    box-shadow: 0 10px 6px rgba(255, 145, 77, 0.2);
+  }
+  .shadow-orange-footer {
+    box-shadow: 0 -10px 6px rgba(255, 145, 77, 0.2);
+  }
 }
