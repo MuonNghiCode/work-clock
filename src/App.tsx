@@ -7,6 +7,7 @@ import ErrorPage from "./pages/ErrorPage/ErrorPage";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import ProtectedRoute from "./routers/ProtectedRoute/ProtectedRoute";
 import LoginPage from "./pages/LoginPage/LoginPage";
+import EditProfile from "./pages/ProfilePage/EditProfile";
 
 const router = createBrowserRouter([
   {
@@ -17,12 +18,20 @@ const router = createBrowserRouter([
       { path: "/", element: <div>Home</div> },
       { path: "news", element: <div>News</div> },
       { path: "contact", element: <div>Contact</div> },
+      {
+        path: "profile/edit",
+        element: (
+          <ProtectedRoute>
+            <EditProfile />
+          </ProtectedRoute>
+        ),
+      },
     ],
   },
   {
     path: "/admin",
     element: (
-      <ProtectedRoute requireAdmin={true}>
+      <ProtectedRoute requireAdmin={false}>
         <AdminLayout />
       </ProtectedRoute>
     ),
@@ -32,7 +41,7 @@ const router = createBrowserRouter([
   {
     path: "/approval",
     element: (
-      <ProtectedRoute requireApproval={true}>
+      <ProtectedRoute requireApproval={false}>
         <ApprovalLayout />
       </ProtectedRoute>
     ),
