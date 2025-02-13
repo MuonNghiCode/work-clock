@@ -7,7 +7,7 @@ import ErrorPage from "./pages/ErrorPage/ErrorPage";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import ProtectedRoute from "./routers/ProtectedRoute/ProtectedRoute";
 import LoginPage from "./pages/LoginPage/LoginPage";
-import AdminProject from "./layouts/AdminLayout/AdminProject";
+import AdminProject from "./pages/AdminPage/AdminProject";
 
 
 const router = createBrowserRouter([
