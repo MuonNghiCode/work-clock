@@ -1,14 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router";
-import {
-  Clock,
-  Calendar,
-  LayoutDashboard,
-  ChartColumn,
-  LogOut,
-  Settings,
-} from "lucide-react";
-
+import Icons from "../../../components/icon";
 const UserSidebar: React.FC = () => {
   return (
     <>
@@ -16,32 +8,32 @@ const UserSidebar: React.FC = () => {
         <div className="flex flex-col gap-3">
           <h2 className="text-gray-300">Productivity</h2>
           <NavLink to="" className="flex items-center justify-start gap-3">
-            <Clock />
+            <Icons.Clock />
             TIME TRACKER
           </NavLink>
           <NavLink to="" className="flex items-center justify-start gap-3">
-            <Calendar />
+            <Icons.Calendar />
             CALENDAR
           </NavLink>
         </div>
         <div className="flex flex-col gap-3">
           <h2 className="text-gray-300 ">Analyze</h2>
           <NavLink to="" className="flex items-center justify-start gap-3">
-            <LayoutDashboard />
+            <Icons.Dashboard />
             DASHBOARD
           </NavLink>
           <NavLink to="" className="flex items-center justify-start gap-3">
-            <ChartColumn />
+            <Icons.ChartColumn />
             REPORT
           </NavLink>
         </div>
         <div className="flex flex-col gap-3">
           <h2 className="text-gray-300">Preferencies</h2>
           <NavLink to="" className="flex items-center justify-start gap-3">
-            <LogOut /> LOG OUT
+            <Icons.LogOut /> LOG OUT
           </NavLink>
           <NavLink to="" className="flex items-center justify-start gap-3">
-            <Settings />
+            <Icons.Settings />
             SETTING
           </NavLink>
         </div>
