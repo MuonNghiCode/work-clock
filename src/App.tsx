@@ -7,6 +7,7 @@ import ErrorPage from "./pages/ErrorPage/ErrorPage";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import ProtectedRoute from "./routers/ProtectedRoute/ProtectedRoute";
 import LoginPage from "./pages/LoginPage/LoginPage";
+import UserLayout from "./layouts/UserLayout/UserLayout";
 
 const router = createBrowserRouter([
   {
@@ -53,7 +54,7 @@ const router = createBrowserRouter([
     path: "/user",
     element: (
       <ProtectedRoute requireFinance={true}>
-        <FinanceLayout />
+        <UserLayout />
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,

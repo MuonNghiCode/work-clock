@@ -3,10 +3,10 @@ import { checkRole, isAuthenticated } from "../../services/auth";
 import { Navigate } from "react-router";
 
 interface ProtectedRouteProps {
-  requireAdmin?: boolean; // Kiểm tra quyền admin
-  requireApproval?: boolean; // Kiểm tra quyền approval
-  requireFinance?: boolean; // Kiểm tra quyền finance
-  requireUser?: boolean; // Kiểm tra quyền user
+  requireAdmin?: boolean;
+  requireApproval?: boolean;
+  requireFinance?: boolean;
+  requireUser?: boolean;
   children: React.ReactNode;
 }
 

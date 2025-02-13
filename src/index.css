@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Squada+One&display=swap");
 @import "tailwindcss";
 
-* {
+:root {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
