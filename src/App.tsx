@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import MainLayout from "./layouts/MainLayout/MainLayout";
 import AdminLayout from "./layouts/AdminLayout/AdminLayout";
 import ApprovalLayout from "./layouts/ApprovalLayout/ApprovalLayout";
@@ -8,6 +8,8 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 import ProtectedRoute from "./routers/ProtectedRoute/ProtectedRoute";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import UserLayout from "./layouts/UserLayout/UserLayout";
+import HomePage from "./pages/HomePage/HomePage";
+import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
 
 const router = createBrowserRouter([
   {
@@ -15,8 +17,8 @@ const router = createBrowserRouter([
     element: <MainLayout />,
     errorElement: <ErrorPage />,
     children: [
-      { path: "/", element: <div>Home</div> },
-      { path: "news", element: <div>News</div> },
+      { path: "/", element: <HomePage /> },
+      { path: "about", element: <div>About Us</div> },
       { path: "contact", element: <div>Contact</div> },
     ],
   },
@@ -67,7 +69,21 @@ const router = createBrowserRouter([
 ]);
 
 const App: React.FC = () => {
-  return <RouterProvider router={router} />;
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const hasVisited = sessionStorage.getItem("visited");
+    if (!hasVisited) {
+      setTimeout(() => {
+        setLoading(false);
+        sessionStorage.setItem("visited", "true");
+      }, 2000);
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  return loading ? <LoadingScreen /> : <RouterProvider router={router} />;
 };
 
 export default App;
