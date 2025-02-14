@@ -1,6 +1,6 @@
 import React from "react";
 
-const LoadingScreen = () => {
+const LoadingScreen: React.FC = () => {
   return <div>LoadingScreen</div>;
 };
 
