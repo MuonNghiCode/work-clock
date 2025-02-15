@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 
 import { GoArrowUpRight } from "react-icons/go";
+import { FaArrowRight } from "react-icons/fa6";
 
 // Định nghĩa kiểu dữ liệu cho danh sách icon
 type IconType = {
@@ -22,6 +23,7 @@ const Icons: IconType = {
   LogOut: LogOut,
   Settings: Settings,
   ArrowUpRight: GoArrowUpRight,
+  ArrowRight: FaArrowRight,
 };
 
 export default Icons;

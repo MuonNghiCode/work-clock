@@ -77,7 +77,7 @@ const App: React.FC = () => {
       setTimeout(() => {
         setLoading(false);
         sessionStorage.setItem("visited", "true");
-      }, 2000);
+      }, 3000);
     } else {
       setLoading(false);
     }
