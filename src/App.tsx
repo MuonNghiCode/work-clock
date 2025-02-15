@@ -43,12 +43,12 @@ const router = createBrowserRouter([
   {
     path: "/finance",
     element: (
-      <ProtectedRoute requireFinance={true}>
+      <ProtectedRoute requireFinance={false}>
         <FinanceLayout />
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
-    children: [{ path: "/finance", element: <FinancePage/> }],
+    children: [{ path: "/finance", element: <FinancePage /> }],
   },
   {
     path: "/user",
