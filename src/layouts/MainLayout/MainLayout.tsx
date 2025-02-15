@@ -2,6 +2,7 @@ import React from "react";
 import { Outlet, useLocation } from "react-router";
 import MainHeader from "../Header/MainHeader/MainHeader";
 import Footer from "../Footer/Footer";
+import ApprovalPage from "../../pages/ApprovalPage/ApprovalPage";
 const MainLayout: React.FC = () => {
   const location = useLocation();
   const isHomePage = location.pathname === "/";
@@ -9,17 +10,11 @@ const MainLayout: React.FC = () => {
   return (
     <>
       <div className="flex flex-col h-screen">
-        {isHomePage ? (
-          <header className="relative bg-white text-black text-center p-1 ">
-            <MainHeader />
-          </header>
-        ) : (
-          <header className="relative bg-white text-black text-center p-4 shadow-orange-header">
-            <MainHeader />
-          </header>
-        )}
-        <main className="flex-1 bg-white p-4">
-          <Outlet />
+        <header className="relative bg-white text-black text-center p-4 shadow-[0_10px_5px_rgba(255,145,77,0.2)]">
+          <MainHeader />
+        </header>
+        <main className="flex-1 bg-gray-200 p-4">
+          <ApprovalPage />
         </main>
         {!isHomePage && (
           <footer className="z-10 bg-white text-black text-center p-4 shadow-orange-footer">

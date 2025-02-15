@@ -22,3 +22,7 @@
     box-shadow: 0 -10px 6px rgba(255, 145, 77, 0.2);
   }
 }
+
+@theme {
+  --font-squada: "Squada One", sans-serif;
+}
