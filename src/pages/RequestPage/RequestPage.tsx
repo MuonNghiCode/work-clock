@@ -208,12 +208,7 @@ const RequestPage: React.FC = () => {
       <Search 
         placeholder="Type to search" 
         className="request-page-search"
-        style={{ 
-          backgroundColor: '#f9fafb',
-          borderRadius: '4px',
-          padding: '10px',
-          fontSize: '16px',
-        }}
+        style={{ backgroundColor: '#f9fafb' }}
       />
       <Table 
         columns={columns} 

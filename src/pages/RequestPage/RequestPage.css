@@ -20,6 +20,20 @@
 .request-page-search input {
   background-color: #f9fafb;
   border-radius: 4px;
-  padding: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  height: 36px;
+}
+
+.request-page-search .ant-input-search-button {
+  height: 36px;
+  width: 36px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.request-page-search .anticon-search {
   font-size: 16px;
-} 
+}
