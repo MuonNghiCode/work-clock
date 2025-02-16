@@ -2,6 +2,7 @@ import React from "react";
 import { Outlet, useLocation } from "react-router";
 import MainHeader from "../Header/MainHeader/MainHeader";
 import Footer from "../Footer/Footer";
+import ApprovalPage from "../../pages/ApprovalPage/ApprovalPage";
 const MainLayout: React.FC = () => {
   const location = useLocation();
   const isHomePage = location.pathname === "/";
