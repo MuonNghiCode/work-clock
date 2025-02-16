@@ -158,7 +158,7 @@ const RequestPage: React.FC = () => {
           current: currentPage,
           onChange: handlePageChange,
           showSizeChanger: false,
-          itemRender: (page, type, originalElement) => {
+          itemRender: (_page, type, originalElement) => {
             if (type === 'prev') {
               return <a className="text-[#FF914D] text-lg">‹</a>;
             }
