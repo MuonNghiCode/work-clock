@@ -1,21 +1,20 @@
 import { useState } from "react";
+import AddProject from "./AddProject";
+import EditProject from "./EditProject";
 import { FaPencilAlt, FaTrashAlt, FaPlus, FaSearch, FaEye } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import Modal from "../../components/Modal/Modal";
+import { Project } from "../../types/Project";
+import DeleteConfirmModal from '../../components/DeleteConfirmModal/DeleteConfirmModal';
+import ProjectDetailModal from '../../components/ProjectDetailModal/ProjectDetailModal';
 // import AdminSidebar from "../Sidebar/AdminSidebar/AdminSidebar";
 // import AdminHeader from "../Header/AdminHeader/AdminHeader";
 
-interface Project {
-  name: string;
-  date: string;
-  status: 'Processing' | 'Pending' | 'Complete';
-}
-
 const projects: Project[] = [
-  { name: "Watermelon", date: "04/06/2025", status: "Processing" },
-  { name: "Mango", date: "06/09/2025", status: "Pending" },
-  { name: "Grape", date: "27/05/2025", status: "Processing" },
-  { name: "Banana", date: "11/12/2025", status: "Pending" },
-  { name: "Melon", date: "17/12/2025", status: "Complete" },
+  { name: "Watermelon", code: "4669", date: "04/06/2025", status: "Processing" },
+  { name: "Mango", code: "4670", date: "06/09/2025", status: "Pending" },
+  { name: "Grape", code: "4671", date: "27/05/2025", status: "Processing" },
+  { name: "Banana", code: "4672", date: "11/12/2025", status: "Pending" },
+  { name: "Melon", code: "4673", date: "17/12/2025", status: "Complete" },
 ];
 
 const statusColors = {
@@ -26,11 +25,12 @@ const statusColors = {
 
 interface ProjectTableProps {
   projects: Project[];
+  onEdit: (project: Project) => void;
+  onDelete: (project: Project) => void;
+  onDetail: (project: Project) => void;
 }
 
-const ProjectTable: React.FC<ProjectTableProps> = ({ projects }) => {
-  const navigate = useNavigate();
-
+const ProjectTable: React.FC<ProjectTableProps> = ({ projects, onEdit, onDelete, onDetail }) => {
   return (
     <div className="w-full">
       <div className="bg-orange-300 grid grid-cols-4 py-4 px-6 rounded-t-lg">
@@ -57,16 +57,22 @@ const ProjectTable: React.FC<ProjectTableProps> = ({ projects }) => {
             <div className="flex justify-center items-center gap-4">
               <button 
                 className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-yellow-600 bg-yellow-50 hover:bg-yellow-100 transition-colors"
-                onClick={() => navigate('/admin/edit')}
+                onClick={() => onEdit(project)}
               >
                 <FaPencilAlt className="w-3.5 h-3.5" />
                 Edit
               </button>
-              <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-red-600 bg-red-50 hover:bg-red-100 transition-colors">
+              <button 
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-red-600 bg-red-50 hover:bg-red-100 transition-colors"
+                onClick={() => onDelete(project)}
+              >
                 <FaTrashAlt className="w-3.5 h-3.5" />
                 Delete
               </button>
-              <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-orange-600 bg-orange-50 hover:bg-orange-100 transition-colors">
+              <button 
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-orange-600 bg-orange-50 hover:bg-orange-100 transition-colors"
+                onClick={() => onDetail(project)}
+              >
                 <FaEye className="w-3.5 h-3.5" />
                 Detail
               </button>
@@ -80,8 +86,34 @@ const ProjectTable: React.FC<ProjectTableProps> = ({ projects }) => {
 
 const AdminProject: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const totalPages = 68;
-  const navigate = useNavigate();
+
+
+  const handleEdit = (project: Project) => {
+    setSelectedProject(project);
+    setIsEditModalOpen(true);
+  };
+
+  const handleDelete = (project: Project) => {
+    setSelectedProject(project);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleDetail = (project: Project) => {
+    setSelectedProject(project);
+    setIsDetailModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    // Add delete logic here
+    console.log('Deleting project:', selectedProject?.name);
+    setIsDeleteModalOpen(false);
+  };
 
   const renderPaginationButtons = () => {
     const buttons = [];
@@ -159,17 +191,52 @@ const AdminProject: React.FC = () => {
         
         <button 
           className="bg-orange-400 text-white px-4 py-2 rounded-full flex items-center gap-2"
-          onClick={() => navigate('/admin/add')}
+          onClick={() => setIsAddModalOpen(true)}
         >
           <FaPlus className="w-4 h-4" /> Add Project
         </button>
       </div>
 
-      <ProjectTable projects={projects} />
+      <ProjectTable 
+        projects={projects} 
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+        onDetail={handleDetail}
+      />
 
       <div className="flex justify-center items-center mt-8 mb-4 gap-2">
         {renderPaginationButtons()}
       </div>
+
+      {/* Add Project Modal */}
+      <Modal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)}>
+        <AddProject onClose={() => setIsAddModalOpen(false)} />
+      </Modal>
+
+      {/* Edit Project Modal */}
+      <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
+        <EditProject 
+          project={selectedProject} 
+          onClose={() => setIsEditModalOpen(false)} 
+        />
+      </Modal>
+
+      {/* Delete Project Modal */}
+      <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)}>
+        <DeleteConfirmModal 
+          project={selectedProject!}
+          onClose={() => setIsDeleteModalOpen(false)}
+          onConfirm={handleConfirmDelete}
+        />
+      </Modal>
+
+      {/* Project Detail Modal */}
+      <Modal isOpen={isDetailModalOpen} onClose={() => setIsDetailModalOpen(false)}>
+        <ProjectDetailModal
+          project={selectedProject!}
+          onClose={() => setIsDetailModalOpen(false)}
+        />
+      </Modal>
     </div>
   );
 };
