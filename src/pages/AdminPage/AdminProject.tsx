@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaPencilAlt, FaTrashAlt, FaPlus, FaSearch, FaShareAlt } from "react-icons/fa";
+import { FaPencilAlt, FaTrashAlt, FaPlus, FaSearch, FaEye } from "react-icons/fa";
 // import AdminSidebar from "../Sidebar/AdminSidebar/AdminSidebar";
 // import AdminHeader from "../Header/AdminHeader/AdminHeader";
 
@@ -61,7 +61,7 @@ const ProjectTable: React.FC<ProjectTableProps> = ({ projects }) => {
                 Delete
               </button>
               <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-orange-600 bg-orange-50 hover:bg-orange-100 transition-colors">
-                <FaShareAlt className="w-3.5 h-3.5" />
+                <FaEye className="w-3.5 h-3.5" />
                 Detail
               </button>
             </div>
