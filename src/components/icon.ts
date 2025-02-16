@@ -7,9 +7,12 @@ import {
   Settings,
 } from "lucide-react";
 
+import { GoArrowUpRight } from "react-icons/go";
+import { FaArrowRight } from "react-icons/fa6";
+
 // Định nghĩa kiểu dữ liệu cho danh sách icon
 type IconType = {
-  [key: string]: React.ComponentType;
+  [key: string]: React.FC<React.SVGProps<SVGSVGElement>>;
 };
 
 const Icons: IconType = {
@@ -19,6 +22,8 @@ const Icons: IconType = {
   ChartColumn: ChartColumn,
   LogOut: LogOut,
   Settings: Settings,
+  ArrowUpRight: GoArrowUpRight,
+  ArrowRight: FaArrowRight,
 };
 
 export default Icons;

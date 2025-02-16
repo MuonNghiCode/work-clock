@@ -9,13 +9,25 @@ const MainLayout: React.FC = () => {
 
   return (
     <>
-      <div className="flex flex-col h-screen">
-        <header className="relative bg-white text-black text-center p-4 shadow-[0_10px_5px_rgba(255,145,77,0.2)]">
-          <MainHeader />
-        </header>
-        <main className="flex-1 bg-gray-200 p-4">
-          <ApprovalPage />
-        </main>
+      <div className="flex flex-col h-screen ">
+        {isHomePage ? (
+          <header className="fixed top-0 left-0 w-full bg-transparent text-black text-center p-1 z-10">
+            <MainHeader />
+          </header>
+        ) : (
+          <header className="fixed top-0 left-0 w-full bg-white  text-black text-center p-4 shadow-orange-header z-10">
+            <MainHeader />
+          </header>
+        )}
+        {isHomePage ? (
+          <main className="flex-1 bg-white p-4 pt-20">
+            <Outlet />
+          </main>
+        ) : (
+          <main className="flex-1 bg-white p-4 pt-30">
+            <Outlet />
+          </main>
+        )}
         {!isHomePage && (
           <footer className="z-10 bg-white text-black text-center p-4 shadow-orange-footer">
             <Footer />
