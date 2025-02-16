@@ -31,7 +31,7 @@ interface ProjectTableProps {
 const ProjectTable: React.FC<ProjectTableProps> = ({ projects }) => {
   return (
     <div className="w-full">
-      <div className="bg-orange-300 grid grid-cols-4 py-3">
+      <div className="bg-orange-300 grid grid-cols-4 py-3 rounded-t-lg">
         <div className="text-center font-bold">Name</div>
         <div className="text-center font-bold">Date</div>
         <div className="text-center font-bold">Status</div>
@@ -41,17 +41,27 @@ const ProjectTable: React.FC<ProjectTableProps> = ({ projects }) => {
         {projects.map((project) => (
           <div 
             key={project.name} 
-            className="bg-white rounded-lg grid grid-cols-4 items-center py-3"
+            className="bg-white rounded-lg grid grid-cols-4 items-center py-3 hover:shadow-md transition-shadow"
           >
             <div className="text-center font-medium">{project.name}</div>
             <div className="text-center">{project.date}</div>
             <div className={`text-center font-medium ${statusColors[project.status]}`}>
-              {project.status}
+              <span className={`px-4 py-1 rounded-full text-sm ${
+                statusColors[project.status].replace('text-', 'bg-').replace('500', '100')
+              }`}>
+                {project.status}
+              </span>
             </div>
-            <div className="main justify-center space-x-8">
-              <FaPencilAlt className="text-yellow-500 w-4 h-4 cursor-pointer" />
-              <FaTrashAlt className="text-red-500 w-4 h-4 cursor-pointer" />
-              <FaShareAlt className="text-orange-300 w-4 h-4 cursor-pointer" />
+            <div className="flex justify-center items-center gap-6">
+              <button className="p-2 hover:bg-yellow-50 rounded-full transition-colors group">
+                <FaPencilAlt className="text-yellow-500 w-4 h-4 group-hover:scale-110 transition-transform" />
+              </button>
+              <button className="p-2 hover:bg-red-50 rounded-full transition-colors group">
+                <FaTrashAlt className="text-red-500 w-4 h-4 group-hover:scale-110 transition-transform" />
+              </button>
+              <button className="p-2 hover:bg-orange-50 rounded-full transition-colors group">
+                <FaShareAlt className="text-orange-300 w-4 h-4 group-hover:scale-110 transition-transform" />
+              </button>
             </div>
           </div>
         ))}
