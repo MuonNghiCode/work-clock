@@ -7,6 +7,7 @@ import ErrorPage from "./pages/ErrorPage/ErrorPage";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import ProtectedRoute from "./routers/ProtectedRoute/ProtectedRoute";
 import LoginPage from "./pages/LoginPage/LoginPage";
+import FinancePage from "./pages/FinancePage/FinancePage";
 import UserLayout from "./layouts/UserLayout/UserLayout";
 import HomePage from "./pages/HomePage/HomePage";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
@@ -45,12 +46,12 @@ const router = createBrowserRouter([
   {
     path: "/finance",
     element: (
-      <ProtectedRoute requireFinance={true}>
+      <ProtectedRoute requireFinance={false}>
         <FinanceLayout />
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
-    children: [{ path: "/finance", element: <div>Finance Dashboard</div> }],
+    children: [{ path: "/finance", element: <FinancePage /> }],
   },
   {
     path: "/user",
