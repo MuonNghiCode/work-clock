@@ -93,6 +93,8 @@ const RequestPage: React.FC = () => {
   const [editingRecord, setEditingRecord] = useState<any>(null);
   const [tableData, setTableData] = useState(data);
   const [form] = Form.useForm();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deletingRecord, setDeletingRecord] = useState<ClaimRequest | null>(null);
 
   const columns = [
     {
@@ -128,7 +130,11 @@ const RequestPage: React.FC = () => {
       key: 'action',
       render: (_: any, record: ClaimRequest) => (
         <div className="flex space-x-4">
-          <Trash className="text-red-600 cursor-pointer hover:opacity-80" size={24} />
+          <Trash 
+            className="text-red-600 cursor-pointer hover:opacity-80" 
+            size={24} 
+            onClick={() => handleDelete(record)}
+          />
           <Edit 
             className="text-[#FF914D] cursor-pointer hover:opacity-80" 
             size={24} 
@@ -178,6 +184,24 @@ const RequestPage: React.FC = () => {
     }
   };
 
+  const handleDelete = (record: ClaimRequest) => {
+    setDeletingRecord(record);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleDeleteModalOk = () => {
+    if (deletingRecord) {
+      setTableData(prevData => prevData.filter(item => item.key !== deletingRecord.key));
+      setIsDeleteModalOpen(false);
+      setDeletingRecord(null);
+    }
+  };
+
+  const handleDeleteModalCancel = () => {
+    setIsDeleteModalOpen(false);
+    setDeletingRecord(null);
+  };
+
   return (
     <div className="request-page-container">
       <h1 className="request-page-title">Claim-Request Management</h1>
@@ -196,7 +220,7 @@ const RequestPage: React.FC = () => {
         dataSource={tableData} 
         pagination={{
           pageSize: 5,
-          total: data.length,
+          total: tableData.length,
           current: currentPage,
           onChange: handlePageChange,
           showSizeChanger: false,
@@ -270,6 +294,18 @@ const RequestPage: React.FC = () => {
             <Input />
           </Form.Item>
         </Form>
+      </Modal>
+
+      <Modal
+        title="Confirm Delete"
+        open={isDeleteModalOpen}
+        onOk={handleDeleteModalOk}
+        onCancel={handleDeleteModalCancel}
+        okText="Yes"
+        cancelText="No"
+        okButtonProps={{ danger: true }}
+      >
+        <p>Are you sure to delete this claim request?</p>
       </Modal>
     </div>
   );
