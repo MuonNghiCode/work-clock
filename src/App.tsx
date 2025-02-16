@@ -4,11 +4,12 @@ import AdminLayout from "./layouts/AdminLayout/AdminLayout";
 import ApprovalLayout from "./layouts/ApprovalLayout/ApprovalLayout";
 import FinanceLayout from "./layouts/FinanceLayout/FinanceLayout";
 import ErrorPage from "./pages/ErrorPage/ErrorPage";
-import { createBrowserRouter, RouterProvider } from "react-router";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ProtectedRoute from "./routers/ProtectedRoute/ProtectedRoute";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import AdminProject from "./pages/AdminPage/AdminProject";
 import EditProject from "./pages/AdminPage/EditProject";
+import AddProject from "./pages/AdminPage/AddProject";
 
 const router = createBrowserRouter([
   {
@@ -23,16 +24,22 @@ const router = createBrowserRouter([
   },
   {
     path: "/admin",
-    element: (
-      // <ProtectedRoute requireAdmin={false}>
-        <AdminLayout />
-      // </ProtectedRoute> 
-    ),
+    element: <AdminLayout />,
     errorElement: <ErrorPage />,
-    children: [{ path: "/admin", element: <AdminProject/> },
-    { path: "/admin/edit", element: <EditProject/> }
-  ],
-    
+    children: [
+      { 
+        path: "", 
+        element: <AdminProject/> 
+      },
+      { 
+        path: "edit", 
+        element: <EditProject/> 
+      },
+      { 
+        path: "add", 
+        element: <AddProject/> 
+      }
+    ]
   },
   {
     path: "/approval",
@@ -42,7 +49,7 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
-    children: [{ path: "/approval", element: <div>Approval Dashboard</div> }],
+    children: [{ path: "", element: <div>Approval Dashboard</div> }],
   },
   {
     path: "/finance",
@@ -52,7 +59,7 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
-    children: [{ path: "/finance", element: <div>Finance Dashboard</div> }],
+    children: [{ path: "", element: <div>Finance Dashboard</div> }],
   },
   {
     path: "/login",

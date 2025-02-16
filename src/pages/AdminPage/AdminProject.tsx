@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FaPencilAlt, FaTrashAlt, FaPlus, FaSearch, FaEye } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 // import AdminSidebar from "../Sidebar/AdminSidebar/AdminSidebar";
 // import AdminHeader from "../Header/AdminHeader/AdminHeader";
 
@@ -28,6 +29,8 @@ interface ProjectTableProps {
 }
 
 const ProjectTable: React.FC<ProjectTableProps> = ({ projects }) => {
+  const navigate = useNavigate();
+
   return (
     <div className="w-full">
       <div className="bg-orange-300 grid grid-cols-4 py-4 px-6 rounded-t-lg">
@@ -52,7 +55,10 @@ const ProjectTable: React.FC<ProjectTableProps> = ({ projects }) => {
               </span>
             </div>
             <div className="flex justify-center items-center gap-4">
-              <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-yellow-600 bg-yellow-50 hover:bg-yellow-100 transition-colors">
+              <button 
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-yellow-600 bg-yellow-50 hover:bg-yellow-100 transition-colors"
+                onClick={() => navigate('/admin/edit')}
+              >
                 <FaPencilAlt className="w-3.5 h-3.5" />
                 Edit
               </button>
@@ -75,6 +81,7 @@ const ProjectTable: React.FC<ProjectTableProps> = ({ projects }) => {
 const AdminProject: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = 68;
+  const navigate = useNavigate();
 
   const renderPaginationButtons = () => {
     const buttons = [];
@@ -150,7 +157,10 @@ const AdminProject: React.FC = () => {
           <FaSearch className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
         </div>
         
-        <button className="bg-orange-400 text-white px-4 py-2 rounded-full flex items-center gap-2">
+        <button 
+          className="bg-orange-400 text-white px-4 py-2 rounded-full flex items-center gap-2"
+          onClick={() => navigate('/admin/add')}
+        >
           <FaPlus className="w-4 h-4" /> Add Project
         </button>
       </div>
