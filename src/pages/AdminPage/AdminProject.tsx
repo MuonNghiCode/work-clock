@@ -2,7 +2,6 @@ import { useState } from "react";
 import { FaPencilAlt, FaTrashAlt, FaPlus, FaSearch, FaShareAlt } from "react-icons/fa";
 // import AdminSidebar from "../Sidebar/AdminSidebar/AdminSidebar";
 // import AdminHeader from "../Header/AdminHeader/AdminHeader";
-import './AdminProject.css';
 
 interface Project {
   name: string;
@@ -31,36 +30,39 @@ interface ProjectTableProps {
 const ProjectTable: React.FC<ProjectTableProps> = ({ projects }) => {
   return (
     <div className="w-full">
-      <div className="bg-orange-300 grid grid-cols-4 py-3 rounded-t-lg">
-        <div className="text-center font-bold">Name</div>
-        <div className="text-center font-bold">Date</div>
-        <div className="text-center font-bold">Status</div>
-        <div className="text-center font-bold">Action</div>
+      <div className="bg-orange-300 grid grid-cols-4 py-4 px-6 rounded-t-lg">
+        <div className="text-center font-bold text-gray-800">Name</div>
+        <div className="text-center font-bold text-gray-800">Date</div>
+        <div className="text-center font-bold text-gray-800">Status</div>
+        <div className="text-center font-bold text-gray-800">Action</div>
       </div>
-      <div className="space-y-3 mt-3">
+      <div className="space-y-4 p-4">
         {projects.map((project) => (
           <div 
             key={project.name} 
-            className="bg-white rounded-lg grid grid-cols-4 items-center py-3 hover:shadow-md transition-shadow"
+            className="bg-white rounded-lg grid grid-cols-4 items-center py-4 px-6 hover:shadow-md transition-shadow"
           >
-            <div className="text-center font-medium">{project.name}</div>
-            <div className="text-center">{project.date}</div>
-            <div className={`text-center font-medium ${statusColors[project.status]}`}>
-              <span className={`px-4 py-1 rounded-full text-sm ${
+            <div className="text-center font-medium text-gray-700">{project.name}</div>
+            <div className="text-center text-gray-600">{project.date}</div>
+            <div className="text-center">
+              <span className={`px-4 py-1.5 rounded-full text-sm font-medium ${
                 statusColors[project.status].replace('text-', 'bg-').replace('500', '100')
               }`}>
                 {project.status}
               </span>
             </div>
-            <div className="flex justify-center items-center gap-6">
-              <button className="p-2 hover:bg-yellow-50 rounded-full transition-colors group">
-                <FaPencilAlt className="text-yellow-500 w-4 h-4 group-hover:scale-110 transition-transform" />
+            <div className="flex justify-center items-center gap-4">
+              <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-yellow-600 bg-yellow-50 hover:bg-yellow-100 transition-colors">
+                <FaPencilAlt className="w-3.5 h-3.5" />
+                Edit
               </button>
-              <button className="p-2 hover:bg-red-50 rounded-full transition-colors group">
-                <FaTrashAlt className="text-red-500 w-4 h-4 group-hover:scale-110 transition-transform" />
+              <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-red-600 bg-red-50 hover:bg-red-100 transition-colors">
+                <FaTrashAlt className="w-3.5 h-3.5" />
+                Delete
               </button>
-              <button className="p-2 hover:bg-orange-50 rounded-full transition-colors group">
-                <FaShareAlt className="text-orange-300 w-4 h-4 group-hover:scale-110 transition-transform" />
+              <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-orange-600 bg-orange-50 hover:bg-orange-100 transition-colors">
+                <FaShareAlt className="w-3.5 h-3.5" />
+                Detail
               </button>
             </div>
           </div>

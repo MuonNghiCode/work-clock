@@ -8,7 +8,7 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 import ProtectedRoute from "./routers/ProtectedRoute/ProtectedRoute";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import AdminProject from "./pages/AdminPage/AdminProject";
-
+import EditProject from "./pages/AdminPage/EditProject";
 
 const router = createBrowserRouter([
   {
@@ -29,8 +29,8 @@ const router = createBrowserRouter([
       // </ProtectedRoute> 
     ),
     errorElement: <ErrorPage />,
-    children: [{ path: "/admin", element: <AdminProject/> }
-    
+    children: [{ path: "/admin", element: <AdminProject/> },
+    { path: "/admin/edit", element: <EditProject/> }
   ],
     
   },
