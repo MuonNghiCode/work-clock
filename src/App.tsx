@@ -11,7 +11,8 @@ import FinancePage from "./pages/FinancePage/FinancePage";
 import UserLayout from "./layouts/UserLayout/UserLayout";
 import HomePage from "./pages/HomePage/HomePage";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
-
+import EditProfileLayout from "./layouts/EditProfileLayout/EditProfileLayout";
+import EditProfilePage from "./pages/EditProfilePage/EditProfilePage";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -67,6 +68,16 @@ const router = createBrowserRouter([
     path: "/login",
     element: <LoginPage />,
   },
+  {
+    path: "/edit_profile",
+    element: (
+      <ProtectedRoute requireEditProfile={false}>
+        <EditProfileLayout />
+      </ProtectedRoute>
+    ),
+    errorElement: <ErrorPage />,
+    children: [{ path: "/edit_profile", element: <EditProfilePage /> }],
+  }
 ]);
 
 const App: React.FC = () => {
