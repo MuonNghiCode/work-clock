@@ -65,7 +65,7 @@ const ChangePassword: React.FC = () => {
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
       <img
-        src={Images.work2}
+        src={Images.Work2}
         alt="Background"
         className="absolute inset-0 w-3/5 -z-10 h-full object-cover opacity-30 blur-xs"
       />
