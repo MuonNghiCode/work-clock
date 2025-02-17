@@ -8,6 +8,8 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 import ProtectedRoute from "./routers/ProtectedRoute/ProtectedRoute";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import UserLayout from "./layouts/UserLayout/UserLayout";
+import AdminUserManagement from "./pages/AdminPage/AdminUserManagement";
+
 
 const router = createBrowserRouter([
   {
@@ -23,12 +25,22 @@ const router = createBrowserRouter([
   {
     path: "/admin",
     element: (
-      <ProtectedRoute requireAdmin={true}>
+      // <ProtectedRoute requireAdmin={true}>
         <AdminLayout />
-      </ProtectedRoute>
+      // </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
-    children: [{ path: "/admin", element: <div>Admin Dashboard</div> }],
+    children: [
+      {
+        path: "usermanagement",
+        children: [
+          {
+            path: "",
+            element: <AdminUserManagement/>
+          },
+        ]
+      }
+    ],
   },
   {
     path: "/approval",
