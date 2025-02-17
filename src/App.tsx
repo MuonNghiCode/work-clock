@@ -11,6 +11,7 @@ import FinancePage from "./pages/FinancePage/FinancePage";
 import UserLayout from "./layouts/UserLayout/UserLayout";
 import HomePage from "./pages/HomePage/HomePage";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
+import ChangePassword from "./pages/LoginPage/ChangePassword";
 
 const router = createBrowserRouter([
   {
@@ -56,7 +57,7 @@ const router = createBrowserRouter([
   {
     path: "/user",
     element: (
-      <ProtectedRoute requireFinance={true}>
+      <ProtectedRoute requireUser={true}>
         <UserLayout />
       </ProtectedRoute>
     ),
@@ -66,6 +67,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <LoginPage />,
+  },
+  {
+    path: "/change-password",
+    element: <ChangePassword />,
   },
 ]);
 
