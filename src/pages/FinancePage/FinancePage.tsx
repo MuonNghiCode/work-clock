@@ -172,9 +172,7 @@ const FinancePage: React.FC = () => {
   }, [searchQuery]);
 
   const exportToExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(dataSource, {
-      header: ["Key", "Project", "Claimer", "Time", "Status", "Date Created"],
-    });
+    const worksheet = XLSX.utils.json_to_sheet(dataSource);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "FinanceData");
     XLSX.writeFile(workbook, "FinanceData.xlsx");
