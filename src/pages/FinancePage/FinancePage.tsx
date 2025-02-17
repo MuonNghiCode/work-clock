@@ -58,7 +58,7 @@ const data: DataType[] = [
 
 const FinancePage: React.FC = () => {
   const handlePay = (key: string) => {
-    //tạo form trả tiền cho claim rq
+    console.log(`Payment processed for key: ${key}`);
   };
 
   return (
