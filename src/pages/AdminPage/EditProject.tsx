@@ -9,16 +9,28 @@ interface EditProjectProps {
 }
 
 const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project }) => {
+  // Thêm hàm chuyển đổi từ DD/MM/YYYY sang YYYY-MM-DD
+  const convertDateFormat = (dateStr: string) => {
+    if (!dateStr) return "";
+    const [day, month, year] = dateStr.split('/');
+    return `${year}-${month}-${day}`;
+  };
+
   const [projectData, setProjectData] = useState({
     name: project?.name || "",
     code: project?.code || "",
-    date: project?.date || "",
+    date: project?.date ? convertDateFormat(project.date) : "",
     status: project?.status || "Processing"
   });
 
   const handleSave = () => {
     if (onSave) {
-      onSave(projectData);
+      // Chuyển đổi ngược lại format DD/MM/YYYY trước khi save
+      const formattedDate = projectData.date ? new Date(projectData.date).toLocaleDateString('en-GB') : "";
+      onSave({
+        ...projectData,
+        date: formattedDate
+      });
     }
     if (onClose) {
       onClose();
@@ -57,23 +69,18 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project }) =
 
           <div className="space-y-4">
             <label className="block text-gray-700 font-medium text-2xl">Project Code</label>
-            <input
-              type="text"
-              value={projectData.code}
-              onChange={(e) => setProjectData({ ...projectData, code: e.target.value })}
-              className="w-full px-8 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-xl"
-              placeholder="Enter project code"
-            />
+            <div className="w-full px-8 py-4 border border-gray-300 rounded-lg bg-gray-50 text-xl">
+              {projectData.code}
+            </div>
           </div>
 
           <div className="space-y-4">
             <label className="block text-gray-700 font-medium text-2xl">Date</label>
             <input
-              type="text"
+              type="date"
               value={projectData.date}
               onChange={(e) => setProjectData({ ...projectData, date: e.target.value })}
               className="w-full px-8 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-xl"
-              placeholder="DD/MM/YYYY"
             />
           </div>
 

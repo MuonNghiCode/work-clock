@@ -8,9 +8,19 @@ interface AddProjectProps {
 }
 
 const AddProject: React.FC<AddProjectProps> = ({ onClose, onAdd }) => {
+  const generateRandomCode = () => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const length = 8;
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+  };
+
   const [projectData, setProjectData] = useState<Project>({
     name: "",
-    code: "",
+    code: generateRandomCode(),
     date: "",
     status: "Processing"
   });
@@ -56,23 +66,18 @@ const AddProject: React.FC<AddProjectProps> = ({ onClose, onAdd }) => {
 
           <div className="space-y-4">
             <label className="block text-gray-700 font-medium text-2xl">Project Code</label>
-            <input
-              type="text"
-              value={projectData.code}
-              onChange={(e) => setProjectData({ ...projectData, code: e.target.value })}
-              className="w-full px-8 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-xl"
-              placeholder="Enter project code"
-            />
+            <div className="w-full px-8 py-4 border border-gray-300 rounded-lg bg-gray-50 text-xl">
+              {projectData.code}
+            </div>
           </div>
 
           <div className="space-y-4">
             <label className="block text-gray-700 font-medium text-2xl">Date</label>
             <input
-              type="text"
+              type="date"
               value={projectData.date}
               onChange={(e) => setProjectData({ ...projectData, date: e.target.value })}
               className="w-full px-8 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-xl"
-              placeholder="DD/MM/YYYY"
             />
           </div>
 

@@ -17,65 +17,65 @@ const AdminProject: React.FC = () => {
     {
       name: "Watermelon",
       code: "4669",
-      date: "04/06/2025",
+      date: "2025-06-04",
       status: "Processing",
     },
     {
       name: "Mango",
       code: "4670",
-      date: "06/09/2025",
+      date: "2025-09-06",
       status: "Pending",
     },
     {
       name: "Grape",
       code: "4671",
-      date: "27/05/2025",
+      date: "2025-05-27",
       status: "Processing",
     },
     {
       name: "Banana",
       code: "4672",
-      date: "11/12/2025",
+      date: "2025-12-11",
       status: "Pending",
     },
     {
       name: "Melon",
       code: "4673",
-      date: "17/12/2025",
+      date: "2025-12-17",
       status: "Complete",
     },
     {
       name: "Orange",
       code: "OR001",
-      date: "20/12/2025",
+      date: "2025-12-20",
       status: "Processing",
 
     },
     {
       name: "Apple",
       code: "AP001",
-      date: "25/12/2025",
+      date: "2025-12-25",
       status: "Complete",
 
     },
     {
       name: "Lemon",
       code: "LM001",
-      date: "30/12/2025",
+      date: "2025-12-30",
       status: "Pending",
 
     },
     {
       name: "Kiwi",
       code: "KW001",
-      date: "05/01/2026",
+      date: "2026-01-05",
       status: "Processing",
 
     },
     {
       name: "Berry",
       code: "BR001",
-      date: "10/01/2026",
+      date: "2026-01-10",
       status: "Complete",
 
 
@@ -83,49 +83,49 @@ const AdminProject: React.FC = () => {
     {
       name: "Peach",
       code: "PC001",
-      date: "15/01/2026",
+      date: "2026-01-15",
       status: "Processing",
 
     },
     {
       name: "Plum",
       code: "PL001",
-      date: "20/01/2026",
+      date: "2026-01-20",
       status: "Complete",
 
     },
     {
       name: "Fig",
       code: "FG001",
-      date: "25/01/2026",
+      date: "2026-01-25",
       status: "Pending",
 
     },
     {
       name: "Pear",
       code: "PR001",
-      date: "30/01/2026",
+      date: "2026-01-30",
       status: "Processing",
 
     },
     {
       name: "Cherry",
       code: "CH001",
-      date: "05/02/2026",
+      date: "2026-02-05",
       status: "Complete",
 
     },
     {
       name: "Lime",
       code: "LI001",
-      date: "10/02/2026",
+      date: "2026-02-10",
       status: "Pending",
 
     },
     {
       name: "Papaya",
       code: "PP001",
-      date: "15/02/2026",
+      date: "2026-02-15",
       status: "Processing",
 
 
@@ -133,21 +133,21 @@ const AdminProject: React.FC = () => {
     {
       name: "Guava",
       code: "GV001",
-      date: "20/02/2026",
+      date: "2026-02-20",
       status: "Complete",
 
     },
     {
       name: "Dragon",
       code: "DR001",
-      date: "25/02/2026",
+      date: "2026-02-25",
       status: "Pending",
 
     },
     {
       name: "Durian",
       code: "DU001",
-      date: "01/03/2026",
+      date: "2026-03-01",
       status: "Processing",
 
     }
