@@ -1,7 +1,7 @@
 import React from "react";
 import { ClaimRequest, generateFakeData } from "../../model/ClaimRequest";
 import TableApproval from "./TableApproval";
-const ApprovalPage = () => {
+const ApprovalPage: React.FC = () => {
   const data: ClaimRequest[] = generateFakeData();
   return (
     <>

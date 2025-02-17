@@ -30,15 +30,13 @@
   .text-gradient-color {
     background: linear-gradient(90deg, #feb78a 0%, #ff914d 100%);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
   }
   .hover\:text-gradient-color:hover {
     background: linear-gradient(90deg, #feb78a 0%, #ff914d 100%);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
   }
-}
-
-@theme {
-  --font-squada: "Squada One", sans-serif;
 }
