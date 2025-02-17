@@ -11,6 +11,7 @@ import FinancePage from "./pages/FinancePage/FinancePage";
 import UserLayout from "./layouts/UserLayout/UserLayout";
 import HomePage from "./pages/HomePage/HomePage";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
+import UserDashboard from "./pages/UserDashboard/UserDashboard";
 
 const router = createBrowserRouter([
   {
@@ -61,7 +62,16 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
-    children: [{ path: "/user", element: <div>User Dashboard</div> }],
+    children: [
+      {
+        path: "/user",
+        element: (
+          <div>
+            <UserDashboard />
+          </div>
+        ),
+      },
+    ],
   },
   {
     path: "/login",
