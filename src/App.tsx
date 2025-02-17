@@ -4,14 +4,18 @@ import AdminLayout from "./layouts/AdminLayout/AdminLayout";
 import ApprovalLayout from "./layouts/ApprovalLayout/ApprovalLayout";
 import FinanceLayout from "./layouts/FinanceLayout/FinanceLayout";
 import ErrorPage from "./pages/ErrorPage/ErrorPage";
-import { createBrowserRouter, RouterProvider } from "react-router";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ProtectedRoute from "./routers/ProtectedRoute/ProtectedRoute";
 import LoginPage from "./pages/LoginPage/LoginPage";
+
+import AdminProject from "./pages/AdminPage/AdminProject";
+
 import FinancePage from "./pages/FinancePage/FinancePage";
 import UserLayout from "./layouts/UserLayout/UserLayout";
 import HomePage from "./pages/HomePage/HomePage";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
 import ChangePassword from "./pages/LoginPage/ChangePassword";
+
 
 const router = createBrowserRouter([
   {
@@ -26,13 +30,14 @@ const router = createBrowserRouter([
   },
   {
     path: "/admin",
-    element: (
-      <ProtectedRoute requireAdmin={true}>
-        <AdminLayout />
-      </ProtectedRoute>
-    ),
+    element: <AdminLayout />,
     errorElement: <ErrorPage />,
-    children: [{ path: "/admin", element: <div>Admin Dashboard</div> }],
+    children: [
+      { 
+        path: "", 
+        element: <AdminProject/> 
+      },
+    ]
   },
   {
     path: "/approval",
@@ -42,7 +47,7 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
-    children: [{ path: "/approval", element: <div>Approval Dashboard</div> }],
+    children: [{ path: "", element: <div>Approval Dashboard</div> }],
   },
   {
     path: "/finance",
@@ -52,6 +57,7 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
+
     children: [{ path: "/finance", element: <FinancePage /> }],
   },
   {
@@ -63,6 +69,7 @@ const router = createBrowserRouter([
     ),
     errorElement: <ErrorPage />,
     children: [{ path: "/user", element: <div>User Dashboard</div> }],
+
   },
   {
     path: "/login",
