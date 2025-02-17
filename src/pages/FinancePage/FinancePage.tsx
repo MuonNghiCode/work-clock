@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { FaSearch } from "react-icons/fa";
-import { FaDownload } from "react-icons/fa";
-import { FaCalendarAlt } from "react-icons/fa";
-import { FaFilter } from "react-icons/fa";
-import { DateRangePicker } from "react-date-range";
+import { FaSearch, FaDownload, FaCalendarAlt, FaFilter } from "react-icons/fa";
+import { DateRangePicker, Range } from "react-date-range";
 import { format } from "date-fns";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import PaymentModal from "../../components/PaymentModal/PaymentModal";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
+
 
 interface DataType {
   key: string;
@@ -81,10 +79,10 @@ const data: DataType[] = [
 
 const FinancePage: React.FC = () => {
   const [dataSource, setDataSource] = useState<DataType[]>([]);
-  const [dateRange, setDateRange] = useState([
+  const [dateRange, setDateRange] = useState<Range[]>([
     {
-      startDate: null,
-      endDate: null,
+      startDate: undefined,
+      endDate: undefined,
       key: "selection",
     },
   ]);
@@ -127,7 +125,7 @@ const FinancePage: React.FC = () => {
 
     const filteredData = data.filter((item: DataType) => {
       const itemDate = new Date(item.dateCreate.split("/").reverse().join("-"));
-      return itemDate >= startDate && itemDate <= endDate;
+      return itemDate >= (startDate) && itemDate <= (endDate);
     });
 
     setDataSource(filteredData);
@@ -136,8 +134,8 @@ const FinancePage: React.FC = () => {
   const clearDateFilter = () => {
     setDateRange([
       {
-        startDate: null,
-        endDate: null,
+        startDate: undefined,
+        endDate: undefined,
         key: "selection",
       },
     ]);
