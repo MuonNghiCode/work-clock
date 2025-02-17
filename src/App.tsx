@@ -18,6 +18,7 @@ import ChangePassword from "./pages/LoginPage/ChangePassword";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UserProvider } from "./context/UserContext";
+import ApprovalPage from "./pages/ApprovalPage/ApprovalPage";
 
 const router = createBrowserRouter([
   {
@@ -49,7 +50,7 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
-    children: [{ path: "", element: <div>Approval Dashboard</div> }],
+    children: [{ path: "", element: <ApprovalPage/>}],
   },
   {
     path: "/finance",
