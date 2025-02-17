@@ -37,3 +37,16 @@
 .request-page-search .anticon-search {
   font-size: 16px;
 }
+
+.custom-search .ant-input-group-addon {
+  display: none;
+}
+
+.custom-search .ant-input {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.bg-brand-grandient {
+  background: linear-gradient(90deg, #FEB78A 0%, #FF914D 100%);
+}
