@@ -239,156 +239,157 @@ const AdminProject: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Main Header */}
-      <div className="mb-8">
-        <div className="container mx-auto px-4">
-          <div className="bg-white rounded-2xl shadow-sm overflow-hidden p-8">
-            <div className="flex flex-col gap-6">
-              {/* Title & Stats */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <h1 className="text-4xl font-black text-[#2B3674] font-['Squada One']">
-                    {AdminProjectTitle}
-                  </h1>
+    <div className="bg-gray-50 overflow-x-hidden">
+      <div>
+        {/* Header Section */}
+        <div className="mb-8">
+          <div className="container mx-auto px-4">
+            <div className="bg-white rounded-2xl shadow-sm overflow-hidden p-8">
+              <div className="flex flex-col gap-6">
+                {/* Title & Stats */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <h1 className="text-4xl font-black text-[#2B3674] font-['Squada One']">
+                      {AdminProjectTitle}
+                    </h1>
+                    <div className="flex items-center gap-2">
+                      <span className="px-3 py-1.5 bg-orange-100 text-orange-600 rounded-full">
+                        {projects.length} Projects
+                      </span>
+                      <span className="px-3 py-1.5 bg-purple-100 text-purple-600 rounded-full">
+                        {projects.filter(p => p.status === "Processing").length} Processing
+                      </span>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => setIsAddModalOpen(true)}
+                    className="flex items-center justify-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 
+                      text-white rounded-xl transition-all duration-200 shadow-md
+                      hover:shadow-lg active:scale-95"
+                  >
+                    <FaPlus className="w-4 h-4" />
+                    Add Project
+                  </button>
+                </div>
+
+                {/* Filters & Search */}
+                <div className="flex items-center justify-between">
+                  {/* Status Filters */}
                   <div className="flex items-center gap-2">
-                    <span className="px-3 py-1.5 bg-orange-100 text-orange-600 rounded-full">
-                      {projects.length} Projects
-                    </span>
-                    <span className="px-3 py-1.5 bg-purple-100 text-purple-600 rounded-full">
-                      {projects.filter(p => p.status === "Processing").length} Processing
-                    </span>
+                    {statusTags.map((status) => (
+                      <button
+                        key={status}
+                        onClick={() => handleStatusChange(status)}
+                        className={`px-4 py-2 rounded-full transition-all duration-200
+                          ${statusFilter === status
+                            ? "bg-orange-500 text-white shadow-md transform scale-105"
+                            : "bg-gray-50 text-gray-600 hover:bg-gray-100"
+                          }
+                          flex items-center gap-1.5
+                        `}
+                      >
+                        {statusFilter === status && (
+                          <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                        )}
+                        {status}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Search */}
+                  <div className="relative w-[300px]">
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={handleSearch}
+                      placeholder="Search for project..."
+                      className="w-full pl-4 pr-12 py-2 rounded-xl border border-gray-200
+                        focus:outline-none focus:border-orange-300 focus:ring-1 focus:ring-orange-300
+                        transition-all duration-200"
+                    />
+                    <FaSearch className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                   </div>
                 </div>
-
-                <button
-                  onClick={() => setIsAddModalOpen(true)}
-                  className="flex items-center justify-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 
-                    text-white rounded-xl transition-all duration-200 shadow-md
-                    hover:shadow-lg active:scale-95"
-                >
-                  <FaPlus className="w-4 h-4" />
-                  Add Project
-                </button>
-              </div>
-
-              {/* Filters & Search */}
-              <div className="flex items-center justify-between">
-                {/* Status Filters */}
-                <div className="flex items-center gap-2">
-                  {statusTags.map((status) => (
-                    <button
-                      key={status}
-                      onClick={() => handleStatusChange(status)}
-                      className={`px-4 py-2 rounded-full transition-all duration-200
-                        ${statusFilter === status
-                          ? "bg-orange-500 text-white shadow-md transform scale-105"
-                          : "bg-gray-50 text-gray-600 hover:bg-gray-100"
-                        }
-                        flex items-center gap-1.5
-                      `}
-                    >
-                      {statusFilter === status && (
-                        <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                      )}
-                      {status}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Search */}
-                <div className="relative w-[300px]">
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={handleSearch}
-                    placeholder="Search for project..."
-                    className="w-full pl-4 pr-12 py-2 rounded-xl border border-gray-200
-                      focus:outline-none focus:border-orange-300 focus:ring-1 focus:ring-orange-300
-                      transition-all duration-200"
-                  />
-                  <FaSearch className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Notification */}
-      {showNotification && (
-        <div className="fixed top-4 right-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-lg">
-          <div className="flex items-center">
-            <div className="py-1">
-              <svg className="w-6 h-6 mr-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/>
-              </svg>
-            </div>
-            <div>
-              <p className="font-bold">Success!</p>
-              <p>Project has been added successfully.</p>
+        {/* Notification */}
+        {showNotification && (
+          <div className="fixed top-4 right-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-lg">
+            <div className="flex items-center">
+              <div className="py-1">
+                <svg className="w-6 h-6 mr-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/>
+                </svg>
+              </div>
+              <div>
+                <p className="font-bold">Success!</p>
+                <p>Project has been added successfully.</p>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Table Container */}
-      <div className="container mx-auto px-4">
-        {/* Table */}
+        {/* Table Container */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
           {/* Table Header */}
           <div className="grid grid-cols-4 bg-gradient-to-r from-orange-400 to-orange-500">
-            <div className="p-10 text-white font-bold text-4xl font-['Squada One']">Name</div>
-            <div className="p-10 text-white font-bold text-4xl font-['Squada One']">Date</div>
-            <div className="p-10 text-white font-bold text-4xl text-center font-['Squada One']">Status</div>
-            <div className="p-10 text-white font-bold text-4xl text-center font-['Squada One']">Action</div>
+            <div className="p-10 text-white font-bold text-4xl w-[350px]">Name</div>
+            <div className="p-10 text-white font-bold text-4xl w-[250px]">Date</div>
+            <div className="p-10 text-white font-bold text-4xl text-center w-[250px]">Status</div>
+            <div className="p-10 text-white font-bold text-4xl text-center w-[250px]">Action</div>
           </div>
 
           {/* Table Body */}
-          {currentProjects.map((project, index) => (
-            <div 
-              key={project.name}
-              className={`grid grid-cols-4 border-b hover:bg-gray-50/80 transition-all
-                ${index === currentProjects.length - 1 ? 'border-b-0' : ''}
-              `}
-            >
-              <div className="p-10 font-semibold text-3xl text-gray-800">{project.name}</div>
-              <div className="p-10 text-gray-600 text-3xl">{project.date}</div>
-              <div className="p-10 flex justify-center">
-                <span className={`px-10 py-4 rounded-full text-2xl font-medium min-w-[200px] text-center
-                  ${project.status === 'Processing' ? 'bg-[#F4ECFF] text-[#7B2CBF]' :
-                    project.status === 'Pending' ? 'bg-[#FFE2E5] text-[#FF0420]' :
-                    'bg-[#E6FAF5] text-[#00B087]'
-                  }
-                `}>
-                  {project.status}
-                </span>
+          <div>
+            {currentProjects.map((project, index) => (
+              <div 
+                key={project.name}
+                className={`grid grid-cols-4 border-b hover:bg-gray-50/80 transition-all
+                  ${index === currentProjects.length - 1 ? 'border-b-0' : ''}
+                `}
+              >
+                <div className="p-10 font-semibold text-3xl text-gray-800 w-[350px]">{project.name}</div>
+                <div className="p-10 text-gray-600 text-3xl w-[250px]">{project.date}</div>
+                <div className="p-10 flex justify-center w-[250px]">
+                  <span className={`px-10 py-4 rounded-full text-2xl font-medium min-w-[200px] text-center
+                    ${project.status === 'Processing' ? 'bg-[#F4ECFF] text-[#7B2CBF]' :
+                      project.status === 'Pending' ? 'bg-[#FFE2E5] text-[#FF0420]' :
+                      'bg-[#E6FAF5] text-[#00B087]'
+                    }
+                  `}>
+                    {project.status}
+                  </span>
+                </div>
+                <div className="p-10 flex justify-center items-center gap-10 w-[250px]">
+                  <button 
+                    onClick={() => handleEdit(project)}
+                    className="p-4 text-yellow-500 hover:bg-yellow-50 rounded-xl
+                      hover:scale-110 active:scale-95 transition-all duration-200"
+                  >
+                    <FaPencilAlt className="w-8 h-8" />
+                  </button>
+                  <button 
+                    onClick={() => handleDelete(project)}
+                    className="p-4 text-red-500 hover:bg-red-50 rounded-xl
+                      hover:scale-110 active:scale-95 transition-all duration-200"
+                  >
+                    <FaTrashAlt className="w-8 h-8" />
+                  </button>
+                  <button 
+                    onClick={() => handleDetail(project)}
+                    className="p-4 text-orange-500 hover:bg-orange-50 rounded-xl
+                      hover:scale-110 active:scale-95 transition-all duration-200"
+                  >
+                    <FaEye className="w-8 h-8" />
+                  </button>
+                </div>
               </div>
-              <div className="p-10 flex justify-center items-center gap-10">
-                <button 
-                  onClick={() => handleEdit(project)}
-                  className="p-4 text-yellow-500 hover:bg-yellow-50 rounded-xl
-                    hover:scale-110 active:scale-95 transition-all duration-200"
-                >
-                  <FaPencilAlt className="w-8 h-8" />
-                </button>
-                <button 
-                  onClick={() => handleDelete(project)}
-                  className="p-4 text-red-500 hover:bg-red-50 rounded-xl
-                    hover:scale-110 active:scale-95 transition-all duration-200"
-                >
-                  <FaTrashAlt className="w-8 h-8" />
-                </button>
-                <button 
-                  onClick={() => handleDetail(project)}
-                  className="p-4 text-orange-500 hover:bg-orange-50 rounded-xl
-                    hover:scale-110 active:scale-95 transition-all duration-200"
-                >
-                  <FaEye className="w-8 h-8" />
-                </button>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
         {/* Pagination */}
