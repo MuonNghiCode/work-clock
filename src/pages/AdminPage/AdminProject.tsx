@@ -239,78 +239,74 @@ const AdminProject: React.FC = () => {
   };
 
   return (
-    <div className="bg-gray-50 overflow-x-hidden">
-      <div>
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="w-[98%] mx-auto space-y-8">
         {/* Header Section */}
-        <div className="mb-8">
-          <div className="container mx-auto px-4">
-            <div className="bg-white rounded-2xl shadow-sm overflow-hidden p-8">
-              <div className="flex flex-col gap-6">
-                {/* Title & Stats */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <h1 className="text-4xl font-black text-[#2B3674] font-['Squada One']">
-                      {AdminProjectTitle}
-                    </h1>
-                    <div className="flex items-center gap-2">
-                      <span className="px-3 py-1.5 bg-orange-100 text-orange-600 rounded-full">
-                        {projects.length} Projects
-                      </span>
-                      <span className="px-3 py-1.5 bg-purple-100 text-purple-600 rounded-full">
-                        {projects.filter(p => p.status === "Processing").length} Processing
-                      </span>
-                    </div>
-                  </div>
+        <div className="bg-white rounded-2xl shadow-sm overflow-hidden p-8">
+          <div className="flex flex-col gap-6">
+            {/* Title & Stats */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <h1 className="text-4xl font-black text-[#2B3674] font-['Squada One']">
+                  {AdminProjectTitle}
+                </h1>
+                <div className="flex items-center gap-2">
+                  <span className="px-3 py-1.5 bg-orange-100 text-orange-600 rounded-full">
+                    {projects.length} Projects
+                  </span>
+                  <span className="px-3 py-1.5 bg-purple-100 text-purple-600 rounded-full">
+                    {projects.filter(p => p.status === "Processing").length} Processing
+                  </span>
+                </div>
+              </div>
 
+              <button
+                onClick={() => setIsAddModalOpen(true)}
+                className="flex items-center justify-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 
+                  text-white rounded-xl transition-all duration-200 shadow-md
+                  hover:shadow-lg active:scale-95"
+              >
+                <FaPlus className="w-4 h-4" />
+                Add Project
+              </button>
+            </div>
+
+            {/* Filters & Search */}
+            <div className="flex items-center justify-between">
+              {/* Status Filters */}
+              <div className="flex items-center gap-2">
+                {statusTags.map((status) => (
                   <button
-                    onClick={() => setIsAddModalOpen(true)}
-                    className="flex items-center justify-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 
-                      text-white rounded-xl transition-all duration-200 shadow-md
-                      hover:shadow-lg active:scale-95"
+                    key={status}
+                    onClick={() => handleStatusChange(status)}
+                    className={`px-4 py-2 rounded-full transition-all duration-200
+                      ${statusFilter === status
+                        ? "bg-orange-500 text-white shadow-md transform scale-105"
+                        : "bg-gray-50 text-gray-600 hover:bg-gray-100"
+                      }
+                      flex items-center gap-1.5
+                    `}
                   >
-                    <FaPlus className="w-4 h-4" />
-                    Add Project
+                    {statusFilter === status && (
+                      <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                    )}
+                    {status}
                   </button>
-                </div>
+                ))}
+              </div>
 
-                {/* Filters & Search */}
-                <div className="flex items-center justify-between">
-                  {/* Status Filters */}
-                  <div className="flex items-center gap-2">
-                    {statusTags.map((status) => (
-                      <button
-                        key={status}
-                        onClick={() => handleStatusChange(status)}
-                        className={`px-4 py-2 rounded-full transition-all duration-200
-                          ${statusFilter === status
-                            ? "bg-orange-500 text-white shadow-md transform scale-105"
-                            : "bg-gray-50 text-gray-600 hover:bg-gray-100"
-                          }
-                          flex items-center gap-1.5
-                        `}
-                      >
-                        {statusFilter === status && (
-                          <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                        )}
-                        {status}
-                      </button>
-                    ))}
-                  </div>
-
-                  {/* Search */}
-                  <div className="relative w-[300px]">
-                    <input
-                      type="text"
-                      value={searchQuery}
-                      onChange={handleSearch}
-                      placeholder="Search for project..."
-                      className="w-full pl-4 pr-12 py-2 rounded-xl border border-gray-200
-                        focus:outline-none focus:border-orange-300 focus:ring-1 focus:ring-orange-300
-                        transition-all duration-200"
-                    />
-                    <FaSearch className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  </div>
-                </div>
+              {/* Search */}
+              <div className="relative w-[300px]">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={handleSearch}
+                  placeholder="Search for project..."
+                  className="w-full pl-4 pr-12 py-2 rounded-xl border border-gray-200
+                    focus:outline-none focus:border-orange-300 focus:ring-1 focus:ring-orange-300
+                    transition-all duration-200"
+                />
+                <FaSearch className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
               </div>
             </div>
           </div>
@@ -393,7 +389,7 @@ const AdminProject: React.FC = () => {
         </div>
 
         {/* Pagination */}
-        <div className="flex justify-center mt-8">
+        <div className="flex justify-center">
           <div className="flex gap-2">
             {Array.from({ length: Math.ceil(filteredProjects.length / itemsPerPage) }, (_, index) => (
               <button
