@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaPencilAlt, FaTrashAlt, FaPlus, FaSearch, FaEye } from "react-icons/fa";
+import { FaPencilAlt, FaTrashAlt, FaPlus, FaEye } from "react-icons/fa";
 import Modal from "../../components/Modal/Modal";
 import { Project } from "../../types/Project";
 import DeleteConfirmModal from '../../components/DeleteConfirmModal/DeleteConfirmModal';
@@ -296,17 +296,29 @@ const AdminProject: React.FC = () => {
               </div>
 
               {/* Search */}
-              <div className="relative w-[300px]">
+              <div className="relative w-full max-w-2xl mx-auto mb-8">
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={handleSearch}
                   placeholder="Search for project..."
-                  className="w-full pl-4 pr-12 py-2 rounded-xl border border-gray-200
-                    focus:outline-none focus:border-orange-300 focus:ring-1 focus:ring-orange-300
-                    transition-all duration-200"
+                  className="w-full px-8 py-4 text-xl border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 pr-12"
                 />
-                <FaSearch className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-4">
+                  <svg 
+                    className="w-6 h-6 text-gray-400" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth="2" 
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                </div>
               </div>
             </div>
           </div>
