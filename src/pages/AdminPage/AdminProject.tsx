@@ -239,7 +239,82 @@ const AdminProject: React.FC = () => {
   };
 
   return (
-    <div className="p-8 mx-6 my-4">
+    <div className="min-h-screen bg-gray-50">
+      {/* Main Header */}
+      <div className="mb-8">
+        <div className="container mx-auto px-4">
+          <div className="bg-white rounded-2xl shadow-sm overflow-hidden p-8">
+            <div className="flex flex-col gap-6">
+              {/* Title & Stats */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <h1 className="text-4xl font-black text-[#2B3674] font-['Squada One']">
+                    {AdminProjectTitle}
+                  </h1>
+                  <div className="flex items-center gap-2">
+                    <span className="px-3 py-1.5 bg-orange-100 text-orange-600 rounded-full">
+                      {projects.length} Projects
+                    </span>
+                    <span className="px-3 py-1.5 bg-purple-100 text-purple-600 rounded-full">
+                      {projects.filter(p => p.status === "Processing").length} Processing
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setIsAddModalOpen(true)}
+                  className="flex items-center justify-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 
+                    text-white rounded-xl transition-all duration-200 shadow-md
+                    hover:shadow-lg active:scale-95"
+                >
+                  <FaPlus className="w-4 h-4" />
+                  Add Project
+                </button>
+              </div>
+
+              {/* Filters & Search */}
+              <div className="flex items-center justify-between">
+                {/* Status Filters */}
+                <div className="flex items-center gap-2">
+                  {statusTags.map((status) => (
+                    <button
+                      key={status}
+                      onClick={() => handleStatusChange(status)}
+                      className={`px-4 py-2 rounded-full transition-all duration-200
+                        ${statusFilter === status
+                          ? "bg-orange-500 text-white shadow-md transform scale-105"
+                          : "bg-gray-50 text-gray-600 hover:bg-gray-100"
+                        }
+                        flex items-center gap-1.5
+                      `}
+                    >
+                      {statusFilter === status && (
+                        <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                      )}
+                      {status}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Search */}
+                <div className="relative w-[300px]">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={handleSearch}
+                    placeholder="Search for project..."
+                    className="w-full pl-4 pr-12 py-2 rounded-xl border border-gray-200
+                      focus:outline-none focus:border-orange-300 focus:ring-1 focus:ring-orange-300
+                      transition-all duration-200"
+                  />
+                  <FaSearch className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Notification */}
       {showNotification && (
         <div className="fixed top-4 right-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-lg">
@@ -257,126 +332,80 @@ const AdminProject: React.FC = () => {
         </div>
       )}
 
-      {/* Header Section */}
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">{AdminProjectTitle}</h1>
+      {/* Table Container */}
+      <div className="container mx-auto px-4">
+        {/* Table */}
+        <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+          {/* Table Header */}
+          <div className="grid grid-cols-4 bg-gradient-to-r from-orange-400 to-orange-500">
+            <div className="p-10 text-white font-bold text-4xl font-['Squada One']">Name</div>
+            <div className="p-10 text-white font-bold text-4xl font-['Squada One']">Date</div>
+            <div className="p-10 text-white font-bold text-4xl text-center font-['Squada One']">Status</div>
+            <div className="p-10 text-white font-bold text-4xl text-center font-['Squada One']">Action</div>
+          </div>
 
-        <div>
-          {statusTags.map((status) => (
-            <button
-              key={status}
-              onClick={() => handleStatusChange(status)}
-              className={`mr-3 px-6 py-2 rounded-lg text-lg transition-all
-                ${statusFilter === status
-                  ? 'bg-orange-400 text-white shadow-md'
-                  : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
-                }
+          {/* Table Body */}
+          {currentProjects.map((project, index) => (
+            <div 
+              key={project.name}
+              className={`grid grid-cols-4 border-b hover:bg-gray-50/80 transition-all
+                ${index === currentProjects.length - 1 ? 'border-b-0' : ''}
               `}
             >
-              {statusFilter === status && '✓ '}{status}
-            </button>
+              <div className="p-10 font-semibold text-3xl text-gray-800">{project.name}</div>
+              <div className="p-10 text-gray-600 text-3xl">{project.date}</div>
+              <div className="p-10 flex justify-center">
+                <span className={`px-10 py-4 rounded-full text-2xl font-medium min-w-[200px] text-center
+                  ${project.status === 'Processing' ? 'bg-[#F4ECFF] text-[#7B2CBF]' :
+                    project.status === 'Pending' ? 'bg-[#FFE2E5] text-[#FF0420]' :
+                    'bg-[#E6FAF5] text-[#00B087]'
+                  }
+                `}>
+                  {project.status}
+                </span>
+              </div>
+              <div className="p-10 flex justify-center items-center gap-10">
+                <button 
+                  onClick={() => handleEdit(project)}
+                  className="p-4 text-yellow-500 hover:bg-yellow-50 rounded-xl
+                    hover:scale-110 active:scale-95 transition-all duration-200"
+                >
+                  <FaPencilAlt className="w-8 h-8" />
+                </button>
+                <button 
+                  onClick={() => handleDelete(project)}
+                  className="p-4 text-red-500 hover:bg-red-50 rounded-xl
+                    hover:scale-110 active:scale-95 transition-all duration-200"
+                >
+                  <FaTrashAlt className="w-8 h-8" />
+                </button>
+                <button 
+                  onClick={() => handleDetail(project)}
+                  className="p-4 text-orange-500 hover:bg-orange-50 rounded-xl
+                    hover:scale-110 active:scale-95 transition-all duration-200"
+                >
+                  <FaEye className="w-8 h-8" />
+                </button>
+              </div>
+            </div>
           ))}
         </div>
 
-        <div className="flex items-center gap-4">
-          <div className="relative w-[250px]">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={handleSearch}
-              placeholder="Search for project..."
-              className="w-full pl-4 pr-10 py-3 border rounded-full focus:outline-none focus:ring-2 focus:ring-orange-200 bg-white"
-            />
-            <button className="absolute right-3 top-1/2 -translate-y-1/2">
-              <FaSearch className="text-gray-400 w-4 h-4" />
-            </button>
+        {/* Pagination */}
+        <div className="flex justify-center mt-8">
+          <div className="flex gap-2">
+            {Array.from({ length: Math.ceil(filteredProjects.length / itemsPerPage) }, (_, index) => (
+              <button
+                key={index + 1}
+                className={`w-10 h-10 flex items-center justify-center rounded-lg text-lg
+                  ${currentPage === index + 1 ? "bg-orange-400 text-white shadow-md" : "text-gray-600 hover:bg-gray-100"}
+                `}
+                onClick={() => setCurrentPage(index + 1)}
+              >
+                {index + 1}
+              </button>
+            ))}
           </div>
-
-          <button
-            onClick={() => setIsAddModalOpen(true)}
-            className="bg-orange-400 text-white px-6 py-3 rounded-full flex items-center gap-2 hover:bg-orange-500 shadow-md"
-          >
-            <FaPlus className="w-4 h-4" /> Add Project
-          </button>
-        </div>
-      </div>
-
-      {/* Table */}
-      <div className="w-[95%] mx-auto mt-8">
-        {/* Table Header */}
-        <div className="grid grid-cols-4 gap-8 bg-gradient-to-r from-orange-400 to-orange-500 rounded-xl p-10 mb-10">
-          <div className="text-white font-bold text-3xl pl-8">Name</div>
-          <div className="text-white font-bold text-3xl">Date</div>
-          <div className="text-white font-bold text-3xl text-center">Status</div>
-          <div className="text-white font-bold text-3xl text-center pr-8">Action</div>
-        </div>
-
-        {/* Table Body */}
-        {currentProjects.map((project) => (
-          <div 
-            key={project.name}
-            className={`grid grid-cols-4 gap-8 p-10 mb-8 items-center
-              bg-white border-2 rounded-2xl
-              hover:shadow-xl hover:border-orange-300 hover:-translate-y-1
-              transition-all duration-200`}
-          >
-            <div className="font-semibold text-2xl pl-8">{project.name}</div>
-            
-            <div className="text-gray-600 text-2xl">{project.date}</div>
-            
-            <div className="text-center">
-              <span className={`inline-block px-10 py-4 rounded-full text-2xl font-medium min-w-[180px]
-                ${project.status === 'Processing' ? 'bg-purple-100 text-purple-600' :
-                  project.status === 'Pending' ? 'bg-red-100 text-red-600' :
-                  'bg-green-100 text-green-600'
-                }
-                transition-all duration-200 hover:shadow-md`}
-              >
-                {project.status}
-              </span>
-            </div>
-
-            <div className="flex justify-center gap-12 pr-8">
-              <button 
-                onClick={() => handleEdit(project)}
-                className="p-5 text-yellow-500 hover:bg-yellow-50 rounded-xl
-                  hover:scale-110 active:scale-95 transition-all duration-200"
-              >
-                <FaPencilAlt className="w-8 h-8" />
-              </button>
-              <button 
-                onClick={() => handleDelete(project)}
-                className="p-5 text-red-500 hover:bg-red-50 rounded-xl
-                  hover:scale-110 active:scale-95 transition-all duration-200"
-              >
-                <FaTrashAlt className="w-8 h-8" />
-              </button>
-              <button 
-                onClick={() => handleDetail(project)}
-                className="p-5 text-orange-500 hover:bg-orange-50 rounded-xl
-                  hover:scale-110 active:scale-95 transition-all duration-200"
-              >
-                <FaEye className="w-8 h-8" />
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Pagination */}
-      <div className="flex justify-center mt-8">
-        <div className="flex gap-2">
-          {Array.from({ length: Math.ceil(filteredProjects.length / itemsPerPage) }, (_, index) => (
-            <button
-              key={index + 1}
-              className={`w-10 h-10 flex items-center justify-center rounded-lg text-lg
-                ${currentPage === index + 1 ? "bg-orange-400 text-white shadow-md" : "text-gray-600 hover:bg-gray-100"}
-              `}
-              onClick={() => setCurrentPage(index + 1)}
-            >
-              {index + 1}
-            </button>
-          ))}
         </div>
       </div>
 
