@@ -15,6 +15,9 @@ import UserLayout from "./layouts/UserLayout/UserLayout";
 import HomePage from "./pages/HomePage/HomePage";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
 import ChangePassword from "./pages/LoginPage/ChangePassword";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { UserProvider } from "./context/UserContext";
 
 
 const router = createBrowserRouter([
@@ -96,7 +99,14 @@ const App: React.FC = () => {
     }
   }, []);
 
-  return loading ? <LoadingScreen /> : <RouterProvider router={router} />;
+  return (
+    <>
+      <UserProvider>
+        {loading ? <LoadingScreen /> : <RouterProvider router={router} />}
+        <ToastContainer />
+      </UserProvider>
+    </>
+  );
 };
 
 export default App;
