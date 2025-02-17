@@ -2,7 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import Images from "../images";
 
-const LoadingScreen: React.FC<{ onExit: () => void }> = ({ onExit }) => {
+const LoadingScreen: React.FC = () => {
   return (
     <motion.div
       className="fixed inset-0 flex items-center justify-center h-screen overflow-hidden"
@@ -16,7 +16,6 @@ const LoadingScreen: React.FC<{ onExit: () => void }> = ({ onExit }) => {
       animate={{ y: 0 }}
       exit={{ y: "100%" }}
       transition={{ duration: 0.8, ease: "easeInOut" }}
-      onAnimationComplete={onExit}
     >
       <style>
         {`
