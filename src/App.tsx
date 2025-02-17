@@ -8,8 +8,6 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ProtectedRoute from "./routers/ProtectedRoute/ProtectedRoute";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import AdminProject from "./pages/AdminPage/AdminProject";
-import EditProject from "./pages/AdminPage/EditProject";
-import AddProject from "./pages/AdminPage/AddProject";
 
 const router = createBrowserRouter([
   {
@@ -31,14 +29,6 @@ const router = createBrowserRouter([
         path: "", 
         element: <AdminProject/> 
       },
-      { 
-        path: "edit", 
-        element: <EditProject/> 
-      },
-      { 
-        path: "add", 
-        element: <AddProject/> 
-      }
     ]
   },
   {

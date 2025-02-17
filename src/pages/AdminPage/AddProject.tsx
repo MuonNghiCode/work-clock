@@ -4,15 +4,25 @@ import { Project } from "../../types/Project";
 
 interface AddProjectProps {
   onClose?: () => void;
+  onAdd?: (project: Project) => void;
 }
 
-const AddProject: React.FC<AddProjectProps> = ({ onClose }) => {
+const AddProject: React.FC<AddProjectProps> = ({ onClose, onAdd }) => {
   const [projectData, setProjectData] = useState<Project>({
     name: "",
     code: "",
     date: "",
     status: "Processing"
   });
+
+  const handleSubmit = () => {
+    if (onAdd) {
+      onAdd(projectData);
+    }
+    if (onClose) {
+      onClose();
+    }
+  };
 
   return (
     <div>
@@ -93,7 +103,7 @@ const AddProject: React.FC<AddProjectProps> = ({ onClose }) => {
       <div className="mt-8 flex justify-center">
         <button 
           className="bg-orange-400 text-white px-8 py-2 rounded-full hover:bg-orange-500 transition-colors"
-          onClick={onClose}
+          onClick={handleSubmit}
         >
           Add project
         </button>

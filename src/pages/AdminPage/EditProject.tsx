@@ -4,16 +4,26 @@ import { Project } from "../../types/Project";
 
 interface EditProjectProps {
   onClose?: () => void;
+  onSave?: (project: Project) => void;
   project?: Project | null;
 }
 
-const EditProject: React.FC<EditProjectProps> = ({ onClose, project }) => {
+const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project }) => {
   const [projectData, setProjectData] = useState({
     name: project?.name || "",
     code: project?.code || "",
     date: project?.date || "",
     status: project?.status || "Processing"
   });
+
+  const handleSave = () => {
+    if (onSave) {
+      onSave(projectData);
+    }
+    if (onClose) {
+      onClose();
+    }
+  };
 
   return (
     <div>
@@ -60,7 +70,7 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, project }) => {
             <div className="relative">
               <select
                 value={projectData.status}
-                onChange={(e) => setProjectData({ ...projectData, status: e.target.value })}
+                onChange={(e) => setProjectData({ ...projectData, status: e.target.value as "Processing" | "Pending" | "Complete" })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 appearance-none bg-white"
               >
                 <option value="Processing">Processing</option>
@@ -94,7 +104,7 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, project }) => {
       <div className="mt-8 flex justify-center">
         <button 
           className="bg-orange-400 text-white px-8 py-2 rounded-full hover:bg-orange-500 transition-colors"
-          onClick={onClose}
+          onClick={handleSave}
         >
           Save changes
         </button>
