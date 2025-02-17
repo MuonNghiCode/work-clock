@@ -3,9 +3,10 @@ import { checkRole, isAuthenticated } from "../../services/auth";
 import { Navigate } from "react-router";
 
 interface ProtectedRouteProps {
-  requireAdmin?: boolean; // Kiểm tra quyền admin
-  requireApproval?: boolean; // Kiểm tra quyền approval
-  requireFinance?: boolean; // Kiểm tra quyền finance
+  requireAdmin?: boolean;
+  requireApproval?: boolean;
+  requireFinance?: boolean;
+  requireUser?: boolean;
   children: React.ReactNode;
 }
 
@@ -13,6 +14,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   requireAdmin,
   requireApproval,
   requireFinance,
+  requireUser,
   children,
 }) => {
   if (!isAuthenticated()) {
@@ -28,6 +30,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }
 
   if (requireFinance && !checkRole("finance")) {
+    return <Navigate to="/" />;
+  }
+
+  if (requireUser && !checkRole("user")) {
     return <Navigate to="/" />;
   }
 
