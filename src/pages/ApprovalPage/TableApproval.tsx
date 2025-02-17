@@ -5,7 +5,6 @@ import { ClaimRequest } from "../../model/ClaimRequest";
 import { CircleCheck, CircleX, RotateCcw } from "lucide-react";
 import { GetProps } from "antd/lib/_util/type";
 import ClaimRequestDetail from "./ClaimRequestDetail";
-import { Alert } from "antd";
 import ConfirmModal from "../../components/ConfirmModal.tsx/ConfirmModal";
 type SearchProps = GetProps<typeof Input.Search>;
 const { Search } = Input;

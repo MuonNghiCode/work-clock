@@ -15,10 +15,9 @@ import UserLayout from "./layouts/UserLayout/UserLayout";
 import HomePage from "./pages/HomePage/HomePage";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
 import ChangePassword from "./pages/LoginPage/ChangePassword";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UserProvider } from "./context/UserContext";
-
 
 const router = createBrowserRouter([
   {
@@ -36,11 +35,11 @@ const router = createBrowserRouter([
     element: <AdminLayout />,
     errorElement: <ErrorPage />,
     children: [
-      { 
-        path: "", 
-        element: <AdminProject/> 
+      {
+        path: "",
+        element: <AdminProject />,
       },
-    ]
+    ],
   },
   {
     path: "/approval",
@@ -72,7 +71,6 @@ const router = createBrowserRouter([
     ),
     errorElement: <ErrorPage />,
     children: [{ path: "/user", element: <div>User Dashboard</div> }],
-
   },
   {
     path: "/login",
