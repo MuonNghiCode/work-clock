@@ -8,7 +8,8 @@ import { format } from "date-fns";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import PaymentModal from "../../components/PaymentModal/PaymentModal";
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
 
 interface DataType {
   key: string;
@@ -171,11 +172,25 @@ const FinancePage: React.FC = () => {
     setDataSource(filteredData);
   }, [searchQuery]);
 
-  const exportToExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(dataSource);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "FinanceData");
-    XLSX.writeFile(workbook, "FinanceData.xlsx");
+  const exportToExcel = async () => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("FinanceData");
+
+    worksheet.columns = [
+      { header: "Project", key: "project" },
+      { header: "Claimer", key: "claimer" },
+      { header: "Time", key: "time" },
+      { header: "Status", key: "status" },
+      { header: "Date Create", key: "dateCreate" },
+    ];
+
+    worksheet.addRows(dataSource);
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    saveAs(blob, "FinanceData.xlsx");
   };
 
   const indexOfLastItem = currentPage * itemsPerPage;
