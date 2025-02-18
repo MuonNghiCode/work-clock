@@ -14,7 +14,7 @@ import UserLayout from "./layouts/UserLayout/UserLayout";
 import AdminUserManagement from "./pages/AdminPage/AdminUser/AdminUserManagement";
 import HomePage from "./pages/HomePage/HomePage";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
-import UserDashboard from "./pages/UserDashboard/UserDashboard";
+import UserDashboard from "./pages/UserDashboardPage/UserDashboard";
 import ChangePassword from "./pages/LoginPage/ChangePassword";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -59,7 +59,7 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
-    children: [{ path: "", element: <ApprovalPage/>}],
+    children: [{ path: "", element: <ApprovalPage /> }],
   },
   {
     path: "/finance",
