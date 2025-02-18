@@ -29,7 +29,7 @@
 
 @layer theme {
   .bg-brand-orange {
-    background-color: #ff914d;
+    background-color: #fddac3;
   }
   .bg-brand-grandient {
     background: linear-gradient(90deg, #feb78a 0%, #ff914d 100%);
