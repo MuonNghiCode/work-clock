@@ -8,7 +8,9 @@ import {
   X, RotateCcw, Check, CircleUser,
   FolderDot,
   User,
-  Wallet
+  Wallet,
+  ChevronRight,
+  ChevronLeft
 } from "lucide-react";
 
 import { GoArrowUpRight } from "react-icons/go";
@@ -40,8 +42,10 @@ const Icons: IconType = {
   Reject: X,
   Return: RotateCcw,
   Check: Check,
-  User: CircleUser,
-  MdApproval: MdApproval
+  CircleUser: CircleUser,
+  MdApproval: MdApproval,
+  ChevronRight: ChevronRight,
+  ChevronLeft: ChevronLeft
 };
 
 export default Icons;
