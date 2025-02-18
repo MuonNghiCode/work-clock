@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Pagination, Tag } from "antd";
 import { CheckOutlined } from "@ant-design/icons";
 import { ClaimRequest } from "../../types/ClaimRequest";
-import ClaimRequestDetail from "../ApprovalPage/ClaimRequestDetail";
+import ClaimRequestDetail from "../ApprovalComponents/ClaimRequestDetail";
 
 interface DataProps {
   data: ClaimRequest[];
@@ -48,7 +48,7 @@ const TableUserDashboard: React.FC<DataProps> = ({ data }) => {
     (acc, item) => acc + item.totalWorkingHour,
     0
   );
-  
+
   const totalClaimRequests = data.length;
   const totalAmountReceived = data.reduce(
     (acc, item) => acc + (item.amountReceived || 0),
