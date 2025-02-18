@@ -6,7 +6,13 @@ import { Project } from "../../../types/Project";
 import { projectData } from "../../../data/projectData";
 
 const AdminProject: React.FC = () => {
-  const [projects, setProjects] = useState<Project[]>(projectData);
+  // Thêm id cho mỗi project khi khởi tạo
+  const initialProjects = projectData.map((project, index) => ({
+    ...project,
+    id: index + 1
+  }));
+  
+  const [projects, setProjects] = useState<Project[]>(initialProjects);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const handleEditProject = (editedProject: Project) => {
@@ -17,7 +23,14 @@ const AdminProject: React.FC = () => {
   };
 
   const handleDeleteProject = (projectId: string | number) => {
-    setProjects(projects.filter(project => project.id !== projectId));
+    console.log("Deleting project with id:", projectId);
+    // Sử dụng callback để đảm bảo có state mới nhất
+    setProjects(prevProjects => {
+      console.log("Previous projects:", prevProjects);
+      const newProjects = prevProjects.filter(project => project.id !== projectId);
+      console.log("New projects:", newProjects);
+      return newProjects;
+    });
   };
 
   const handleAddProject = (newProject: Project) => {

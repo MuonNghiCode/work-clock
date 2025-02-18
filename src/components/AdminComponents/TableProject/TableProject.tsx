@@ -70,12 +70,14 @@ const TableProject: React.FC<DataProps> = ({ data, onEditProject, onDeleteProjec
   };
 
   const handleDelete = (project: Project) => {
+    console.log("Deleting project:", project);
     setSelectedProject(project);
-    setMessage("Are you sure you want to delete this project?");
+    setMessage(`Are you sure you want to delete project "${project.name}"?`);
     setShowConfirmModal(true);
   };
 
   const handleConfirmDelete = () => {
+    console.log("Confirming delete for project:", selectedProject);
     if (selectedProject?.id) {
       onDeleteProject(selectedProject.id);
       setShowConfirmModal(false);
@@ -173,7 +175,10 @@ const TableProject: React.FC<DataProps> = ({ data, onEditProject, onDeleteProjec
                       <span className="hover:scale-110">
                         <Icons.Delete
                           color="red"
-                          onClick={() => handleDelete(item)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(item);
+                          }}
                           className="w-5 h-5"
                         />
                       </span>
