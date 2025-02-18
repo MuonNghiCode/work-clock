@@ -26,6 +26,19 @@ const AdminSidebar: React.FC = () => {
               <span className="mr-3">👥</span>
               User Management
             </NavLink>
+            <NavLink
+              to="/admin/project"
+              className={({ isActive }) =>
+                `flex items-center px-4 py-2 text-sm font-medium rounded-lg ${
+                  isActive 
+                    ? 'bg-[#FFB17A] text-white' 
+                    : 'text-gray-600 hover:bg-gray-100'
+                }`
+              }
+            >
+              <span className="mr-3">👥</span>
+              Admin Project
+            </NavLink>
           </div>
         </nav>
       </div>
