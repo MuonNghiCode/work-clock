@@ -8,7 +8,7 @@ import {
   Bell,
   CircleHelp,
   Grip,
-  X, RotateCcw, Check, UserRound
+  X, RotateCcw, Check, UserRound,
   FolderDot,
   User,
   Wallet
@@ -43,7 +43,7 @@ const Icons: IconType = {
   Reject: X,
   Return: RotateCcw,
   Check: Check,
-  User: UserRound,
+  UserAdmin: UserRound,
   Help: CircleHelp,
   Bell: Bell,
   Menu: Grip,

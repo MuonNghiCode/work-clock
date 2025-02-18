@@ -8,7 +8,6 @@ import type { MenuProps } from 'antd';
 
 const AdminHeader: React.FC = () => {
   const { user } = useUser();
-  const { User } = Icons;
 
   const items: MenuProps['items'] = [
     {
@@ -54,7 +53,7 @@ const AdminHeader: React.FC = () => {
               {user ? (
                 <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="user" className="w-12 h-12 rounded-full" />
               ) : (
-                <User className="w-12 h-12" strokeWidth={2.5} />
+                <Icons.UserAdmin className="w-12 h-12" strokeWidth={2.5} />
               )}
             </a>
           </Dropdown>
