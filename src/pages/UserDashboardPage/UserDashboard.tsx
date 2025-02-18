@@ -1,10 +1,5 @@
-<<<<<<< HEAD:src/pages/UserDashboardPage/UserDashboard.tsx
-import { ClaimRequest, generateFakeData } from "../../model/ClaimRequest";
 import TableUserDashboard from "../../components/UserDashboardTable/TableUserDashboard";
-=======
 import { ClaimRequest, generateFakeData } from "../../types/ClaimRequest";
-import TableUserDashboard from "./TableUserDashboard";
->>>>>>> dev:src/pages/UserDashboard/UserDashboard.tsx
 
 function UserDashboard() {
   const data: ClaimRequest[] = generateFakeData();
