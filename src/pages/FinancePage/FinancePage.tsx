@@ -8,7 +8,6 @@ import PaymentModal from "../../components/PaymentModal/PaymentModal";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 
-
 interface DataType {
   key: string;
   project: string;
@@ -125,7 +124,7 @@ const FinancePage: React.FC = () => {
 
     const filteredData = data.filter((item: DataType) => {
       const itemDate = new Date(item.dateCreate.split("/").reverse().join("-"));
-      return itemDate >= (startDate) && itemDate <= (endDate);
+      return itemDate >= startDate && itemDate <= endDate;
     });
 
     setDataSource(filteredData);
