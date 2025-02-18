@@ -14,6 +14,7 @@ import FinancePage from "./pages/FinancePage/FinancePage";
 import UserLayout from "./layouts/UserLayout/UserLayout";
 import HomePage from "./pages/HomePage/HomePage";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
+import UserDashboard from "./pages/UserDashboard/UserDashboard";
 import ChangePassword from "./pages/LoginPage/ChangePassword";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -70,7 +71,16 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
-    children: [{ path: "/user", element: <div>User Dashboard</div> }],
+    children: [
+      {
+        path: "/user",
+        element: (
+          <div>
+            <UserDashboard />
+          </div>
+        ),
+      },
+    ],
   },
   {
     path: "/login",
