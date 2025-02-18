@@ -5,6 +5,7 @@ import {
   ChartColumn,
   LogOut,
   Settings,
+  X, RotateCcw, Check, CircleUser
   FolderDot,
   User,
   Wallet
@@ -35,6 +36,11 @@ const Icons: IconType = {
   Email: MdOutlineEmail,
   Lock: CiLock,
   Unlock: CiUnlock,
+  Approve: Check,
+  Reject: X,
+  Return: RotateCcw,
+  Check: Check,
+  User: CircleUser,
   MdApproval: MdApproval
 };
 
