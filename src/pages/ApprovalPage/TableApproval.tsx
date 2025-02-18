@@ -42,11 +42,10 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
 
   const statusTags = [
     "All",
-    "Remaining",
+    "Pending",
     "Return",
-    "Approved",
+    "Approval",
     "Reject",
-    "Paid",
   ];
 
   const onSearch: SearchProps["onSearch"] = (value, _e, info) =>
@@ -88,11 +87,11 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
           {statusTags.map((status) => (
             <Tag
               key={status}
-              color={statusFilter === status ? "blue" : "default"}
+              color={statusFilter === status || (status === "All" && statusFilter === null) ? "blue" : "default"}
               onClick={() => handleStatusChange(status)}
               className="cursor-pointer !px-3 !py-1 !font-squada !text-lg !rounded-lg"
             >
-              {statusFilter === status && <CheckOutlined />} {status}
+              {(statusFilter === status || (status === "All" && statusFilter === null)) && <CheckOutlined />} {status}
             </Tag>
           ))}
         </div>
@@ -188,7 +187,7 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
           ))}
         </tbody>
       </table>
-      <div className="flex justify-center mt-4">
+      <div className="flex justify-end mt-4">
         <Pagination
           current={currentPage}
           pageSize={pageSize}
