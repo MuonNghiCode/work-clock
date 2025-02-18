@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Table, Input, Row, Col } from "antd";
+import { Modal, Table, Row, Col } from "antd";
 
 interface ClaimRequestModalProps {
   visible: boolean;
@@ -33,7 +33,7 @@ const ClaimRequestDetail: React.FC<ClaimRequestModalProps> = ({
       open={visible}
       onCancel={onClose}
       footer={null}
-      style={{ minWidth: "70%", maxWidth: "90%" }}
+      style={{ minWidth: "70%", maxWidth: "100%" }}
     >
       <Row gutter={16}>
         <Col span={12}>
@@ -72,6 +72,7 @@ const ClaimRequestDetail: React.FC<ClaimRequestModalProps> = ({
         </Col>
       </Row>
       <Table
+        className="!font-squada"
         columns={columns}
         dataSource={data}
         pagination={false}

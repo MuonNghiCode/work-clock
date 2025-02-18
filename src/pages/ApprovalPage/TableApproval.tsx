@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Pagination, Tag, Input } from "antd";
 import { CheckOutlined } from "@ant-design/icons";
-import { ClaimRequest } from "../../model/ClaimRequest";
+import { ClaimRequest } from "../../types/ClaimRequest";
 import { CircleCheck, CircleX, RotateCcw } from "lucide-react";
 import { GetProps } from "antd/lib/_util/type";
 import ClaimRequestDetail from "./ClaimRequestDetail";
