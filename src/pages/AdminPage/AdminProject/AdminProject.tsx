@@ -1,11 +1,17 @@
 import { useState } from "react";
 import { FaPencilAlt, FaTrashAlt, FaPlus, FaEye } from "react-icons/fa";
-import Modal from "../../components/Modal/Modal";
-import { Project } from "../../types/Project";
-import DeleteConfirmModal from '../../components/DeleteConfirmModal/DeleteConfirmModal';
-import ProjectDetailModal from '../../components/ProjectDetailModal/ProjectDetailModal';
-import AddProject from "./AddProject";
-import EditProject from "./EditProject";
+// import Modal from "../../components/Modal/Modal";
+import Modal from "../../../components/Modal/Modal";
+// import { Project } from "../../types/Project";
+import { Project } from "../../../types/Project";
+// import DeleteConfirmModal from '../../components/DeleteConfirmModal/DeleteConfirmModal';
+import DeleteConfirmModal from "../../../components/DeleteConfirmModal/DeleteConfirmModal";
+// import ProjectDetailModal from '../../components/ProjectDetailModal/ProjectDetailModal';
+import ProjectDetailModal from "../../../components/ProjectDetailModal/ProjectDetailModal";
+// import AddProject from "./AddProject";
+import AddProject from "../../../components/AdminComponents/AddProject/AddProject";
+// import EditProject from "./EditProject";
+import EditProject from "../../../components/AdminComponents/EditProject/EditProject";
 // import AdminSidebar from "../Sidebar/AdminSidebar/AdminSidebar";
 // import AdminHeader from "../Header/AdminHeader/AdminHeader";
 
