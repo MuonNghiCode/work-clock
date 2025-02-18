@@ -1,4 +1,5 @@
 export interface ClaimRequest {
+  amountReceived?: number;
   staffName: string;
   staffDepartment: string;
   staffId: string;
