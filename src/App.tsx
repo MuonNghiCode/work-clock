@@ -8,13 +8,13 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ProtectedRoute from "./routers/ProtectedRoute/ProtectedRoute";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import RequestPage from "./pages/RequestPage/RequestPage";
-import UserLayout from "./layouts/UserLayout/UserLayout";
-
-import AdminProject from "./pages/AdminPage/AdminProject";
-
+//import AdminProject from "./pages/AdminPage/AdminProject";
 import FinancePage from "./pages/FinancePage/FinancePage";
+import UserLayout from "./layouts/UserLayout/UserLayout";
+import AdminUserManagement from "./pages/AdminPage/AdminUserManagement";
 import HomePage from "./pages/HomePage/HomePage";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
+import UserDashboard from "./pages/UserDashboard/UserDashboard";
 import ChangePassword from "./pages/LoginPage/ChangePassword";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -33,21 +33,30 @@ const router = createBrowserRouter([
   },
   {
     path: "/admin",
-    element: <AdminLayout />,
+    element: (
+      <ProtectedRoute requireAdmin={true}>
+        <AdminLayout />
+      </ProtectedRoute>
+    ),
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "",
-        element: <AdminProject />,
-      },
+        path: "usermanagement",
+        children: [
+          {
+            path: "",
+            element: <AdminUserManagement/>
+          },
+        ]
+      }
     ],
   },
   {
     path: "/approval",
     element: (
-      //<ProtectedRoute requireApproval={true}>
+      <ProtectedRoute requireApproval={true}>
         <ApprovalLayout />
-      //</ProtectedRoute>
+      </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
     children: [{ path: "", element: <div>Approval Dashboard</div> }],
@@ -55,7 +64,7 @@ const router = createBrowserRouter([
   {
     path: "/finance",
     element: (
-      <ProtectedRoute requireFinance={false}>
+      <ProtectedRoute requireFinance={true}>
         <FinanceLayout />
       </ProtectedRoute>
     ),
@@ -64,14 +73,20 @@ const router = createBrowserRouter([
     children: [{ path: "/finance", element: <FinancePage /> }],
   },
   {
-    path: "/request-page",
+    path: "/user",
     element: (
-      //<ProtectedRoute requireFinance={true}>
+      <ProtectedRoute requireUser={true}>
         <UserLayout />
-      //</ProtectedRoute>
+      </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
-    children: [{ path: "/request-page", element: <RequestPage /> }],
+    children: [
+      { path: "request", element: <RequestPage /> },
+      {
+        path: "dashboard",
+        element: <UserDashboard />
+      },
+    ],
   },
   {
     path: "/login",

@@ -27,13 +27,16 @@ const UserSidebar: React.FC = () => {
         </div>
         <div className="flex flex-col gap-3">
           <h2 className="text-gray-300 ">Analyze</h2>
-          <NavLink to="" className="flex items-center justify-start gap-3">
+          <NavLink
+            to="/user/dashboard"
+            className="flex items-center justify-start gap-3"
+          >
             <Icons.Dashboard />
             DASHBOARD
           </NavLink>
-          <NavLink to="" className="flex items-center justify-start gap-3">
+          <NavLink to="/user/request" className="flex items-center justify-start gap-3">
             <Icons.ChartColumn />
-            REPORT
+            REQUEST
           </NavLink>
         </div>
         <div className="flex flex-col gap-3">

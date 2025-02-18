@@ -1,9 +1,11 @@
 import React from 'react';
-import { Input, Modal, Form, Button, Pagination, Tag } from 'antd';
+import { Input, Form, Button, Pagination, Tag } from 'antd';
 import { Trash, Edit, UserCheck } from 'lucide-react';
 import { useState } from 'react';
 import './RequestPage.css';
 import { CheckOutlined } from "@ant-design/icons";
+import EditRequestModal from '../../components/EditRequestModal/EditRequestModal';
+import DeleteRequestModal from '../../components/DeleteRequestModal/DeleteRequestModal';
 
 const { Search } = Input;
 
@@ -225,7 +227,7 @@ const RequestPage: React.FC = () => {
           ))}
         </div>
         <div className="w-[250px] height-[48px] overflow-hidden rounded-full border-[1px] border-gray-300 bg-white">
-          <Search
+      <Search 
             placeholder="Search project name"
             style={{ width: 250 }}
             size="large"
@@ -305,73 +307,19 @@ const RequestPage: React.FC = () => {
         />
       </div>
 
-      <Modal
-        title="Edit Claim Request"
-        open={isEditModalOpen}
-        onOk={handleEditModalOk}
+      <EditRequestModal
+        isOpen={isEditModalOpen}
         onCancel={handleEditModalCancel}
-        width={600}
-      >
-        <Form
-          form={form}
-          layout="vertical"
-          initialValues={editingRecord}
-        >
-          <Form.Item
-            label="Project"
-            name="project"
-            rules={[{ required: true, message: 'Please input project name!' }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Date"
-            name="date"
-            rules={[{ required: true, message: 'Please input date!' }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Time From"
-            name="timeFrom"
-            rules={[{ required: true, message: 'Please input start time!' }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Time To"
-            name="timeTo"
-            rules={[{ required: true, message: 'Please input end time!' }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Total Hours"
-            name="totalHours"
-          >
-            <Input disabled />
-          </Form.Item>
-          <Form.Item
-            label="Status"
-            name="status"
-            rules={[{ required: true, message: 'Please input status!' }]}
-          >
-            <Input />
-          </Form.Item>
-        </Form>
-      </Modal>
+        onOk={handleEditModalOk}
+        form={form}
+        editingRecord={editingRecord}
+      />
 
-      <Modal
-        title="Confirm Delete"
-        open={isDeleteModalOpen}
+      <DeleteRequestModal
+        isOpen={isDeleteModalOpen}
         onOk={handleDeleteModalOk}
         onCancel={handleDeleteModalCancel}
-        okText="Yes"
-        cancelText="No"
-        okButtonProps={{ danger: true }}
-      >
-        <p>Are you sure to delete this claim request?</p>
-      </Modal>
+      />
     </div>
   );
 };
