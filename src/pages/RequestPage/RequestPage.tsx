@@ -1,11 +1,9 @@
 import React from 'react';
 import { Form } from 'antd';
 import { useState } from 'react';
-import './RequestPage.css';
 import EditRequestModal from '../../components/RequestComponents/EditRequestModal/EditRequestModal';
 import DeleteRequestModal from '../../components/RequestComponents/DeleteRequestModal/DeleteRequestModal';
 import TableRequest from '../../components/RequestComponents/TableRequest/TableRequest';
-
 
 interface ClaimRequest {
   key: string;
@@ -228,7 +226,8 @@ const RequestPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 bg-brand-orange-light">
+    <div className="p-6 bg-orange-100 rounded-lg shadow-md">
+      <h1 className="text-3xl font-bold text-gray-800 mb-4">Request-Page Management</h1>
       <TableRequest
         data={tableData}
         currentPage={currentPage}
