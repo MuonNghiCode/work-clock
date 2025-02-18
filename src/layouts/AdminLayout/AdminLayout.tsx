@@ -14,7 +14,7 @@ const AdminLayout: React.FC = () => {
           <aside className="relative bg-white text-black shadow-[10px_0_10px_rgba(255,145,77,0.2)]">
             <AdminSidebar />
           </aside>
-          <main className="flex-1 bg-gray-100 p-6">
+          <main className="flex-1 bg-brand-orange-light p-6">
             <Outlet />
           </main>
         </div>

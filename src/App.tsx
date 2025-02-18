@@ -7,20 +7,20 @@ import ErrorPage from "./pages/ErrorPage/ErrorPage";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ProtectedRoute from "./routers/ProtectedRoute/ProtectedRoute";
 import LoginPage from "./pages/LoginPage/LoginPage";
-import AdminProject from "./pages/AdminPage/AdminProject";
+// import AdminProject from "./pages/AdminPage/AdminProject";
+import AdminProject from "./pages/AdminPage/AdminProject/AdminProject";
 import FinancePage from "./pages/FinancePage/FinancePage";
 import UserLayout from "./layouts/UserLayout/UserLayout";
-import AdminUserManagement from "./pages/AdminPage/AdminUserManagement";
+import AdminUserManagement from "./pages/AdminPage/AdminUser/AdminUserManagement";
 import HomePage from "./pages/HomePage/HomePage";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
-// import EditProfileLayout from "./layouts/EditProfileLayout/EditProfileLayout";
+import ChangePassword from "./pages/ChangePassword/ChangePassword";
 import EditProfilePage from "./pages/EditProfilePage/EditProfilePage";
-import UserDashboard from "./pages/UserDashboard/UserDashboard";
-import ChangePassword from "./pages/LoginPage/ChangePassword";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UserProvider } from "./context/UserContext";
 import ApprovalPage from "./pages/ApprovalPage/ApprovalPage";
+import UserDashboard from "./pages/UserDashboardPage/UserDashboard";
 
 const router = createBrowserRouter([
   {
@@ -83,7 +83,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "/user",
+        path: "/user/dashboard",
         element: (
           <div>
             <UserDashboard />
@@ -103,16 +103,6 @@ const router = createBrowserRouter([
     path: "/login",
     element: <LoginPage />,
   },
-  // {
-  //   path: "/edit_profile",
-  //   element: (
-  //     // <ProtectedRoute requireEditProfile={false}>
-  //     //   <EditProfileLayout />
-  //     // </ProtectedRoute>
-  //   ),
-  //   errorElement: <ErrorPage />,
-  //   children: [{ path: "/edit_profile", element: <EditProfilePage /> }],
-  // }
   {
     path: "/change-password",
     element: <ChangePassword />,

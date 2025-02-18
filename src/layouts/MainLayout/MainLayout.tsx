@@ -25,7 +25,7 @@ const MainLayout: React.FC = () => {
             <Outlet />
           </main>
         ) : (
-          <main className="flex-1 bg-white p-4 pt-30 md:pt-34 lg:pt-38">
+          <main className="flex-1 bg-brand-orange-light p-4 pt-30 md:pt-34 lg:pt-38 ">
             <Outlet />
           </main>
         )}

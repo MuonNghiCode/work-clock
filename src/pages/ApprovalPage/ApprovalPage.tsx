@@ -1,6 +1,6 @@
 import React from "react";
 import { ClaimRequest, generateFakeData } from "../../types/ClaimRequest";
-import TableApproval from "./TableApproval";
+import TableApproval from "../../components/ApprovalComponents/TableApproval";
 const ApprovalPage: React.FC = () => {
   const data: ClaimRequest[] = generateFakeData();
   return (
