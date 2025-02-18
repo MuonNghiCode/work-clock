@@ -11,6 +11,7 @@ const UserSidebar: React.FC = () => {
     setUser(null);
     logout();
   };
+
   return (
     <>
       <div className="flex flex-col gap-5 p-4 text-xl">
@@ -51,7 +52,7 @@ const UserSidebar: React.FC = () => {
               e.preventDefault();
               handleLogut();
             }}
-            className="flex items-center justify-start gap-3"
+            className="flex items-center justify-start gap-3 mt-10"
           >
             <Icons.LogOut /> LOG OUT
           </NavLink>
