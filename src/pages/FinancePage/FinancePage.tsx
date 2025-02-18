@@ -83,7 +83,7 @@ const FinancePage: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState<DataType | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const [pageSize, setPageSize] = useState(10);
 
   const toggleDatePicker = () => {
     setIsDatePickerVisible(!isDatePickerVisible);
@@ -172,9 +172,15 @@ const FinancePage: React.FC = () => {
     saveAs(blob, "FinanceData.xlsx");
   };
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = dataSource.slice(indexOfFirstItem, indexOfLastItem);
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const currentItems = dataSource.slice(startIndex, endIndex);
+  const handlePageChange = (page: number, pageSize?: number) => {
+    setCurrentPage(page);
+    if (pageSize) {
+      setPageSize(pageSize);
+    }
+  };
 
   return (
     <div className="!mx-auto !p-1">
@@ -264,12 +270,15 @@ const FinancePage: React.FC = () => {
           ))}
         </tbody>
       </table>
-      <div className="flex justify-center mt-4">
+      <div className="flex justify-end mt-4">
         <Pagination
+          className="!font-squada flex justify-end "
           current={currentPage}
           total={dataSource.length}
-          pageSize={itemsPerPage}
-          onChange={(page) => setCurrentPage(page)}
+          pageSize={pageSize}
+          onChange={handlePageChange}
+          showSizeChanger
+          onShowSizeChange={handlePageChange}
         />
       </div>
       {selectedItem && (
