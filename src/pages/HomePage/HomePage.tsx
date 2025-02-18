@@ -27,9 +27,7 @@ const HomePage: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={
-              isCarouselInView
-                ? { opacity: 1, y: 0, height: "auto" }
-                : { opacity: 0, y: 50, height: 0 }
+              isCarouselInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }
             }
             transition={{ duration: 0.5 }}
             style={{
@@ -47,9 +45,7 @@ const HomePage: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={
-              isNewsInView
-                ? { opacity: 1, y: 0, height: "auto" }
-                : { opacity: 0, y: 50, height: 0 }
+              isNewsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }
             }
             transition={{ duration: 0.5 }}
             style={{

@@ -64,4 +64,7 @@
     background-clip: text;
     -webkit-text-fill-color: transparent;
   }
+  .box-shadow-brand-orange {
+    box-shadow: 12px 12px 20px 0px rgba(255, 168, 113, 0.797);
+  }
 }
