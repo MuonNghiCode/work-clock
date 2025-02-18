@@ -186,7 +186,7 @@ const FinancePage: React.FC = () => {
     <div className="!mx-auto !p-1">
       <h1 className="text-[40px] font-bold mb-2">Finance Management</h1>
       <div className="flex justify-between items-center py-2">
-        <div className="flex-1 flex items-center space-x-2 justify-start bg-white max-w-sm h-10 rounded-lg">
+        <div className="flex-1 flex items-center space-x-2 justify-start bg-white max-w-70 h-10 rounded-xl">
           <span>
             <FaSearch className="text-gray-400 ml-2" />
           </span>
@@ -200,7 +200,7 @@ const FinancePage: React.FC = () => {
           />
         </div>
         <div className="flex gap-4">
-          <div className="flex items-center space-x-2 bg-[#ff8a65] rounded-full w-20px h-10 p-2 relative">
+          <div className="flex items-center space-x-2 bg-[#ff8a65] rounded-full w-20px h-10 p-2 px-4 relative">
             <span className="p-2">
               <FaCalendarAlt />
             </span>
@@ -220,14 +220,14 @@ const FinancePage: React.FC = () => {
             )}
             <button
               onClick={clearDateFilter}
-              className="bg-none cursor-pointer rounded mr-2"
+              className="bg-none px-2 cursor-pointer rounded-3xl mr-2"
             >
               x
             </button>
           </div>
           <button
             onClick={exportToExcel}
-            className="flex items-center justify-center bg-[#ff8a65] rounded-full w-20 h-10 cursor-pointer"
+            className="flex items-center justify-center bg-[#ff8a65] rounded-full  gap-2 w-25 h-10 cursor-pointer"
           >
             <span>Export</span>
             <span>
