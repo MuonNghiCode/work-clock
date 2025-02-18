@@ -9,7 +9,8 @@ const MainLayout: React.FC = () => {
 
   return (
     <>
-      <div className="flex flex-col min-h-screen">
+      {console.log(localStorage.getItem("role"))}
+      <div className="flex flex-col h-screen ">
         {isHomePage ? (
           <header className="fixed top-0 left-0 w-full bg-transparent text-black text-center p-1 z-10">
             <MainHeader />
