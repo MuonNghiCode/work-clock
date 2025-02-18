@@ -92,6 +92,13 @@ const router = createBrowserRouter([
           </div>
         ),
       },
+      {
+        path: "/user/edit_profile",
+        element: (
+          <EditProfilePage />
+
+        ),
+      }
     ],
   },
   {
@@ -101,9 +108,9 @@ const router = createBrowserRouter([
   // {
   //   path: "/edit_profile",
   //   element: (
-  //     <ProtectedRoute requireEditProfile={false}>
-  //       <EditProfileLayout />
-  //     </ProtectedRoute>
+  //     // <ProtectedRoute requireEditProfile={false}>
+  //     //   <EditProfileLayout />
+  //     // </ProtectedRoute>
   //   ),
   //   errorElement: <ErrorPage />,
   //   children: [{ path: "/edit_profile", element: <EditProfilePage /> }],
