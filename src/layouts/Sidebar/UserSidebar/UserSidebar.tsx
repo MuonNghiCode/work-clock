@@ -41,7 +41,7 @@ const UserSidebar: React.FC = () => {
         </div>
         <div className="flex flex-col gap-3">
           <h2 className="text-gray-300">Preferencies</h2>
-          <NavLink to="" className="flex items-center justify-start gap-3">
+          <NavLink to="edit_profile" className="flex items-center justify-start gap-3">
             <Icons.Settings />
             SETTING
           </NavLink>
