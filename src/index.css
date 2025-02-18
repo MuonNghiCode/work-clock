@@ -33,6 +33,9 @@
   .bg-brand-orange {
     background-color: #ff914d;
   }
+  .bg-brand-orange-light {
+    background-color: rgba(255, 145, 77, 0.2);
+  }
   .bg-brand-grandient {
     background: linear-gradient(90deg, #feb78a 0%, #ff914d 100%);
   }
@@ -54,6 +57,7 @@
     background-clip: text;
     -webkit-text-fill-color: transparent;
   }
+  
   .hover\:text-gradient-color:hover {
     background: linear-gradient(90deg, #feb78a 0%, #ff914d 100%);
     -webkit-background-clip: text;

@@ -5,7 +5,10 @@ import {
   ChartColumn,
   LogOut,
   Settings,
-  X, RotateCcw, Check, CircleUser,
+  Bell,
+  CircleHelp,
+  Grip,
+  X, RotateCcw, Check, UserRound,
   FolderDot,
   User,
   Wallet,
@@ -15,7 +18,7 @@ import {
 
 import { GoArrowUpRight } from "react-icons/go";
 import { FaArrowRight } from "react-icons/fa6";
-import { MdOutlineEmail,MdApproval  } from "react-icons/md";
+import { MdOutlineEmail, MdApproval } from "react-icons/md";
 import { CiLock, CiUnlock } from "react-icons/ci";
 
 // Định nghĩa kiểu dữ liệu cho danh sách icon
@@ -46,6 +49,11 @@ const Icons: IconType = {
   MdApproval: MdApproval,
   ChevronRight: ChevronRight,
   ChevronLeft: ChevronLeft
+  UserAdmin: UserRound,
+  Help: CircleHelp,
+  Bell: Bell,
+  Menu: Grip,
+  MdApproval: MdApproval
 };
 
 export default Icons;
