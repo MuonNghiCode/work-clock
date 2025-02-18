@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Button, Pagination, Tag, Input } from "antd";
-import { CheckOutlined } from "@ant-design/icons";
 import { ClaimRequest } from "../../types/ClaimRequest";
-import { CircleCheck, CircleX, RotateCcw } from "lucide-react";
 import { GetProps } from "antd/lib/_util/type";
 import ClaimRequestDetail from "./ClaimRequestDetail";
-import ConfirmModal from "../../components/ConfirmModal.tsx/ConfirmModal";
+import ConfirmModal from "../ConfirmModal.tsx/ConfirmModal";
+import Icons from "../icon";
+
+
+
 type SearchProps = GetProps<typeof Input.Search>;
 const { Search } = Input;
 interface DataProps {
@@ -19,6 +21,7 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
   const [showApprovalDetail, setShowApprovalDetail] = useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
+  const { Approve, Reject, Return, Check } = Icons;
 
   const handlePageChange = (page: number, pageSize?: number) => {
     setCurrentPage(page);
@@ -29,7 +32,7 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
 
   const handleStatusChange = (status: string) => {
     setStatusFilter(status === "All" ? null : status);
-    setCurrentPage(1); // Reset to first page when filter changes
+    setCurrentPage(1);
   };
 
   const filteredData = statusFilter
@@ -42,11 +45,10 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
 
   const statusTags = [
     "All",
-    "Remaining",
+    "Pending",
     "Return",
-    "Approved",
+    "Approval",
     "Reject",
-    "Paid",
   ];
 
   const onSearch: SearchProps["onSearch"] = (value, _e, info) =>
@@ -80,7 +82,29 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
     setShowConfirmModal(false);
     console.log("Close Approval Detail  ");
   };
-
+  const handleStatusChangeHTML = (status: string) => {
+    switch (status) {
+      case "Pending":
+        return <span className="text-gray-300">
+          Pending
+        </span>;
+      case "Return":
+        return <span className="text-blue-500">
+          Return
+        </span>;
+      case "Approval":
+        return <span className="text-green-500">
+          Approval
+        </span>;
+      case "Reject":
+        return <span className="text-red-500">
+          Reject
+        </span>;
+      default:
+        setStatusFilter(null);
+        break;
+    }
+  };
   return (
     <>
       <div className="flex justify-between items-center mb-4">
@@ -88,11 +112,11 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
           {statusTags.map((status) => (
             <Tag
               key={status}
-              color={statusFilter === status ? "blue" : "default"}
+              color={statusFilter === status || (status === "All" && statusFilter === null) ? "#ff914d" : "default"}
               onClick={() => handleStatusChange(status)}
-              className="cursor-pointer !px-3 !py-1 !font-squada !text-lg !rounded-lg"
+              className="cursor-pointer !px-2 !py-1 !font-squada !text-lg !rounded-lg"
             >
-              {statusFilter === status && <CheckOutlined />} {status}
+              {(statusFilter === status || (status === "All" && statusFilter === null)) && <Check className="inline-flex" />} {status}
             </Tag>
           ))}
         </div>
@@ -102,82 +126,79 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
             onSearch={onSearch}
             style={{ width: 250 }}
             size="large"
-            className="custom-search"
+            className="custom-search pl-1"
             variant="borderless"
           />
         </div>
       </div>
-      <table className="min-w-full !border-separate border-spacing-y-2.5  border-gray-300 text-black border-0">
-        <thead className="bg-brand-grandient h-[100px] text-2xl">
+      <table className="min-w-full !border-separate border-spacing-y-2.5 text-black border-0">
+        <thead className="bg-brand-grandient  h-[70px] text-lg text-white !rounded-t-lg">
           <tr className="bg-gradient from-[FEB78A] to-[FF914D]">
-            <th className="border-white px-4 py-2">Project</th>
+            <th className="border-white px-4 py-2 !rounded-tl-2xl">Project</th>
             <th className="border-l-2 border-white px-4 py-2">Claimer</th>
             <th className="border-l-2 border-white px-4 py-2">Time</th>
             <th className="border-l-2 border-white px-4 py-2">Status</th>
             <th className="border-l-2 border-white px-4 py-2">Date Create</th>
-            <th className="border-l-2 border-white px-4 py-2">Action</th>
+            <th className="border-l-2 border-white px-4 py-2 !rounded-tr-2xl">Action</th>
           </tr>
         </thead>
-        <tbody className="w-full text-[20px]">
+        <tbody className="w-full">
           {currentData.map((item, index) => (
             <tr
               onClick={handleShowApprovalDetail}
               key={index}
-              className="h-[100px] bg-white border-black !border-2 !rounded-lg text-center border-collapse shadow-lg hover:shadow-2xl"
+              className="h-[70px] bg-white overflow-hidden text-center border-collapse  hover:shadow-brand-orange !rounded-2xl "
             >
-              <td className="px-4 py-2 border-l-2 border-t-2 border-b-2 rounded-l-lg">
+              <td className="px-4 py-2  rounded-l-2xl">
                 {item.projectName}
               </td>
-              <td className="px-4 py-2 border-t-2 border-b-2">
+              <td className="px-4 py-2">
                 {item.staffName}
               </td>
-              <td className="px-4 py-2 border-t-2 border-b-2">
+              <td className="px-4 py-2 ">
                 {item.totalWorkingHour}
               </td>
-              <td className="px-4 py-2 border-t-2 border-b-2">{item.status}</td>
-              <td className="px-4 py-2 border-t-2 border-b-2">
+              <td className="px-4 py-2 ">{handleStatusChangeHTML(item.status)}</td>
+              <td className="px-4 py-2 ">
                 {item.dateCreate}
               </td>
               <td
-                className="action px-4 py-2 border-r-2 border-t-2 border-b-2 rounded-r-lg"
+                className="action px-4 py-2 rounded-r-2xl"
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="w-full flex justify-center items-center space-x-12">
-                  <div className="flex justify-center items-center w-12 h-12 overflow-hidden rounded-full">
+                <div className="w-full flex justify-center gap-2 items-center space-x-2">
+                  <div className="flex justify-center items-center w-10 h-10 overflow-hidden ">
                     <Button className="!bg-none !border-none">
-                      <span>
-                        <CircleCheck
-                          size={48}
+                      <span className="hover:scale-110">
+                        <Approve
                           color="green"
-                          strokeWidth={3}
+                          // strokeWidth={3}
                           onClick={handleApprove}
-                          className="hover:bg-green-300 overflow-hidden rounded-full"
+                          className="w-10 h-10"
                         />
                       </span>
                     </Button>
                   </div>
-                  <div className="flex justify-center items-center w-12 h-12 overflow-hidden rounded-full">
+                  <div className="flex justify-center items-center w-10 h-10 overflow-hidden ">
                     <Button className="!bg-none !border-none">
-                      <span>
-                        <CircleX
-                          size={48}
+                      <span className="hover:scale-110">
+                        <Reject
                           color="red"
-                          strokeWidth={3}
+                          // strokeWidth={3}
                           onClick={handleReject}
-                          className="hover:bg-red-300 overflow-hidden rounded-full"
+                          className="w-10 h-10"
                         />
                       </span>
                     </Button>
                   </div>
-                  <div className="flex justify-center items-center w-12 h-12 overflow-hidden rounded-full">
+                  <div className="flex justify-center items-center w-10 h-10 overflow-hidden ">
                     <Button className="!bg-none !border-none">
-                      <span>
-                        <RotateCcw
-                          size={48}
+                      <span className="hover:scale-110">
+                        <Return
                           color="blue"
-                          strokeWidth={3}
+                          // strokeWidth={3}
                           onClick={handleReturn}
-                          className="hover:bg-blue-300 overflow-hidden rounded-full"
+                          className="w-10 h-10"
                         />
                       </span>
                     </Button>
@@ -188,14 +209,16 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
           ))}
         </tbody>
       </table>
-      <div className="flex justify-center mt-4">
+      <div className="flex justify-end mt-4">
         <Pagination
+          className="!font-squada flex justify-end "
           current={currentPage}
           pageSize={pageSize}
           total={filteredData.length}
           onChange={handlePageChange}
           showSizeChanger
           onShowSizeChange={handlePageChange}
+
         />
       </div>
       <ClaimRequestDetail visible={showApprovalDetail} onClose={handleClose} />
