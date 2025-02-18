@@ -11,7 +11,7 @@ import FinancePage from "./pages/FinancePage/FinancePage";
 import UserLayout from "./layouts/UserLayout/UserLayout";
 import HomePage from "./pages/HomePage/HomePage";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
-import EditProfileLayout from "./layouts/EditProfileLayout/EditProfileLayout";
+// import EditProfileLayout from "./layouts/EditProfileLayout/EditProfileLayout";
 import EditProfilePage from "./pages/EditProfilePage/EditProfilePage";
 const router = createBrowserRouter([
   {
@@ -57,27 +57,28 @@ const router = createBrowserRouter([
   {
     path: "/user",
     element: (
-      <ProtectedRoute requireFinance={true}>
-        <UserLayout />
-      </ProtectedRoute>
+      // <ProtectedRoute requireFinance={false}>
+
+      // </ProtectedRoute>
+      <UserLayout />
     ),
     errorElement: <ErrorPage />,
-    children: [{ path: "/user", element: <div>User Dashboard</div> }],
+    children: [{ path: "/user/edit_profile", element: <EditProfilePage /> }],
   },
   {
     path: "/login",
     element: <LoginPage />,
   },
-  {
-    path: "/edit_profile",
-    element: (
-      <ProtectedRoute requireEditProfile={false}>
-        <EditProfileLayout />
-      </ProtectedRoute>
-    ),
-    errorElement: <ErrorPage />,
-    children: [{ path: "/edit_profile", element: <EditProfilePage /> }],
-  }
+  // {
+  //   path: "/edit_profile",
+  //   element: (
+  //     <ProtectedRoute requireEditProfile={false}>
+  //       <EditProfileLayout />
+  //     </ProtectedRoute>
+  //   ),
+  //   errorElement: <ErrorPage />,
+  //   children: [{ path: "/edit_profile", element: <EditProfilePage /> }],
+  // }
 ]);
 
 const App: React.FC = () => {
