@@ -12,6 +12,7 @@ import AdminProject from "./pages/AdminPage/AdminProject";
 
 import FinancePage from "./pages/FinancePage/FinancePage";
 import UserLayout from "./layouts/UserLayout/UserLayout";
+import AdminUserManagement from "./pages/AdminPage/AdminUserManagement";
 import HomePage from "./pages/HomePage/HomePage";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
 import UserDashboard from "./pages/UserDashboard/UserDashboard";
@@ -33,13 +34,22 @@ const router = createBrowserRouter([
   },
   {
     path: "/admin",
-    element: <AdminLayout />,
+    element: (
+      <ProtectedRoute requireAdmin={true}>
+        <AdminLayout />
+      </ProtectedRoute>
+    ),
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "",
-        element: <AdminProject />,
-      },
+        path: "usermanagement",
+        children: [
+          {
+            path: "",
+            element: <AdminUserManagement/>
+          },
+        ]
+      }
     ],
   },
   {
