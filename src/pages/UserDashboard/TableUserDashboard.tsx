@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Pagination, Tag } from "antd";
 import { CheckOutlined } from "@ant-design/icons";
-import { ClaimRequest } from "../../model/ClaimRequest";
+import { ClaimRequest } from "../../types/ClaimRequest";
 import ClaimRequestDetail from "../ApprovalPage/ClaimRequestDetail";
 
 interface DataProps {
