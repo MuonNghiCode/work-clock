@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Search, Edit2, Trash2, Eye, X, User2 } from "lucide-react";
-import UserManagementAdd from "./UserManagementAdd";
+import UserManagementAdd from "../../../components/AdminComponents/AddUser/UserManagementAdd";
 
 interface User {
   id: string;

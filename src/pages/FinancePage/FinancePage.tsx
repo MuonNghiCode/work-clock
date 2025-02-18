@@ -8,7 +8,6 @@ import PaymentModal from "../../components/PaymentModal/PaymentModal";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 
-
 interface DataType {
   key: string;
   project: string;
@@ -125,7 +124,7 @@ const FinancePage: React.FC = () => {
 
     const filteredData = data.filter((item: DataType) => {
       const itemDate = new Date(item.dateCreate.split("/").reverse().join("-"));
-      return itemDate >= (startDate) && itemDate <= (endDate);
+      return itemDate >= startDate && itemDate <= endDate;
     });
 
     setDataSource(filteredData);
@@ -237,13 +236,12 @@ const FinancePage: React.FC = () => {
             </span>
           </button>
           <div className="flex items-center space-x-2 bg-[#ff8a65] rounded-full p-2 relative">
-            <span>Date</span>
-            <span>
+            <span className="p-2">
               <FaCalendarAlt />
             </span>
             <button
               onClick={toggleDatePicker}
-              className="cursor-pointer bg-white px-4 py-2 rounded"
+              className="cursor-pointer bg-none px-4 py-2 rounded"
             >
               {formattedStartDate} - {formattedEndDate}
             </button>
@@ -265,14 +263,13 @@ const FinancePage: React.FC = () => {
           <div className="flex items-center space-x-2 bg-[#ff8a65] rounded-full p-2 h-15">
             <button className="flex items-center">
               <FaFilter className="!mx-auto !p-0.5" />
-              <span className="ml-2">Filter</span>
             </button>
             <label htmlFor="status-filter" className="sr-only">
               Filter by status
             </label>
             <select
               id="status-filter"
-              className="input input-bordered bg-white w-15 h-10 mr-2 rounded"
+              className="input input-bordered bg-none w-15 h-10 mr-2 rounded"
               onChange={filter}
               defaultValue="None"
             >
@@ -308,7 +305,7 @@ const FinancePage: React.FC = () => {
               </td>
               <td className="px-4 py-2 border-t-2 border-b-2">{item.time}</td>
               <td
-                className={`px-4 py-2 border-t-2 border-b-2 ${
+                className={`px-4 py-2 border-t-2 border-b-2 border-black ${
                   item.status === "Approved"
                     ? "text-green-500"
                     : item.status === "Reject"
