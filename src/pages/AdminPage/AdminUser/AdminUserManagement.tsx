@@ -104,7 +104,7 @@ const Modal: React.FC<{
       <div className="fixed inset-0 bg-black/30" onClick={onClose}></div>
       <div className="fixed inset-0 overflow-y-auto">
         <div className="flex min-h-full items-center justify-center p-4">
-          <div 
+          <div
             className="relative bg-white rounded-lg max-w-[800px] w-full shadow-xl 
             transition-all duration-300 ease-out transform 
             animate-[scale-95_0.2s,opacity-0_0.2s] 
@@ -155,7 +155,6 @@ const AdminUserManagement: React.FC = () => {
     return matchesSearch && matchesRole && matchesLock;
   });
 
-  // Pagination
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
   const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
@@ -170,15 +169,16 @@ const AdminUserManagement: React.FC = () => {
 
   const handleUpdateUser = (updatedUser: User) => {
     try {
-      const updatedUsers = users.map(user => 
+      const updatedUsers = users.map((user) =>
         user.id === updatedUser.id ? updatedUser : user
-      );    
+      );
       setUsers(updatedUsers);
       localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(updatedUsers));
       setIsEditModalOpen(false);
 
-      const notification = document.createElement('div');
-      notification.className = 'fixed top-4 right-4 p-4 rounded-lg border shadow-lg flex items-center gap-3 z-50 bg-green-50 border-green-500 transform transition-all duration-300';
+      const notification = document.createElement("div");
+      notification.className =
+        "fixed top-4 right-4 p-4 rounded-lg border shadow-lg flex items-center gap-3 z-50 bg-green-50 border-green-500 transform transition-all duration-300";
       notification.innerHTML = `
         <svg class="text-green-500 w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10"/>
@@ -188,10 +188,11 @@ const AdminUserManagement: React.FC = () => {
       `;
       document.body.appendChild(notification);
       setTimeout(() => notification.remove(), 3000);
-     // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      const notification = document.createElement('div');
-      notification.className = 'fixed top-4 right-4 p-4 rounded-lg border shadow-lg flex items-center gap-3 z-50 bg-red-50 border-red-500 transform transition-all duration-300';
+      const notification = document.createElement("div");
+      notification.className =
+        "fixed top-4 right-4 p-4 rounded-lg border shadow-lg flex items-center gap-3 z-50 bg-red-50 border-red-500 transform transition-all duration-300";
       notification.innerHTML = `
         <svg class="text-red-500 w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10"/>
@@ -206,14 +207,15 @@ const AdminUserManagement: React.FC = () => {
   };
 
   const handleDeleteUser = (userId: string) => {
-    if (window.confirm('Are you sure you want to delete this user?')) {
+    if (window.confirm("Are you sure you want to delete this user?")) {
       try {
-        const updatedUsers = users.filter(user => user.id !== userId);
+        const updatedUsers = users.filter((user) => user.id !== userId);
         setUsers(updatedUsers);
         localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(updatedUsers));
-        
-        const notification = document.createElement('div');
-        notification.className = 'fixed top-4 right-4 p-4 rounded-lg border shadow-lg flex items-center gap-3 z-50 bg-green-50 border-green-500 transform transition-all duration-300';
+
+        const notification = document.createElement("div");
+        notification.className =
+          "fixed top-4 right-4 p-4 rounded-lg border shadow-lg flex items-center gap-3 z-50 bg-green-50 border-green-500 transform transition-all duration-300";
         notification.innerHTML = `
           <svg class="text-green-500 w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"/>
@@ -223,10 +225,11 @@ const AdminUserManagement: React.FC = () => {
         `;
         document.body.appendChild(notification);
         setTimeout(() => notification.remove(), 3000);
-       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-        const notification = document.createElement('div');
-        notification.className = 'fixed top-4 right-4 p-4 rounded-lg border shadow-lg flex items-center gap-3 z-50 bg-red-50 border-red-500 transform transition-all duration-300';
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (error) {
+        const notification = document.createElement("div");
+        notification.className =
+          "fixed top-4 right-4 p-4 rounded-lg border shadow-lg flex items-center gap-3 z-50 bg-red-50 border-red-500 transform transition-all duration-300";
         notification.innerHTML = `
           <svg class="text-red-500 w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"/>
@@ -249,10 +252,11 @@ const AdminUserManagement: React.FC = () => {
   };
 
   const handleAddSuccess = (newUser: User) => {
-    setUsers(prevUsers => [...prevUsers, newUser]);
-    
-    const notification = document.createElement('div');
-    notification.className = 'fixed top-4 right-4 p-4 rounded-lg border shadow-lg flex items-center gap-3 z-50 bg-green-50 border-green-500 transform transition-all duration-300';
+    setUsers((prevUsers) => [...prevUsers, newUser]);
+
+    const notification = document.createElement("div");
+    notification.className =
+      "fixed top-4 right-4 p-4 rounded-lg border shadow-lg flex items-center gap-3 z-50 bg-green-50 border-green-500 transform transition-all duration-300";
     notification.innerHTML = `
       <svg class="text-green-500 w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="10"/>
@@ -462,10 +466,13 @@ const AdminUserManagement: React.FC = () => {
         )}
       </Modal>
       {/* Edit Modal */}
-      <Modal isOpen={isEditModalOpen} onClose={() => {
-        setIsEditModalOpen(false);
-        setEditingUser(null);
-      }}>
+      <Modal
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setEditingUser(null);
+        }}
+      >
         {editingUser && (
           <div className="p-6">
             <div className="flex justify-between items-center mb-4">
@@ -485,14 +492,16 @@ const AdminUserManagement: React.FC = () => {
                 <div className="col-span-2 space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-600 mb-1">First Name</label>
+                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                        First Name
+                      </label>
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                           <User2 className="h-4 w-4 text-gray-400" />
                         </div>
                         <input
                           type="text"
-                          value={editingUser.name.split(' ')[0]}
+                          value={editingUser.name.split(" ")[0]}
                           onChange={(e) =>
                             setEditingUser({
                               ...editingUser,
@@ -508,14 +517,16 @@ const AdminUserManagement: React.FC = () => {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-600 mb-1">Last Name</label>
+                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                        Last Name
+                      </label>
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                           <User2 className="h-4 w-4 text-gray-400" />
                         </div>
                         <input
                           type="text"
-                          value={editingUser.name.split(' ').slice(1).join(' ')}
+                          value={editingUser.name.split(" ").slice(1).join(" ")}
                           onChange={(e) =>
                             setEditingUser({
                               ...editingUser,
@@ -530,9 +541,11 @@ const AdminUserManagement: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-1">Email</label>
+                    <label className="block text-sm font-medium text-gray-600 mb-1">
+                      Email
+                    </label>
                     <input
                       type="email"
                       value={editingUser.email}
@@ -547,7 +560,9 @@ const AdminUserManagement: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-1">Contact Number</label>
+                    <label className="block text-sm font-medium text-gray-600 mb-1">
+                      Contact Number
+                    </label>
                     <input
                       type="text"
                       value={editingUser.phoneNumber}
@@ -562,7 +577,9 @@ const AdminUserManagement: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-1">Address</label>
+                    <label className="block text-sm font-medium text-gray-600 mb-1">
+                      Address
+                    </label>
                     <input
                       type="text"
                       value={editingUser.address}
@@ -577,7 +594,9 @@ const AdminUserManagement: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-1">Birthday</label>
+                    <label className="block text-sm font-medium text-gray-600 mb-1">
+                      Birthday
+                    </label>
                     <input
                       type="date"
                       value={editingUser.birthday}
@@ -592,7 +611,9 @@ const AdminUserManagement: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-1">Role</label>
+                    <label className="block text-sm font-medium text-gray-600 mb-1">
+                      Role
+                    </label>
                     <select
                       value={editingUser.role}
                       onChange={(e) =>
@@ -615,7 +636,9 @@ const AdminUserManagement: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-1">Account Status</label>
+                    <label className="block text-sm font-medium text-gray-600 mb-1">
+                      Account Status
+                    </label>
                     <button
                       type="button"
                       onClick={() =>
@@ -635,7 +658,9 @@ const AdminUserManagement: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-1">Note</label>
+                    <label className="block text-sm font-medium text-gray-600 mb-1">
+                      Note
+                    </label>
                     <textarea
                       value={editingUser.note}
                       onChange={(e) =>
@@ -687,11 +712,8 @@ const AdminUserManagement: React.FC = () => {
       </Modal>
 
       {/* Add User Modal */}
-      <Modal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-      >
-        <UserManagementAdd 
+      <Modal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)}>
+        <UserManagementAdd
           onClose={() => setIsAddModalOpen(false)}
           onSuccess={(newUser) => {
             handleAddSuccess(newUser);

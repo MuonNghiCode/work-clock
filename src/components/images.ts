@@ -7,16 +7,19 @@ import Background2 from "../assets/images/background.png";
 import Background3 from "../assets/images/background3.png";
 import Error from "../assets/images/404.png";
 import BackgroundLayout from "../assets/images/backgroundlayout.jpg";
+import Background4 from "../assets/images/background4.png";
+
 const Images = {
-    Logo,
-    Logo2,
-    Work1,
-    Work2,
-    Background,
-    Background2,
-    Background3,
-    Error,
-    backgroundLayout: BackgroundLayout,
+  Logo,
+  Logo2,
+  Work1,
+  Work2,
+  Background,
+  Background2,
+  Background3,
+  Error,
+  backgroundLayout: BackgroundLayout,
+  Background4,
 };
 
 export default Images;
