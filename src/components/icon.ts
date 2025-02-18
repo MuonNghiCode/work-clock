@@ -5,7 +5,7 @@ import {
   ChartColumn,
   LogOut,
   Settings,
-  X, RotateCcw, Check, CircleUser
+  X, RotateCcw, Check, CircleUser,
   FolderDot,
   User,
   Wallet

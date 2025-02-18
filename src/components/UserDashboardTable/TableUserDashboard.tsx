@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Pagination, Tag } from "antd";
 import { CheckOutlined } from "@ant-design/icons";
 import { ClaimRequest } from "../../types/ClaimRequest";
-import ClaimRequestDetail from "../../components/ApprovalComponents/ClaimRequestDetail";
+import ClaimRequestDetail from "../ApprovalComponents/ClaimRequestDetail";
 
 interface DataProps {
   data: ClaimRequest[];
