@@ -13,7 +13,6 @@ interface DataType {
   project: string;
   claimer: string;
   time: string;
-  status: "Approved" | "Reject";
   dateCreate: string;
 }
 
@@ -23,7 +22,6 @@ const data: DataType[] = [
     project: "ProjectSample",
     claimer: "enteeccoy",
     time: "10 hours",
-    status: "Approved",
     dateCreate: "28/02/2024",
   },
   {
@@ -31,7 +29,6 @@ const data: DataType[] = [
     project: "ProjectSample",
     claimer: "enteeccoy",
     time: "10 hours",
-    status: "Approved",
     dateCreate: "28/02/2024",
   },
   {
@@ -39,7 +36,6 @@ const data: DataType[] = [
     project: "ProjectSample",
     claimer: "enteeccoy",
     time: "10 hours",
-    status: "Reject",
     dateCreate: "28/02/2024",
   },
   {
@@ -47,7 +43,6 @@ const data: DataType[] = [
     project: "ProjectSample",
     claimer: "enteeccoy",
     time: "10 hours",
-    status: "Approved",
     dateCreate: "28/02/2024",
   },
   {
@@ -55,7 +50,6 @@ const data: DataType[] = [
     project: "ProjectSample",
     claimer: "enteeccoy",
     time: "10 hours",
-    status: "Reject",
     dateCreate: "28/02/2024",
   },
   {
@@ -63,7 +57,6 @@ const data: DataType[] = [
     project: "ProjectSample",
     claimer: "enteeccoy",
     time: "10 hours",
-    status: "Reject",
     dateCreate: "28/02/2024",
   },
   {
@@ -71,7 +64,6 @@ const data: DataType[] = [
     project: "ProjectSample",
     claimer: "enteeccoy",
     time: "10 hours",
-    status: "Reject",
     dateCreate: "28/02/2024",
   },
 ];
@@ -103,17 +95,6 @@ const FinancePage: React.FC = () => {
   const formattedEndDate = dateRange[0].endDate
     ? format(dateRange[0].endDate, "dd/MM/yy")
     : defaultDateFormat;
-
-  const filter = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedValue = event.target.value;
-    const filteredData = data.filter(
-      (item: DataType) => item.status === selectedValue
-    );
-    setDataSource(filteredData);
-    if (selectedValue === "None") {
-      setDataSource(data);
-    }
-  };
 
   const filterByDateRange = () => {
     const { startDate, endDate } = dateRange[0];
@@ -260,24 +241,6 @@ const FinancePage: React.FC = () => {
               x
             </button>
           </div>
-          <div className="flex items-center space-x-2 bg-[#ff8a65] rounded-full p-2 h-15">
-            <button className="flex items-center">
-              <FaFilter className="!mx-auto !p-0.5" />
-            </button>
-            <label htmlFor="status-filter" className="sr-only">
-              Filter by status
-            </label>
-            <select
-              id="status-filter"
-              className="input input-bordered bg-none w-15 h-10 mr-2 rounded"
-              onChange={filter}
-              defaultValue="None"
-            >
-              <option value="None">None</option>
-              <option value="Approved">Approved</option>
-              <option value="Reject">Reject</option>
-            </select>
-          </div>
         </div>
       </div>
       <table className="min-w-full border-separate border-spacing-y-2.5 border-gray-300 text-black">
@@ -286,7 +249,6 @@ const FinancePage: React.FC = () => {
             <th className="border-white px-4 py-2">Project</th>
             <th className="border-l-2 border-white px-4 py-2">Claimer</th>
             <th className="border-l-2 border-white px-4 py-2">Time</th>
-            <th className="border-l-2 border-white px-4 py-2">Status</th>
             <th className="border-l-2 border-white px-4 py-2">Date Create</th>
             <th className="border-l-2 border-white px-4 py-2">Action</th>
           </tr>
@@ -304,29 +266,16 @@ const FinancePage: React.FC = () => {
                 {item.claimer}
               </td>
               <td className="px-4 py-2 border-t-2 border-b-2">{item.time}</td>
-              <td
-                className={`px-4 py-2 border-t-2 border-b-2 border-black ${
-                  item.status === "Approved"
-                    ? "text-green-500"
-                    : item.status === "Reject"
-                    ? "text-red-500"
-                    : ""
-                }`}
-              >
-                {item.status}
-              </td>
               <td className="px-4 py-2 border-t-2 border-b-2">
                 {item.dateCreate}
               </td>
               <td className="action px-4 py-2 border-r-2 border-t-2 border-b-2 rounded-r-lg">
-                {item.status === "Approved" ? (
-                  <button
-                    className="h-full w-3/4 bg-green-500 text-white rounded px-2 py-1"
-                    onClick={() => handlePay(item)}
-                  >
-                    Paid
-                  </button>
-                ) : null}
+                <button
+                  className="h-full w-3/4 bg-green-500 text-white rounded px-2 py-1"
+                  onClick={() => handlePay(item)}
+                >
+                  Paid
+                </button>
               </td>
             </tr>
           ))}
