@@ -183,7 +183,7 @@ const TableProject: React.FC<DataProps> = ({ data, onEditProject, onDeleteProjec
                     <Button className="!bg-none !border-none">
                       <span className="hover:scale-110">
                         <Icons.Detail
-                          color="red"
+                          color="orange"
                           onClick={() => handleShowProjectDetail(item)}
                           className="w-5 h-5"
                         />
