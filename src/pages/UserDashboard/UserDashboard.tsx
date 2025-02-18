@@ -1,4 +1,4 @@
-import { ClaimRequest, generateFakeData } from "../../model/ClaimRequest";
+import { ClaimRequest, generateFakeData } from "../../types/ClaimRequest";
 import TableUserDashboard from "./TableUserDashboard";
 
 function UserDashboard() {
