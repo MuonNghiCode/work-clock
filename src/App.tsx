@@ -7,9 +7,7 @@ import ErrorPage from "./pages/ErrorPage/ErrorPage";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ProtectedRoute from "./routers/ProtectedRoute/ProtectedRoute";
 import LoginPage from "./pages/LoginPage/LoginPage";
-
-// import AdminProject from "./pages/AdminPage/AdminProject";
-
+import AdminProject from "./pages/AdminPage/AdminProject";
 import FinancePage from "./pages/FinancePage/FinancePage";
 import UserLayout from "./layouts/UserLayout/UserLayout";
 import AdminUserManagement from "./pages/AdminPage/AdminUserManagement";
@@ -22,6 +20,7 @@ import ChangePassword from "./pages/LoginPage/ChangePassword";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UserProvider } from "./context/UserContext";
+import ApprovalPage from "./pages/ApprovalPage/ApprovalPage";
 
 const router = createBrowserRouter([
   {
@@ -44,14 +43,13 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "usermanagement",
-        children: [
-          {
-            path: "",
-            element: <AdminUserManagement />
-          },
-        ]
-      }
+        path: "/admin/user",
+        element: <AdminUserManagement />,
+      },
+      {
+        path: "/admin/project",
+        element: <AdminProject />,
+      },
     ],
   },
   {
@@ -62,7 +60,7 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
-    children: [{ path: "", element: <div>Approval Dashboard</div> }],
+    children: [{ path: "", element: <ApprovalPage /> }],
   },
   {
     path: "/finance",
@@ -146,4 +144,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default App; 

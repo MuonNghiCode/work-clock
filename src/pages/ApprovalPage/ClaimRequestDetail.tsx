@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Table, Input, Row, Col } from "antd";
+import { Modal, Table, Row, Col } from "antd";
 
 interface ClaimRequestModalProps {
   visible: boolean;
@@ -29,65 +29,66 @@ const ClaimRequestDetail: React.FC<ClaimRequestModalProps> = ({
 
   return (
     <Modal
-      title="Claim Request Detail"
+      title={<span className="text-xl lg:text-3xl font-bold">Claim Request Detail</span>}
       open={visible}
       onCancel={onClose}
       footer={null}
-      style={{ minWidth: "70%", maxWidth: "90%" }}
+      style={{ minWidth: "70%", maxWidth: "100%" }}
     >
       <Row gutter={16}>
         <Col span={12}>
-          <label>Date Created</label>
-          <Input value="12/02/2025" disabled />
+          <strong className="text-xl">Date Created: </strong>
+          <span className="text-lg">12/02/2025</span>
         </Col>
         <Col span={12}>
-          <label>Phone</label>
-          <Input value="(+84) 123456789" disabled />
-        </Col>
-      </Row>
-      <Row gutter={16} style={{ marginTop: 8 }}>
-        <Col span={12}>
-          <label>Name</label>
-          <Input value="Nguyen Van A" disabled />
-        </Col>
-        <Col span={12}>
-          <label>Email</label>
-          <Input value="nguyenvana@gmail.com" disabled />
+          <strong className="text-xl">Phone</strong>
+          <span className="text-lg"> (+84) 123456789 </span>
         </Col>
       </Row>
       <Row gutter={16} style={{ marginTop: 8 }}>
         <Col span={12}>
-          <label>Project</label>
-          <Input value="Project Mock project" disabled />
+          <strong className="text-xl">Name: </strong>
+          <span className="text-lg">Nguyen Van A </span>
         </Col>
         <Col span={12}>
-          <label>Role in Project</label>
-          <Input value="Front-end Dev" disabled />
+          <strong className="text-xl">Email: </strong>
+          <span className="text-lg">nguyenvana@gmail.com </span>
+        </Col>
+      </Row >
+      <Row gutter={16} style={{ marginTop: 8 }}>
+        <Col span={12}>
+          <strong className="text-xl">Project: </strong>
+          <span className="text-lg">Project Mock project </span>
+        </Col>
+        <Col span={12}>
+          <strong className="text-xl">Role: </strong>
+          <span className="text-lg">Front-end Dev </span>
         </Col>
       </Row>
       <Row gutter={16} style={{ marginTop: 8 }}>
         <Col span={12}>
-          <label>Duration</label>
-          <Input value="3 months" disabled />
+          <strong className="text-xl">Duration: </strong>
+          <span className="text-lg">3 months </span>
         </Col>
       </Row>
       <Table
+        className="!font-squada"
         columns={columns}
         dataSource={data}
         pagination={false}
         style={{ marginTop: 16 }}
       />
       <div
-        style={{ textAlign: "right", marginTop: "1rem", fontWeight: "bold" }}
+        className="mt-4 text-right font-bold text-xl"
       >
-        Total working hours:{" "}
+        Total working hours: {" "}
         <span
-          style={{ background: "#ff7f50", padding: "5px", borderRadius: "5px" }}
+          className="bg-[#ff7f50] p-2 rounded-lg text-white"
         >
           15 hours
         </span>
-      </div>
-    </Modal>
+      </div >
+    </Modal >
   );
 };
 
