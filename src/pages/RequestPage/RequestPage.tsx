@@ -228,7 +228,7 @@ const RequestPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 bg-brand-orange">
+    <div className="p-6 bg-brand-orange-light">
       <TableRequest
         data={tableData}
         currentPage={currentPage}
