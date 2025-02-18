@@ -5,7 +5,10 @@ import {
   ChartColumn,
   LogOut,
   Settings,
-  X, RotateCcw, Check, CircleUser
+  Bell,
+  CircleHelp,
+  Grip,
+  X, RotateCcw, Check, UserRound
 
 } from "lucide-react";
 
@@ -35,7 +38,10 @@ const Icons: IconType = {
   Reject: X,
   Return: RotateCcw,
   Check: Check,
-  User: CircleUser,
+  User: UserRound,
+  Help: CircleHelp,
+  Bell: Bell,
+  Menu: Grip,
 };
 
 export default Icons;

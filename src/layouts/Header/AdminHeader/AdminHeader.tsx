@@ -2,13 +2,13 @@ import React from "react";
 import { useUser } from "../../../context/UserContext";
 import Images from "../../../components/images";
 import Icons from "../../../components/icon";
-import { Dropdown, Space } from "antd";
+import { Dropdown, Badge, Button } from "antd";
 import type { MenuProps } from 'antd';
 
 
 const AdminHeader: React.FC = () => {
   const { user } = useUser();
-  const { User, DropDownIcon } = Icons;
+  const { User } = Icons;
 
   const items: MenuProps['items'] = [
     {
@@ -36,21 +36,31 @@ const AdminHeader: React.FC = () => {
   return (
     <>
       <div className="flex bg-transparent justify-between items-center">
-        <div className="h-18 flex items-center py-4 px-6">
+        <div className="h-18 flex items-center py-4 space-x-7">
+          <Button className="!h-fit !p-3 !border-none hover:!shadow-lg !text-black">
+            <Icons.Menu strokeWidth={2.5} className="w-12 h-12" />
+          </Button>
           <img src={Images.Logo} alt="logo" className="max-w-64 h-25" />
         </div>
-        <div>
-          {user ? <div>Welcome, {user.name}</div> : <div>Welcome, Guest</div>}
-        </div>
-        <Dropdown menu={{ items }}>
-          <a onClick={(e) => e.preventDefault()}>
-            <Space>
-              <User />
-            </Space>
-          </a>
-        </Dropdown>
+        <div className="inline-flex items-center space-x-12 mr-5">
+          <div>
+            <Badge count={5} className="">
+              <Icons.Bell strokeWidth={2.5} className="w-12 h-12 text-gray-300 hover:scale-110" />
+            </Badge>
+          </div>
+          <Icons.Help strokeWidth={2.5} className="w-12 h-12 text-gray-300 hover:scale-110" />
+          <Dropdown menu={{ items }} trigger={['click']} className="flex items-center">
+            <a onClick={(e) => e.preventDefault()} className="w-12 h-12 bg-brand-grandient text-white rounded-full hover:scale-110">
+              {user ? (
+                <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="user" className="w-12 h-12 rounded-full" />
+              ) : (
+                <User className="w-12 h-12" strokeWidth={2.5} />
+              )}
+            </a>
+          </Dropdown>
 
-      </div>
+        </div>
+      </div >
     </>
   );
 };
