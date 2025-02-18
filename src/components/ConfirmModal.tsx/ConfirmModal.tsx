@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Input } from "antd";
-import { CircleCheck, CircleX, RotateCcw } from "lucide-react";
-
+import Icons from "../icon";
 type FormModal = "Approve" | "Reject" | "Return";
 
 interface ConfirmModalProps {
@@ -17,6 +16,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
 }) => {
   const [formMdal, setFormModal] = useState<FormModal>();
   const [returnReason, setReturnReason] = useState("");
+  const { Approve, Reject, Return } = Icons;
 
   useEffect(() => {
     const checkFormType = () => {
@@ -55,13 +55,13 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
     >
       <div className="flex items-center space-x-4">
         {formMdal === "Approve" && (
-          <CircleCheck size={48} color="green" strokeWidth={3} />
+          <Approve className="w-12 h-12" color="green" strokeWidth={3} />
         )}
         {formMdal === "Reject" && (
-          <CircleX size={48} color="red" strokeWidth={3} />
+          <Reject className="w-12 h-12" color="red" strokeWidth={3} />
         )}
         {formMdal === "Return" && (
-          <RotateCcw size={48} color="blue" strokeWidth={3} />
+          <Return className="w-12 h-12" color="blue" strokeWidth={3} />
         )}
         <span className="text-2xl font-squada ">{message}</span>
       </div>

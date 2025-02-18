@@ -1,36 +1,34 @@
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
-import { Project } from "../../types/Project";
+// import { Project } from "../../types/Project";
+import { Project } from "../../../types/Project";
 
-interface EditProjectProps {
+interface AddProjectProps {
   onClose?: () => void;
-  onSave?: (project: Project) => void;
-  project?: Project | null;
+  onAdd?: (project: Project) => void;
 }
 
-const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project }) => {
-  // Thêm hàm chuyển đổi từ DD/MM/YYYY sang YYYY-MM-DD
-  const convertDateFormat = (dateStr: string) => {
-    if (!dateStr) return "";
-    const [day, month, year] = dateStr.split('/');
-    return `${year}-${month}-${day}`;
+const AddProject: React.FC<AddProjectProps> = ({ onClose, onAdd }) => {
+  const generateRandomCode = () => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const length = 8;
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
   };
 
-  const [projectData, setProjectData] = useState({
-    name: project?.name || "",
-    code: project?.code || "",
-    date: project?.date ? convertDateFormat(project.date) : "",
-    status: project?.status || "Processing"
+  const [projectData, setProjectData] = useState<Project>({
+    name: "",
+    code: generateRandomCode(),
+    date: "",
+    status: "Processing"
   });
 
-  const handleSave = () => {
-    if (onSave) {
-      // Chuyển đổi ngược lại format DD/MM/YYYY trước khi save
-      const formattedDate = projectData.date ? new Date(projectData.date).toLocaleDateString('en-GB') : "";
-      onSave({
-        ...projectData,
-        date: formattedDate
-      });
+  const handleSubmit = () => {
+    if (onAdd) {
+      onAdd(projectData);
     }
     if (onClose) {
       onClose();
@@ -39,7 +37,7 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project }) =
 
   return (
     <div className="w-[800px] max-w-full px-10">
-      <h2 className="text-5xl font-bold text-gray-800 mb-10 text-center">Edit project</h2>
+      <h2 className="text-5xl font-bold text-gray-800 mb-10 text-center">Add project</h2>
 
       <div className="flex flex-col items-center gap-y-10">
         <div className="flex flex-col items-center justify-center mb-8">
@@ -89,7 +87,7 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project }) =
             <div className="relative">
               <select
                 value={projectData.status}
-                onChange={(e) => setProjectData({ ...projectData, status: e.target.value as "Processing" | "Pending" | "Complete" })}
+                onChange={(e) => setProjectData({ ...projectData, status: e.target.value as Project['status'] })}
                 className="w-full px-8 py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 appearance-none bg-white text-xl"
               >
                 <option value="Processing">Processing</option>
@@ -109,13 +107,13 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project }) =
       <div className="mt-12 flex justify-center">
         <button 
           className="bg-orange-400 text-white px-12 py-5 rounded-full hover:bg-orange-500 transition-colors text-2xl"
-          onClick={handleSave}
+          onClick={handleSubmit}
         >
-          Save changes
+          Add project
         </button>
       </div>
     </div>
   );
 };
 
-export default EditProject; 
+export default AddProject; 
