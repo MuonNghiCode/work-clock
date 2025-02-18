@@ -65,7 +65,7 @@ const router = createBrowserRouter([
   {
     path: "/finance",
     element: (
-      <ProtectedRoute requireFinance={false}>
+      <ProtectedRoute requireFinance={true}>
         <FinanceLayout />
       </ProtectedRoute>
     ),
