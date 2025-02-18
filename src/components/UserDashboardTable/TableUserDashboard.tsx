@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 import { Pagination, Tag } from "antd";
 import { CheckOutlined } from "@ant-design/icons";
+<<<<<<< HEAD:src/components/UserDashboardTable/TableUserDashboard.tsx
 import { ClaimRequest } from "../../model/ClaimRequest";
 import ClaimRequestDetail from "../../pages/ApprovalPage/ClaimRequestDetail";
+=======
+import { ClaimRequest } from "../../types/ClaimRequest";
+import ClaimRequestDetail from "../ApprovalPage/ClaimRequestDetail";
+>>>>>>> dev:src/pages/UserDashboard/TableUserDashboard.tsx
 
 interface DataProps {
   data: ClaimRequest[];
@@ -48,6 +53,7 @@ const TableUserDashboard: React.FC<DataProps> = ({ data }) => {
     (acc, item) => acc + item.totalWorkingHour,
     0
   );
+  
   const totalClaimRequests = data.length;
   const totalAmountReceived = data.reduce(
     (acc, item) => acc + (item.amountReceived || 0),
@@ -71,7 +77,7 @@ const TableUserDashboard: React.FC<DataProps> = ({ data }) => {
             ))}
           </div>
           <table className="w-[750px] !border-separate border-spacing-y-2.5  border-gray-300 text-black border-0">
-            <thead className="bg-brand-grandient h-[100px] text-2xl">
+            <thead className="bg-brand-gradient h-[100px] text-2xl">
               <tr className="bg-gradient from-[FEB78A] to-[FF914D]">
                 <th className="px-4 py-2 border-white">Project</th>
                 <th className="px-4 py-2 border-l-2 border-white">

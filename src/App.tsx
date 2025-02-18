@@ -10,7 +10,7 @@ import LoginPage from "./pages/LoginPage/LoginPage";
 import AdminProject from "./pages/AdminPage/AdminProject";
 import FinancePage from "./pages/FinancePage/FinancePage";
 import UserLayout from "./layouts/UserLayout/UserLayout";
-// import AdminUserManagement from "./pages/AdminPage/AdminUserManagement";
+import AdminUserManagement from "./pages/AdminPage/AdminUserManagement";
 import HomePage from "./pages/HomePage/HomePage";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
 import UserDashboard from "./pages/UserDashboardPage/UserDashboard";
@@ -18,6 +18,7 @@ import ChangePassword from "./pages/LoginPage/ChangePassword";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UserProvider } from "./context/UserContext";
+import ApprovalPage from "./pages/ApprovalPage/ApprovalPage";
 
 const router = createBrowserRouter([
   {
@@ -33,15 +34,15 @@ const router = createBrowserRouter([
   {
     path: "/admin",
     element: (
-      // <ProtectedRoute requireAdmin={true}>
-      <AdminLayout />
-      // </ProtectedRoute>
+      <ProtectedRoute requireAdmin={true}>
+        <AdminLayout />
+      </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
     children: [
       {
         path: "/admin/user",
-        // element: <AdminUserManagement />,
+        element: <AdminUserManagement />,
       },
       {
         path: "/admin/project",
@@ -57,7 +58,7 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
-    children: [{ path: "", element: <div>Approval Dashboard</div> }],
+    children: [{ path: "", element: <ApprovalPage /> }],
   },
   {
     path: "/finance",
