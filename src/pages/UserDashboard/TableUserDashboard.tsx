@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Pagination, Tag } from "antd";
 import { CheckOutlined } from "@ant-design/icons";
-import { ClaimRequest } from "../../model/ClaimRequest";
-import ClaimRequestDetail from "../ApprovalPage/ClaimRequestDetail";
+import { ClaimRequest } from "../../types/ClaimRequest";
+import ClaimRequestDetail from "../../components/ApprovalComponents/ClaimRequestDetail";
 
 interface DataProps {
   data: ClaimRequest[];
@@ -48,6 +48,7 @@ const TableUserDashboard: React.FC<DataProps> = ({ data }) => {
     (acc, item) => acc + item.totalWorkingHour,
     0
   );
+  
   const totalClaimRequests = data.length;
   const totalAmountReceived = data.reduce(
     (acc, item) => acc + (item.amountReceived || 0),
@@ -71,7 +72,7 @@ const TableUserDashboard: React.FC<DataProps> = ({ data }) => {
             ))}
           </div>
           <table className="w-[750px] !border-separate border-spacing-y-2.5  border-gray-300 text-black border-0">
-            <thead className="bg-brand-grandient h-[100px] text-2xl">
+            <thead className="bg-brand-gradient h-[100px] text-2xl">
               <tr className="bg-gradient from-[FEB78A] to-[FF914D]">
                 <th className="px-4 py-2 border-white">Project</th>
                 <th className="px-4 py-2 border-l-2 border-white">
@@ -102,19 +103,18 @@ const TableUserDashboard: React.FC<DataProps> = ({ data }) => {
                   </td>
                   <td className={`px-4 py-2 border-t-2 border-b-2 `}>
                     <span
-                      className={`${
-                        item.status === "Approval"
+                      className={`${item.status === "Approval"
                           ? "text-green-500"
                           : item.status === "Reject"
-                          ? "text-red-500"
-                          : item.status === "Pending"
-                          ? "text-yellow-500"
-                          : item.status === "Return"
-                          ? "text-purple-500"
-                          : item.status === "Paid"
-                          ? "text-blue-500"
-                          : ""
-                      }`}
+                            ? "text-red-500"
+                            : item.status === "Pending"
+                              ? "text-yellow-500"
+                              : item.status === "Return"
+                                ? "text-purple-500"
+                                : item.status === "Paid"
+                                  ? "text-blue-500"
+                                  : ""
+                        }`}
                     >
                       {item.status}
                     </span>
@@ -132,8 +132,8 @@ const TableUserDashboard: React.FC<DataProps> = ({ data }) => {
               pageSize={pageSize}
               total={filteredData.length}
               onChange={handlePageChange}
-              // showSizeChanger
-              // onShowSizeChange={handlePageChange}
+            // showSizeChanger
+            // onShowSizeChange={handlePageChange}
             />
           </div>
         </div>

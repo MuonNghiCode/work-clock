@@ -124,13 +124,22 @@ const data: ClaimRequest[] = [
   },
   {
     key: '10',
-    project: 'API Integration',
+    project: 'API ',
     date: '18/02/2025',
     timeFrom: '6:00 PM',
     timeTo: '10:00 PM',
     totalHours: calculateHours('6:00 PM', '10:00 PM').toString(),
     status: 'Waiting',
-  }
+  },
+  {
+    key: '11',
+    project: 'API 2 ',
+    date: '19/02/2025',
+    timeFrom: '6:00 PM',
+    timeTo: '10:00 PM',
+    totalHours: calculateHours('6:00 PM', '10:00 PM').toString(),
+    status: 'Approved',
+  },
 ];
 
 const RequestPage: React.FC = () => {
@@ -227,7 +236,7 @@ const RequestPage: React.FC = () => {
           ))}
         </div>
         <div className="w-[250px] height-[48px] overflow-hidden rounded-full border-[1px] border-gray-300 bg-white">
-      <Search 
+          <Search
             placeholder="Search project name"
             style={{ width: 250 }}
             size="large"
@@ -239,54 +248,46 @@ const RequestPage: React.FC = () => {
         </div>
       </div>
 
-      <table className="min-w-full !border-separate border-spacing-y-2.5 border-gray-300 text-black border-0">
-        <thead className="bg-brand-grandient h-[100px] text-2xl">
+      <table className="min-w-full !border-separate border-spacing-y-2.5 text-black border-0">
+        <thead className="bg-brand-grandient h-[70px] text-lg text-white !rounded-t-lg">
           <tr className="bg-gradient from-[FEB78A] to-[FF914D]">
-            <th className="border-white px-4 py-2">Project</th>
+            <th className="border-white px-4 py-2 !rounded-tl-2xl">Project</th>
             <th className="border-l-2 border-white px-4 py-2">Date</th>
             <th className="border-l-2 border-white px-4 py-2">Total Hours</th>
             <th className="border-l-2 border-white px-4 py-2">Status</th>
-            <th className="border-l-2 border-white px-4 py-2">Action</th>
+            <th className="border-l-2 border-white px-4 py-2 !rounded-tr-2xl">Action</th>
           </tr>
         </thead>
-        <tbody className="w-full text-[20px]">
+        <tbody className="w-full">
           {filteredData.map((item, index) => (
             <tr
               key={index}
-              className="h-[100px] bg-white border-black !border-2 !rounded-lg text-center border-collapse shadow-lg hover:shadow-2xl"
+              className="h-[70px] bg-white overflow-hidden text-center border-collapse hover:shadow-brand-orange !rounded-2xl"
             >
-              <td className="px-4 py-2 border-l-2 border-t-2 border-b-2 rounded-l-lg">
-                {item.project}
-              </td>
-              <td className="px-4 py-2 border-t-2 border-b-2">{item.date}</td>
-              <td className="px-4 py-2 border-t-2 border-b-2">
+              <td className="px-4 py-2 rounded-l-2xl">{item.project}</td>
+              <td className="px-4 py-2">{item.date}</td>
+              <td className="px-4 py-2">
                 <div className="flex flex-col items-center">
                   <span className="text-gray-700">{`(${item.timeFrom}-${item.timeTo})`}</span>
                   <span className="font-semibold text-[#FF914D]">{item.totalHours} hours</span>
                 </div>
               </td>
-              <td className="px-4 py-2 border-t-2 border-b-2">
+              <td className="px-4 py-2">
                 <span className={`${item.status === 'Approved' ? 'text-green-600' : 'text-yellow-600'} font-semibold`}>
                   {item.status}
                 </span>
               </td>
-              <td className="px-4 py-2 border-r-2 border-t-2 border-b-2 rounded-r-lg">
-                <div className="w-full flex justify-center items-center space-x-6">
-                  <div className="flex justify-center items-center w-12 h-12 overflow-hidden rounded-full">
-                    <Button className="!bg-none !border-none" onClick={() => handleEdit(item)}>
-                      <Edit size={48} color="#FF914D" strokeWidth={3} className="hover:bg-orange-200 overflow-hidden rounded-full" />
-                    </Button>
-                  </div>
-                  <div className="flex justify-center items-center w-12 h-12 overflow-hidden rounded-full">
-                    <Button className="!bg-none !border-none" onClick={() => handleDelete(item)}>
-                      <Trash size={48} color="red" strokeWidth={3} className="hover:bg-red-200 overflow-hidden rounded-full" />
-                    </Button>
-                  </div>
-                  <div className="flex justify-center items-center w-12 h-12 overflow-hidden rounded-full">
-                    <Button className="!bg-none !border-none">
-                      <UserCheck size={48} color="green" strokeWidth={3} className="hover:bg-green-200 overflow-hidden rounded-full" />
-                    </Button>
-                  </div>
+              <td className="action px-4 py-2 rounded-r-2xl">
+                <div className="w-full flex justify-center gap-2 items-center space-x-2">
+                  <Button className="!bg-none !border-none" onClick={() => handleEdit(item)}>
+                    <Edit size={24} color="#FF914D" strokeWidth={3} className="hover:bg-orange-200 overflow-hidden" />
+                  </Button>
+                  <Button className="!bg-none !border-none" onClick={() => handleDelete(item)}>
+                    <Trash size={24} color="red" strokeWidth={3} className="hover:bg-red-200 overflow-hidden" />
+                  </Button>
+                  <Button className="!bg-none !border-none">
+                    <UserCheck size={24} color="green" strokeWidth={3} className="hover:bg-green-200 overflow-hidden" />
+                  </Button>
                 </div>
               </td>
             </tr>
