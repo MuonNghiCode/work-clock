@@ -16,8 +16,9 @@ export interface ClaimRequest {
     totalWorkingHour: number;
     additionalRemarks: string;
     auditTrail: string;
-    dateCreate: string; // New field for date create
-    status: "Pending" | "Approval" | "Reject" | "Return";
+    dateCreate: string;
+    status: "Pending" | "Approval" | "Reject" | "Return" | "Paid";
+  amountReceived?: number; // Thêm thuộc tính số tiền nhận được
   }
   
   const generateFakeData = (): ClaimRequest[] => {
@@ -28,10 +29,12 @@ export interface ClaimRequest {
       "Approval",
       "Reject",
       "Return",
+      "Paid",
     ];
     const fakeData: ClaimRequest[] = [];
   
     for (let i = 0; i < 20; i++) {
+const status = statuses[i % statuses.length];
       fakeData.push({
         staffName: `Staff ${i + 1}`,
         staffDepartment: `Department ${i + 1}`,
@@ -44,14 +47,15 @@ export interface ClaimRequest {
           day: days[j % days.length],
           from: `2025-02-${(j % 28) + 1}T08:00:00Z`,
           to: `2025-02-${(j % 28) + 1}T16:00:00Z`,
-          totalNoOfHours: 8,
+          totalNoOfHours: 3,
           remarks: `Remark ${j + 1}`,
         })),
-        totalWorkingHour: 40,
+        totalWorkingHour: 5,
         additionalRemarks: `Additional remarks for staff ${i + 1}`,
         auditTrail: `Audit trail for staff ${i + 1}`,
         dateCreate: `2025-02-${(i % 28) + 1}`,
-        status: statuses[i % statuses.length], // New field for status
+        status: status,
+      amountReceived: status === "Paid" ? (i + 1) * 10 : undefined, // Thêm số tiền nhận được nếu trạng thái là "Paid"
       });
     }
   
