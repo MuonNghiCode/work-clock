@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import workclock from "../../assets/workclock.png";
-import work2 from "../../assets/work2.png";
+import Images from "../../components/images";
 
 const ChangePassword: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -66,13 +65,13 @@ const ChangePassword: React.FC = () => {
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
       <img
-        src={work2}
+        src={Images.Work2}
         alt="Background"
         className="absolute inset-0 w-3/5 -z-10 h-full object-cover opacity-30 blur-xs"
       />
       <div className="w-[500px] p-8 border border-gray-300 rounded-2xl bg-white shadow-lg">
         <div className="text-center">
-          <img src={workclock} alt="Logo" className="w-24 mx-auto mb-4" />
+          <img src={Images.Logo} alt="Logo" className="w-24 mx-auto mb-4" />
           <h1 className="text-2xl font-bold">Đổi Mật Khẩu</h1>
         </div>
         {error && <p className="text-red-500 text-sm text-center">{error}</p>}
