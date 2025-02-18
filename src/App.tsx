@@ -7,14 +7,14 @@ import ErrorPage from "./pages/ErrorPage/ErrorPage";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ProtectedRoute from "./routers/ProtectedRoute/ProtectedRoute";
 import LoginPage from "./pages/LoginPage/LoginPage";
-import RequestPage from "./pages/RequestPage/RequestPage";
+// import AdminProject from "./pages/AdminPage/AdminProject";
 import AdminProject from "./pages/AdminPage/AdminProject/AdminProject";
 import FinancePage from "./pages/FinancePage/FinancePage";
 import UserLayout from "./layouts/UserLayout/UserLayout";
 import AdminUserManagement from "./pages/AdminPage/AdminUser/AdminUserManagement";
 import HomePage from "./pages/HomePage/HomePage";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
-import UserDashboard from "./pages/UserDashboard/UserDashboard";
+import UserDashboard from "./pages/UserDashboardPage/UserDashboard";
 import ChangePassword from "./pages/LoginPage/ChangePassword";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -59,7 +59,7 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
-    children: [{ path: "approval", element: <ApprovalPage/>}],
+    children: [{ path: "", element: <ApprovalPage /> }],
   },
   {
     path: "/finance",
@@ -81,7 +81,6 @@ const router = createBrowserRouter([
     ),
     errorElement: <ErrorPage />,
     children: [
-      { path: "request", element: <RequestPage /> },
       {
         path: "/user/dashboard",
         element: (

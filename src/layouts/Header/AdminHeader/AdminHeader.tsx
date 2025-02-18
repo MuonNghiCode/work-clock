@@ -3,33 +3,32 @@ import { useUser } from "../../../context/UserContext";
 import Images from "../../../components/images";
 import Icons from "../../../components/icon";
 import { Dropdown, Space } from "antd";
-import type { MenuProps } from 'antd';
-
+import type { MenuProps } from "antd";
 
 const AdminHeader: React.FC = () => {
   const { user } = useUser();
-  const { User, DropDownIcon } = Icons;
+  const { User } = Icons;
 
-  const items: MenuProps['items'] = [
+  const items: MenuProps["items"] = [
     {
-      key: '1',
-      label: user?.name || 'Guest',
+      key: "1",
+      label: user?.name || "Guest",
       disabled: true,
     },
     {
-      type: 'divider',
+      type: "divider",
     },
     {
-      key: '2',
-      label: 'Profile',
+      key: "2",
+      label: "Profile",
     },
     {
-      key: '3',
-      label: 'Billing',
+      key: "3",
+      label: "Billing",
     },
     {
-      key: '4',
-      label: 'Settings',
+      key: "4",
+      label: "Settings",
     },
   ];
 
@@ -49,7 +48,6 @@ const AdminHeader: React.FC = () => {
             </Space>
           </a>
         </Dropdown>
-
       </div>
     </>
   );

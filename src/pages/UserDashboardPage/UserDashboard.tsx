@@ -1,5 +1,5 @@
+import TableUserDashboard from "../../components/UserDashboardTable/TableUserDashboard";
 import { ClaimRequest, generateFakeData } from "../../types/ClaimRequest";
-import TableUserDashboard from "./TableUserDashboard";
 
 function UserDashboard() {
   const data: ClaimRequest[] = generateFakeData();

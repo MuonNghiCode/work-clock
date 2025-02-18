@@ -5,7 +5,11 @@ import {
   ChartColumn,
   LogOut,
   Settings,
+<<<<<<< HEAD
   X, RotateCcw, Check,
+=======
+  X, RotateCcw, Check, CircleUser,
+>>>>>>> 8651d8bf2a954acfa5ec7673c03353f92a6d4b5c
   FolderDot,
   User,
   Wallet
@@ -39,6 +43,11 @@ const Icons: IconType = {
   Approve: Check,
   Reject: X,
   Return: RotateCcw,
+<<<<<<< HEAD
+=======
+  Check: Check,
+  User1: CircleUser,
+>>>>>>> 8651d8bf2a954acfa5ec7673c03353f92a6d4b5c
   MdApproval: MdApproval
 };
 
