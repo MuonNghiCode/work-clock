@@ -10,10 +10,11 @@ const AdminHeader: React.FC = () => {
   const { User } = Icons;
 import { Dropdown, Badge, Button } from "antd";
 import type { MenuProps } from 'antd';
-
+import { useSidebarStore } from "../../../config/zustand";
 
 const AdminHeader: React.FC = () => {
   const { user } = useUser();
+  const { toggleSidebar } = useSidebarStore();
 
   const items: MenuProps["items"] = [
     {
@@ -41,8 +42,8 @@ const AdminHeader: React.FC = () => {
   return (
     <>
       <div className="flex bg-transparent justify-between items-center">
-        <div className="h-18 flex items-center py-4 space-x-7">
-          <Button className="!h-fit !p-3 !border-none hover:!shadow-lg !text-black">
+        <div className="h-12 flex items-center py-4 space-x-7 !-pl-4">
+          <Button onClick={toggleSidebar} className="!h-fit !p-3 !border-none hover:!shadow-lg !text-black ">
             <Icons.Menu strokeWidth={2.5} className="w-12 h-12" />
           </Button>
           <img src={Images.Logo} alt="logo" className="max-w-64 h-25" />
@@ -74,9 +75,8 @@ const AdminHeader: React.FC = () => {
               )}
             </a>
           </Dropdown>
-
         </div>
-      </div >
+      </div>
     </>
   );
 };
