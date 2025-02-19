@@ -15,8 +15,17 @@ import {
   Newspaper,
   Hourglass,
   ChevronRight,
-  ChevronLeft
+  ChevronLeft,
+  // CircleCheck
 } from "lucide-react";
+import {
+  FaUsers,
+  FaMoneyBillWave,
+  FaProjectDiagram,
+  FaCheckCircle,
+  FaTimesCircle,
+  FaClock,
+} from "react-icons/fa";
 
 import { GoArrowUpRight } from "react-icons/go";
 import { FaArrowRight } from "react-icons/fa6";
@@ -59,6 +68,12 @@ const Icons: IconType = {
   Cancel: MdCancel,
   // Return: FaArrowRotateLeft,
   Pending: Hourglass,
+  Project: FaProjectDiagram,
+  UserCount: FaUsers,
+  Money: FaMoneyBillWave,
+  CircleCheck: FaCheckCircle,
+  CircleReject: FaTimesCircle,
+  CirclePending: FaClock,
 };
 
 export default Icons;
