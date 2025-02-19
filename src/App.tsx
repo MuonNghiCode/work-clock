@@ -46,11 +46,15 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "/admin/user",
+        path: "",
+        element: <div>UserDashboard</div>,
+      },
+      {
+        path: "user",
         element: <AdminUserManagement />,
       },
       {
-        path: "/admin/project",
+        path: "project",
         element: <AdminProject />,
       },
     ],
@@ -65,7 +69,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       { path: "", element: <ApprovalDashBoardPage /> },
-      { path: "/approval/approval-management", element: <ApprovalPage /> },
+      { path: "approval-management", element: <ApprovalPage /> },
     ],
   },
   {
@@ -77,7 +81,7 @@ const router = createBrowserRouter([
     ),
     errorElement: <ErrorPage />,
 
-    children: [{ path: "/finance", element: <FinancePage /> }],
+    children: [{ path: "Paid", element: <FinancePage /> }],
   },
   {
     path: "/user",
@@ -89,7 +93,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "/user/dashboard",
+        path: "",
         element: (
           <div>
             <UserDashboard />
@@ -97,7 +101,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/user/request",
+        path: "request",
         element: (
           <div>
             <RequestPage />
