@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { X, Mail, Phone, MapPin, Calendar, User2, FileText, ImageIcon, Lock } from "lucide-react";
 import emailjs from '@emailjs/browser';
+import { toast } from 'react-toastify'; // Import Toastify
 
 interface User {
 id: string;
@@ -95,101 +96,147 @@ const handleSubmit = (e: React.FormEvent) => {
     }
     
     try {
-    const storedUsers = localStorage.getItem(USERS_STORAGE_KEY);
-    const currentUsers = storedUsers ? JSON.parse(storedUsers) : [];
-    
-    const newUser = {
-        ...formData,
-        id: crypto.randomUUID(),
-        isLocked: false
-    };
+        const storedUsers = localStorage.getItem(USERS_STORAGE_KEY);
+        const currentUsers = storedUsers ? JSON.parse(storedUsers) : [];
+        
+        const newUser = {
+            ...formData,
+            id: crypto.randomUUID(),
+            isLocked: false // Set to false for unlocked status
+        };
 
-    localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify([...currentUsers, newUser]));
-    
-    const storedUserData = localStorage.getItem("userData");
-    const currentUserData = storedUserData ? JSON.parse(storedUserData) : [];
-    
-    const newUserData = {
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-        role: formData.role.toLowerCase()
-    };
-
-    localStorage.setItem("userData", JSON.stringify([...currentUserData, newUserData]));
-    
-    // Send welcome email
-    emailjs.send(
-        EMAILJS_SERVICE_ID,
-        EMAILJS_TEMPLATE_ID,
-        {
-            to_email: formData.email,
-            to_name: formData.name,
+        localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify([...currentUsers, newUser]));
+        
+        const storedUserData = localStorage.getItem("userData");
+        const currentUserData = storedUserData ? JSON.parse(storedUserData) : [];
+        
+        const newUserData = {
+            name: formData.name,
+            email: formData.email,
             password: formData.password,
-            role: formData.role,
-        },
-        EMAILJS_PUBLIC_KEY
-    ).then(() => {
-        // Show success notification
-        const notification = document.createElement('div');
-        notification.className = 'fixed top-4 right-4 p-4 rounded-lg border shadow-lg flex items-center gap-3 z-50 bg-green-50 border-green-500';
-        notification.innerHTML = `
-            <svg class="text-green-500 w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"/>
-                <path d="m8 13 2.165 2.165a1 1 0 0 0 1.521-.126L16 9"/>
-            </svg>
-            <p class="text-gray-700 font-medium">User added and welcome email sent successfully</p>
-        `;
-        document.body.appendChild(notification);
-        setTimeout(() => notification.remove(), 3000);
-    }).catch((error) => {
-        console.error("Failed to send email:", error);
-        // Show error notification
-        const notification = document.createElement('div');
-        notification.className = 'fixed top-4 right-4 p-4 rounded-lg border shadow-lg flex items-center gap-3 z-50 bg-red-50 border-red-500';
-        notification.innerHTML = `
-            <svg class="text-red-500 w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"/>
-                <line x1="12" y1="8" x2="12" y2="12"/>
-                <line x1="12" y1="16" x2="12.01" y2="16"/>
-            </svg>
-            <p class="text-gray-700 font-medium">User added but failed to send welcome email</p>
-        `;
-        document.body.appendChild(notification);
-        setTimeout(() => notification.remove(), 3000);
-    });
+            role: formData.role.toLowerCase()
+        };
 
-    onSuccess(newUser);
-    onClose();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars 
-  } catch (error) {
-    const notification = document.createElement('div');
-    notification.className = 'fixed top-4 right-4 p-4 rounded-lg border shadow-lg flex items-center gap-3 z-50 bg-red-50 border-red-500 transform transition-all duration-300';
-    notification.innerHTML = `
-        <svg class="text-red-500 w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"/>
-            <line x1="12" y1="8" x2="12" y2="12"/>
-            <line x1="12" y1="16" x2="12.01" y2="16"/>
-        </svg>
-        <p class="text-gray-700 font-medium">Failed to add user</p>
-    `;
-    document.body.appendChild(notification);
-    setTimeout(() => notification.remove(), 3000);
+        localStorage.setItem("userData", JSON.stringify([...currentUserData, newUserData]));
+        
+        // Send welcome email
+        emailjs.send(
+            EMAILJS_SERVICE_ID,
+            EMAILJS_TEMPLATE_ID,
+            {
+                to_email: formData.email,
+                to_name: formData.name,
+                password: formData.password,
+                role: formData.role,
+            },
+            EMAILJS_PUBLIC_KEY
+        ).then(() => {
+            toast.success("User added and welcome email sent successfully", {
+                position: "top-right",
+                autoClose: 1300,    
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                theme: "light",
+            });
+        }).catch((error) => {
+            console.error("Failed to send email:", error);
+            toast.error("User added but failed to send welcome email", {
+                position: "top-right",
+                autoClose: 13000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                theme: "light",
+            });
+        });
+
+        onSuccess(newUser);
+        onClose();
+    } catch (error) {
+        toast.error("Failed to add user", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            theme: "light",
+        });
     }
 };
 
 const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const file = e.target.files?.[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setFormData({
-        ...formData,
-        avatar: reader.result as string
-      });
-    };
-    reader.readAsDataURL(file);
-  }
+    const file = e.target.files?.[0];
+    if (file) {
+        if (file.size > 5 * 1024 * 1024) { // 5MB limit
+            toast.error("File size should be less than 5MB", {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                theme: "light",
+            });
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const result = reader.result as string;
+            setFormData(prev => ({
+                ...prev,
+                avatar: result
+            }));
+            toast.success("Image uploaded successfully", {
+                position: "top-right",
+                autoClose: 800,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                theme: "light",
+            });
+        };
+
+        reader.onerror = () => {
+            toast.error("Error reading file", {
+                position: "top-right",
+                autoClose: 800,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                theme: "light",
+            });
+        };
+
+        reader.readAsDataURL(file);
+    }
+};
+
+const handleAvatarUrlChange = (url: string) => {
+    // Basic URL validation
+    const urlPattern = /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|svg))/i;
+    if (!url || urlPattern.test(url)) {
+        setFormData(prev => ({
+            ...prev,
+            avatar: url
+        }));
+    } else {
+        toast.error("Please enter a valid image URL", {
+            position: "top-right",
+            autoClose: 800,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            theme: "light",
+        });
+    }
 };
 
 return (
@@ -398,10 +445,7 @@ return (
                 <input
                     type="text"
                     value={formData.avatar}
-                    onChange={(e) => setFormData({
-                    ...formData,
-                    avatar: e.target.value
-                    })}
+                    onChange={(e) => handleAvatarUrlChange(e.target.value)}
                     placeholder="Enter image URL"
                     className="pl-10 w-full px-4 py-2 rounded-md border border-gray-200 focus:ring-2 focus:ring-orange-200 focus:border-orange-400"
                 />
