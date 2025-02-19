@@ -66,7 +66,15 @@
 
 // export default AdminHeader;
 
-import React from 'react'
+// File này tạm thời không sử dụng
+// Sẽ uncomment khi cần dùng
+/*
+import React from "react";
+import { useUser } from "../../../context/UserContext";
+import Images from "../../../components/images";
+import Icons from "../../../components/icon";
+...rest of the code...
+*/
 
 const AdminHeader = () => {
   return (

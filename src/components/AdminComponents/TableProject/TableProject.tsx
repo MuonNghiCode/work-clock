@@ -21,6 +21,7 @@ const TableProject: React.FC<DataProps> = ({ data, onEditProject, onDeleteProjec
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
+  const [searchValue, setSearchValue] = useState<string>("");
   const [showProjectDetail, setShowProjectDetail] = useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
@@ -39,18 +40,36 @@ const TableProject: React.FC<DataProps> = ({ data, onEditProject, onDeleteProjec
     setCurrentPage(1);
   };
 
-  const filteredData = statusFilter
-    ? data.filter((item) => item.status === statusFilter)
-    : data;
+  const onSearch: SearchProps["onSearch"] = (value) => {
+    setSearchValue(value);
+    setCurrentPage(1);
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchValue(value);
+    setCurrentPage(1);
+  };
+
+  const filteredData = data.filter((item) => {
+    const matchesStatus = statusFilter ? item.status === statusFilter : true;
+    
+    const matchesSearch = searchValue
+      ? searchValue.toLowerCase().split('').every(char => {
+          const charCount = searchValue.toLowerCase().split(char).length - 1;
+          const nameCharCount = item.name.toLowerCase().split(char).length - 1;
+          return nameCharCount >= charCount;
+        })
+      : true;
+
+    return matchesStatus && matchesSearch;
+  });
 
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = startIndex + pageSize;
   const currentData = filteredData.slice(startIndex, endIndex);
 
   const statusTags = ["All", "Processing", "Pending", "Complete"];
-
-  const onSearch: SearchProps["onSearch"] = (value, _e, info) =>
-    console.log(info?.source, value);
 
   const handleShowProjectDetail = (project: Project) => {
     setSelectedProject(project);
@@ -124,6 +143,8 @@ const TableProject: React.FC<DataProps> = ({ data, onEditProject, onDeleteProjec
           <Search
             placeholder="Search project..."
             onSearch={onSearch}
+            onChange={handleSearchChange}
+            value={searchValue}
             style={{ width: 250 }}
             size="large"
             className="custom-search pl-1"
