@@ -14,6 +14,8 @@ import {
   Wallet,
   Newspaper,
   Hourglass,
+  ChevronRight,
+  ChevronLeft
 } from "lucide-react";
 
 import { GoArrowUpRight } from "react-icons/go";
@@ -45,6 +47,10 @@ const Icons: IconType = {
   Reject: X,
   Return: RotateCcw,
   Check: Check,
+  CircleUser: CircleUser,
+  MdApproval: MdApproval,
+  ChevronRight: ChevronRight,
+  ChevronLeft: ChevronLeft
   UserAdmin: UserRound,
   Help: CircleHelp,
   Bell: Bell,
