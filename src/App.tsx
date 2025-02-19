@@ -59,7 +59,9 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
-    children: [{ path: "", element: <ApprovalPage /> }],
+    children: [
+      { path: "", element: <h1>Dash board</h1> },
+      { path: "/approval/approval-management", element: <ApprovalPage /> }],
   },
   {
     path: "/finance",
