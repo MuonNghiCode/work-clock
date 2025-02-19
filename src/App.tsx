@@ -20,7 +20,10 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UserProvider } from "./context/UserContext";
 import ApprovalPage from "./pages/ApprovalPage/ApprovalPage";
+import RequestPage from "./pages/RequestPage/RequestPage";
+
 import UserDashboard from "./pages/UserDashboardPage/UserDashboard";
+import ApprovalDashBoardPage from "./pages/ApprovalDashBoardPage/ApprovalDashBoardPage";
 
 const router = createBrowserRouter([
   {
@@ -43,11 +46,15 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "/admin/user",
+        path: "",
+        element: <div>UserDashboard</div>,
+      },
+      {
+        path: "user",
         element: <AdminUserManagement />,
       },
       {
-        path: "/admin/project",
+        path: "project",
         element: <AdminProject />,
       },
     ],
@@ -60,7 +67,10 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
-    children: [{ path: "", element: <ApprovalPage /> }],
+    children: [
+      { path: "", element: <ApprovalDashBoardPage /> },
+      { path: "approval-management", element: <ApprovalPage /> },
+    ],
   },
   {
     path: "/finance",
@@ -71,7 +81,7 @@ const router = createBrowserRouter([
     ),
     errorElement: <ErrorPage />,
 
-    children: [{ path: "/finance", element: <FinancePage /> }],
+    children: [{ path: "Paid", element: <FinancePage /> }],
   },
   {
     path: "/user",
@@ -83,7 +93,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "/user/dashboard",
+        path: "",
         element: (
           <div>
             <UserDashboard />
@@ -91,12 +101,13 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/user/edit_profile",
+        path: "request",
         element: (
-          <EditProfilePage />
-
+          <div>
+            <RequestPage />
+          </div>
         ),
-      }
+      },
     ],
   },
   {
