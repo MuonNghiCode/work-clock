@@ -47,10 +47,9 @@ const Icons: IconType = {
   Reject: X,
   Return: RotateCcw,
   Check: Check,
-  CircleUser: CircleUser,
-  MdApproval: MdApproval,
+  // CircleUser: CircleUser,
   ChevronRight: ChevronRight,
-  ChevronLeft: ChevronLeft
+  ChevronLeft: ChevronLeft,
   UserAdmin: UserRound,
   Help: CircleHelp,
   Bell: Bell,

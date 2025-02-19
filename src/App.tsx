@@ -20,8 +20,9 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UserProvider } from "./context/UserContext";
 import ApprovalPage from "./pages/ApprovalPage/ApprovalPage";
-import ApprovalDashBoardPage from "./pages/ApprovalPage/ApprovalDashBoardPage";
+
 import UserDashboard from "./pages/UserDashboardPage/UserDashboard";
+import ApprovalDashBoardPage from "./pages/ApprovalDashBoardPage/ApprovalDashBoardPage";
 
 const router = createBrowserRouter([
   {
@@ -63,7 +64,8 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       { path: "", element: <ApprovalDashBoardPage /> },
-      { path: "/approval/approval-management", element: <ApprovalPage /> }],
+      { path: "/approval/approval-management", element: <ApprovalPage /> },
+    ],
   },
   {
     path: "/finance",
