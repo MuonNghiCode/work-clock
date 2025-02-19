@@ -11,12 +11,14 @@ import {
   X, RotateCcw, Check, UserRound,
   FolderDot,
   User,
-  Wallet
+  Wallet,
+  Newspaper,
+  Hourglass,
 } from "lucide-react";
 
 import { GoArrowUpRight } from "react-icons/go";
 import { FaArrowRight } from "react-icons/fa6";
-import { MdOutlineEmail, MdApproval } from "react-icons/md";
+import { MdOutlineEmail, MdApproval, MdCancel } from "react-icons/md";
 import { CiLock, CiUnlock } from "react-icons/ci";
 
 // Định nghĩa kiểu dữ liệu cho danh sách icon
@@ -47,7 +49,11 @@ const Icons: IconType = {
   Help: CircleHelp,
   Bell: Bell,
   Menu: Grip,
-  MdApproval: MdApproval
+  MdApproval: MdApproval,
+  FormIcon: Newspaper,
+  Cancel: MdCancel,
+  // Return: FaArrowRotateLeft,
+  Pending: Hourglass,
 };
 
 export default Icons;

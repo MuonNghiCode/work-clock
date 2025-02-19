@@ -46,7 +46,7 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
     "All",
     "Pending",
     "Return",
-    "Approval",
+    "Approve",
     "Reject",
   ];
 
@@ -91,9 +91,9 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
         return <span className="text-blue-500">
           Return
         </span>;
-      case "Approval":
+      case "Approve":
         return <span className="text-green-500">
-          Approval
+          Approve
         </span>;
       case "Reject":
         return <span className="text-red-500">
