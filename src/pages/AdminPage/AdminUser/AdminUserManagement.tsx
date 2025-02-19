@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Search, Edit2, Trash2, Eye, X } from "lucide-react";
-
+import { toast } from "react-toastify";
 import { Pagination } from "antd";
 import UserManagementAdd from "../../../components/AdminComponents/AddUser/UserManagementAdd";
 import UserManagementEdit from "../../../components/AdminComponents/EditUser/UserManagementEdit";
-
 
 interface User {
   id: string;
@@ -29,8 +28,8 @@ interface NewUser {
   birthday: string;
   note: string;
   role: "Admin" | "User" | "Staff" | "Paid";
+  avatar?: string;
 }
-
 
 const mockUsers: User[] = [
   {
@@ -214,43 +213,31 @@ const AdminUserManagement: React.FC = () => {
   const handleUpdateUser = (updatedUser: User) => {
     try {
       const updatedUsers = users.map((user) =>
-        user.id === updatedUser.id
-          ? {
-              ...updatedUser,
-              password: updatedUser.password || user.password,
-            }
-          : user
+        user.id === updatedUser.id ? { ...updatedUser } : user
       );
       setUsers(updatedUsers);
       localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(updatedUsers));
       setIsEditModalOpen(false);
 
-      const notification = document.createElement("div");
-      notification.className =
-        "fixed top-4 right-4 p-4 rounded-lg border shadow-lg flex items-center gap-3 z-50 bg-green-50 border-green-500 transform transition-all duration-300";
-      notification.innerHTML = `
-        <svg class="text-green-500 w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="m8 13 2.165 2.165a1 1 0 0 0 1.521-.126L16 9"/>
-        </svg>
-        <p class="text-gray-700 font-medium">User updated successfully</p>
-      `;
-      document.body.appendChild(notification);
-      setTimeout(() => notification.remove(), 3000);
+      toast.success("Updated Successfully", {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        theme: "light",
+      });
     } catch {
-      const notification = document.createElement("div");
-      notification.className =
-        "fixed top-4 right-4 p-4 rounded-lg border shadow-lg flex items-center gap-3 z-50 bg-red-50 border-red-500 transform transition-all duration-300";
-      notification.innerHTML = `
-        <svg class="text-red-500 w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="12" y1="8" x2="12" y2="12"/>
-          <line x1="12" y1="16" x2="12.01" y2="16"/>
-        </svg>
-        <p class="text-gray-700 font-medium">Failed to update user</p>
-      `;
-      document.body.appendChild(notification);
-      setTimeout(() => notification.remove(), 3000);
+      toast.error("Failed to update user", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        theme: "light",
+      });
     }
   };
 
@@ -267,32 +254,25 @@ const AdminUserManagement: React.FC = () => {
       setUsers(updatedUsers);
       localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(updatedUsers));
 
-      const notification = document.createElement("div");
-      notification.className =
-        "fixed top-4 right-4 p-4 rounded-lg border shadow-lg flex items-center gap-3 z-50 bg-green-50 border-green-500";
-      notification.innerHTML = `
-        <svg class="text-green-500 w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="m8 13 2.165 2.165a1 1 0 0 0 1.521-.126L16 9"/>
-        </svg>
-        <p class="text-gray-700 font-medium">User deleted successfully</p>
-      `;
-      document.body.appendChild(notification);
-      setTimeout(() => notification.remove(), 3000);
+      toast.success("User deleted successfully", {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        theme: "light",
+      });
     } catch {
-      const notification = document.createElement("div");
-      notification.className =
-        "fixed top-4 right-4 p-4 rounded-lg border shadow-lg flex items-center gap-3 z-50 bg-red-50 border-red-500";
-      notification.innerHTML = `
-        <svg class="text-red-500 w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="12" y1="8" x2="12" y2="12"/>
-          <line x1="12" y1="16" x2="12.01" y2="16"/>
-        </svg>
-        <p class="text-gray-700 font-medium">Failed to delete user</p>
-      `;
-      document.body.appendChild(notification);
-      setTimeout(() => notification.remove(), 3000);
+      toast.error("Failed to delete user", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        theme: "light",
+      });
     }
     setShowDeleteConfirm(false);
     setUserToDelete(null);
@@ -304,22 +284,9 @@ const AdminUserManagement: React.FC = () => {
         ...newUser,
         id: crypto.randomUUID(),
         isLocked: false,
-        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${crypto.randomUUID()}`,
+        avatar: newUser.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${crypto.randomUUID()}`
       },
     ]);
-
-    const notification = document.createElement("div");
-    notification.className =
-      "fixed top-4 right-4 p-4 rounded-lg border shadow-lg flex items-center gap-3 z-50 bg-green-50 border-green-500 transform transition-all duration-300";
-    notification.innerHTML = `
-      <svg class="text-green-500 w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="10"/>
-        <path d="m8 13 2.165 2.165a1 1 0 0 0 1.521-.126L16 9"/>
-      </svg>
-      <p class="text-gray-700 font-medium">User added successfully</p>
-    `;
-    document.body.appendChild(notification);
-    setTimeout(() => notification.remove(), 3000);
 
     setIsAddModalOpen(false);
   };

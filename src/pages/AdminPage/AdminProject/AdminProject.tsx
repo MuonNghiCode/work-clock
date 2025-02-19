@@ -5,7 +5,7 @@ import Modal from "../../../components/Modal/Modal";
 // import { Project } from "../../types/Project";
 import { Project } from "../../../types/Project";
 // import DeleteConfirmModal from '../../components/DeleteConfirmModal/DeleteConfirmModal';
-import DeleteConfirmModal from "../../../components/DeleteConfirmModal/DeleteConfirmModal";
+import DeleteConfirmModal from "../../../components/DeleteConfirmModal";
 // import ProjectDetailModal from '../../components/ProjectDetailModal/ProjectDetailModal';
 import ProjectDetailModal from "../../../components/ProjectDetailModal/ProjectDetailModal";
 // import AddProject from "./AddProject";

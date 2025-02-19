@@ -21,7 +21,6 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
   const [showApprovalDetail, setShowApprovalDetail] = useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
-  const { Approve, Reject, Return, Check } = Icons;
 
   const handlePageChange = (page: number, pageSize?: number) => {
     setCurrentPage(page);
@@ -47,7 +46,7 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
     "All",
     "Pending",
     "Return",
-    "Approval",
+    "Approve",
     "Reject",
   ];
 
@@ -92,9 +91,9 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
         return <span className="text-blue-500">
           Return
         </span>;
-      case "Approval":
+      case "Approve":
         return <span className="text-green-500">
-          Approval
+          Approve
         </span>;
       case "Reject":
         return <span className="text-red-500">
@@ -116,7 +115,7 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
               onClick={() => handleStatusChange(status)}
               className="cursor-pointer !px-2 !py-1 !font-squada !text-lg !rounded-lg"
             >
-              {(statusFilter === status || (status === "All" && statusFilter === null)) && <Check className="inline-flex" />} {status}
+              {(statusFilter === status || (status === "All" && statusFilter === null)) && <Icons.Check className="inline-flex" />} {status}
             </Tag>
           ))}
         </div>
@@ -170,7 +169,7 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
                   <div className="flex justify-center items-center w-10 h-10 overflow-hidden ">
                     <Button className="!bg-none !border-none">
                       <span className="hover:scale-110">
-                        <Approve
+                        <Icons.Approve
                           color="green"
                           // strokeWidth={3}
                           onClick={handleApprove}
@@ -182,7 +181,7 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
                   <div className="flex justify-center items-center w-10 h-10 overflow-hidden ">
                     <Button className="!bg-none !border-none">
                       <span className="hover:scale-110">
-                        <Reject
+                        <Icons.Reject
                           color="red"
                           // strokeWidth={3}
                           onClick={handleReject}
@@ -194,7 +193,7 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
                   <div className="flex justify-center items-center w-10 h-10 overflow-hidden ">
                     <Button className="!bg-none !border-none">
                       <span className="hover:scale-110">
-                        <Return
+                        <Icons.Return
                           color="blue"
                           // strokeWidth={3}
                           onClick={handleReturn}
