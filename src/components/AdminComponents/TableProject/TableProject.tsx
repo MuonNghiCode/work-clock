@@ -27,6 +27,7 @@ const TableProject: React.FC<DataProps> = ({ data, onEditProject, onDeleteProjec
   const [message, setMessage] = useState<string>("");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editableColumns, setEditableColumns] = useState<string[]>([]);
 
   const handlePageChange = (page: number, pageSize?: number) => {
     setCurrentPage(page);
@@ -80,6 +81,7 @@ const TableProject: React.FC<DataProps> = ({ data, onEditProject, onDeleteProjec
     console.log("Opening edit modal for project:", project);
     setSelectedProject(project);
     setIsEditModalOpen(true);
+    setEditableColumns(["name", "status"]);
   };
 
   const handleSaveEdit = (editedProject: Project) => {
@@ -253,6 +255,7 @@ const TableProject: React.FC<DataProps> = ({ data, onEditProject, onDeleteProjec
             project={selectedProject}
             onClose={handleClose}
             onSave={handleSaveEdit}
+            editableColumns={editableColumns}
           />
         )}
       </Modal>
