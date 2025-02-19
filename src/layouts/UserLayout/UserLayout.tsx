@@ -11,7 +11,7 @@ const UserLayout: React.FC = () => {
           <AdminHeader />
         </header>
         <div className="flex flex-1 ">
-          <aside className="relative bg-white text-black shadow-[10px_0_10px_rgba(255,145,77,0.2)] w-50">
+          <aside className="relative bg-white text-black shadow-[10px_0_10px_rgba(255,145,77,0.2)]">
             <UserSidebar />
           </aside>
           <main className="flex-1 p-6 bg-gray-100">

@@ -5,15 +5,22 @@ import {
   ChartColumn,
   LogOut,
   Settings,
-  X, RotateCcw, Check, CircleUser,
+  Bell,
+  CircleHelp,
+  Grip,
+  X, RotateCcw, Check, UserRound,
   FolderDot,
   User,
-  Wallet
+  Wallet,
+  Newspaper,
+  Hourglass,
+  ChevronRight,
+  ChevronLeft
 } from "lucide-react";
 
 import { GoArrowUpRight } from "react-icons/go";
 import { FaArrowRight } from "react-icons/fa6";
-import { MdOutlineEmail,MdApproval  } from "react-icons/md";
+import { MdOutlineEmail, MdApproval, MdCancel } from "react-icons/md";
 import { CiLock, CiUnlock } from "react-icons/ci";
 
 // Định nghĩa kiểu dữ liệu cho danh sách icon
@@ -40,8 +47,19 @@ const Icons: IconType = {
   Reject: X,
   Return: RotateCcw,
   Check: Check,
-  User1: CircleUser,
-  MdApproval: MdApproval
+  CircleUser: CircleUser,
+  MdApproval: MdApproval,
+  ChevronRight: ChevronRight,
+  ChevronLeft: ChevronLeft
+  UserAdmin: UserRound,
+  Help: CircleHelp,
+  Bell: Bell,
+  Menu: Grip,
+  MdApproval: MdApproval,
+  FormIcon: Newspaper,
+  Cancel: MdCancel,
+  // Return: FaArrowRotateLeft,
+  Pending: Hourglass,
 };
 
 export default Icons;

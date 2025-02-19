@@ -6,24 +6,24 @@ import { Link } from "react-router";
 const Carousel: React.FC = () => {
   return (
     <>
-      <div className="relative w-full min-h-screen bg-white px-4 md:px-8">
+      <div className="relative w-full min-h-screen px-4 bg-white md:px-8">
         <img
           src={Images.Background}
           alt="Background"
           className="w-full h-auto"
         />
-        <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-start items-start px-4 md:px-10">
+        <div className="absolute top-0 left-0 flex flex-col items-start justify-start w-full h-full px-4 md:px-10">
           <div className="flex items-center">
             <img
               src={Images.Logo}
               alt="logo"
-              className="max-w-40 md:max-w-70 h-20 md:h-40"
+              className="h-20 max-w-40 md:max-w-70 md:h-40"
             />
-            <h1 className="text-gradient-color text-3xl md:text-5xl ml-2">
+            <h1 className="ml-2 text-3xl text-gradient-color md:text-5xl">
               | GR-1
             </h1>
           </div>
-          <p className="text-black text-sm md:text-base px-2 md:px-5 w-full md:w-150">
+          <p className="w-full px-2 text-sm text-black md:text-base md:px-5 md:w-150">
             WorkClock enables employees to effortlessly create and track
             overtime (OT) requests with transparency and efficiency. With an
             intelligent management system, WorkClock helps monitor overtime
@@ -32,7 +32,7 @@ const Carousel: React.FC = () => {
           </p>
           <Link
             to="/login"
-            className="flex items-center gap-2 md:gap-4 bg-brand-grandient text-white px-2 md:px-4 py-1 md:py-2 rounded-xl mt-5 ml-2 md:ml-4"
+            className="flex items-center gap-2 px-2 py-1 mt-5 ml-2 text-white md:gap-4 bg-brand-grandient md:px-4 md:py-2 rounded-xl md:ml-4"
           >
             <span className="text-sm md:text-lg">Explore Now</span>
             <Icons.ArrowRight className="w-5 md:w-7 h-5 md:h-7 border border-white text-white rounded-3xl p-0.5 md:p-1" />
