@@ -31,8 +31,8 @@ const Images = {
     Auther2,
     Auther3,
     Error,
-  BackgroundLayout,
-  Background4,
+    BackgroundLayout,
+    Background4,
 
   
 };
