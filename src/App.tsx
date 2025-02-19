@@ -20,6 +20,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UserProvider } from "./context/UserContext";
 import ApprovalPage from "./pages/ApprovalPage/ApprovalPage";
+import UserCalendarPage from "./pages/UserCalendarPage/UserCalendarPage";
 
 const router = createBrowserRouter([
   {
@@ -89,6 +90,14 @@ const router = createBrowserRouter([
           </div>
         ),
       },
+      {
+        path: "/user/calendar",
+        element: (
+          <div>
+            <UserCalendarPage />
+          </div>
+        ),
+      }
     ],
   },
   {
