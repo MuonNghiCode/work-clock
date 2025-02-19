@@ -11,6 +11,11 @@ import News3 from "../assets/images/news-3.png";
 import Auther1 from "../assets/images/auther-1.png";
 import Auther2 from "../assets/images/auther-2.png";
 import Auther3 from "../assets/images/auther-3.png";
+import Error from "../assets/images/404.png";
+import BackgroundLayout from "../assets/images/backgroundlayout.jpg";
+import Background4 from "../assets/images/background4.png";
+
+
 const Images = {
     Logo,
     Logo2,
@@ -25,21 +30,11 @@ const Images = {
     Auther1,
     Auther2,
     Auther3,
-import Error from "../assets/images/404.png";
-import BackgroundLayout from "../assets/images/backgroundlayout.jpg";
-import Background4 from "../assets/images/background4.png";
-
-const Images = {
-  Logo,
-  Logo2,
-  Work1,
-  Work2,
-  Background,
-  Background2,
-  Background3,
-  Error,
+    Error,
   backgroundLayout: BackgroundLayout,
   Background4,
+
+  
 };
 
 export default Images;
