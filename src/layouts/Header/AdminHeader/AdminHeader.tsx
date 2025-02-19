@@ -2,6 +2,12 @@ import React from "react";
 import { useUser } from "../../../context/UserContext";
 import Images from "../../../components/images";
 import Icons from "../../../components/icon";
+import { Dropdown, Space } from "antd";
+import type { MenuProps } from "antd";
+
+const AdminHeader: React.FC = () => {
+  const { user } = useUser();
+  const { User } = Icons;
 import { Dropdown, Badge, Button } from "antd";
 import type { MenuProps } from 'antd';
 
@@ -41,6 +47,17 @@ const AdminHeader: React.FC = () => {
           </Button>
           <img src={Images.Logo} alt="logo" className="max-w-64 h-25" />
         </div>
+        <div>
+          {user ? <div>Welcome, {user.name}</div> : <div>Welcome, Guest</div>}
+        </div>
+        <Dropdown menu={{ items }}>
+          <a onClick={(e) => e.preventDefault()}>
+            <Space>
+              <User />
+            </Space>
+          </a>
+        </Dropdown>
+      </div>
         <div className="inline-flex items-center space-x-12 mr-5">
           <div>
             <Badge count={5} className="">
