@@ -7,7 +7,7 @@ const UserLayout: React.FC = () => {
   return (
     <>
       <div className="flex flex-col h-screen">
-        <header className="bg-white text-black text-center p-4 shadow-[0_5px_5px_rgba(255,145,77,0.2)] relative">
+        <header className="bg-white text-black text-center p-8 shadow-[0_5px_5px_rgba(255,145,77,0.2)] relative">
           <AdminHeader />
         </header>
         <div className="flex flex-1 ">

@@ -20,6 +20,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UserProvider } from "./context/UserContext";
 import ApprovalPage from "./pages/ApprovalPage/ApprovalPage";
+import RequestPage from "./pages/RequestPage/RequestPage";
 
 import UserDashboard from "./pages/UserDashboardPage/UserDashboard";
 import ApprovalDashBoardPage from "./pages/ApprovalDashBoardPage/ApprovalDashBoardPage";
@@ -92,6 +93,14 @@ const router = createBrowserRouter([
         element: (
           <div>
             <UserDashboard />
+          </div>
+        ),
+      },
+      {
+        path: "/user/request",
+        element: (
+          <div>
+            <RequestPage />
           </div>
         ),
       },
