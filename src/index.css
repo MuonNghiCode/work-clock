@@ -36,6 +36,9 @@
   .bg-brand-orange-light {
     background-color: rgba(255, 145, 77, 0.2);
   }
+  .bg-brand-orange-light-1 {
+    background-color: rgba(255, 145, 77, 0.1);
+  }
   .bg-brand-grandient {
     background: linear-gradient(90deg, #feb78a 0%, #ff914d 100%);
   }
@@ -57,11 +60,14 @@
     background-clip: text;
     -webkit-text-fill-color: transparent;
   }
-  
+
   .hover\:text-gradient-color:hover {
     background: linear-gradient(90deg, #feb78a 0%, #ff914d 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+  }
+  .box-shadow-brand-orange {
+    box-shadow: 12px 12px 20px 0px rgba(255, 168, 113, 0.797);
   }
 }

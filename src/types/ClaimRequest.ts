@@ -18,7 +18,7 @@ export interface ClaimRequest {
   additionalRemarks: string;
   auditTrail: string;
   dateCreate: string; // New field for date create
-  status: "Pending" | "Approval" | "Reject" | "Return";
+  status: "Pending" | "Approve" | "Reject" | "Return";
 }
 
 const generateFakeData = (): ClaimRequest[] => {
@@ -26,13 +26,13 @@ const generateFakeData = (): ClaimRequest[] => {
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
   const statuses: ClaimRequest["status"][] = [
     "Pending",
-    "Approval",
+    "Approve",
     "Reject",
     "Return",
   ];
   const fakeData: ClaimRequest[] = [];
 
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 90; i++) {
     fakeData.push({
       staffName: `Staff ${i + 1}`,
       staffDepartment: `Department ${i + 1}`,
@@ -52,7 +52,7 @@ const generateFakeData = (): ClaimRequest[] => {
       additionalRemarks: `Additional remarks for staff ${i + 1}`,
       auditTrail: `Audit trail for staff ${i + 1}`,
       dateCreate: `2025-02-${(i % 28) + 1}`,
-      status: statuses[i % statuses.length], // New field for status
+      status: statuses[i % statuses.length],
     });
   }
 

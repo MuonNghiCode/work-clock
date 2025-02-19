@@ -14,12 +14,17 @@ import UserLayout from "./layouts/UserLayout/UserLayout";
 import AdminUserManagement from "./pages/AdminPage/AdminUser/AdminUserManagement";
 import HomePage from "./pages/HomePage/HomePage";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
-import UserDashboard from "./pages/UserDashboardPage/UserDashboard";
-import ChangePassword from "./pages/LoginPage/ChangePassword";
+
+import ChangePassword from "./pages/ChangePassword/ChangePassword";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UserProvider } from "./context/UserContext";
 import ApprovalPage from "./pages/ApprovalPage/ApprovalPage";
+import RequestPage from "./pages/RequestPage/RequestPage";
+
+import UserDashboard from "./pages/UserDashboardPage/UserDashboard";
+import ApprovalDashBoardPage from "./pages/ApprovalDashBoardPage/ApprovalDashBoardPage";
+import AdminDashBoard from "./pages/AdminPage/AdminDashboard/AdminDashBoard";
 import UserCalendarPage from "./pages/UserCalendarPage/UserCalendarPage";
 
 const router = createBrowserRouter([
@@ -43,11 +48,15 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "/admin/user",
+        path: "",
+        element: <AdminDashBoard />,
+      },
+      {
+        path: "user",
         element: <AdminUserManagement />,
       },
       {
-        path: "/admin/project",
+        path: "project",
         element: <AdminProject />,
       },
     ],
@@ -60,7 +69,10 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
-    children: [{ path: "", element: <ApprovalPage /> }],
+    children: [
+      { path: "", element: <ApprovalDashBoardPage /> },
+      { path: "approval-management", element: <ApprovalPage /> },
+    ],
   },
   {
     path: "/finance",
@@ -71,7 +83,7 @@ const router = createBrowserRouter([
     ),
     errorElement: <ErrorPage />,
 
-    children: [{ path: "/finance", element: <FinancePage /> }],
+    children: [{ path: "Paid", element: <FinancePage /> }],
   },
   {
     path: "/user",
@@ -83,10 +95,18 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "/user/dashboard",
+        path: "",
         element: (
           <div>
             <UserDashboard />
+          </div>
+        ),
+      },
+      {
+        path: "request",
+        element: (
+          <div>
+            <RequestPage />
           </div>
         ),
       },
