@@ -11,10 +11,8 @@ interface UserContextType {
   user: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
-const UserContext = createContext<UserContextType>({
-  user: null,
-  setUser: () => { },
-});
+
+const UserContext = createContext<UserContextType | undefined>(undefined);
 
 interface UserProviderProps {
   children: React.ReactNode;
@@ -22,9 +20,7 @@ interface UserProviderProps {
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [password, setPassword] = useState<string>(() => {
-    return localStorage.getItem("userPassword") || "user123"; // Mặc định mật khẩu nếu chưa có
-  });
+
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");

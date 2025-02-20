@@ -93,7 +93,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "",
+        path: "dashboard",
         element: (
           <div>
             <UserDashboard />
@@ -101,12 +101,19 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/user/edit_profile",
+        path: "edit_profile",
         element: (
           <EditProfilePage />
 
         ),
-      }
+      },
+      {
+        path: "request",
+        element: (
+          <RequestPage />
+
+        ),
+      },
     ],
   },
   {
