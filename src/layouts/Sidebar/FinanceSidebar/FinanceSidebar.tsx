@@ -35,7 +35,6 @@ const FinanceSidebar: React.FC = () => {
   };
 
   return (
-    <>
       <div
         ref={sidebarRef}
         className={`flex justify-center text-xl transition-all duration-300 mt-1 ${
@@ -45,7 +44,7 @@ const FinanceSidebar: React.FC = () => {
         <div className="flex flex-col gap-3 space-y-4 mt-2">
           <div className="flex flex-col gap-3">
             {isSidebarExpanded && <h2 className="text-gray-300 ">Analyze</h2>}
-            <NavLink to="" className="flex items-center justify-start gap-3">
+            <NavLink to="/finance" className="flex items-center justify-start gap-3">
               <Icons.Dashboard className="w-8 h-8" />
               {isSidebarExpanded && "DASHBOARD"}
             </NavLink>
@@ -53,7 +52,7 @@ const FinanceSidebar: React.FC = () => {
           <div className="flex flex-col gap-3">
             {isSidebarExpanded && <h2 className="text-gray-300">Management</h2>}
             <NavLink
-              to="/finance"
+              to="/finance/paid-managemen"
               className="flex items-center justify-start gap-3"
             >
               <Icons.Wallet className="w-8 h-8" />
@@ -68,11 +67,11 @@ const FinanceSidebar: React.FC = () => {
             }}
             className="flex items-center justify-start gap-3 mt-10"
           >
-            <Icons.LogOut /> LOG OUT
+            <Icons.LogOut className="w-8 h-8" />
+            {isSidebarExpanded && "Log out"}
           </NavLink>
         </div>
       </div>
-    </>
   );
 };
 

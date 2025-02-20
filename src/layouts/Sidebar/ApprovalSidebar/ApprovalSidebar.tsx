@@ -69,7 +69,7 @@ const ApprovalSidebar: React.FC = () => {
             }}
             className="flex items-center justify-start gap-3 mt-10"
           >
-            <Icons.LogOut /> LOG OUT
+            <Icons.LogOut className="w-8 h-8" />  {isSidebarExpanded && "LOG OUT"}
           </NavLink>
         </div>
       </div>

@@ -198,8 +198,8 @@ const EditProfilePage: React.FC = () => {
                             <button
                                 onClick={() => setActiveTab("account")}
                                 className={`pb-2 font-semibold ${activeTab === "account"
-                                    ? "border-b-2 border-blue-500 text-blue-500"
-                                    : "text-gray-500 hover:text-blue-500"
+                                    ? "border-b-2 border-orange-500 text-orange-500"
+                                    : "text-gray-500 hover:text-orange-500"
                                     }`}
                             >
                                 Account Settings
@@ -207,8 +207,8 @@ const EditProfilePage: React.FC = () => {
                             <button
                                 onClick={() => setActiveTab("password")}
                                 className={`pb-2 font-semibold ${activeTab === "password"
-                                    ? "border-b-2 border-blue-500 text-blue-500"
-                                    : "text-gray-500 hover:text-blue-500"
+                                    ? "border-b-2 border-orange-500 text-orange-500"
+                                    : "text-gray-500 hover:text-orange-500"
                                     }`}
                             >
                                 Change Password
@@ -310,7 +310,7 @@ const EditProfilePage: React.FC = () => {
                             <div className="col-span-2 flex justify-start mt-4">
                                 <button
                                     type="submit"
-                                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                                    className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600"
                                 >
                                     Update
                                 </button>
@@ -374,7 +374,7 @@ const EditProfilePage: React.FC = () => {
                             <div className="col-span-2 flex justify-start mt-4">
                                 <button
                                     type="submit"
-                                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                                    className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600"
                                 >
                                     Change Password
                                 </button>

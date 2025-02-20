@@ -10,6 +10,7 @@ import LoginPage from "./pages/LoginPage/LoginPage";
 // import AdminProject from "./pages/AdminPage/AdminProject";
 import AdminProject from "./pages/AdminPage/AdminProject/AdminProject";
 import FinancePage from "./pages/FinancePage/FinancePage";
+import FinanceDashBoardPage from "./pages/FinanceDashBoardPage/FinanceDashBoardPage";
 import UserLayout from "./layouts/UserLayout/UserLayout";
 import AdminUserManagement from "./pages/AdminPage/AdminUser/AdminUserManagement";
 import HomePage from "./pages/HomePage/HomePage";
@@ -26,6 +27,7 @@ import UserDashboard from "./pages/UserDashboardPage/UserDashboard";
 import ApprovalDashBoardPage from "./pages/ApprovalDashBoardPage/ApprovalDashBoardPage";
 import AdminDashBoard from "./pages/AdminPage/AdminDashboard/AdminDashBoard";
 import ChangePassword from "./pages/ChangePassword/ChangePassword";
+import UserDashboardPage from "./pages/UserPage/UserDashboardPage";
 
 const router = createBrowserRouter([
   {
@@ -69,7 +71,10 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
-    children: [{ path: "approval-management", element: <ApprovalPage /> }, { path: "", element: <ApprovalDashBoardPage /> }],
+    children: [
+      { path: "approval-management", element: <ApprovalPage /> },
+      { path: "", element: <ApprovalDashBoardPage /> },
+    ],
   },
   {
     path: "/finance",
@@ -80,7 +85,10 @@ const router = createBrowserRouter([
     ),
     errorElement: <ErrorPage />,
 
-    children: [{ path: "", element: <FinancePage /> }],
+    children: [
+      { path: "paid-management", element: <FinancePage /> },
+      { path: "", element: <FinanceDashBoardPage /> },
+    ],
   },
   {
     path: "/user",
@@ -92,7 +100,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "",
+        path: "dashboard",
         element: (
           <div>
             <UserDashboard />
@@ -101,16 +109,18 @@ const router = createBrowserRouter([
       },
       {
         path: "edit_profile",
-        element: (
-          <EditProfilePage />
-
-        ),
+        element: <EditProfilePage />,
       },
       {
         path: "request",
+        element: <RequestPage />,
+      },
+      {
+        path: "/user/dashboard",
         element: (
-          <RequestPage />
-
+          <div>
+            <UserDashboardPage />
+          </div>
         ),
       },
     ],
@@ -150,4 +160,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App; 
+export default App;

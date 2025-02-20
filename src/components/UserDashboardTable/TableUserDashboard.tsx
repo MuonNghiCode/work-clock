@@ -44,16 +44,16 @@ const TableUserDashboard: React.FC<DataProps> = ({ data }) => {
   };
 
   // Tính toán các thuộc tính tổng hợp
-  const totalWorkingHours = data.reduce(
-    (acc, item) => acc + item.totalWorkingHour,
-    0
-  );
+  // const totalWorkingHours = data.reduce(
+  //   (acc, item) => acc + item.totalWorkingHour,
+  //   0
+  // );
 
-  const totalClaimRequests = data.length;
-  const totalAmountReceived = data.reduce(
-    (acc, item) => acc + (item.amountReceived || 0),
-    0
-  );
+  // const totalClaimRequests = data.length;
+  // const totalAmountReceived = data.reduce(
+  //   (acc, item) => acc + (item.amountReceived || 0),
+  //   0
+  // );
 
   return (
     <>
@@ -96,7 +96,7 @@ const TableUserDashboard: React.FC<DataProps> = ({ data }) => {
                     {item.projectName}
                   </td>
                   <td className="px-4 py-2 border-t-2 border-b-2">
-                    {item.dateCreate}
+                    {new Date(item.dateCreate).toLocaleDateString()}
                   </td>
                   <td className={`px-4 py-2 border-t-2 border-b-2`}>
                     {item.claimTable[0].day}
@@ -138,7 +138,7 @@ const TableUserDashboard: React.FC<DataProps> = ({ data }) => {
             />
           </div>
         </div>
-        <div className="flex items-center justify-around border-2 rounded-[10px]  w-[500px]  ">
+        {/* <div className="flex items-center justify-around border-2 rounded-[10px]  w-[500px]  ">
           <div className="flex flex-col gap-4 text-2xl">
             <h2 className="p-5 bg-[#FF914D] bg-clip-padding rounded-tl-[8px] ">
               Total Working Hours:
@@ -157,7 +157,7 @@ const TableUserDashboard: React.FC<DataProps> = ({ data }) => {
             </h2>
             <p className="flex justify-center">${totalAmountReceived}</p>
           </div>
-        </div>
+        </div> */}
       </div>
       <ClaimRequestDetail visible={showApprovalDetail} onClose={handleClose} />
     </>
