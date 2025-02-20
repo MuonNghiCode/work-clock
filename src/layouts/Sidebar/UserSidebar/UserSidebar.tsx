@@ -62,7 +62,7 @@ const UserSidebar: React.FC = () => {
           <div className="flex flex-col gap-3 space-y-4">
             {isSidebarExpanded && <h2 className="text-gray-300 ">Analyze</h2>}
             <NavLink
-              to="dashboard"
+              to=""
               className="flex items-center justify-start gap-3"
             >
               <Icons.Dashboard className="w-8 h-8" />

@@ -70,7 +70,6 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
-    children: [{ path: "", element: <ApprovalPage /> }],
     children: [{ path: "approval-management", element: <ApprovalPage /> }, { path: "", element: <ApprovalDashBoardPage /> }],
   },
   {
