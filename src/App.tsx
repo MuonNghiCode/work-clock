@@ -26,6 +26,7 @@ import UserDashboard from "./pages/UserDashboardPage/UserDashboard";
 import ApprovalDashBoardPage from "./pages/ApprovalDashBoardPage/ApprovalDashBoardPage";
 import AdminDashBoard from "./pages/AdminPage/AdminDashboard/AdminDashBoard";
 import ChangePassword from "./pages/ChangePassword/ChangePassword";
+import UserDashboardPage from "./pages/UserPage/UserDashboardPage";
 
 const router = createBrowserRouter([
   {
@@ -69,6 +70,7 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
+    children: [{ path: "", element: <ApprovalPage /> }],
     children: [{ path: "approval-management", element: <ApprovalPage /> }, { path: "", element: <ApprovalDashBoardPage /> }],
   },
   {
@@ -111,6 +113,14 @@ const router = createBrowserRouter([
         element: (
           <RequestPage />
 
+        ),
+      },
+      {
+        path: "/user/dashboard",
+        element: (
+          <div>
+            <UserDashboardPage />
+          </div>
         ),
       },
     ],

@@ -96,26 +96,25 @@ const TableUserDashboard: React.FC<DataProps> = ({ data }) => {
                     {item.projectName}
                   </td>
                   <td className="px-4 py-2 border-t-2 border-b-2">
-                    {item.dateCreate}
+                    {new Date(item.dateCreate).toLocaleDateString()}
                   </td>
                   <td className={`px-4 py-2 border-t-2 border-b-2`}>
                     {item.claimTable[0].day}
                   </td>
                   <td className={`px-4 py-2 border-t-2 border-b-2 `}>
                     <span
-                      className={`${
-                        item.status === "Approve"
+                      className={`${item.status === "Approve"
                           ? "text-green-500"
                           : item.status === "Reject"
-                          ? "text-red-500"
-                          : item.status === "Pending"
-                          ? "text-yellow-500"
-                          : item.status === "Return"
-                          ? "text-purple-500"
-                          : item.status === "Paid"
-                          ? "text-blue-500"
-                          : ""
-                      }`}
+                            ? "text-red-500"
+                            : item.status === "Pending"
+                              ? "text-yellow-500"
+                              : item.status === "Return"
+                                ? "text-purple-500"
+                                : item.status === "Paid"
+                                  ? "text-blue-500"
+                                  : ""
+                        }`}
                     >
                       {item.status}
                     </span>
@@ -133,8 +132,8 @@ const TableUserDashboard: React.FC<DataProps> = ({ data }) => {
               pageSize={pageSize}
               total={filteredData.length}
               onChange={handlePageChange}
-              // showSizeChanger
-              // onShowSizeChange={handlePageChange}
+            // showSizeChanger
+            // onShowSizeChange={handlePageChange}
             />
           </div>
         </div>
