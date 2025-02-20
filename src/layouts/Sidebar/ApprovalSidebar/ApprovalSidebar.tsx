@@ -38,9 +38,8 @@ const ApprovalSidebar: React.FC = () => {
   return (
     <div
       ref={sidebarRef}
-      className={`flex justify-center text-xl transition-all duration-300 mt-1 ${
-        isSidebarExpanded ? "w-56" : "w-24"
-      }`}
+      className={`flex justify-center text-xl transition-all duration-300 mt-1 ${isSidebarExpanded ? "w-56" : "w-24"
+        }`}
     >
       <div className="flex flex-col gap-3 space-y-4 mt-2">
         <div>
@@ -70,17 +69,7 @@ const ApprovalSidebar: React.FC = () => {
             }}
             className="flex items-center justify-start gap-3 mt-10"
           >
-            <Icons.LogOut /> LOG OUT
-          </NavLink>
-          <NavLink
-            to="#"
-            onClick={(e) => {
-              e.preventDefault();
-              handleLogut();
-            }}
-            className="flex items-center justify-start gap-3 mt-10"
-          >
-            <Icons.LogOut /> LOG OUT
+            <Icons.LogOut className="w-8 h-8" />  {isSidebarExpanded && "LOG OUT"}
           </NavLink>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { X, Mail, Phone, MapPin, Calendar, User2, FileText, ImageIcon, Lock } from "lucide-react";
+import { X, Mail, Phone, MapPin, Calendar, User2, FileText, ImageIcon, Lock, Eye, EyeOff } from "lucide-react";
 import emailjs from '@emailjs/browser';
 import { toast } from 'react-toastify'; // Import Toastify
 
@@ -52,6 +52,7 @@ const [formData, setFormData] = useState<NewUser>({
 });
 
 const [errors, setErrors] = useState<{[key: string]: string}>({});
+const [showPassword, setShowPassword] = useState(false);
 
 const validateForm = () => {
   const newErrors: {[key: string]: string} = {};
@@ -68,20 +69,20 @@ const validateForm = () => {
     newErrors.email = "Invalid email format";
   }
 
-  // Validate password only if it's provided
-  if (formData.password) {
-    if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
-    }
+  // Validate password
+  if (!formData.password) {
+    newErrors.password = "Password is required";
+  } else if (formData.password.length < 6) {
+    newErrors.password = "Password must be at least 6 characters";
   }
 
-  // Validate phone if provided
-  if (formData.phoneNumber) {
-    if (!formData.phoneNumber.startsWith('0')) {
-      newErrors.phoneNumber = "Phone number must start with 0";
-    } else if (!/^0\d{9}$/.test(formData.phoneNumber)) {
-      newErrors.phoneNumber = "Phone number must be 10 digits";
-    }
+  // Enhanced phone number validation
+  if (!formData.phoneNumber) {
+    newErrors.phoneNumber = "Phone number is required";
+  } else if (!formData.phoneNumber.startsWith('0')) {
+    newErrors.phoneNumber = "Phone number must start with 0";
+  } else if (!/^0\d{9}$/.test(formData.phoneNumber)) {
+    newErrors.phoneNumber = "Phone number must be 10 digits";
   }
 
   setErrors(newErrors);
@@ -155,7 +156,7 @@ const handleSubmit = (e: React.FormEvent) => {
 
         onSuccess(newUser);
         onClose();
-    } catch (error) {
+    } catch {
         toast.error("Failed to add user", {
             position: "top-right",
             autoClose: 2000,
@@ -264,12 +265,17 @@ return (
                 <input
                     type="text"
                     value={formData.name.split(' ')[0]}
-                    onChange={(e) => setFormData({
-                    ...formData,
-                    name: e.target.value + ' ' + formData.name.split(' ').slice(1).join(' ')
-                    })}
+                    onChange={(e) => {
+                    setFormData({
+                        ...formData,
+                        name: e.target.value + ' ' + formData.name.split(' ').slice(1).join(' ')
+                    });
+                    if (errors.name) setErrors({...errors, name: ''});
+                    }}
                     placeholder="Enter first name"
-                    className="pl-10 w-full px-4 py-2 rounded-md border border-gray-200 focus:ring-2 focus:ring-orange-200 focus:border-orange-400"
+                    className={`pl-10 w-full px-4 py-2 rounded-md border ${
+                    errors.name ? 'border-red-500' : 'border-gray-200'
+                    } focus:ring-2 focus:ring-orange-200 focus:border-orange-400`}
                 />
                 </div>
             </div>
@@ -283,15 +289,23 @@ return (
                 <input
                     type="text"
                     value={formData.name.split(' ').slice(1).join(' ')}
-                    onChange={(e) => setFormData({
-                    ...formData,
-                    name: formData.name.split(' ')[0] + ' ' + e.target.value
-                    })}
+                    onChange={(e) => {
+                    setFormData({
+                        ...formData,
+                        name: formData.name.split(' ')[0] + ' ' + e.target.value
+                    });
+                    if (errors.name) setErrors({...errors, name: ''});
+                    }}
                     placeholder="Enter last name"
-                    className="pl-10 w-full px-4 py-2 rounded-md border border-gray-200 focus:ring-2 focus:ring-orange-200 focus:border-orange-400"
+                    className={`pl-10 w-full px-4 py-2 rounded-md border ${
+                    errors.name ? 'border-red-500' : 'border-gray-200'
+                    } focus:ring-2 focus:ring-orange-200 focus:border-orange-400`}
                 />
                 </div>
             </div>
+            {errors.name && (
+                <p className="text-red-500 text-sm mt-1 col-span-2">{errors.name}</p>
+            )}
             </div>
 
             <div>
@@ -325,17 +339,28 @@ return (
                 <Lock className="h-4 w-4 text-gray-400" />
                 </div>
                 <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={formData.password}
                 onChange={(e) => {
                     setFormData({ ...formData, password: e.target.value });
                     if (errors.password) setErrors({...errors, password: ''});
                 }}
                 placeholder="Minimum 6 characters"
-                className={`pl-10 w-full px-4 py-2 rounded-md border ${
+                className={`pl-10 pr-10 w-full px-4 py-2 rounded-md border ${
                     errors.password ? 'border-red-500' : 'border-gray-200'
                 } focus:ring-2 focus:ring-orange-200 focus:border-orange-400`}
                 />
+                <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                >
+                {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                ) : (
+                    <Eye className="h-4 w-4" />
+                )}
+                </button>
             </div>
             {errors.password && (
                 <p className="text-red-500 text-sm mt-1">{errors.password}</p>
@@ -351,11 +376,20 @@ return (
                 <input
                 type="text"
                 value={formData.phoneNumber}
-                onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+                onChange={(e) => {
+                    const value = e.target.value.replace(/[^\d]/g, '');
+                    setFormData({ ...formData, phoneNumber: value });
+                    if (errors.phoneNumber) setErrors({...errors, phoneNumber: ''});
+                }}
                 placeholder="0xxxxxxxxx"
-                className="pl-10 w-full px-4 py-2 rounded-md border border-gray-200 focus:ring-2 focus:ring-orange-200 focus:border-orange-400"
+                className={`pl-10 w-full px-4 py-2 rounded-md border ${
+                    errors.phoneNumber ? 'border-red-500' : 'border-gray-200'
+                } focus:ring-2 focus:ring-orange-200 focus:border-orange-400`}
                 />
             </div>
+            {errors.phoneNumber && (
+                <p className="text-red-500 text-sm mt-1">{errors.phoneNumber}</p>
+            )}
             </div>
 
             <div>

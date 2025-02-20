@@ -16,6 +16,9 @@ import {
   Hourglass,
   ChevronRight,
   ChevronLeft,
+  Pencil,
+  Trash2,
+  Eye,
   // CircleCheck
 } from "lucide-react";
 import {
@@ -74,6 +77,9 @@ const Icons: IconType = {
   CircleCheck: FaCheckCircle,
   CircleReject: FaTimesCircle,
   CirclePending: FaClock,
+  Detail: Eye,
+  Edit: Pencil,
+  Delete: Trash2
 };
 
 export default Icons;

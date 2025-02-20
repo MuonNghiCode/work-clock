@@ -42,9 +42,8 @@ const UserSidebar: React.FC = () => {
     <>
       <div
         ref={sidebarRef}
-        className={`flex justify-center text-xl transition-all duration-300 mt-1 ${
-          isSidebarExpanded ? "w-56" : "w-24"
-        }`}
+        className={`flex justify-center text-xl transition-all duration-300 mt-1 ${isSidebarExpanded ? "w-56" : "w-24"
+          }`}
       >
         <div className="flex flex-col gap-3 space-y-4 mt-2">
           <div className="flex flex-col gap-3 space-y-4">
@@ -78,7 +77,7 @@ const UserSidebar: React.FC = () => {
             {isSidebarExpanded && (
               <h2 className="text-gray-300">Preferencies</h2>
             )}
-            <NavLink to="" className="flex items-center justify-start gap-3">
+            <NavLink to="edit_profile" className="flex items-center justify-start gap-3">
               <Icons.Settings className="w-8 h-8" />
               {isSidebarExpanded && "SETTING"}
             </NavLink>
