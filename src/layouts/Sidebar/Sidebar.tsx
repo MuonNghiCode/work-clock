@@ -13,7 +13,8 @@ const Sidebar: React.FC = () => {
   const handleClickOutside = (event: MouseEvent) => {
     if (
       sidebarRef.current &&
-      !sidebarRef.current.contains(event.target as Node)
+      !sidebarRef.current.contains(event.target as Node) &&
+      isSidebarOpen
     ) {
       closeSidebar();
     }
@@ -25,9 +26,7 @@ const Sidebar: React.FC = () => {
     } else {
       document.removeEventListener("mousedown", handleClickOutside);
     }
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isSidebarOpen]);
 
   const handleLogout = () => {
@@ -45,12 +44,12 @@ const Sidebar: React.FC = () => {
         label: "DASHBOARD",
       },
       {
-        path: "/admin/user",
+        path: "user",
         icon: <Icons.User className="w-8 h-8" />,
         label: "User Management",
       },
       {
-        path: "/admin/project",
+        path: "project",
         icon: <Icons.FolderDot className="w-8 h-8" />,
         label: "Project Management",
       },
@@ -62,7 +61,7 @@ const Sidebar: React.FC = () => {
         label: "DASHBOARD",
       },
       {
-        path: "/approval/approval-management",
+        path: "approval-management",
         icon: <Icons.MdApproval className="w-8 h-8" />,
         label: "Approval Management",
       },
@@ -74,29 +73,24 @@ const Sidebar: React.FC = () => {
         label: "DASHBOARD",
       },
       {
-        path: "/finance/paid-management",
+        path: "paid-management",
         icon: <Icons.Wallet className="w-8 h-8" />,
         label: "Finance Management",
-      },
-      {
-        path: "/request",
-        icon: <Icons.ChartColumn className="w-8 h-8" />,
-        label: "REPORT",
       },
     ],
     user: [
       {
-        path: "/dashboard",
+        path: "dashboard",
         icon: <Icons.Dashboard className="w-8 h-8" />,
         label: "DASHBOARD",
       },
       {
-        path: "/request",
+        path: "request",
         icon: <Icons.ChartColumn className="w-8 h-8" />,
         label: "REPORT",
       },
       {
-        path: "/edit_profile",
+        path: "edit_profile",
         icon: <Icons.Settings className="w-8 h-8" />,
         label: "SETTING",
       },

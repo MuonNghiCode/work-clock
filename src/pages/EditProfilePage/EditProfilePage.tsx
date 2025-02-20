@@ -178,7 +178,7 @@ const EditProfilePage: React.FC = () => {
                 <div className="w-1/4 flex flex-col items-center bg-white p-4 shadow rounded-lg">
                     <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
                     <div className="relative w-24 h-24 rounded-full overflow-hidden border border-gray-300 cursor-pointer" onClick={() => document.getElementById('fileInput')?.click()}>
-                        <img src={userImage} alt="User" className="w-full h-full object-cover" />
+                        <img src={userDefaultImage} alt="User" className="w-full h-full object-cover" />
                         <input id="fileInput" type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
                         <div className="absolute bottom-1 right-1 bg-gray-700 p-1 rounded-full text-white text-xs cursor-pointer hover:bg-gray-600">
                             <FaCamera />
