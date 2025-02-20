@@ -106,9 +106,8 @@ const Sidebar: React.FC = () => {
   return (
     <div
       ref={sidebarRef}
-      className={`flex justify-center text-xl transition-all duration-300 mt-1 ${
-        isSidebarOpen ? "w-56" : "w-24"
-      }`}
+      className={`flex justify-center text-xl transition-all duration-300 mt-1 ${isSidebarOpen ? "w-56" : "w-24"
+        }`}
     >
       <div className="flex flex-col gap-3 space-y-4 mt-2">
         {user?.role && menuItems[user.role] && (
