@@ -23,7 +23,7 @@ const TableProject: React.FC<DataProps> = ({
   onDeleteProject,
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(5);
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [searchValue, setSearchValue] = useState<string>("");
   const [showProjectDetail, setShowProjectDetail] = useState<boolean>(false);
