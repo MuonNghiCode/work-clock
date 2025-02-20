@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Form } from 'antd';
-import { useState } from 'react';
 import EditRequestModal from '../../components/RequestComponents/EditRequestModal/EditRequestModal';
 import DeleteRequestModal from '../../components/RequestComponents/DeleteRequestModal/DeleteRequestModal';
 import TableRequest from '../../components/RequestComponents/TableRequest/TableRequest';
