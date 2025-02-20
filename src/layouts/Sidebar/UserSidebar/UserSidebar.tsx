@@ -68,7 +68,7 @@ const UserSidebar: React.FC = () => {
               <Icons.Dashboard className="w-8 h-8" />
               {isSidebarExpanded && "DASHBOARD"}
             </NavLink>
-            <NavLink to="" className="flex items-center justify-start gap-3">
+            <NavLink to="/user/request" className="flex items-center justify-start gap-3">
               <Icons.ChartColumn className="w-8 h-8" />
               {isSidebarExpanded && "REPORT"}
             </NavLink>

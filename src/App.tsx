@@ -24,7 +24,6 @@ import RequestPage from "./pages/RequestPage/RequestPage";
 
 import UserDashboard from "./pages/UserDashboardPage/UserDashboard";
 import ApprovalDashBoardPage from "./pages/ApprovalDashBoardPage/ApprovalDashBoardPage";
-import AdminDashBoard from "./pages/AdminPage/AdminDashboard/AdminDashBoard";
 
 const router = createBrowserRouter([
   {
@@ -48,7 +47,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <AdminDashBoard />,
+        element: <div>UserDashboard</div>,
       },
       {
         path: "user",

@@ -18,7 +18,7 @@ interface FormData {
     country: string;
 }
 
-interface PasswordData {
+interface PasswordData extends Record<string, string> {
     oldPassword: string;
     newPassword: string;
     confirmPassword: string;
@@ -96,14 +96,14 @@ const EditProfilePage: React.FC = () => {
 
 
     // Kiểm tra nếu có trường nào rỗng trong đối tượng (trừ các trường không bắt buộc)
-    const hasEmptyField = (data: { [key: string]: string }): boolean =>
+    const hasEmptyField = (data: Record<string, string>): boolean =>
         Object.values(data).some(value => value.trim() === "");
 
     // Submit cho Account Settings
     const handleSubmitAccount = (e: React.FormEvent) => {
         e.preventDefault();
         // Kiểm tra các trường bắt buộc (tất cả đều bắt buộc trong ví dụ này)
-        if (hasEmptyField(formData)) {
+        if (hasEmptyField(passwordData as Record<string, string>)) {
             toast.error("Empty field, try again");
             return;
         }
