@@ -26,12 +26,17 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project }) =
 
   const handleSave = () => {
     if (onSave) {
+      // Thêm thông báo console để kiểm tra xem onSave có được gọi không
+      console.log("Saving project data:", projectData);
+      
       // Chuyển đổi ngược lại format DD/MM/YYYY trước khi save
       const formattedDate = projectData.date ? new Date(projectData.date).toLocaleDateString('en-GB') : "";
       onSave({
         ...projectData,
         date: formattedDate
       });
+    } else {
+      console.error("onSave function is not defined");
     }
     if (onClose) {
       onClose();

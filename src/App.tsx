@@ -43,11 +43,11 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "/admin/usermanagement",
+        path: "usermanagement",
         element: <AdminUserManagement />,
       },
       {
-        path: "/admin/project",
+        path: "project",
         element: <AdminProject />,
       },
     ],
@@ -71,7 +71,7 @@ const router = createBrowserRouter([
     ),
     errorElement: <ErrorPage />,
 
-    children: [{ path: "/finance", element: <FinancePage /> }],
+    children: [{ path: "", element: <FinancePage /> }],
   },
   {
     path: "/user",
@@ -83,7 +83,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "/user",
+        path: "",
         element: (
           <div>
             <UserDashboard />
