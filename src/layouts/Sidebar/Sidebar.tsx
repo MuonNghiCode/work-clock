@@ -86,17 +86,17 @@ const Sidebar: React.FC = () => {
     ],
     user: [
       {
-        path: "/dashboard",
+        path: "/user/dashboard",
         icon: <Icons.Dashboard className="w-8 h-8" />,
         label: "DASHBOARD",
       },
       {
-        path: "/request",
+        path: "/user/request",
         icon: <Icons.ChartColumn className="w-8 h-8" />,
         label: "REPORT",
       },
       {
-        path: "/edit_profile",
+        path: "/user/edit_profile",
         icon: <Icons.Settings className="w-8 h-8" />,
         label: "SETTING",
       },
