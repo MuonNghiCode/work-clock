@@ -159,7 +159,7 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
               </td>
               <td className="px-4 py-2 ">{handleStatusChangeHTML(item.status)}</td>
               <td className="px-4 py-2 ">
-                {item.dateCreate}
+                {new Date(item.dateCreate).toLocaleDateString()}
               </td>
               <td
                 className="action px-4 py-2 rounded-r-2xl"

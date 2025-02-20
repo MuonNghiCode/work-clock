@@ -46,7 +46,10 @@ const AdminSidebar: React.FC = () => {
         <div className="flex flex-col gap-3 space-y-4 mt-2">
           <div>
             {isSidebarExpanded && <h2 className="text-gray-300">Analyze</h2>}
-            <NavLink to="/" className="flex items-center justify-center gap-3">
+            <NavLink
+              to="/admin"
+              className="flex items-center justify-center gap-3"
+            >
               <Icons.Dashboard className="w-8 h-8" />
               {isSidebarExpanded && "DASHBOARD"}
             </NavLink>
@@ -76,7 +79,8 @@ const AdminSidebar: React.FC = () => {
             }}
             className="flex items-center justify-start gap-3 mt-10"
           >
-            <Icons.LogOut /> LOG OUT
+            <Icons.LogOut className="w-8 h-8" />
+            {isSidebarExpanded && "Log out"}
           </NavLink>
         </div>
       </div>
