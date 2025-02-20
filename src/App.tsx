@@ -14,20 +14,16 @@ import UserLayout from "./layouts/UserLayout/UserLayout";
 import AdminUserManagement from "./pages/AdminPage/AdminUser/AdminUserManagement";
 import HomePage from "./pages/HomePage/HomePage";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
+import UserDashboard from "./pages/UserDashboardPage/UserDashboard";
 
-import ChangePassword from "./pages/ChangePassword/ChangePassword";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UserProvider } from "./context/UserContext";
 import ApprovalPage from "./pages/ApprovalPage/ApprovalPage";
-import RequestPage from "./pages/RequestPage/RequestPage";
-
-import UserDashboard from "./pages/UserDashboardPage/UserDashboard";
-import ApprovalDashBoardPage from "./pages/ApprovalDashBoardPage/ApprovalDashBoardPage";
-import AdminDashBoard from "./pages/AdminPage/AdminDashboard/AdminDashBoard";
+import ChangePassword from "./pages/ChangePassword/ChangePassword";
 import UserCalendarPage from "./pages/UserCalendarPage/UserCalendarPage";
 
-const router = createBrowserRouter([
+const router = createBrowserRouter([ 
   {
     path: "/",
     element: <MainLayout />,
@@ -48,15 +44,11 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "",
-        element: <AdminDashBoard />,
-      },
-      {
-        path: "user",
+        path: "/admin/usermanagement",
         element: <AdminUserManagement />,
       },
       {
-        path: "project",
+        path: "/admin/project",
         element: <AdminProject />,
       },
     ],
@@ -69,10 +61,7 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
-    children: [
-      { path: "", element: <ApprovalDashBoardPage /> },
-      { path: "approval-management", element: <ApprovalPage /> },
-    ],
+    children: [{ path: "", element: <ApprovalPage/>}],
   },
   {
     path: "/finance",
@@ -95,18 +84,10 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "",
+        path: "/user",
         element: (
           <div>
             <UserDashboard />
-          </div>
-        ),
-      },
-      {
-        path: "request",
-        element: (
-          <div>
-            <RequestPage />
           </div>
         ),
       },
