@@ -26,6 +26,7 @@ import UserDashboard from "./pages/UserDashboardPage/UserDashboard";
 import ApprovalDashBoardPage from "./pages/ApprovalDashBoardPage/ApprovalDashBoardPage";
 import AdminDashBoard from "./pages/AdminPage/AdminDashboard/AdminDashBoard";
 import ChangePassword from "./pages/ChangePassword/ChangePassword";
+import UserCalendarPage from "./pages/UserCalendarPage/UserCalendarPage";
 
 const router = createBrowserRouter([
   {
@@ -80,7 +81,7 @@ const router = createBrowserRouter([
     ),
     errorElement: <ErrorPage />,
 
-    children: [{ path: "", element: <FinancePage /> }],
+    children: [{ path: "paid-management", element: <FinancePage /> }],
   },
   {
     path: "/user",
@@ -113,6 +114,14 @@ const router = createBrowserRouter([
 
         ),
       },
+      {
+        path: "calendar",
+        element: (
+          <div>
+            <UserCalendarPage />
+          </div>
+        ),
+      }
     ],
   },
   {
