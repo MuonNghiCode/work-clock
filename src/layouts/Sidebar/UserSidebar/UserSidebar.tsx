@@ -39,42 +39,43 @@ const UserSidebar: React.FC = () => {
   }, [isSidebarOpen]);
 
   return (
+    <>
       <div
         ref={sidebarRef}
         className={`flex justify-center text-xl transition-all duration-300 mt-1 ${isSidebarExpanded ? "w-56" : "w-24"
           }`}
       >
-      <div className="flex flex-col gap-3 space-y-4 mt-2">
-        <div className="flex flex-col gap-3 space-y-4">
+        <div className="flex flex-col gap-3 space-y-4 mt-2">
+          <div className="flex flex-col gap-3 space-y-4">
             {isSidebarExpanded && (
-            <h2 className="text-gray-300">Productivity</h2>
+              <h2 className="text-gray-300">Productivity</h2>
             )}
-          <NavLink to="" className="flex items-center justify-start gap-3">
-            <Icons.Clock className="w-8 h-8" />
-            {isSidebarExpanded && "TIME TRACKER"}
-          </NavLink>
-          <NavLink to="/user/calendar" className="flex items-center justify-start gap-3">
-            <Icons.Calendar className="w-8 h-8" />
-            {isSidebarExpanded && "CALENDAR"}
-          </NavLink>
-        </div>
-        <div className="flex flex-col gap-3 space-y-4">
-          {isSidebarExpanded && <h2 className="text-gray-300 ">Analyze</h2>}
-          <NavLink
-            to="dashboard"
-            className="flex items-center justify-start gap-3"
-          >
-            <Icons.Dashboard className="w-8 h-8" />
-            {isSidebarExpanded && "DASHBOARD"}
-          </NavLink>
-          <NavLink to="request" className="flex items-center justify-start gap-3">
-            <Icons.ChartColumn className="w-8 h-8" />
-            {isSidebarExpanded && "REPORT"}
-          </NavLink>
-        </div>
-        <div className="flex flex-col gap-3 space-y-4">
+            <NavLink to="" className="flex items-center justify-start gap-3">
+              <Icons.Clock className="w-8 h-8" />
+              {isSidebarExpanded && "TIME TRACKER"}
+            </NavLink>
+            <NavLink to="" className="flex items-center justify-start gap-3">
+              <Icons.Calendar className="w-8 h-8" />
+              {isSidebarExpanded && "CALENDAR"}
+            </NavLink>
+          </div>
+          <div className="flex flex-col gap-3 space-y-4">
+            {isSidebarExpanded && <h2 className="text-gray-300 ">Analyze</h2>}
+            <NavLink
+              to=""
+              className="flex items-center justify-start gap-3"
+            >
+              <Icons.Dashboard className="w-8 h-8" />
+              {isSidebarExpanded && "DASHBOARD"}
+            </NavLink>
+            <NavLink to="request" className="flex items-center justify-start gap-3">
+              <Icons.ChartColumn className="w-8 h-8" />
+              {isSidebarExpanded && "REPORT"}
+            </NavLink>
+          </div>
+          <div className="flex flex-col gap-3 space-y-4">
             {isSidebarExpanded && (
-            <h2 className="text-gray-300">Preferencies</h2>
+              <h2 className="text-gray-300">Preferencies</h2>
             )}
             <NavLink to="edit_profile" className="flex items-center justify-start gap-3">
               <Icons.Settings className="w-8 h-8" />
@@ -90,10 +91,11 @@ const UserSidebar: React.FC = () => {
             >
               <Icons.LogOut className="w-8 h-8" />
               {isSidebarExpanded && "LOG OUT"}
-          </NavLink>
+            </NavLink>
           </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
