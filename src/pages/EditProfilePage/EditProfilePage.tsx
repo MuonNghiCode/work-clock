@@ -12,8 +12,8 @@ interface FormData {
     lastName: string;
     phoneNumber: string;
     email: string;
+    district: string;
     city: string;
-    stateCountry: string;
     postcode: string;
     country: string;
 }
@@ -34,10 +34,10 @@ const EditProfilePage: React.FC = () => {
         lastName: "Poole",
         phoneNumber: "+1800-000",
         email: "nathaniel.poole@microsoft.com",
-        city: "",
-        stateCountry: "",
-        postcode: "",
-        country: "",
+        district: "Thu Duc",
+        city: "Ho Chi Minh",
+        postcode: "12000",
+        country: "Viet Nam",
     };
 
     const [formData, setFormData] = useState<FormData>(() => {
@@ -98,33 +98,52 @@ const EditProfilePage: React.FC = () => {
     // Kiểm tra nếu có trường nào rỗng trong đối tượng (trừ các trường không bắt buộc)
     const hasEmptyField = (data: Record<string, string>): boolean =>
         Object.values(data).some(value => value.trim() === "");
-
+    const formDataStrings: Record<string, string> = {
+        firstName: formData.firstName.toString(),
+        lastName: formData.lastName.toString(),
+        phoneNumber: formData.phoneNumber.toString(),
+        email: formData.email.toString(),
+        district: formData.district.toString(),
+        city: formData.city.toString(),
+        postcode: formData.postcode.toString(),
+        country: formData.country.toString(),
+    };
     // Submit cho Account Settings
     const handleSubmitAccount = (e: React.FormEvent) => {
         e.preventDefault();
-        // Kiểm tra các trường bắt buộc (tất cả đều bắt buộc trong ví dụ này)
-        if (hasEmptyField(passwordData as Record<string, string>)) {
+
+        // Kiểm tra xem có trường nào bị bỏ trống không
+        if (hasEmptyField(formDataStrings)) {
             toast.error("Empty field, try again");
             return;
         }
-        // Cập nhật dữ liệu (dữ liệu đã được lưu vào state và useEffect lưu vào localStorage)
+
+        // Cập nhật dữ liệu vào localStorage (đã có useEffect lo lưu)
         toast.success("Update successfully");
     };
+
 
     // Submit cho Change Password
     const handleSubmitPassword = (e: React.FormEvent) => {
         e.preventDefault();
-        if (hasEmptyField(passwordData)) {
+
+        const { oldPassword, newPassword, confirmPassword } = passwordData;
+
+        if (!oldPassword || !newPassword || !confirmPassword) {
             toast.error("Empty field, try again");
             return;
         }
-        // Giả sử bạn kiểm tra xác nhận mật khẩu khớp
-        if (passwordData.newPassword !== passwordData.confirmPassword) {
+
+        if (newPassword !== confirmPassword) {
             toast.error("Passwords do not match");
             return;
         }
-        // Xử lý đổi mật khẩu (gọi API, v.v)
+
+        // Giả lập việc lưu mật khẩu mới vào localStorage
+        localStorage.setItem("userPassword", newPassword);
+
         toast.success("Password updated successfully");
+
         // Reset lại form mật khẩu
         setPasswordData({
             oldPassword: "",
@@ -245,6 +264,17 @@ const EditProfilePage: React.FC = () => {
                                 />
                             </div>
                             <div>
+                                <label className="block text-gray-700">District</label>
+                                <input
+                                    type="text"
+                                    name="district"
+                                    value={formData.district}
+                                    onChange={handleInputChange}
+                                    className="w-full p-2 border rounded"
+                                    placeholder="district"
+                                />
+                            </div>
+                            <div>
                                 <label className="block text-gray-700">City</label>
                                 <input
                                     type="text"
@@ -253,17 +283,6 @@ const EditProfilePage: React.FC = () => {
                                     onChange={handleInputChange}
                                     className="w-full p-2 border rounded"
                                     placeholder="City"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-gray-700">State/Country</label>
-                                <input
-                                    type="text"
-                                    name="stateCountry"
-                                    value={formData.stateCountry}
-                                    onChange={handleInputChange}
-                                    className="w-full p-2 border rounded"
-                                    placeholder="State/Country"
                                 />
                             </div>
                             <div>
