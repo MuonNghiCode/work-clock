@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { FaEye, FaEyeSlash, FaCamera } from "react-icons/fa"; // Thêm icon camera
 // Import ảnh mặc định
 import userDefaultImage from "../../assets/images/user-image.png";
+import { UserContext } from "../../context/UserContext"; // Import UserContext
 
 interface FormData {
     firstName: string;

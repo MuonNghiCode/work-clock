@@ -101,13 +101,12 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "request",
+        path: "/user/edit_profile",
         element: (
-          <div>
-            <RequestPage />
-          </div>
+          <EditProfilePage />
+
         ),
-      },
+      }
     ],
   },
   {
