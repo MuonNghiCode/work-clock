@@ -9,7 +9,7 @@ import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { Pagination } from "antd";
 
-interface DataType {
+export interface DataType {
   key: string;
   project: string;
   claimer: string;
@@ -17,7 +17,7 @@ interface DataType {
   dateCreate: string;
 }
 
-const data: DataType[] = [
+export const data: DataType[] = [
   {
     key: "1",
     project: "ProjectSample",
