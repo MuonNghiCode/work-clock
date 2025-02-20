@@ -32,7 +32,7 @@ const generateFakeData = (): ClaimRequest[] => {
   ];
   const fakeData: ClaimRequest[] = [];
 
-  for (let i = 0; i < 10000; i++) {
+  for (let i = 0; i < 1000; i++) {
     fakeData.push({
       staffName: `Staff ${i + 1}`,
       staffRole: `Department ${i + 1}`,
