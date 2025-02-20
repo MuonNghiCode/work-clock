@@ -45,8 +45,8 @@ const AdminProject: React.FC = () => {
 
   return (
     <>
-      <div className="w-full flex justify-center">
-        <div className="w-full lg:w-3/4 flex-col">
+      <div className="p-6 w-full rounded-lg ">
+        <div className="w-full  flex-col">
           <div className="flex justify-between items-center py-9">
             <h1 className="text-5xl">Project Management</h1>
             <button

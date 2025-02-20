@@ -3,5 +3,6 @@ export interface Project {
   name: string;
   code: string;
   date: string;
+  enddate: string;
   status: "Processing" | "Pending" | "Complete";
 } 
