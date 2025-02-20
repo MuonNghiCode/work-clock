@@ -35,7 +35,6 @@ const FinanceSidebar: React.FC = () => {
   };
 
   return (
-    <>
       <div
         ref={sidebarRef}
         className={`flex justify-center text-xl transition-all duration-300 mt-1 ${
@@ -73,7 +72,6 @@ const FinanceSidebar: React.FC = () => {
           </NavLink>
         </div>
       </div>
-    </>
   );
 };
 
