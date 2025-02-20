@@ -4,7 +4,6 @@ import { Project } from "../../../types/Project";
 import { GetProps } from "antd/lib/_util/type";
 import ProjectDetail from "./ProjectDetail";
 import ConfirmModal from "../../ConfirmModal/ConfirmModal";
-// import { Icons } from "../../../components/icon";
 import Icons from "../../icon";
 import EditProject from "../EditProject/EditProject";
 import Modal from "../../Modal/Modal";
@@ -18,7 +17,11 @@ interface DataProps {
   onDeleteProject: (projectId: string | number) => void;
 }
 
-const TableProject: React.FC<DataProps> = ({ data, onEditProject, onDeleteProject }) => {
+const TableProject: React.FC<DataProps> = ({
+  data,
+  onEditProject,
+  onDeleteProject,
+}) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
@@ -54,13 +57,17 @@ const TableProject: React.FC<DataProps> = ({ data, onEditProject, onDeleteProjec
 
   const filteredData = data.filter((item) => {
     const matchesStatus = statusFilter ? item.status === statusFilter : true;
-    
+
     const matchesSearch = searchValue
-      ? searchValue.toLowerCase().split('').every(char => {
-          const charCount = searchValue.toLowerCase().split(char).length - 1;
-          const nameCharCount = item.name.toLowerCase().split(char).length - 1;
-          return nameCharCount >= charCount;
-        })
+      ? searchValue
+          .toLowerCase()
+          .split("")
+          .every((char) => {
+            const charCount = searchValue.toLowerCase().split(char).length - 1;
+            const nameCharCount =
+              item.name.toLowerCase().split(char).length - 1;
+            return nameCharCount >= charCount;
+          })
       : true;
 
     return matchesStatus && matchesSearch;
@@ -132,11 +139,20 @@ const TableProject: React.FC<DataProps> = ({ data, onEditProject, onDeleteProjec
           {statusTags.map((status) => (
             <Tag
               key={status}
-              color={statusFilter === status || (status === "All" && statusFilter === null) ? "#ff914d" : "default"}
+              color={
+                statusFilter === status ||
+                (status === "All" && statusFilter === null)
+                  ? "#ff914d"
+                  : "default"
+              }
               onClick={() => handleStatusChange(status)}
               className="cursor-pointer !px-2 !py-1 !font-squada !text-lg !rounded-lg"
             >
-              {(statusFilter === status || (status === "All" && statusFilter === null)) && <Icons.Check className="inline-flex" />} {status}
+              {(statusFilter === status ||
+                (status === "All" && statusFilter === null)) && (
+                <Icons.Check className="inline-flex" />
+              )}{" "}
+              {status}
             </Tag>
           ))}
         </div>
@@ -157,10 +173,14 @@ const TableProject: React.FC<DataProps> = ({ data, onEditProject, onDeleteProjec
       <table className="min-w-full !border-separate border-spacing-y-2.5 text-black border-0">
         <thead className="bg-brand-grandient h-[70px] text-lg text-white !rounded-t-lg">
           <tr className="bg-gradient from-[FEB78A] to-[FF914D]">
-            <th className="border-white px-4 py-2 !rounded-tl-2xl">Project Name</th>
+            <th className="border-white px-4 py-2 !rounded-tl-2xl">
+              Project Name
+            </th>
             <th className="border-l-2 border-white px-4 py-2">Date</th>
             <th className="border-l-2 border-white px-4 py-2">Status</th>
-            <th className="border-l-2 border-white px-4 py-2 !rounded-tr-2xl">Action</th>
+            <th className="border-l-2 border-white px-4 py-2 !rounded-tr-2xl">
+              Action
+            </th>
           </tr>
         </thead>
         <tbody className="w-full">
@@ -172,7 +192,9 @@ const TableProject: React.FC<DataProps> = ({ data, onEditProject, onDeleteProjec
             >
               <td className="px-4 py-2 rounded-l-2xl">{item.name}</td>
               <td className="px-4 py-2">{item.date}</td>
-              <td className="px-4 py-2">{handleStatusChangeHTML(item.status)}</td>
+              <td className="px-4 py-2">
+                {handleStatusChangeHTML(item.status)}
+              </td>
               <td
                 className="action px-4 py-2 rounded-r-2xl"
                 onClick={(e) => e.stopPropagation()}
@@ -217,7 +239,6 @@ const TableProject: React.FC<DataProps> = ({ data, onEditProject, onDeleteProjec
                       </span>
                     </Button>
                   </div>
-
                 </div>
               </td>
             </tr>
@@ -237,8 +258,8 @@ const TableProject: React.FC<DataProps> = ({ data, onEditProject, onDeleteProjec
         />
       </div>
 
-      <ProjectDetail 
-        visible={showProjectDetail} 
+      <ProjectDetail
+        visible={showProjectDetail}
         onClose={handleClose}
         Project={selectedProject}
       />
