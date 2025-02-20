@@ -47,11 +47,22 @@ const userData = {
 };
 
 const claimData = {
-  labels: ["Approved", "Rejected", "Pending"],
+  labels: ["Claim Status"],
   datasets: [
     {
-      data: [approvedClaims, rejectedClaims, pendingClaims],
-      backgroundColor: ["#82ca9d", "#ff6384", "#ffc658"],
+      label: "Approved",
+      data: [approvedClaims],
+      backgroundColor: "#82ca9d",
+    },
+    {
+      label: "Rejected",
+      data: [rejectedClaims],
+      backgroundColor: "#ff6384",
+    },
+    {
+      label: "Pending",
+      data: [pendingClaims],
+      backgroundColor: "#ffc658",
     },
   ],
 };
@@ -102,6 +113,11 @@ const StatCard = ({ icon, label, value, color }: StatCardProps) => (
   </div>
 );
 
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+};
+
 const UserDashboard = () => (
   <Section title="User Statistics">
     <div className="grid grid-cols-1 gap-6">
@@ -112,7 +128,9 @@ const UserDashboard = () => (
         color="bg-blue-100"
       />
       <div className="flex justify-center">
-        <Pie data={userData} className="w-16" />
+        <div className="w-128 h-128">
+          <Pie data={userData} options={chartOptions} />
+        </div>
       </div>
     </div>
   </Section>
@@ -141,7 +159,9 @@ const ClaimDashboard = () => (
       />
     </div>
     <div className="mt-6 flex justify-center">
-      <Bar data={claimData} className="w-64" />
+      <div className="w-200 h-100">
+        <Bar data={claimData} options={chartOptions} />
+      </div>
     </div>
   </Section>
 );
@@ -156,7 +176,9 @@ const MoneyDashboard = () => (
         color="bg-orange-100"
       />
       <div className="flex justify-center">
-        <Line data={financeData} className="w-64" />
+        <div className="w-200 h-100">
+          <Line data={financeData} options={chartOptions} />
+        </div>
       </div>
     </div>
   </Section>
@@ -179,18 +201,20 @@ const ProjectDashboard = () => (
       />
     </div>
     <div className="mt-6 flex justify-center">
-      <Pie
-        data={{
-          labels: ["Completed", "Ongoing"],
-          datasets: [
-            {
-              data: [completedProjects, ongoingProjects],
-              backgroundColor: ["#4d94ff", "#ff9f40"],
-            },
-          ],
-        }}
-        className="w-64"
-      />
+      <div className="w-200 h-100">
+        <Pie
+          data={{
+            labels: ["Completed", "Ongoing"],
+            datasets: [
+              {
+                data: [completedProjects, ongoingProjects],
+                backgroundColor: ["#4d94ff", "#ff9f40"],
+              },
+            ],
+          }}
+          options={chartOptions}
+        />
+      </div>
     </div>
   </Section>
 );
