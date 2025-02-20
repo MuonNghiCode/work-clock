@@ -14,12 +14,14 @@ import UserLayout from "./layouts/UserLayout/UserLayout";
 import AdminUserManagement from "./pages/AdminPage/AdminUser/AdminUserManagement";
 import HomePage from "./pages/HomePage/HomePage";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
-import UserDashboard from "./pages/UserDashboardPage/UserDashboard";
-import ChangePassword from "./pages/LoginPage/ChangePassword";
+
+import ChangePassword from "./pages/ChangePassword/ChangePassword";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UserProvider } from "./context/UserContext";
 import ApprovalPage from "./pages/ApprovalPage/ApprovalPage";
+import ApprovalDashBoardPage from "./pages/ApprovalPage/ApprovalDashBoardPage";
+import UserDashboard from "./pages/UserDashboardPage/UserDashboard";
 
 const router = createBrowserRouter([
   {
@@ -59,7 +61,9 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
-    children: [{ path: "", element: <ApprovalPage /> }],
+    children: [
+      { path: "", element: <ApprovalDashBoardPage /> },
+      { path: "/approval/approval-management", element: <ApprovalPage /> }],
   },
   {
     path: "/finance",
