@@ -1,7 +1,8 @@
 import React from "react";
 import AdminHeader from "../Header/AdminHeader/AdminHeader";
-import UserSidebar from "../Sidebar/UserSidebar/UserSidebar";
+// import UserSidebar from "../Sidebar/UserSidebar/UserSidebar";
 import { Outlet } from "react-router";
+import Sidebar from "../Sidebar/Sidebar";
 
 const UserLayout: React.FC = () => {
   return (
@@ -12,7 +13,7 @@ const UserLayout: React.FC = () => {
         </header>
         <div className="flex flex-1 ">
           <aside className="relative bg-white text-black shadow-[10px_0_10px_rgba(255,145,77,0.2)]">
-            <UserSidebar />
+            <Sidebar />
           </aside>
           <main className="flex-1 p-6 bg-brand-orange-light">
             <Outlet />

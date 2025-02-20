@@ -1,5 +1,5 @@
 import React from "react";
-import { useUser } from "../../../context/UserContext";
+import { useUser } from "../../../contexts/UserContext";
 import Images from "../../../components/images";
 import Icons from "../../../components/icon";
 import { Dropdown, Badge, Button } from "antd";
@@ -9,7 +9,6 @@ import { useSidebarStore } from "../../../config/zustand";
 const AdminHeader: React.FC = () => {
   const { user } = useUser();
   const { toggleSidebar } = useSidebarStore();
-
 
   const items: MenuProps["items"] = [
     {

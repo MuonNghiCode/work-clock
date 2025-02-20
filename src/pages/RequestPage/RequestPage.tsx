@@ -62,7 +62,7 @@ const data: ClaimRequest[] = [
     timeFrom: '6:00 PM',
     timeTo: '10:00 PM',
     totalHours: calculateHours('6:00 PM', '10:00 PM').toString(),
-    status: 'Approved',
+    status: 'Draft',
   },
   {
     key: '4',
@@ -89,7 +89,7 @@ const data: ClaimRequest[] = [
     timeFrom: '6:00 PM',
     timeTo: '10:00 PM',
     totalHours: calculateHours('6:00 PM', '10:00 PM').toString(),
-    status: 'Waiting',
+    status: 'Draft',
   },
   {
     key: '7',
@@ -157,7 +157,7 @@ const RequestPage: React.FC = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deletingRecord, setDeletingRecord] = useState<ClaimRequest | null>(null);
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(5);
   const [searchText, setSearchText] = useState('');
 
   const handleEdit = (record: any) => {
