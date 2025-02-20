@@ -226,7 +226,7 @@ const RequestPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 bg-orange-100 rounded-lg shadow-md">
+    <div className="p-6  rounded-lg ">
       <h1 className="text-3xl font-bold text-gray-800 mb-4">Request-Page Management</h1>
       <TableRequest
         data={tableData}
