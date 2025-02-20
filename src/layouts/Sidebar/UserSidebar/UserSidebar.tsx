@@ -4,7 +4,6 @@ import Icons from "../../../components/icon";
 import { logout } from "../../../services/auth";
 import { useUser } from "../../../context/UserContext";
 import { useSidebarStore } from "../../../config/zustand";
-import UserCalendar from "../../../components/UserCalendar/UserCalendar";
 
 const UserSidebar: React.FC = () => {
   const { setUser } = useUser();

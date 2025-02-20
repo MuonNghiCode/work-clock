@@ -2,25 +2,60 @@ import React, { useState } from "react";
 import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import "./UserCalendar.css";
+
 
 const localizer = momentLocalizer(moment);
 
 const dummyEvents = [
   {
+    title: "project T0",
+    start: new Date(2025, 1, 16, 10, 0),
+    end: new Date(2025, 1, 16, 13, 0),
+  },
+  {
     title: "project A",
     start: new Date(2025, 1, 17, 10, 0),
-    end: new Date(2025, 1, 17, 11, 0),
+    end: new Date(2025, 1, 17, 18, 0),
   },
   {
     title: "project B",
     start: new Date(2025, 1, 18, 12, 0),
-    end: new Date(2025, 1, 18, 13, 0),
+    end: new Date(2025, 1, 18, 15, 0),
+  },
+  {
+    title: "project D",
+    start: new Date(2025, 1, 18, 15, 0),
+    end: new Date(2025, 1, 18, 20, 0),
   },
   {
     title: "project C",
     start: new Date(2025, 1, 19, 9, 0),
     end: new Date(2025, 1, 19, 17, 0),
+  },
+  {
+    title: "project E",
+    start: new Date(2025, 1, 20, 8, 0),
+    end: new Date(2025, 1, 20, 16, 0),
+  },
+  {
+    title: "project F",
+    start: new Date(2025, 1, 21, 16, 0),
+    end: new Date(2025, 1, 21, 20, 0),
+  },
+  {
+    title: "project G",
+    start: new Date(2025, 1, 21, 16, 0),
+    end: new Date(2025, 1, 21, 22, 0),
+  },
+  {
+    title: "project H",
+    start: new Date(2025, 1, 22, 9, 0),
+    end: new Date(2025, 1, 22, 17, 0),
+  },
+  {
+    title: "project J",
+    start: new Date(2025, 1, 22, 18, 0),
+    end: new Date(2025, 1, 22, 22, 0),
   },
 ];
 
@@ -48,3 +83,4 @@ const UserCalendar: React.FC = () => {
 };
 
 export default UserCalendar;
+

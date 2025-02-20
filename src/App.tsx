@@ -83,7 +83,7 @@ const router = createBrowserRouter([
     ),
     errorElement: <ErrorPage />,
 
-    children: [{ path: "Paid", element: <FinancePage /> }],
+    children: [{ path: "paid-management", element: <FinancePage /> }],
   },
   {
     path: "/user",
@@ -111,7 +111,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/user/calendar",
+        path: "calendar",
         element: (
           <div>
             <UserCalendarPage />
