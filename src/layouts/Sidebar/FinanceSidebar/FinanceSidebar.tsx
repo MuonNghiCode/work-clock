@@ -44,7 +44,7 @@ const FinanceSidebar: React.FC = () => {
       <div className="flex flex-col gap-3 space-y-4 mt-2">
         <div className="flex flex-col gap-3">
           {isSidebarExpanded && <h2 className="text-gray-300 ">Analyze</h2>}
-          <NavLink to="" className="flex items-center justify-start gap-3">
+          <NavLink to="/finance" className="flex items-center justify-start gap-3">
             <Icons.Dashboard className="w-8 h-8" />
             {isSidebarExpanded && "DASHBOARD"}
           </NavLink>
