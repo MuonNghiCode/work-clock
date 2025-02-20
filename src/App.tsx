@@ -14,15 +14,20 @@ import UserLayout from "./layouts/UserLayout/UserLayout";
 import AdminUserManagement from "./pages/AdminPage/AdminUser/AdminUserManagement";
 import HomePage from "./pages/HomePage/HomePage";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
-import UserDashboard from "./pages/UserDashboardPage/UserDashboard";
 
+import EditProfilePage from "./pages/EditProfilePage/EditProfilePage";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UserProvider } from "./context/UserContext";
 import ApprovalPage from "./pages/ApprovalPage/ApprovalPage";
+import RequestPage from "./pages/RequestPage/RequestPage";
+
+import UserDashboard from "./pages/UserDashboardPage/UserDashboard";
+import ApprovalDashBoardPage from "./pages/ApprovalDashBoardPage/ApprovalDashBoardPage";
+import AdminDashBoard from "./pages/AdminPage/AdminDashboard/AdminDashBoard";
 import ChangePassword from "./pages/ChangePassword/ChangePassword";
 
-const router = createBrowserRouter([ 
+const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
@@ -43,7 +48,11 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "usermanagement",
+        path: "",
+        element: <AdminDashBoard />,
+      },
+      {
+        path: "user",
         element: <AdminUserManagement />,
       },
       {
@@ -60,7 +69,7 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
-    children: [{ path: "", element: <ApprovalPage/>}],
+    children: [{ path: "approval-management", element: <ApprovalPage /> }, { path: "", element: <ApprovalDashBoardPage /> }],
   },
   {
     path: "/finance",
@@ -88,6 +97,20 @@ const router = createBrowserRouter([
           <div>
             <UserDashboard />
           </div>
+        ),
+      },
+      {
+        path: "edit_profile",
+        element: (
+          <EditProfilePage />
+
+        ),
+      },
+      {
+        path: "request",
+        element: (
+          <RequestPage />
+
         ),
       },
     ],
@@ -127,4 +150,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default App; 
