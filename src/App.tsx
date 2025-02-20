@@ -22,7 +22,8 @@ import { UserProvider } from "./context/UserContext";
 import ApprovalPage from "./pages/ApprovalPage/ApprovalPage";
 import ChangePassword from "./pages/ChangePassword/ChangePassword";
 import UserCalendarPage from "./pages/UserCalendarPage/UserCalendarPage";
-
+import EditProfileLayout from "./layouts/EditProfileLayout/EditProfileLayout";
+import EditProfilePage from "./pages/EditProfilePage/EditProfilePage";
 const router = createBrowserRouter([ 
   {
     path: "/",
@@ -109,6 +110,16 @@ const router = createBrowserRouter([
     path: "/change-password",
     element: <ChangePassword />,
   },
+  {
+    path: "/edit_profile",
+    element: (
+      <ProtectedRoute requireEditProfile={false}>
+        <EditProfileLayout />
+      </ProtectedRoute>
+    ),
+    errorElement: <ErrorPage />,
+    children: [{ path: "/edit_profile", element: <EditProfilePage /> }],
+  }
 ]);
 
 const App: React.FC = () => {
