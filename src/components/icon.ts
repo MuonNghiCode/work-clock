@@ -11,7 +11,10 @@ import {
   Wallet,
   Pencil,
   Trash2,
-  Eye
+  Eye,
+  Grip,
+  Bell,
+  CircleHelp
 } from "lucide-react";
 
 import { GoArrowUpRight } from "react-icons/go";
@@ -47,7 +50,10 @@ const Icons: IconType = {
   MdApproval: MdApproval,
   Edit: Pencil,
   Delete: Trash2,
-  Detail: Eye
+  Detail: Eye,
+  Menu: Grip,
+  Bell: Bell,
+  Help: CircleHelp
 };
 
 export default Icons;

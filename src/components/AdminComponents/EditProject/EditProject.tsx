@@ -26,9 +26,11 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project }) =
 
   const handleSave = () => {
     if (onSave) {
+      // Chuyển đổi ngược lại format DD/MM/YYYY trước khi save
+      const formattedDate = projectData.date ? new Date(projectData.date).toLocaleDateString('en-GB') : "";
       onSave({
         ...projectData,
-        id: project?.id
+        date: formattedDate
       });
     }
     if (onClose) {
