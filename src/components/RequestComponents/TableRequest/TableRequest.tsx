@@ -38,7 +38,7 @@ const TableRequest: React.FC<TableRequestProps> = ({
   onPageChange,
   searchText,
 }) => {
-  const statusTags = ["All", "Waiting", "Approved", "Rejected"];
+  const statusTags = ["All","Draft", "Waiting", "Approved", "Rejected"];
 
   const filteredData = data.filter((item) => {
     const matchesStatus = statusFilter ? item.status === statusFilter : true;
@@ -102,21 +102,31 @@ const TableRequest: React.FC<TableRequestProps> = ({
                 </div>
               </td>
               <td className="px-4 py-2">
-                <span className={`${item.status === 'Approved' ? 'text-green-600' : item.status === 'Rejected' ? 'text-red-600' : 'text-yellow-600'} font-semibold`}>
+                <span className={`${item.status === 'Approved' ? 'text-green-600' : item.status === 'Rejected' ? 'text-red-600' : item.status === 'Draft' ? 'text-gray-600' : 'text-yellow-600'} font-semibold`}>
                   {item.status}
                 </span>
               </td>
               <td className="action px-4 py-2 rounded-r-2xl">
                 <div className="w-full flex justify-center gap-2 items-center space-x-2">
-                  <Button className="!bg-none !border-none" onClick={() => onEdit(item)}>
-                    <Edit size={24} color="#FF914D" strokeWidth={3} className="hover:bg-orange-200 overflow-hidden" />
-                  </Button>
-                  <Button className="!bg-none !border-none" onClick={() => onDelete(item)}>
-                    <Trash size={24} color="red" strokeWidth={3} className="hover:bg-red-200 overflow-hidden" />
-                  </Button>
-                  <Button className="!bg-none !border-none">
-                    <UserCheck size={24} color="green" strokeWidth={3} className="hover:bg-green-200 overflow-hidden" />
-                  </Button>
+                  {item.status !== 'Approved' && item.status !== 'Rejected' && (
+                    <>
+                      <Button
+                        className="!bg-none !border-none"
+                        onClick={() => onEdit(item)}
+                      >
+                        <Edit size={24} color="#FF914D" strokeWidth={3} className="hover:bg-orange-200 overflow-hidden" />
+                      </Button>
+                      <Button
+                        className="!bg-none !border-none"
+                        onClick={() => onDelete(item)}
+                      >
+                        <Trash size={24} color="red" strokeWidth={3} className="hover:bg-red-200 overflow-hidden" />
+                      </Button>
+                      <Button className="!bg-none !border-none">
+                        <UserCheck size={24} color="green" strokeWidth={3} className="hover:bg-green-200 overflow-hidden" />
+                      </Button>
+                    </>
+                  )}
                 </div>
               </td>
             </tr>
