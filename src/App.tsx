@@ -151,12 +151,10 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <>
-      <UserProvider>
-        {loading ? <LoadingScreen /> : <RouterProvider router={router} />}
-        <ToastContainer />
-      </UserProvider>
-    </>
+    <UserProvider>
+      {loading ? <LoadingScreen /> : <RouterProvider router={router} />}
+      <ToastContainer />
+    </UserProvider>
   );
 };
 
