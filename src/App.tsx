@@ -19,7 +19,7 @@ import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
 import EditProfilePage from "./pages/EditProfilePage/EditProfilePage";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { UserProvider } from "./context/UserContext";
+import { UserProvider } from "./contexts/UserContext";
 import ApprovalPage from "./pages/ApprovalPage/ApprovalPage";
 import RequestPage from "./pages/RequestPage/RequestPage";
 
