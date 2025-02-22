@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import { Modal } from "antd";
 
 const ModalAddUser: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
-  const [rows, setRows] = useState([{ col1: "Row 1 - Col 1", col2: "Row 1 - Col 2" }]); // Khởi tạo với 1 hàng
+  const [rows, setRows] = useState<{ dngoc: string; admin: string }[]>([
+    { dngoc: "Dngoc 1", admin: "Admin 1" }
+  ]);
 
   const handleAddRow = () => {
     const newRowIndex = rows.length + 1;
-    setRows([...rows, { col1: `Row ${newRowIndex} - Col 1`, col2: `Row ${newRowIndex} - Col 2` }]);
+    setRows([...rows, { dngoc: `Dngoc ${newRowIndex}`, admin: `Admin ${newRowIndex}` }]);
   };
 
   return (
@@ -23,8 +25,8 @@ const ModalAddUser: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOp
           <tbody>
             {rows.map((row, index) => (
               <tr key={index}>
-                <td className="border border-gray-300 px-2 py-1">{row.col1}</td>
-                <td className="border border-gray-300 px-2 py-1">{row.col2}</td>
+                <td className="border border-gray-300 px-2 py-1">{row.dngoc}</td>
+                <td className="border border-gray-300 px-2 py-1">{row.admin}</td>
               </tr>
             ))}
           </tbody>
