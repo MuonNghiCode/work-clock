@@ -5,4 +5,5 @@ export interface Project {
   date: string;
   enddate: string;
   status: "Processing" | "Pending" | "Complete";
+  user?: string;
 } 
