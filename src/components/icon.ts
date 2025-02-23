@@ -19,6 +19,7 @@ import {
   Pencil,
   Trash2,
   Eye,
+  DollarSign,
   // CircleCheck
 } from "lucide-react";
 import {
@@ -79,7 +80,8 @@ const Icons: IconType = {
   CirclePending: FaClock,
   Detail: Eye,
   Edit: Pencil,
-  Delete: Trash2
+  Delete: Trash2,
+  Dollar: DollarSign,
 };
 
 export default Icons;
