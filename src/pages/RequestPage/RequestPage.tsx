@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Form } from 'antd';
-import { useState } from 'react';
 import EditRequestModal from '../../components/RequestComponents/EditRequestModal/EditRequestModal';
 import DeleteRequestModal from '../../components/RequestComponents/DeleteRequestModal/DeleteRequestModal';
 import TableRequest from '../../components/RequestComponents/TableRequest/TableRequest';
@@ -62,7 +61,7 @@ const data: ClaimRequest[] = [
     timeFrom: '6:00 PM',
     timeTo: '10:00 PM',
     totalHours: calculateHours('6:00 PM', '10:00 PM').toString(),
-    status: 'Approved',
+    status: 'Draft',
   },
   {
     key: '4',
@@ -89,7 +88,7 @@ const data: ClaimRequest[] = [
     timeFrom: '6:00 PM',
     timeTo: '10:00 PM',
     totalHours: calculateHours('6:00 PM', '10:00 PM').toString(),
-    status: 'Waiting',
+    status: 'Draft',
   },
   {
     key: '7',
@@ -157,7 +156,7 @@ const RequestPage: React.FC = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deletingRecord, setDeletingRecord] = useState<ClaimRequest | null>(null);
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(5);
   const [searchText, setSearchText] = useState('');
 
   const handleEdit = (record: any) => {
@@ -226,7 +225,7 @@ const RequestPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6  rounded-lg ">
+    <div className="p-6 bg-orange-100 shadow-md rounded-lg ">
       <h1 className="text-3xl font-bold text-gray-800 mb-4">Request-Page Management</h1>
       <TableRequest
         data={tableData}
