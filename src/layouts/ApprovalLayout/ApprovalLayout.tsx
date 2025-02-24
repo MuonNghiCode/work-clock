@@ -1,7 +1,7 @@
 import React from "react";
 import AdminHeader from "../Header/AdminHeader/AdminHeader";
-import ApprovalSidebar from "../Sidebar/ApprovalSidebar/ApprovalSidebar";
 import { Outlet } from "react-router";
+import Sidebar from "../Sidebar/Sidebar";
 
 const ApprovalLayout: React.FC = () => {
   return (
@@ -12,7 +12,7 @@ const ApprovalLayout: React.FC = () => {
         </header>
         <div className="flex flex-1 ">
           <aside className="relative bg-white text-black shadow-[10px_0_10px_rgba(255,145,77,0.2)]">
-            <ApprovalSidebar />
+            <Sidebar />
           </aside>
           <main className="flex-1 bg-brand-orange-light p-6">
             <Outlet />

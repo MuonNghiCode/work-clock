@@ -11,12 +11,29 @@ import {
   X, RotateCcw, Check, UserRound,
   FolderDot,
   User,
-  Wallet
+  Wallet,
+  Newspaper,
+  Hourglass,
+  ChevronRight,
+  ChevronLeft,
+  Pencil,
+  Trash2,
+  Eye,
+  DollarSign,
+  // CircleCheck
 } from "lucide-react";
+import {
+  FaUsers,
+  FaMoneyBillWave,
+  FaProjectDiagram,
+  FaCheckCircle,
+  FaTimesCircle,
+  FaClock,
+} from "react-icons/fa";
 
 import { GoArrowUpRight } from "react-icons/go";
 import { FaArrowRight } from "react-icons/fa6";
-import { MdOutlineEmail, MdApproval } from "react-icons/md";
+import { MdOutlineEmail, MdApproval, MdCancel } from "react-icons/md";
 import { CiLock, CiUnlock } from "react-icons/ci";
 
 // Định nghĩa kiểu dữ liệu cho danh sách icon
@@ -43,11 +60,28 @@ const Icons: IconType = {
   Reject: X,
   Return: RotateCcw,
   Check: Check,
+  // CircleUser: CircleUser,
+  ChevronRight: ChevronRight,
+  ChevronLeft: ChevronLeft,
   UserAdmin: UserRound,
   Help: CircleHelp,
   Bell: Bell,
   Menu: Grip,
-  MdApproval: MdApproval
+  MdApproval: MdApproval,
+  FormIcon: Newspaper,
+  Cancel: MdCancel,
+  // Return: FaArrowRotateLeft,
+  Pending: Hourglass,
+  Project: FaProjectDiagram,
+  UserCount: FaUsers,
+  Money: FaMoneyBillWave,
+  CircleCheck: FaCheckCircle,
+  CircleReject: FaTimesCircle,
+  CirclePending: FaClock,
+  Detail: Eye,
+  Edit: Pencil,
+  Delete: Trash2,
+  Dollar: DollarSign,
 };
 
 export default Icons;

@@ -21,10 +21,17 @@ interface UserProviderProps {
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
 
+
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
+
+      // Kiểm tra nếu chưa có mật khẩu trong localStorage thì lưu vào
+      if (!localStorage.getItem("userPassword")) {
+        localStorage.setItem("userPassword", parsedUser.password || "user123");
+      }
     }
   }, []);
 
