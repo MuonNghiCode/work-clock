@@ -15,7 +15,7 @@ const MainHeader: React.FC = () => {
         </div>
       )}
       <div className="relative bg-transparent flex items-center justify-end w-full px-6 py-4 gap-4 mr-4">
-        <div className="flex justify-between gap-10 rounded-3xl border border-black px-10 py-0.5 text-lg">
+        <div className="flex justify-between gap-10 rounded-3xl bg-white border border-black px-10 py-0.5 text-lg">
           <NavLink to="/" className="hover:text-gradient-color">
             Home
           </NavLink>

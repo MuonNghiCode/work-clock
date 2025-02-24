@@ -7,17 +7,20 @@ import ErrorPage from "./pages/ErrorPage/ErrorPage";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ProtectedRoute from "./routers/ProtectedRoute/ProtectedRoute";
 import LoginPage from "./pages/LoginPage/LoginPage";
-
-import AdminProject from "./pages/AdminPage/AdminProject";
-
+// import AdminProject from "./pages/AdminPage/AdminProject";
+import AdminProject from "./pages/AdminPage/AdminProject/AdminProject";
 import FinancePage from "./pages/FinancePage/FinancePage";
 import UserLayout from "./layouts/UserLayout/UserLayout";
+import AdminUserManagement from "./pages/AdminPage/AdminUser/AdminUserManagement";
 import HomePage from "./pages/HomePage/HomePage";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
-import ChangePassword from "./pages/LoginPage/ChangePassword";
+
+import ChangePassword from "./pages/ChangePassword/ChangePassword";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UserProvider } from "./context/UserContext";
+import ApprovalPage from "./pages/ApprovalPage/ApprovalPage";
+import UserDashboard from "./pages/UserDashboardPage/UserDashboard";
 
 const router = createBrowserRouter([
   {
@@ -32,11 +35,19 @@ const router = createBrowserRouter([
   },
   {
     path: "/admin",
-    element: <AdminLayout />,
+    element: (
+      <ProtectedRoute requireAdmin={true}>
+        <AdminLayout />
+      </ProtectedRoute>
+    ),
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "",
+        path: "/admin/user",
+        element: <AdminUserManagement />,
+      },
+      {
+        path: "/admin/project",
         element: <AdminProject />,
       },
     ],
@@ -49,12 +60,12 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
-    children: [{ path: "", element: <div>Approval Dashboard</div> }],
+    children: [{ path: "", element: <ApprovalPage /> }],
   },
   {
     path: "/finance",
     element: (
-      <ProtectedRoute requireFinance={false}>
+      <ProtectedRoute requireFinance={true}>
         <FinanceLayout />
       </ProtectedRoute>
     ),
@@ -70,7 +81,16 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
-    children: [{ path: "/user", element: <div>User Dashboard</div> }],
+    children: [
+      {
+        path: "/user/dashboard",
+        element: (
+          <div>
+            <UserDashboard />
+          </div>
+        ),
+      },
+    ],
   },
   {
     path: "/login",
