@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Modal, Button, Form, Input, Space, TimePicker, DatePicker, Select, Row, Col } from 'antd';
+import { Modal, Form, Input, Space, TimePicker, Select } from 'antd';
 import { ClaimRequest } from '../../types/ClaimRequest';
 import dayjs, { Dayjs } from 'dayjs';
-import Icons from '../icon';
 
 interface ModalAddNewClaimProps {
     isOpen: boolean;
