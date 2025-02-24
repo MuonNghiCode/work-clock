@@ -120,7 +120,7 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({ isOpen, onClose }) 
             onOk={onFinish}
             okText='Submit Claim Request'
             onCancel={onClose}
-            className=' lg:!w-6/12 !font-squanda !w-full'
+            className=' lg:!w-4/12 md:!w-full !font-squanda !w-full '
         >
             <Form
                 layout='vertical'
@@ -142,7 +142,7 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({ isOpen, onClose }) 
                 </Form.Item >
                 <Form.Item label={<strong>Role in Project</strong>} name="roleInProject">
                     <Input
-                        className='!min-w-80 max-w-full'
+                        className=''
                         value={claimRequestData.roleInProject}
                         onChange={(e) => handleClaimRequestDataChange(e.target.value, 'roleInProject')}
                     />
@@ -153,7 +153,7 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({ isOpen, onClose }) 
                         onChange={(e) => handleClaimRequestDataChange(e.target.value, 'additionalRemarks')}
                     />
                 </Form.Item>
-                <Space direction='horizontal' size='large' className='!w-full justify-between'>
+                <Space direction='horizontal' size='large' className='!w-full justify-between !flex-wrap'>
                     <Form.Item label="From" name='from'>
                         <TimePicker
                             className='!w-full max-w-full'
@@ -170,6 +170,8 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({ isOpen, onClose }) 
                             onChange={(time) => handleTimeChange(time, 'to')}
                         />
                     </Form.Item>
+
+
                     <Form.Item label={<strong>Total Working Hours</strong>}>
                         <Input
                             type='number'
