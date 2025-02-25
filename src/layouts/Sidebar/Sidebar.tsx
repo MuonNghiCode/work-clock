@@ -85,6 +85,11 @@ const Sidebar: React.FC = () => {
         label: "DASHBOARD",
       },
       {
+        path: "calendar",
+        icon: <Icons.Calendar className="w-8 h-8" />,
+        label: "CALENDAR",
+      },
+      {
         path: "request",
         icon: <Icons.ChartColumn className="w-8 h-8" />,
         label: "REPORT",
