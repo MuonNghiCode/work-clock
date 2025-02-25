@@ -85,7 +85,13 @@ const LoginPage: React.FC = () => {
     if (validate()) {
       const user = checkUser({ email, password });
       if (user) {
-        toast.success("Login successful!");
+        sessionStorage.setItem(
+          "toastMessage",
+          JSON.stringify({
+            type: "success",
+            message: "Login successful!",
+          })
+        );
         setTimeout(() => {
           switch (user.role) {
             case "admin":
@@ -104,7 +110,7 @@ const LoginPage: React.FC = () => {
               navigate("/");
           }
           window.location.reload();
-        }, 1000);
+        }, 100);
       } else {
         toast.error("Invalid email or password!");
       }
