@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Contributor, fetchContributors } from "../../services/githubService";
-import Background3D from "../../components/Background3D/Background3D";
 import ContributorCard from "../../components/ContributorCard/ContributorCard";
 
 const ProfilePage = () => {
