@@ -27,6 +27,7 @@ import ApprovalDashBoardPage from "./pages/ApprovalDashBoardPage/ApprovalDashBoa
 import AdminDashBoard from "./pages/AdminPage/AdminDashboard/AdminDashBoard";
 import ChangePassword from "./pages/ChangePassword/ChangePassword";
 import UserDashboardPage from "./pages/UserPage/UserDashboardPage";
+import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import UserCalendarPage from "./pages/UserCalendarPage/UserCalendarPage";
 import Contact from "./pages/ContactPage/Contact";
 
