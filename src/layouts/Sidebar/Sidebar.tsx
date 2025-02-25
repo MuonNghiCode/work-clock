@@ -100,11 +100,10 @@ const Sidebar: React.FC = () => {
   return (
     <div
       ref={sidebarRef}
-      className={`flex justify-center text-xl transition-all duration-300 mt-1 ${
-        isSidebarOpen ? "w-56" : "w-24"
-      }`}
+      className={`fixed lg:relative top-0 left-0 h-full transition-transform duration-300 transform -translate-x-full bg-white z-50
+      ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0 lg:${isSidebarOpen ? "translate-x-0 w-56" : "w-24"}`}
     >
-      <div className="flex flex-col gap-3 space-y-4 mt-2">
+      <div className="flex flex-col gap-3 space-y-4 mt-2 p-4">
         {user?.role && menuItems[user.role] && (
           <>
             <h2 className="text-gray-300">Menu</h2>

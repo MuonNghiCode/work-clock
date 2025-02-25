@@ -11,7 +11,7 @@ const ApprovalLayout: React.FC = () => {
           <AdminHeader />
         </header>
         <div className="flex flex-1 ">
-          <aside className="relative bg-white text-black shadow-[10px_0_10px_rgba(255,145,77,0.2)] lg:flex hidden">
+          <aside className="relative bg-white text-black shadow-[10px_0_10px_rgba(255,145,77,0.2)]">
             <Sidebar />
           </aside>
           <main className="flex-1 bg-brand-orange-light p-6">

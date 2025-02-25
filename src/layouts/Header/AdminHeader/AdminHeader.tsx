@@ -24,89 +24,89 @@ const AdminHeader: React.FC = () => {
       key: "2",
       label: "Profile",
     },
-    {
-      key: "3",
-      label: <span className="lg:hidden inline-flex items-center">Settings
-        <Icons.Settings className="w-4 h-4 !ml-1" />
-      </span>,
-      className: 'lg:!hidden'
-    },
-    {
-      type: "divider",
-      className: 'lg:!hidden'
-    },
-    {
-      key: "4",
-      label:
-        <a href="#">
-          <div className="inline-flex items-center">
-            Dashboard <Icons.Dashboard
-              strokeWidth={1.5}
-              className="w-4 h-4 ml-1"
-            />
-          </div>
-        </a>,
-      className: 'lg:!hidden'
-    },
-    {
-      key: "5",
-      label: <>
-        <a href="#" className="lg:hidden inline-flex items-center">
-          Report
-          <Icons.ChartColumn
-            strokeWidth={1.5}
-            className="w-4 h-4 ml-1"
-          />
-        </a>
-      </>,
-      className: 'lg:!hidden'
+    // {
+    //   key: "3",
+    //   label: <span className="lg:hidden inline-flex items-center">Settings
+    //     <Icons.Settings className="w-4 h-4 !ml-1" />
+    //   </span>,
+    //   className: 'lg:!hidden'
+    // },
+    // {
+    //   type: "divider",
+    //   className: 'lg:!hidden'
+    // },
+    // {
+    //   key: "4",
+    //   label:
+    //     <a href="#">
+    //       <div className="inline-flex items-center">
+    //         Dashboard <Icons.Dashboard
+    //           strokeWidth={1.5}
+    //           className="w-4 h-4 ml-1"
+    //         />
+    //       </div>
+    //     </a>,
+    //   className: 'lg:!hidden'
+    // },
+    // {
+    //   key: "5",
+    //   label: <>
+    //     <a href="#" className="lg:hidden inline-flex items-center">
+    //       Report
+    //       <Icons.ChartColumn
+    //         strokeWidth={1.5}
+    //         className="w-4 h-4 ml-1"
+    //       />
+    //     </a>
+    //   </>,
+    //   className: 'lg:!hidden'
 
-    },
-    {
-      type: "divider",
-      className: 'lg:!hidden'
-    },
-    {
-      key: "6",
-      label: <div className="">
-        <span className="lg:!hidden">
-          <hr className="py-2 border-gray-300 lg:hidden" />
-        </span>
-        <span className="lg:hidden">
-          <Badge count={5} className="!pr-2">
-            <div className="inline-flex items-center">
-              Notification
-              <Icons.Bell
-                strokeWidth={1.5}
-                className="w-4 h-4 ml-1"
-              />
-            </div>
-          </Badge>
-        </span>
-      </div>,
-      className: 'lg:!hidden'
+    // },
+    // {
+    //   type: "divider",
+    //   className: 'lg:!hidden'
+    // },
+    // {
+    //   key: "6",
+    //   label: <div className="">
+    //     <span className="lg:!hidden">
+    //       <hr className="py-2 border-gray-300 lg:hidden" />
+    //     </span>
+    //     <span className="lg:hidden">
+    //       <Badge count={5} className="!pr-2">
+    //         <div className="inline-flex items-center">
+    //           Notification
+    //           <Icons.Bell
+    //             strokeWidth={1.5}
+    //             className="w-4 h-4 ml-1"
+    //           />
+    //         </div>
+    //       </Badge>
+    //     </span>
+    //   </div>,
+    //   className: 'lg:!hidden'
 
-    },
-    {
-      key: "7",
-      label: <span className="lg:hidden inline-flex items-center">
-        Help
-        <Icons.Help
-          strokeWidth={1.5}
-          className="w-4 h-4 lg:hidden ml-1"
-        />
-      </span>,
-      className: 'lg:!hidden'
-    },
-    {
-      key: "8",
-      label: <a href="/login" className="inline-flex items-center lg:hidden">
-        Logout
-        <Icons.LogOut className="w-4 h-4 ml-1" />
-      </a>,
-      className: 'lg:!hidden'
+    // },
+    // {
+    //   key: "7",
+    //   label: <span className="lg:hidden inline-flex items-center">
+    //     Help
+    //     <Icons.Help
+    //       strokeWidth={1.5}
+    //       className="w-4 h-4 lg:hidden ml-1"
+    //     />
+    //   </span>,
+    //   className: 'lg:!hidden'
+    // },
+    // {
+    //   key: "8",
+    //   label: <a href="/login" className="inline-flex items-center lg:hidden">
+    //     Logout
+    //     <Icons.LogOut className="w-4 h-4 ml-1" />
+    //   </a>,
+    //   className: 'lg:!hidden'
 
-    }
+    // }
   ];
 
   return (
@@ -114,7 +114,7 @@ const AdminHeader: React.FC = () => {
       <div className="h-8 lg:h-12 w-full flex items-center lg:py-4 lg:space-x-7 !-pl-4">
         <Button
           onClick={toggleSidebar}
-          className="!h-fit !p-3 !border-none hover:!shadow-lg !text-black !hidden lg:!flex"
+          className="!h-fit !p-3 !border-none hover:!shadow-lg !text-black"
         >
           <Icons.Menu strokeWidth={2.5} className="w-8 h-8" />
         </Button>
