@@ -4,7 +4,11 @@ import AdminLayout from "./layouts/AdminLayout/AdminLayout";
 import ApprovalLayout from "./layouts/ApprovalLayout/ApprovalLayout";
 import FinanceLayout from "./layouts/FinanceLayout/FinanceLayout";
 import ErrorPage from "./pages/ErrorPage/ErrorPage";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 import ProtectedRoute from "./routers/ProtectedRoute/ProtectedRoute";
 import LoginPage from "./pages/LoginPage/LoginPage";
 // import AdminProject from "./pages/AdminPage/AdminProject";
@@ -52,6 +56,10 @@ const router = createBrowserRouter([
     children: [
       {
         path: "",
+        element: <Navigate to="dashboard" replace />,
+      },
+      {
+        path: "dashboard",
         element: <AdminDashBoard />,
       },
       {
@@ -73,8 +81,12 @@ const router = createBrowserRouter([
     ),
     errorElement: <ErrorPage />,
     children: [
+      {
+        path: "",
+        element: <Navigate to="dashboard" replace />,
+      },
+      { path: "dashboard", element: <ApprovalDashBoardPage /> },
       { path: "approval-management", element: <ApprovalPage /> },
-      { path: "", element: <ApprovalDashBoardPage /> },
     ],
   },
   {
@@ -87,8 +99,12 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
 
     children: [
+      {
+        path: "",
+        element: <Navigate to="dashboard" replace />,
+      },
+      { path: "dashboard", element: <FinanceDashBoardPage /> },
       { path: "paid-management", element: <FinancePage /> },
-      { path: "", element: <FinanceDashBoardPage /> },
     ],
   },
   {
@@ -101,12 +117,12 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
+        path: "",
+        element: <Navigate to="dashboard" replace />,
+      },
+      {
         path: "dashboard",
-        element: (
-          <div>
-            <UserDashboardPage />
-          </div>
-        ),
+        element: <UserDashboardPage />,
       },
       {
         path: "edit_profile",
@@ -118,11 +134,7 @@ const router = createBrowserRouter([
       },
       {
         path: "calendar",
-        element: (
-          <div>
-            <UserCalendarPage />
-          </div>
-        ),
+        element: <UserCalendarPage />,
       },
     ],
   },
