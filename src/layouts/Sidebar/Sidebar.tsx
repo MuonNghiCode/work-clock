@@ -31,8 +31,8 @@ const Sidebar: React.FC = () => {
   }, [isSidebarOpen]);
 
   const handleLogout = () => {
-    logout();
     setShowConfirm(false);
+    logout();
   };
 
   const menuItems: Record<

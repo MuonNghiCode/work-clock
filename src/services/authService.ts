@@ -18,5 +18,16 @@ export const isAuthenticated = (): boolean => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     localStorage.removeItem("user");
-    window.location.href = "/";
+    
+    sessionStorage.setItem("toastMessage", JSON.stringify({
+      type: "success",
+      message: "Logout Successfully!",
+    }));
+  
+    console.log("Saved toastMessage:", sessionStorage.getItem("toastMessage"));
+
+    setTimeout(() => {
+      window.location.href = "/";
+    }, 100);
+
   };
