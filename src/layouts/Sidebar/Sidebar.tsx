@@ -112,12 +112,12 @@ const Sidebar: React.FC = () => {
       ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0 lg:${isSidebarOpen ? "translate-x-0 w-56" : "w-24"}`}
       >
         <div className="flex flex-col gap-3 space-y-4 mt-2">
-          {user?.role && menuItems[user.role] && (
+          {role && menuItems[role] && (
             <>
               <h2 className="flex items-center justify-start gap-3 px-4 py-2 rounded-md transition-all duration-300 text-gray-300">
                 Menu
               </h2>
-              {menuItems[user.role].map((item, index) => (
+              {menuItems[role].map((item, index) => (
                 <NavLink
                   key={index}
                   to={item.path}
