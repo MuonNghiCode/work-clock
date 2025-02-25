@@ -45,12 +45,12 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project, use
   };
 
   return (
-    <div className="w-[500px] max-w-full px-4">
+    <div className="w-[1000px] max-w-full px-4">
       <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">Edit project</h2>
 
       <div className="flex flex-col items-center gap-y-4">
-        <div className="w-full space-y-4">
-          <div className="space-y-2">
+        <div className="flex flex-row justify-between w-full space-x-4">
+          <div className="flex-1 space-y-2">
             <label className="block text-gray-700 font-medium text-lg">Project Name</label>
             <input
               type="text"
@@ -61,7 +61,7 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project, use
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="flex-1 space-y-2">
             <label className="block text-gray-700 font-medium text-lg">Project Code</label>
             <input
               type="text"
@@ -70,8 +70,10 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project, use
               className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-base"
             />
           </div>
+        </div>
 
-          <div className="space-y-2">
+        <div className="flex flex-row justify-between w-full space-x-4">
+          <div className="flex-1 space-y-2">
             <label className="block text-gray-700 font-medium text-lg">Start Date</label>
             <input
               type="date"
@@ -81,7 +83,7 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project, use
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="flex-1 space-y-2">
             <label className="block text-gray-700 font-medium text-lg">End Date</label>
             <input
               type="date"
@@ -90,8 +92,10 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project, use
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-base"
             />
           </div>
+        </div>
 
-          <div className="space-y-2">
+        <div className="flex flex-row justify-between w-full space-x-4">
+          <div className="flex-1 space-y-2">
             <label className="block text-gray-700 font-medium text-lg">User</label>
             <select
               value={projectData.user}
@@ -105,7 +109,7 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project, use
             </select>
           </div>
 
-          <div className="space-y-2">
+          <div className="flex-1 space-y-2">
             <label className="block text-gray-700 font-medium text-lg">Status</label>
             <select
               value={projectData.status}
