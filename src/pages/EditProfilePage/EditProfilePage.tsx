@@ -30,10 +30,10 @@ const EditProfilePage: React.FC = () => {
 
     // Lấy dữ liệu từ localStorage (nếu có), hoặc dùng dữ liệu mặc định
     const defaultAccountData: FormData = {
-        firstName: "Nathaniel",
-        lastName: "Poole",
-        phoneNumber: "+1800-000",
-        email: "nathaniel.poole@microsoft.com",
+        firstName: "David",
+        lastName: "Thompson",
+        phoneNumber: "0362740921",
+        email: "haitrilehu@gmail.com",
         district: "Thu Duc",
         city: "Ho Chi Minh",
         postcode: "12000",
@@ -70,7 +70,7 @@ const EditProfilePage: React.FC = () => {
 
     // Lưu dữ liệu Account Settings vào localStorage khi formData thay đổi (sau khi update)
     useEffect(() => {
-        localStorage.setItem("accountData", JSON.stringify(formData));
+        localStorage.setItem("accountData", JSON.stringify(defaultAccountData));
     }, [formData]);
     useEffect(() => {
         localStorage.setItem("userImage", userImage);
@@ -99,14 +99,14 @@ const EditProfilePage: React.FC = () => {
     const hasEmptyField = (data: Record<string, string>): boolean =>
         Object.values(data).some(value => value.trim() === "");
     const formDataStrings: Record<string, string> = {
-        firstName: formData.firstName.toString(),
-        lastName: formData.lastName.toString(),
-        phoneNumber: formData.phoneNumber.toString(),
-        email: formData.email.toString(),
-        district: formData.district.toString(),
-        city: formData.city.toString(),
-        postcode: formData.postcode.toString(),
-        country: formData.country.toString(),
+        firstName: formData.firstName || "",
+        lastName: formData.lastName || "",
+        phoneNumber: formData.phoneNumber || "",
+        email: formData.email || "",
+        district: formData.district || "",
+        city: formData.city || "",
+        postcode: formData.postcode || "",
+        country: formData.country || "",
     };
     // Submit cho Account Settings
     const handleSubmitAccount = (e: React.FormEvent) => {
