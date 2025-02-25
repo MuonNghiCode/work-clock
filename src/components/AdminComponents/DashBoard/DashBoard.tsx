@@ -11,8 +11,9 @@ import {
   PointElement,
   LineElement,
 } from "chart.js";
-
 import Icons from "../../icon";
+import { motion } from "framer-motion";
+
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -24,45 +25,42 @@ ChartJS.register(
   LineElement
 );
 
-const userCount = 120;
-const activeUsers = 95;
-const inactiveUsers = userCount - activeUsers;
-const totalClaims = 250;
-const approvedClaims = 180;
-const rejectedClaims = 40;
-const pendingClaims = totalClaims - approvedClaims - rejectedClaims;
-const totalPaid = 5000000;
-const totalProjects = 15;
-const completedProjects = 10;
-const ongoingProjects = totalProjects - completedProjects;
+const stats = {
+  userCount: 120,
+  activeUsers: 95,
+  totalClaims: 250,
+  approvedClaims: 180,
+  rejectedClaims: 40,
+  totalPaid: 5000000,
+  totalProjects: 15,
+  completedProjects: 10,
+};
+
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+};
 
 const userData = {
-  labels: ["Active Users", "Inactive Users"],
+  labels: ["Active", "Inactive"],
   datasets: [
     {
-      data: [activeUsers, inactiveUsers],
-      backgroundColor: ["#36A2EB", "#FFCE56"],
+      data: [stats.activeUsers, stats.userCount - stats.activeUsers],
+      backgroundColor: ["#3B82F6", "#FACC15"],
     },
   ],
 };
 
 const claimData = {
-  labels: ["Claim Status"],
+  labels: ["Approved", "Rejected", "Pending"],
   datasets: [
     {
-      label: "Approved",
-      data: [approvedClaims],
-      backgroundColor: "#82ca9d",
-    },
-    {
-      label: "Rejected",
-      data: [rejectedClaims],
-      backgroundColor: "#ff6384",
-    },
-    {
-      label: "Pending",
-      data: [pendingClaims],
-      backgroundColor: "#ffc658",
+      data: [
+        stats.approvedClaims,
+        stats.rejectedClaims,
+        stats.totalClaims - stats.approvedClaims - stats.rejectedClaims,
+      ],
+      backgroundColor: ["#22C55E", "#EF4444", "#F59E0B"],
     },
   ],
 };
@@ -72,159 +70,137 @@ const financeData = {
   datasets: [
     {
       label: "Total Paid (VND)",
-      data: [1000000, 1500000, 2000000, 2500000, 3500000, totalPaid],
-      backgroundColor: "#FF9F40",
-      borderColor: "#FF9F40",
+      data: [1000000, 1500000, 2000000, 2500000, 3500000, stats.totalPaid],
+      backgroundColor: "#EA580C",
+      borderColor: "#EA580C",
       fill: false,
     },
   ],
 };
 
-interface SectionProps {
-  title: string;
-  children: React.ReactNode;
-}
+const projectData = {
+  labels: ["Completed", "Ongoing"],
+  datasets: [
+    {
+      data: [
+        stats.completedProjects,
+        stats.totalProjects - stats.completedProjects,
+      ],
+      backgroundColor: ["#4ADE80", "#FB923C"],
+    },
+  ],
+};
 
-const Section = ({ title, children }: SectionProps) => (
-  <div className="mb-10 p-6 bg-brand-orange-light-1 rounded-xl shadow-lg w-full">
-    <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">
-      {title}
-    </h2>
-    {children}
-  </div>
-);
+const fadeInScaleUp = {
+  hidden: { opacity: 0, scale: 0.8 },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
+};
 
 interface StatCardProps {
   icon: React.ReactNode;
   label: string;
   value: number | string;
-  color: string;
+  bgColor: string;
+  textColor: string;
 }
 
-const StatCard = ({ icon, label, value, color }: StatCardProps) => (
-  <div
-    className={`p-4 rounded-lg flex items-center gap-4 ${color} shadow-md w-full text-center justify-center`}
+const StatCard = ({
+  icon,
+  label,
+  value,
+  bgColor,
+  textColor,
+}: StatCardProps) => (
+  <motion.div
+    variants={fadeInScaleUp}
+    initial="hidden"
+    animate="visible"
+    className={`p-6 rounded-xl flex flex-col items-center justify-center gap-3 ${bgColor} bg-opacity-50 shadow-lg w-full text-center hover:scale-105 transition duration-300`}
   >
-    {icon}
-    <div>
-      <p className="text-sm font-medium text-gray-700">{label}</p>
-      <p className="text-xl font-bold text-gray-900">{value}</p>
-    </div>
-  </div>
+    <div className="p-3 rounded-full bg-white bg-opacity-30">{icon}</div>
+    <p className={`text-sm font-medium ${textColor}`}>{label}</p>
+    <p className={`text-3xl font-bold ${textColor}`}>{value}</p>
+  </motion.div>
 );
 
-const chartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-};
+interface ChartCardProps {
+  title: string;
+  children: React.ReactNode;
+  bgColor: string;
+}
 
-const UserDashboard = () => (
-  <Section title="User Statistics">
-    <div className="grid grid-cols-1 gap-6">
-      <StatCard
-        icon={<Icons.UserCount className="text-3xl text-blue-500" />}
-        label="Total Users"
-        value={userCount}
-        color="bg-blue-100"
-      />
-      <div className="flex justify-center">
-        <div className="w-128 h-128">
-          <Pie data={userData} options={chartOptions} />
-        </div>
-      </div>
-    </div>
-  </Section>
-);
-
-const ClaimDashboard = () => (
-  <Section title="Claim Requests">
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <StatCard
-        icon={<Icons.CircleCheck className="text-3xl text-green-500" />}
-        label="Approved"
-        value={approvedClaims}
-        color="bg-green-100"
-      />
-      <StatCard
-        icon={<Icons.CircleReject className="text-3xl text-red-500" />}
-        label="Rejected"
-        value={rejectedClaims}
-        color="bg-red-100"
-      />
-      <StatCard
-        icon={<Icons.CirclePending className="text-3xl text-yellow-500" />}
-        label="Pending"
-        value={pendingClaims}
-        color="bg-yellow-100"
-      />
-    </div>
-    <div className="mt-6 flex justify-center">
-      <div className="w-200 h-100">
-        <Bar data={claimData} options={chartOptions} />
-      </div>
-    </div>
-  </Section>
-);
-
-const MoneyDashboard = () => (
-  <Section title="Financial Overview">
-    <div className="grid grid-cols-1 gap-6">
-      <StatCard
-        icon={<Icons.Money className="text-3xl text-orange-500" />}
-        label="Total Paid"
-        value={`${totalPaid} VND`}
-        color="bg-orange-100"
-      />
-      <div className="flex justify-center">
-        <div className="w-200 h-100">
-          <Line data={financeData} options={chartOptions} />
-        </div>
-      </div>
-    </div>
-  </Section>
-);
-
-const ProjectDashboard = () => (
-  <Section title="Project Statistics">
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <StatCard
-        icon={<Icons.Project className="text-3xl text-blue-500" />}
-        label="Completed"
-        value={completedProjects}
-        color="bg-blue-200"
-      />
-      <StatCard
-        icon={<Icons.Project className="text-3xl text-yellow-500" />}
-        label="Ongoing"
-        value={ongoingProjects}
-        color="bg-yellow-200"
-      />
-    </div>
-    <div className="mt-6 flex justify-center">
-      <div className="w-200 h-100">
-        <Pie
-          data={{
-            labels: ["Completed", "Ongoing"],
-            datasets: [
-              {
-                data: [completedProjects, ongoingProjects],
-                backgroundColor: ["#4d94ff", "#ff9f40"],
-              },
-            ],
-          }}
-          options={chartOptions}
-        />
-      </div>
-    </div>
-  </Section>
+const ChartCard = ({ title, children, bgColor }: ChartCardProps) => (
+  <motion.div
+    variants={fadeInScaleUp}
+    initial="hidden"
+    animate="visible"
+    className={`p-6 rounded-xl shadow-lg hover:shadow-2xl transition duration-300 ${bgColor} bg-opacity-30`}
+  >
+    <h2 className="text-lg font-semibold text-center mb-4 text-gray-900">
+      {title}
+    </h2>
+    <div className="flex justify-center">{children}</div>
+  </motion.div>
 );
 
 const Dashboard = () => (
-  <div className="p-6 bg-transparent min-h-screen flex flex-col gap-10">
-    <UserDashboard />
-    <ClaimDashboard />
-    <MoneyDashboard />
-    <ProjectDashboard />
+  <div className="p-10 min-h-screen flex flex-col gap-12">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+      <StatCard
+        icon={<Icons.UserCount className="text-3xl text-blue-600" />}
+        label="Total Users"
+        value={stats.userCount}
+        bgColor="bg-blue-300"
+        textColor="text-blue-900"
+      />
+      <StatCard
+        icon={<Icons.CircleCheck className="text-3xl text-green-600" />}
+        label="Approved Claims"
+        value={stats.approvedClaims}
+        bgColor="bg-green-300"
+        textColor="text-green-900"
+      />
+      <StatCard
+        icon={<Icons.Money className="text-3xl text-orange-600" />}
+        label="Total Paid"
+        value={`${stats.totalPaid} VND`}
+        bgColor="bg-orange-300"
+        textColor="text-orange-900"
+      />
+      <StatCard
+        icon={<Icons.Project className="text-3xl text-yellow-600" />}
+        label="Completed Projects"
+        value={stats.completedProjects}
+        bgColor="bg-yellow-300"
+        textColor="text-yellow-900"
+      />
+    </div>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+      <ChartCard title="User Statistics" bgColor="bg-blue-100">
+        <div className="w-64 h-64">
+          <Pie data={userData} options={chartOptions} />
+        </div>
+      </ChartCard>
+      <ChartCard title="Claim Requests" bgColor="bg-green-100">
+        <div className="w-72 h-72">
+          <Bar data={claimData} options={chartOptions} />
+        </div>
+      </ChartCard>
+    </div>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+      <ChartCard title="Financial Overview" bgColor="bg-orange-100">
+        <div className="w-72 h-72">
+          <Line data={financeData} options={chartOptions} />
+        </div>
+      </ChartCard>
+      <ChartCard title="Project Statistics" bgColor="bg-yellow-100">
+        <div className="w-64 h-64">
+          <Pie data={projectData} options={chartOptions} />
+        </div>
+      </ChartCard>
+    </div>
   </div>
 );
 
