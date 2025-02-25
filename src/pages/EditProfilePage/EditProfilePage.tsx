@@ -12,8 +12,8 @@ interface FormData {
     lastName: string;
     phoneNumber: string;
     email: string;
+    district: string;
     city: string;
-    stateCountry: string;
     postcode: string;
     country: string;
 }
@@ -30,14 +30,14 @@ const EditProfilePage: React.FC = () => {
 
     // Lấy dữ liệu từ localStorage (nếu có), hoặc dùng dữ liệu mặc định
     const defaultAccountData: FormData = {
-        firstName: "Nathaniel",
-        lastName: "Poole",
-        phoneNumber: "+1800-000",
-        email: "nathaniel.poole@microsoft.com",
-        city: "",
-        stateCountry: "",
-        postcode: "",
-        country: "",
+        firstName: "David",
+        lastName: "Thompson",
+        phoneNumber: "0362740921",
+        email: "haitrilehu@gmail.com",
+        district: "Thu Duc",
+        city: "Ho Chi Minh",
+        postcode: "12000",
+        country: "Viet Nam",
     };
 
     const [formData, setFormData] = useState<FormData>(() => {
@@ -70,7 +70,7 @@ const EditProfilePage: React.FC = () => {
 
     // Lưu dữ liệu Account Settings vào localStorage khi formData thay đổi (sau khi update)
     useEffect(() => {
-        localStorage.setItem("accountData", JSON.stringify(formData));
+        localStorage.setItem("accountData", JSON.stringify(defaultAccountData));
     }, [formData]);
     useEffect(() => {
         localStorage.setItem("userImage", userImage);
@@ -98,33 +98,52 @@ const EditProfilePage: React.FC = () => {
     // Kiểm tra nếu có trường nào rỗng trong đối tượng (trừ các trường không bắt buộc)
     const hasEmptyField = (data: Record<string, string>): boolean =>
         Object.values(data).some(value => value.trim() === "");
-
+    const formDataStrings: Record<string, string> = {
+        firstName: formData.firstName || "",
+        lastName: formData.lastName || "",
+        phoneNumber: formData.phoneNumber || "",
+        email: formData.email || "",
+        district: formData.district || "",
+        city: formData.city || "",
+        postcode: formData.postcode || "",
+        country: formData.country || "",
+    };
     // Submit cho Account Settings
     const handleSubmitAccount = (e: React.FormEvent) => {
         e.preventDefault();
-        // Kiểm tra các trường bắt buộc (tất cả đều bắt buộc trong ví dụ này)
-        if (hasEmptyField(passwordData as Record<string, string>)) {
+
+        // Kiểm tra xem có trường nào bị bỏ trống không
+        if (hasEmptyField(formDataStrings)) {
             toast.error("Empty field, try again");
             return;
         }
-        // Cập nhật dữ liệu (dữ liệu đã được lưu vào state và useEffect lưu vào localStorage)
+
+        // Cập nhật dữ liệu vào localStorage (đã có useEffect lo lưu)
         toast.success("Update successfully");
     };
+
 
     // Submit cho Change Password
     const handleSubmitPassword = (e: React.FormEvent) => {
         e.preventDefault();
-        if (hasEmptyField(passwordData)) {
+
+        const { oldPassword, newPassword, confirmPassword } = passwordData;
+
+        if (!oldPassword || !newPassword || !confirmPassword) {
             toast.error("Empty field, try again");
             return;
         }
-        // Giả sử bạn kiểm tra xác nhận mật khẩu khớp
-        if (passwordData.newPassword !== passwordData.confirmPassword) {
+
+        if (newPassword !== confirmPassword) {
             toast.error("Passwords do not match");
             return;
         }
-        // Xử lý đổi mật khẩu (gọi API, v.v)
+
+        // Giả lập việc lưu mật khẩu mới vào localStorage
+        localStorage.setItem("userPassword", newPassword);
+
         toast.success("Password updated successfully");
+
         // Reset lại form mật khẩu
         setPasswordData({
             oldPassword: "",
@@ -159,7 +178,7 @@ const EditProfilePage: React.FC = () => {
                 <div className="w-1/4 flex flex-col items-center bg-white p-4 shadow rounded-lg">
                     <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
                     <div className="relative w-24 h-24 rounded-full overflow-hidden border border-gray-300 cursor-pointer" onClick={() => document.getElementById('fileInput')?.click()}>
-                        <img src={userImage} alt="User" className="w-full h-full object-cover" />
+                        <img src={userDefaultImage} alt="User" className="w-full h-full object-cover" />
                         <input id="fileInput" type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
                         <div className="absolute bottom-1 right-1 bg-gray-700 p-1 rounded-full text-white text-xs cursor-pointer hover:bg-gray-600">
                             <FaCamera />
@@ -179,8 +198,8 @@ const EditProfilePage: React.FC = () => {
                             <button
                                 onClick={() => setActiveTab("account")}
                                 className={`pb-2 font-semibold ${activeTab === "account"
-                                    ? "border-b-2 border-blue-500 text-blue-500"
-                                    : "text-gray-500 hover:text-blue-500"
+                                    ? "border-b-2 border-orange-500 text-orange-500"
+                                    : "text-gray-500 hover:text-orange-500"
                                     }`}
                             >
                                 Account Settings
@@ -188,8 +207,8 @@ const EditProfilePage: React.FC = () => {
                             <button
                                 onClick={() => setActiveTab("password")}
                                 className={`pb-2 font-semibold ${activeTab === "password"
-                                    ? "border-b-2 border-blue-500 text-blue-500"
-                                    : "text-gray-500 hover:text-blue-500"
+                                    ? "border-b-2 border-orange-500 text-orange-500"
+                                    : "text-gray-500 hover:text-orange-500"
                                     }`}
                             >
                                 Change Password
@@ -245,6 +264,17 @@ const EditProfilePage: React.FC = () => {
                                 />
                             </div>
                             <div>
+                                <label className="block text-gray-700">District</label>
+                                <input
+                                    type="text"
+                                    name="district"
+                                    value={formData.district}
+                                    onChange={handleInputChange}
+                                    className="w-full p-2 border rounded"
+                                    placeholder="district"
+                                />
+                            </div>
+                            <div>
                                 <label className="block text-gray-700">City</label>
                                 <input
                                     type="text"
@@ -253,17 +283,6 @@ const EditProfilePage: React.FC = () => {
                                     onChange={handleInputChange}
                                     className="w-full p-2 border rounded"
                                     placeholder="City"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-gray-700">State/Country</label>
-                                <input
-                                    type="text"
-                                    name="stateCountry"
-                                    value={formData.stateCountry}
-                                    onChange={handleInputChange}
-                                    className="w-full p-2 border rounded"
-                                    placeholder="State/Country"
                                 />
                             </div>
                             <div>
@@ -291,7 +310,7 @@ const EditProfilePage: React.FC = () => {
                             <div className="col-span-2 flex justify-start mt-4">
                                 <button
                                     type="submit"
-                                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                                    className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600"
                                 >
                                     Update
                                 </button>
@@ -355,7 +374,7 @@ const EditProfilePage: React.FC = () => {
                             <div className="col-span-2 flex justify-start mt-4">
                                 <button
                                     type="submit"
-                                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                                    className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600"
                                 >
                                     Change Password
                                 </button>

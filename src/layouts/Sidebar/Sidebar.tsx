@@ -108,9 +108,8 @@ const Sidebar: React.FC = () => {
     <>
       <div
         ref={sidebarRef}
-        className={`flex justify-center text-xl transition-all duration-300 mt-1 ${
-          isSidebarOpen ? "w-56" : "w-24"
-        }`}
+        className={`flex justify-center text-xl transition-all duration-300 mt-1 ${isSidebarOpen ? "w-56" : "w-24"
+          }`}
       >
         <div className="flex flex-col gap-3 space-y-4 mt-2">
           {user?.role && menuItems[user.role] && (
@@ -123,20 +122,17 @@ const Sidebar: React.FC = () => {
                   key={index}
                   to={item.path}
                   className={({ isActive }) =>
-                    `flex items-center justify-start gap-3 mt-5 px-4 py-2 rounded-md transition-all duration-300 transform ${
-                      isSidebarOpen
-                        ? "justify-start gap-3 px-4"
-                        : "justify-center px-2"
-                    } py-2 rounded-md transition-all duration-300 overflow-hidden text-ellipsis whitespace-nowrap ${
-                      isActive
-                        ? isSidebarOpen
-                          ? "rounded-l-2xl bg-brand-gradient text-white translate-x-9"
-                          : "rounded-l-2xl bg-brand-gradient text-white translate-x-9"
-                        : "bg-transparent"
-                    } ${
-                      hoveredIndex !== null && hoveredIndex !== index
-                        ? "text-gray-500 blur-[2px]"
-                        : "text-black"
+                    `flex items-center justify-start gap-3 mt-5 px-4 py-2 rounded-md transition-all duration-300 transform ${isSidebarOpen
+                      ? "justify-start gap-3 px-4"
+                      : "justify-center px-2"
+                    } py-2 rounded-md transition-all duration-300 overflow-hidden text-ellipsis whitespace-nowrap ${isActive
+                      ? isSidebarOpen
+                        ? "rounded-l-2xl bg-brand-gradient text-white translate-x-9"
+                        : "rounded-l-2xl bg-brand-gradient text-white translate-x-9"
+                      : "bg-transparent"
+                    } ${hoveredIndex !== null && hoveredIndex !== index
+                      ? "text-gray-500 blur-[2px]"
+                      : "text-black"
                     } ${isSidebarOpen ? "max-w-[180px]" : "max-w-[50px]"}`
                   }
                   onMouseEnter={() => setHoveredIndex(index)}
@@ -146,9 +142,8 @@ const Sidebar: React.FC = () => {
                     <>
                       {/* Icon xích trái khi sidebar đóng và active */}
                       <span
-                        className={`flex-shrink-0 transition-all duration-300 ${
-                          isActive && !isSidebarOpen ? "ml-[-5px]" : ""
-                        }`}
+                        className={`flex-shrink-0 transition-all duration-300 ${isActive && !isSidebarOpen ? "ml-[-5px]" : ""
+                          }`}
                       >
                         {item.icon}
                       </span>
@@ -168,18 +163,16 @@ const Sidebar: React.FC = () => {
               e.preventDefault();
               setShowConfirm(true);
             }}
-            className={`flex items-center justify-start gap-3 mt-5 px-4 py-2 rounded-md transition-all duration-300 transform ${
-              isSidebarOpen
-                ? "rounded-l-2xl hover:bg-red-600 hover:text-white hover:translate-x-9"
-                : "rounded-l-2xl hover:bg-red-600 hover:text-white hover:translate-x-3"
-            }`}
+            className={`flex items-center justify-start gap-3 mt-5 px-4 py-2 rounded-md transition-all duration-300 transform ${isSidebarOpen
+              ? "rounded-l-2xl hover:bg-red-600 hover:text-white hover:translate-x-9"
+              : "rounded-l-2xl hover:bg-red-600 hover:text-white hover:translate-x-3"
+              }`}
           >
             <Icons.LogOut className="w-8 h-8" />
             {isSidebarOpen && "Log out"}
           </NavLink>
         </div>
       </div>
-
       {showConfirm && (
         <div className="fixed inset-0 flex items-center justify-center bg-brand-orange-light backdrop-blur-sm z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg text-center w-80">
@@ -209,3 +202,4 @@ const Sidebar: React.FC = () => {
 };
 
 export default Sidebar;
+
