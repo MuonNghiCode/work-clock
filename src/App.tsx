@@ -23,12 +23,12 @@ import { UserProvider } from "./contexts/UserContext";
 import ApprovalPage from "./pages/ApprovalPage/ApprovalPage";
 import RequestPage from "./pages/RequestPage/RequestPage";
 
-import UserDashboard from "./pages/UserDashboardPage/UserDashboard";
 import ApprovalDashBoardPage from "./pages/ApprovalDashBoardPage/ApprovalDashBoardPage";
 import AdminDashBoard from "./pages/AdminPage/AdminDashboard/AdminDashBoard";
 import ChangePassword from "./pages/ChangePassword/ChangePassword";
 import UserDashboardPage from "./pages/UserPage/UserDashboardPage";
 import ProfilePage from "./pages/ProfilePage/ProfilePage";
+import UserCalendarPage from "./pages/UserCalendarPage/UserCalendarPage";
 
 const router = createBrowserRouter([
   {
@@ -104,7 +104,7 @@ const router = createBrowserRouter([
         path: "dashboard",
         element: (
           <div>
-            <UserDashboard />
+            <UserDashboardPage />
           </div>
         ),
       },
@@ -117,10 +117,10 @@ const router = createBrowserRouter([
         element: <RequestPage />,
       },
       {
-        path: "/user/dashboard",
+        path: "calendar",
         element: (
           <div>
-            <UserDashboardPage />
+            <UserCalendarPage />
           </div>
         ),
       },
@@ -152,12 +152,10 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <>
-      <UserProvider>
-        {loading ? <LoadingScreen /> : <RouterProvider router={router} />}
-        <ToastContainer />
-      </UserProvider>
-    </>
+    <UserProvider>
+      {loading ? <LoadingScreen /> : <RouterProvider router={router} />}
+      <ToastContainer />
+    </UserProvider>
   );
 };
 

@@ -76,6 +76,81 @@
   .box-shadow-brand-orange {
     box-shadow: 12px 12px 20px 0px rgba(255, 168, 113, 0.797);
   }
+
+  .rbc-calendar {
+    background-color: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .rbc-header {
+    background-color: #ff914d;
+    color: white;
+    font-weight: bold;
+    font-size: medium;
+    text-transform: uppercase;
+  }
+
+  .rbc-time-header {
+    background-color: #feb78a;
+    color: white;
+    font-weight: bold;
+  }
+
+  .rbc-event {
+    background: linear-gradient(135deg, #ff914d 10%, #feb78a 90%);
+    color: white;
+    font-weight: 200;
+  }
+
+  .rbc-today {
+    background-color: rgba(255, 145, 77, 0.1) !important;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  @layer theme {
+    .bg-brand-orange {
+      background-color: #ff914d;
+    }
+    .bg-brand-orange-light {
+      background-color: rgba(255, 145, 77, 0.2);
+    }
+    .bg-brand-orange-light-1 {
+      background-color: rgba(255, 145, 77, 0.1);
+    }
+    .bg-brand-grandient {
+      background: linear-gradient(90deg, #feb78a 0%, #ff914d 100%);
+    }
+    .shadow-orange-header {
+      box-shadow: 0 10px 6px rgba(255, 145, 77, 0.2);
+    }
+    .shadow-orange-footer {
+      box-shadow: 0 -10px 6px rgba(255, 145, 77, 0.2);
+    }
+    .shadow-brand-orange {
+      box-shadow: 0px 0px 10px 5px rgba(255, 145, 77, 0.5);
+    }
+    .hover\:shadow-brand-orange:hover {
+      box-shadow: 0px 0px 10px 5px rgba(255, 145, 77, 0.5);
+    }
+    .text-gradient-color {
+      background: linear-gradient(90deg, #feb78a 0%, #ff914d 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hover\:text-gradient-color:hover {
+      background: linear-gradient(90deg, #feb78a 0%, #ff914d 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .box-shadow-brand-orange {
+      box-shadow: 12px 12px 20px 0px rgba(255, 168, 113, 0.797);
+    }
+  }
   .glass-effect {
     background: rgba(255, 145, 77, 0.1);
     backdrop-filter: blur(10px);
