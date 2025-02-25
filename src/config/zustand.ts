@@ -6,8 +6,12 @@ interface SidebarState {
     closeSidebar: () => void;
 }
 
-export const useSidebarStore = create<SidebarState>((set) => ({
+export const useSidebarStore = create<SidebarState>((set, get) => ({
     isSidebarOpen: false,
-    toggleSidebar: () => set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),
+    toggleSidebar: () => {
+      const { isSidebarOpen } = get(); 
+      set({ isSidebarOpen: !isSidebarOpen }); 
+    },
     closeSidebar: () => set({ isSidebarOpen: false }),
-}));
+  }));
+  

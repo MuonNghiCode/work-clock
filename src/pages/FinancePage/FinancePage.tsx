@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaSearch, FaDownload, FaCalendarAlt } from "react-icons/fa";
 import { DateRangePicker, Range } from "react-date-range";
 import { format } from "date-fns";
+import Icons from "../../components/icon";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import PaymentModal from "../../components/PaymentModal/PaymentModal";
@@ -136,6 +137,36 @@ const FinancePage: React.FC = () => {
     }
   };
 
+  const handleDownload = (item: DataType) => {
+    const dataToDownload = [
+      {
+        Project: item.project,
+        Claimer: item.claimer,
+        Time: item.time,
+        DateCreate: item.dateCreate,
+      },
+    ];
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("DownloadData");
+
+    worksheet.columns = [
+      { header: "Project", key: "Project" },
+      { header: "Claimer", key: "Claimer" },
+      { header: "Time", key: "Time" },
+      { header: "Date Create", key: "DateCreate" },
+    ];
+
+    worksheet.addRows(dataToDownload);
+
+    workbook.xlsx.writeBuffer().then((buffer) => {
+      const blob = new Blob([buffer], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      saveAs(blob, `${item.project}_Data.xlsx`);
+    });
+  };
+
   useEffect(() => {
     setDataSource(data);
   }, [data]);
@@ -185,16 +216,14 @@ const FinancePage: React.FC = () => {
   return (
     <div className="!mx-auto !p-1">
       <h1 className="text-[40px] font-bold mb-2">Finance Management</h1>
-      <div className="flex justify-between items-center py-2">
-        <div className="flex-1 flex items-center space-x-2 justify-start bg-white max-w-70 h-10 rounded-xl">
-          <span>
-            <FaSearch className="text-gray-400 ml-2" />
-          </span>
+      <div className="flex flex-row justify-between items-center py-2">
+        <div className="flex items-center space-x-2 bg-white w-70 sm:w-1/3 md:w-70 mb-3 md:mb-0 h-10 rounded-xl px-2 transition-all">
+          <FaSearch className="text-gray-400 ml-2" />
           <input
             type="text"
             name="search"
             placeholder="Type to search..."
-            className="w-full border-transparent text-gray-400 outline-none mr-4"
+            className="w-full border-transparent text-gray-400 outline-none p-2"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -208,10 +237,13 @@ const FinancePage: React.FC = () => {
               onClick={toggleDatePicker}
               className="cursor-pointer bg-none px-2 py-2 rounded"
             >
-              {formattedStartDate} - {formattedEndDate}
+              <span className="lg:hidden">Date</span>
+              <span className="hidden lg:inline">
+                {formattedStartDate} - {formattedEndDate}
+              </span>
             </button>
             {isDatePickerVisible && (
-              <div className="absolute top-full right-0 mt-2 z-10">
+              <div className="absolute top-full mt-2 bg-white shadow-lg p-2 rounded-md z-50 right-0 sm:right-0 sm:left-auto">
                 <DateRangePicker
                   ranges={dateRange}
                   onChange={(ranges) => setDateRange([ranges.selection])}
@@ -227,9 +259,9 @@ const FinancePage: React.FC = () => {
           </div>
           <button
             onClick={exportToExcel}
-            className="flex items-center justify-center bg-[#ff8a65] rounded-full  gap-2 w-25 h-10 cursor-pointer"
+            className="flex items-center justify-center bg-[#ff8a65] rounded-full gap-2 w-25 h-10 cursor-pointer"
           >
-            <span>Export</span>
+            <span className="hidden sm:inline">Export</span>
             <span>
               <FaDownload className="!mx-auto !p-0.5" />
             </span>
@@ -258,12 +290,20 @@ const FinancePage: React.FC = () => {
               <td className="px-4 py-2 ">{item.claimer}</td>
               <td className="px-4 py-2 ">{item.time}</td>
               <td className="px-4 py-2 ">{item.dateCreate}</td>
-              <td className="action px-4 py-2 rounded-r-lg">
+              <td className="action px-4 py-2 rounded-r-lg flex justify-center space-x-1">
                 <button
-                  className="h-full w-3/4 bg-green-500 text-white rounded px-2 py-1"
+                  className="flex items-center justify-center h-10 w-28 bg-green-500 text-white rounded-lg shadow-md cursor-pointer"
                   onClick={() => handlePay(item)}
                 >
-                  Paid
+                  <Icons.Dollar className="mr-1" />
+                  <span className="hidden sm:inline">Pay</span>
+                </button>
+                <button
+                  className="flex items-center justify-center h-10 w-28 bg-orange-500 text-white rounded-lg shadow-md cursor-pointer"
+                  onClick={() => handleDownload(item)}
+                >
+                  <FaDownload className="mr-1" />
+                  <span className="hidden sm:inline">Download</span>
                 </button>
               </td>
             </tr>
