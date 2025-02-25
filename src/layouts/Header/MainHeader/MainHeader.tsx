@@ -84,11 +84,14 @@ const MainHeader: React.FC = () => {
             </div>
           </div>
           {/* Login Button */}
-          <div className="flex items-center justify-between gap-3 text-xl px-4 py-0.5 rounded-3xl bg-brand-grandient text-white hover:scale-110 hover:shadow-brand-orange">
-            <NavLink to="/login" className="flex-1">
+          <div className="flex  text-xl px-4 py-0.5 rounded-3xl bg-brand-grandient text-white hover:scale-110 hover:shadow-brand-orange">
+            <NavLink
+              to="/login"
+              className="flex items-center justify-between gap-3"
+            >
               Login
+              <Icons.ArrowUpRight className="w-6 h-6 bg-white text-black rounded-3xl p-0.5" />
             </NavLink>
-            <Icons.ArrowUpRight className="w-6 h-6 bg-white text-black rounded-3xl p-0.5" />
           </div>
         </div>
       ) : (
@@ -118,11 +121,14 @@ const MainHeader: React.FC = () => {
             </NavLink>
           </div>
           {/* Login Button */}
-          <div className="flex items-center justify-between gap-3 text-xl px-4 py-0.5 rounded-3xl bg-brand-grandient text-white hover:scale-110 hover:shadow-brand-orange">
-            <NavLink to="/login" className="flex-1">
+          <div className="flex  text-xl px-4 py-0.5 rounded-3xl bg-brand-grandient text-white hover:scale-110 hover:shadow-brand-orange">
+            <NavLink
+              to="/login"
+              className="flex items-center justify-between gap-3"
+            >
               Login
+              <Icons.ArrowUpRight className="w-6 h-6 bg-white text-black rounded-3xl p-0.5" />
             </NavLink>
-            <Icons.ArrowUpRight className="w-6 h-6 bg-white text-black rounded-3xl p-0.5" />
           </div>
         </div>
       )}
