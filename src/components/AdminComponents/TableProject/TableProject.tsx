@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { Button, Pagination, Tag, Input } from "antd";
 import { Project } from "../../../types/Project";
 import { GetProps } from "antd/lib/_util/type";
-import ProjectDetail from "./ProjectDetail";
 import ConfirmModal from "../../ConfirmModal/ConfirmModal";
 import Icons from "../../icon";
 import EditProject from "../EditProject/EditProject";
 import Modal from "../../Modal/Modal";
+import ProjectDetail from "../../ProjectDetail/ProjectDetail";
 
 type SearchProps = GetProps<typeof Input.Search>;
 const { Search } = Input;
@@ -23,7 +23,7 @@ const TableProject: React.FC<DataProps> = ({
   onDeleteProject,
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(5);
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [searchValue, setSearchValue] = useState<string>("");
   const [showProjectDetail, setShowProjectDetail] = useState<boolean>(false);
@@ -132,6 +132,8 @@ const TableProject: React.FC<DataProps> = ({
     }
   };
 
+
+  const users = ["dngoc", "haaus", "ntdn"]; 
   return (
     <>
       <div className="flex justify-between items-center mb-4">
@@ -176,7 +178,8 @@ const TableProject: React.FC<DataProps> = ({
             <th className="border-white px-4 py-2 !rounded-tl-2xl">
               Project Name
             </th>
-            <th className="border-l-2 border-white px-4 py-2">Date</th>
+            <th className="border-l-2 border-white px-4 py-2">Start Date</th>
+            <th className="border-l-2 border-white px-4 py-2">End Date</th>
             <th className="border-l-2 border-white px-4 py-2">Status</th>
             <th className="border-l-2 border-white px-4 py-2 !rounded-tr-2xl">
               Action
@@ -192,6 +195,7 @@ const TableProject: React.FC<DataProps> = ({
             >
               <td className="px-4 py-2 rounded-l-2xl">{item.name}</td>
               <td className="px-4 py-2">{item.date}</td>
+              <td className="px-4 py-2">{item.enddate}</td>
               <td className="px-4 py-2">
                 {handleStatusChangeHTML(item.status)}
               </td>
@@ -262,6 +266,7 @@ const TableProject: React.FC<DataProps> = ({
         visible={showProjectDetail}
         onClose={handleClose}
         Project={selectedProject}
+        users={users}
       />
       <ConfirmModal
         visible={showConfirmModal}
@@ -275,6 +280,7 @@ const TableProject: React.FC<DataProps> = ({
             project={selectedProject}
             onClose={handleClose}
             onSave={handleSaveEdit}
+            users={users}
           />
         )}
       </Modal>
