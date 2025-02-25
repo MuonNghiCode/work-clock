@@ -23,7 +23,8 @@ import {
   // CircleCheck
   Phone ,
   Mail,
-  MapPin
+  MapPin,
+  Menu 
 } from "lucide-react";
 import {
   FaUsers,
@@ -87,7 +88,8 @@ const Icons: IconType = {
   Dollar: DollarSign,
   Phone: Phone,
   Mail: Mail,
-  MapPin: MapPin
+  MapPin: MapPin,
+  Menu2: Menu
 };
 
 export default Icons;
