@@ -28,6 +28,7 @@ import ApprovalDashBoardPage from "./pages/ApprovalDashBoardPage/ApprovalDashBoa
 import AdminDashBoard from "./pages/AdminPage/AdminDashboard/AdminDashBoard";
 import ChangePassword from "./pages/ChangePassword/ChangePassword";
 import UserDashboardPage from "./pages/UserPage/UserDashboardPage";
+import ProfilePage from "./pages/ProfilePage/ProfilePage";
 
 const router = createBrowserRouter([
   {
@@ -36,7 +37,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       { path: "/", element: <HomePage /> },
-      { path: "about", element: <div>About Us</div> },
+      { path: "about", element: <ProfilePage /> },
       { path: "contact", element: <div>Contact</div> },
     ],
   },
