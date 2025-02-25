@@ -18,6 +18,7 @@ const AdminHeader: React.FC = () => {
     },
     {
       type: "divider",
+      className: 'lg:!hidden'
     },
     {
       key: "2",
@@ -25,36 +26,52 @@ const AdminHeader: React.FC = () => {
     },
     {
       key: "3",
-      label: <span className="lg:hidden">Settings</span>,
+      label: <span className="lg:hidden inline-flex items-center">Settings
+        <Icons.Settings className="w-4 h-4 !ml-1" />
+      </span>,
+      className: 'lg:!hidden'
+    },
+    {
+      type: "divider",
+      className: 'lg:!hidden'
     },
     {
       key: "4",
-      label: <>
-        <hr className="py-2 border-gray-300 lg:hidden" />
-        <a href="#" className="lg:hidden">
+      label:
+        <a href="#">
           <div className="inline-flex items-center">
             Dashboard <Icons.Dashboard
               strokeWidth={1.5}
               className="w-4 h-4 ml-1"
             />
           </div>
-        </a>
-      </>,
+        </a>,
+      className: 'lg:!hidden'
     },
     {
       key: "5",
-      label: <a href="#" className="lg:hidden inline-flex items-center">
-        Report
-        <Icons.Report
-          strokeWidth={1.5}
-          className="w-4 h-4 ml-1"
-        />
-      </a>,
+      label: <>
+        <a href="#" className="lg:hidden inline-flex items-center">
+          Report
+          <Icons.ChartColumn
+            strokeWidth={1.5}
+            className="w-4 h-4 ml-1"
+          />
+        </a>
+      </>,
+      className: 'lg:!hidden'
+
+    },
+    {
+      type: "divider",
+      className: 'lg:!hidden'
     },
     {
       key: "6",
-      label: <>
-        <hr className="py-2 border-gray-300 lg:hidden" />
+      label: <div className="">
+        <span className="lg:!hidden">
+          <hr className="py-2 border-gray-300 lg:hidden" />
+        </span>
         <span className="lg:hidden">
           <Badge count={5} className="!pr-2">
             <div className="inline-flex items-center">
@@ -66,7 +83,9 @@ const AdminHeader: React.FC = () => {
             </div>
           </Badge>
         </span>
-      </>
+      </div>,
+      className: 'lg:!hidden'
+
     },
     {
       key: "7",
@@ -77,6 +96,7 @@ const AdminHeader: React.FC = () => {
           className="w-4 h-4 lg:hidden ml-1"
         />
       </span>,
+      className: 'lg:!hidden'
     },
     {
       key: "8",
@@ -84,13 +104,14 @@ const AdminHeader: React.FC = () => {
         Logout
         <Icons.LogOut className="w-4 h-4 ml-1" />
       </a>,
+      className: 'lg:!hidden'
+
     }
   ];
 
   return (
     <>
-      {/* <div className="flex bg-transparent justify-between items-center"> */}
-      <div className="h-8 lg:h-12 flex items-center lg:py-4 lg:space-x-7 !-pl-4">
+      <div className="h-8 lg:h-12 w-full flex items-center lg:py-4 lg:space-x-7 !-pl-4">
         <Button
           onClick={toggleSidebar}
           className="!h-fit !p-3 !border-none hover:!shadow-lg !text-black !hidden lg:!flex"
@@ -99,7 +120,7 @@ const AdminHeader: React.FC = () => {
         </Button>
         <img src={Images.Logo} alt="logo" className="lg:max-w-64 lg:h-25 max-w-40" />
       </div>
-      <div className="inline-flex items-center space-x-12 mr-5">
+      <div className="w-full flex justify-end items-center space-x-12 mr-5">
         <div className="w-12 h-12 lg:block hidden">
           <Badge count={5} className="">
             <Icons.Bell
@@ -118,6 +139,7 @@ const AdminHeader: React.FC = () => {
           placement="bottomLeft"
           overlayClassName="!w-60 !font-squanda"
           arrow
+          autoAdjustOverflow
           className="flex items-center "
         >
           <a
@@ -136,7 +158,6 @@ const AdminHeader: React.FC = () => {
           </a>
         </Dropdown>
       </div>
-      {/* </div> */}
     </>
   );
 };
