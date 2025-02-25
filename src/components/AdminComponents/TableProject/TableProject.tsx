@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { Button, Pagination, Tag, Input } from "antd";
 import { Project } from "../../../types/Project";
 import { GetProps } from "antd/lib/_util/type";
-import ProjectDetail from "./ProjectDetail";
 import ConfirmModal from "../../ConfirmModal/ConfirmModal";
 import Icons from "../../icon";
 import EditProject from "../EditProject/EditProject";
 import Modal from "../../Modal/Modal";
+import ProjectDetail from "../../ProjectDetail/ProjectDetail";
 
 type SearchProps = GetProps<typeof Input.Search>;
 const { Search } = Input;
@@ -132,6 +132,8 @@ const TableProject: React.FC<DataProps> = ({
     }
   };
 
+
+  const users = ["dngoc", "haaus", "ntdn"]; 
   return (
     <>
       <div className="flex justify-between items-center mb-4">
@@ -264,6 +266,7 @@ const TableProject: React.FC<DataProps> = ({
         visible={showProjectDetail}
         onClose={handleClose}
         Project={selectedProject}
+        users={users}
       />
       <ConfirmModal
         visible={showConfirmModal}
@@ -277,6 +280,7 @@ const TableProject: React.FC<DataProps> = ({
             project={selectedProject}
             onClose={handleClose}
             onSave={handleSaveEdit}
+            users={users}
           />
         )}
       </Modal>

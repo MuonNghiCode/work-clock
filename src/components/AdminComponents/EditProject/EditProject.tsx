@@ -6,9 +6,10 @@ interface EditProjectProps {
   onClose?: () => void;
   onSave?: (project: Project) => void;
   project?: Project | null;
+  users: string[];
 }
 
-const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project }) => {
+const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project, users }) => {
   const convertDateFormat = (dateStr: string) => {
     if (!dateStr) return "";
     const [day, month, year] = dateStr.split('/');
@@ -25,7 +26,7 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project }) =
     name: project?.name || "",
     code: project?.code || "",
     date: project?.date ? convertDateFormat(project.date) : "",
-    enddate: project?.date ? convertDateFormat(project.date) : "",
+    enddate: project?.enddate ? convertDateFormat(project.enddate) : "",
     status: project?.status || "Processing",
     user: project?.user || ""
   });
@@ -91,6 +92,20 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project }) =
           </div>
 
           <div className="space-y-2">
+            <label className="block text-gray-700 font-medium text-lg">User</label>
+            <select
+              value={projectData.user}
+              onChange={(e) => setProjectData({ ...projectData, user: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 bg-white text-base"
+            >
+              <option value="">Select a user</option>
+              {users.map((user, index) => (
+                <option key={index} value={user}>{user}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="space-y-2">
             <label className="block text-gray-700 font-medium text-lg">Status</label>
             <select
               value={projectData.status}
@@ -101,17 +116,6 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project }) =
               <option value="Pending">Pending</option>
               <option value="Complete">Complete</option>
             </select>
-          </div>
-
-          <div className="space-y-2">
-            <label className="block text-gray-700 font-medium text-lg">User</label>
-            <input
-              type="text"
-              value={projectData.user}
-              onChange={(e) => setProjectData({ ...projectData, user: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-base"
-              placeholder="Enter user name"
-            />
           </div>
         </div>
       </div>
