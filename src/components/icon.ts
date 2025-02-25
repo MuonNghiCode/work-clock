@@ -21,6 +21,9 @@ import {
   Eye,
   DollarSign,
   // CircleCheck
+  Phone ,
+  Mail,
+  MapPin
 } from "lucide-react";
 import {
   FaUsers,
@@ -82,6 +85,9 @@ const Icons: IconType = {
   Edit: Pencil,
   Delete: Trash2,
   Dollar: DollarSign,
+  Phone: Phone,
+  Mail: Mail,
+  MapPin: MapPin
 };
 
 export default Icons;

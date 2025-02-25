@@ -33,6 +33,7 @@ import ChangePassword from "./pages/ChangePassword/ChangePassword";
 import UserDashboardPage from "./pages/UserPage/UserDashboardPage";
 import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import UserCalendarPage from "./pages/UserCalendarPage/UserCalendarPage";
+import Contact from "./pages/ContactPage/Contact";
 
 const router = createBrowserRouter([
   {
@@ -41,8 +42,11 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       { path: "/", element: <HomePage /> },
+      {
+        path: "contact",
+        element: <Contact />,
+      },
       { path: "about", element: <ProfilePage /> },
-      { path: "contact", element: <div>Contact</div> },
     ],
   },
   {
