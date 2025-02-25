@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useUser } from "../../contexts/UserContext";
 import { useSidebarStore } from "../../config/zustand";
-import { logout } from "../../services/auth";
+import { logout } from "../../services/authService";
 import Icons from "../../components/icon";
 import { NavLink } from "react-router-dom";
 
@@ -41,7 +41,7 @@ const Sidebar: React.FC = () => {
       {
         path: "/admin",
         icon: <Icons.Dashboard className="w-8 h-8" />,
-        label: "DASHBOARD",
+        label: "Dashboard",
       },
       {
         path: "user",
@@ -58,7 +58,7 @@ const Sidebar: React.FC = () => {
       {
         path: "/approval",
         icon: <Icons.Dashboard className="w-8 h-8" />,
-        label: "DASHBOARD",
+        label: "Dashboard",
       },
       {
         path: "approval-management",
@@ -70,7 +70,7 @@ const Sidebar: React.FC = () => {
       {
         path: "/finance",
         icon: <Icons.Dashboard className="w-8 h-8" />,
-        label: "DASHBOARD",
+        label: "Dashboard",
       },
       {
         path: "paid-management",
@@ -82,7 +82,7 @@ const Sidebar: React.FC = () => {
       {
         path: "dashboard",
         icon: <Icons.Dashboard className="w-8 h-8" />,
-        label: "DASHBOARD",
+        label: "Dashboard",
       },
       {
         path: "calendar",
