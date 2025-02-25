@@ -28,6 +28,7 @@ import AdminDashBoard from "./pages/AdminPage/AdminDashboard/AdminDashBoard";
 import ChangePassword from "./pages/ChangePassword/ChangePassword";
 import UserDashboardPage from "./pages/UserPage/UserDashboardPage";
 import UserCalendarPage from "./pages/UserCalendarPage/UserCalendarPage";
+import Contact from "./pages/ContactPage/Contact";
 
 const router = createBrowserRouter([
   {
@@ -36,8 +37,15 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       { path: "/", element: <HomePage /> },
-      { path: "about", element: <div>About Us</div> },
-      { path: "contact", element: <div>Contact</div> },
+      { path: "/about", element: <div>About Us</div> },
+      {
+        path: "/contact",
+        element: (
+          <div>
+            <Contact />
+          </div>
+        ),
+      },
     ],
   },
   {

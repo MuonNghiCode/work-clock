@@ -14,7 +14,7 @@ import Auther3 from "../assets/images/auther-3.png";
 import Error from "../assets/images/404.png";
 import BackgroundLayout from "../assets/images/backgroundlayout.jpg";
 import Background4 from "../assets/images/background4.png";
-
+import Background5 from "../assets/images/background-large.png";
 
 const Images = {
     Logo,
@@ -33,7 +33,7 @@ const Images = {
     Error,
     BackgroundLayout,
     Background4,
-
+    Background5
   
 };
 
