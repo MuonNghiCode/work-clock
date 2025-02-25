@@ -11,12 +11,12 @@ const AdminProject: React.FC = () => {
     ...project,
     id: index + 1
   }));
-  
+
   const [projects, setProjects] = useState<Project[]>(initialProjects);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const handleEditProject = (editedProject: Project) => {
-    const newProjects = projects.map(project => 
+    const newProjects = projects.map(project =>
       project.id === editedProject.id ? editedProject : project
     );
     setProjects(newProjects);
@@ -42,11 +42,10 @@ const AdminProject: React.FC = () => {
     setProjects([...projects, projectWithId]);
     setIsAddModalOpen(false);
   };
-
   return (
     <>
-      <div className="w-full flex justify-center">
-        <div className="w-full lg:w-3/4 flex-col">
+      <div className="p-6 w-full rounded-lg ">
+        <div className="w-full  flex-col">
           <div className="flex justify-between items-center py-9">
             <h1 className="text-5xl">Project Management</h1>
             <button
@@ -57,9 +56,9 @@ const AdminProject: React.FC = () => {
               <span className="text-lg">Add Project</span>
             </button>
           </div>
-          
-          <TableProject 
-            data={projects} 
+
+          <TableProject
+            data={projects}
             onEditProject={handleEditProject}
             onDeleteProject={handleDeleteProject}
           />

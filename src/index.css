@@ -39,8 +39,14 @@
   .bg-brand-orange-light-1 {
     background-color: rgba(255, 145, 77, 0.1);
   }
-  .bg-brand-grandient {
+  .bg-brand-orange-dark {
+    background-color: #d67548;
+  }
+  .bg-brand-gradient {
     background: linear-gradient(90deg, #feb78a 0%, #ff914d 100%);
+  }
+  .border-brand-orange {
+    border-color: #ff914d;
   }
   .shadow-orange-header {
     box-shadow: 0 10px 6px rgba(255, 145, 77, 0.2);
@@ -49,10 +55,10 @@
     box-shadow: 0 -10px 6px rgba(255, 145, 77, 0.2);
   }
   .shadow-brand-orange {
-    box-shadow: 0px 0px 10px 5px rgba(255, 145, 77, 0.5);
+    box-shadow: 0px 0px 10px 5px rgba(255, 145, 77, 0.3);
   }
   .hover\:shadow-brand-orange:hover {
-    box-shadow: 0px 0px 10px 5px rgba(255, 145, 77, 0.5);
+    box-shadow: 0px 0px 10px 5px rgba(255, 145, 77, 0.3);
   }
   .text-gradient-color {
     background: linear-gradient(90deg, #feb78a 0%, #ff914d 100%);
@@ -70,8 +76,6 @@
   .box-shadow-brand-orange {
     box-shadow: 12px 12px 20px 0px rgba(255, 168, 113, 0.797);
   }
-
-  /* UserCalendar.css */
 
   .rbc-calendar {
     background-color: #ffffff;
@@ -146,5 +150,10 @@
     .box-shadow-brand-orange {
       box-shadow: 12px 12px 20px 0px rgba(255, 168, 113, 0.797);
     }
+  }
+  .glass-effect {
+    background: rgba(255, 145, 77, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
   }
 }
