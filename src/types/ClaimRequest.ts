@@ -1,5 +1,4 @@
 export interface ClaimRequest {
-  amountReceived?: number;
   staffName: string;
   staffRole: string;
   staffId: string;
@@ -9,8 +8,8 @@ export interface ClaimRequest {
   totalWorkingHour: number;
   additionalRemarks: string;
   auditTrail: string;
-  dateCreate: Date; // New field for date create
-  status: "Pending" | "Approve" | "Reject" | "Return";
+  dateCreate: string; // New field for date create
+  status: "Draft" | "Pending" | "Approval" | "Approved" | "Paid" | "Rejected" | "Canceled";
   date: Date;
   day: string;
   from: string;
@@ -23,10 +22,7 @@ const generateFakeData = (): ClaimRequest[] => {
   const projects = ["Project A", "Project B", "Project C"];
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
   const statuses: ClaimRequest["status"][] = [
-    "Pending",
-    "Approve",
-    "Reject",
-    "Return",
+    "Draft" , "Pending" , "Approval" , "Approved" , "Paid" , "Rejected" , "Canceled"
   ];
   const fakeData: ClaimRequest[] = [];
 
@@ -47,15 +43,12 @@ const generateFakeData = (): ClaimRequest[] => {
       totalWorkingHour: fakeData.length,
       additionalRemarks: `Additional remarks for staff ${i + 1}`,
       auditTrail: `Audit trail for staff ${i + 1}`,
-      dateCreate: new Date(`2025-02-${String((i % 28) + 1).padStart(2, "0")}`),
+      dateCreate: new Date(`2025-02-${String((i % 28) + 1).padStart(2, "0")}`).toISOString(),
       status: statuses[i % statuses.length],
     });
   }
 
   return fakeData;
 };
-
-const fakeData = generateFakeData();
-console.log(fakeData);
 
 export { generateFakeData };

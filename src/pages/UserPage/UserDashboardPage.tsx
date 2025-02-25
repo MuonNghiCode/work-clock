@@ -17,8 +17,19 @@ const UserDashboardPage = () => {
     return (
         <>
             <h1 className='text-3xl'>User Dashboard</ h1>
-            <Button onClick={handleOpenModalAddNewClaim}>Add New Claim</Button>
-            <ModalAddNewClaim isOpen={isOpenModalAddNewClaim} onClose={handleCloseModalAddNewClaim} />
+            <div className="w-full flex">
+                <Button
+                    className="w-42 !h-12 !p-4 !bg-[#ff914d] !text-lg !font-semibold !text-white hover:!bg-[#feb78a]"
+                    onClick={handleOpenModalAddNewClaim}
+                >
+                    Add New Claim
+                </Button>
+            </div>
+            {/* <TableUserDashboard data={data} /> */}
+            <ModalAddNewClaim
+                isOpen={isOpenModalAddNewClaim}
+                onClose={handleCloseModalAddNewClaim}
+            />
         </>
     )
 }

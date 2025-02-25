@@ -1,12 +1,11 @@
 import React, { useEffect, useRef } from "react";
-import { useUser } from "../../contexts/UserContext";
 import { useSidebarStore } from "../../config/zustand";
 import { logout } from "../../services/auth";
 import Icons from "../../components/icon";
 import { NavLink } from "react-router-dom";
 
 const Sidebar: React.FC = () => {
-  const { user } = useUser();
+  const role = localStorage.getItem('role');
   const sidebarRef = useRef<HTMLDivElement>(null);
   const { isSidebarOpen, closeSidebar } = useSidebarStore();
 
@@ -37,7 +36,7 @@ const Sidebar: React.FC = () => {
     string,
     { path: string; icon: JSX.Element; label: string }[]
   > = {
-    admin: [
+    A001: [
       {
         path: "/admin",
         icon: <Icons.Dashboard className="w-8 h-8" />,
@@ -54,7 +53,7 @@ const Sidebar: React.FC = () => {
         label: "Project Management",
       },
     ],
-    approval: [
+    A003: [
       {
         path: "/approval",
         icon: <Icons.Dashboard className="w-8 h-8" />,
@@ -66,7 +65,7 @@ const Sidebar: React.FC = () => {
         label: "Approval Management",
       },
     ],
-    finance: [
+    A002: [
       {
         path: "/finance",
         icon: <Icons.Dashboard className="w-8 h-8" />,
@@ -78,7 +77,7 @@ const Sidebar: React.FC = () => {
         label: "Finance Management",
       },
     ],
-    user: [
+    A004: [
       {
         path: "dashboard",
         icon: <Icons.Dashboard className="w-8 h-8" />,
@@ -104,10 +103,10 @@ const Sidebar: React.FC = () => {
       ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0 lg:${isSidebarOpen ? "translate-x-0 w-56" : "w-24"}`}
     >
       <div className="flex flex-col gap-3 space-y-4 mt-2 p-4">
-        {user?.role && menuItems[user.role] && (
+        {role && menuItems[role] && (
           <>
             <h2 className="text-gray-300">Menu</h2>
-            {menuItems[user.role].map((item, index) => (
+            {menuItems[role].map((item, index) => (
               <NavLink
                 key={index}
                 to={item.path}
