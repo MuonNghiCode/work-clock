@@ -3,8 +3,7 @@ import { useUser } from "../../contexts/UserContext";
 import { useSidebarStore } from "../../config/zustand";
 import { logout } from "../../services/authService";
 import Icons from "../../components/icon";
-import { Navigate, NavLink } from "react-router-dom";
-import { toast } from "react-toastify";
+import { NavLink } from "react-router-dom";
 
 const Sidebar: React.FC = () => {
   const { user } = useUser();
