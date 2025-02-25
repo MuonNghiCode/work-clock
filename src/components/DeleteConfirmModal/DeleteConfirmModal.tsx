@@ -1,5 +1,5 @@
 import React from 'react';
-import { Project } from '../types/Project';
+import { Project } from '../../types/Project';
 
 interface DeleteConfirmModalProps {
   project: Project;
