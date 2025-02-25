@@ -216,8 +216,8 @@ const FinancePage: React.FC = () => {
   return (
     <div className="!mx-auto !p-1">
       <h1 className="text-[40px] font-bold mb-2">Finance Management</h1>
-      <div className="flex flex-col md:flex-row justify-between items-center py-2">
-        <div className="flex items-center space-x-2 bg-white w-full sm:w-full mb-3 sm:mb-3 md:mb-0 md:max-w-70 h-10 rounded-xl px-2 transition-all">
+      <div className="flex flex-row justify-between items-center py-2">
+        <div className="flex items-center space-x-2 bg-white w-70 sm:w-1/3 md:w-70 mb-3 md:mb-0 h-10 rounded-xl px-2 transition-all">
           <FaSearch className="text-gray-400 ml-2" />
           <input
             type="text"
@@ -237,10 +237,13 @@ const FinancePage: React.FC = () => {
               onClick={toggleDatePicker}
               className="cursor-pointer bg-none px-2 py-2 rounded"
             >
-              {formattedStartDate} - {formattedEndDate}
+              <span className="lg:hidden">Date</span>
+              <span className="hidden lg:inline">
+                {formattedStartDate} - {formattedEndDate}
+              </span>
             </button>
             {isDatePickerVisible && (
-              <div className="absolute top-full right-0 mt-2 z-10">
+              <div className="absolute top-full mt-2 bg-white shadow-lg p-2 rounded-md z-50 right-0 sm:right-0 sm:left-auto">
                 <DateRangePicker
                   ranges={dateRange}
                   onChange={(ranges) => setDateRange([ranges.selection])}
@@ -258,7 +261,7 @@ const FinancePage: React.FC = () => {
             onClick={exportToExcel}
             className="flex items-center justify-center bg-[#ff8a65] rounded-full gap-2 w-25 h-10 cursor-pointer"
           >
-            <span>Export</span>
+            <span className="hidden sm:inline">Export</span>
             <span>
               <FaDownload className="!mx-auto !p-0.5" />
             </span>
@@ -293,14 +296,14 @@ const FinancePage: React.FC = () => {
                   onClick={() => handlePay(item)}
                 >
                   <Icons.Dollar className="mr-1" />
-                  Pay
+                  <span className="hidden sm:inline">Pay</span>
                 </button>
                 <button
                   className="flex items-center justify-center h-10 w-28 bg-orange-500 text-white rounded-lg shadow-md cursor-pointer"
                   onClick={() => handleDownload(item)}
                 >
                   <FaDownload className="mr-1" />
-                  Download
+                  <span className="hidden sm:inline">Download</span>
                 </button>
               </td>
             </tr>
