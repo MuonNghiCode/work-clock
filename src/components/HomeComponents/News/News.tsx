@@ -16,7 +16,8 @@ const News: React.FC = () => {
           Featured News
         </div>
 
-        <div className="flex items-center justify-center h-[500px] w-6xl mt-7 relative">
+        {/* Desktop */}
+        <div className="hidden md:flex items-center justify-center h-[500px] w-6xl mt-7 relative">
           {/* Nút Previous */}
           <button
             className="absolute left-0 z-10 p-2 text-white bg-gray-300 rounded-full transition-all duration-500 hover:bg-neutral-400"
@@ -28,7 +29,7 @@ const News: React.FC = () => {
           {/* Ảnh chính */}
           <div className="mr-[30px] relative transition-all duration-500 hover:scale-105">
             <img
-              className={`rounded-[20px] box-shadow-brand-orange transition-all duration-500 object-cover  ${
+              className={`rounded-[20px] box-shadow-brand-orange transition-all duration-500 object-cover ${
                 isPrimary
                   ? "w-[745px] h-[450px] opacity-100"
                   : "w-[360px] h-[450px] opacity-50"
@@ -50,7 +51,7 @@ const News: React.FC = () => {
                   ? "w-[360px] h-[450px] opacity-50"
                   : "w-[745px] h-[450px] opacity-100"
               }`}
-              src={Images.Work1}
+              src={Images.News1}
               alt=""
             />
             <div className="absolute bottom-5 left-5 bg-white/50 text-zinc-900 p-4 rounded-lg w-[90%]">
@@ -67,17 +68,74 @@ const News: React.FC = () => {
             <Icons.ChevronRight />
           </button>
         </div>
+
+        {/* Mobile */}
+        <div className="block md:hidden w-full mt-5 relative overflow-hidden">
+          {/* Ảnh cho mobile */}
+          <div className="relative w-full h-[400px]">
+            <img
+              className={`absolute top-0 left-0 w-full h-[400px] rounded-[20px] box-shadow-brand-orange object-cover transition-all duration-700 ease-in-out ${
+                isPrimary
+                  ? "opacity-100 translate-x-0"
+                  : "opacity-0 -translate-x-full"
+              }`}
+              src={Images.Work1}
+              alt="Work1"
+            />
+            <img
+              className={`absolute top-0 left-0 w-full h-[400px] rounded-[20px] box-shadow-brand-orange object-cover transition-all duration-700 ease-in-out ${
+                isPrimary
+                  ? "opacity-0 translate-x-full"
+                  : "opacity-100 translate-x-0"
+              }`}
+              src={Images.News1}
+              alt="News1"
+            />
+
+            {/* Phần text */}
+            <div
+              className={`absolute bottom-5 left-5 bg-white/50 text-zinc-900 p-4 rounded-lg w-[90%] transition-all duration-700 ${
+                isPrimary ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              <h3 className="text-lg font-bold">
+                {isPrimary ? "Title of the News" : "Another News"}
+              </h3>
+              <p className="text-sm">
+                {isPrimary
+                  ? "Short description about the news..."
+                  : "Some other news description..."}
+              </p>
+            </div>
+          </div>
+
+          {/* Nút Previous và Next */}
+          <div className="absolute top-1/2 left-0 right-0 flex justify-between px-4 -translate-y-1/2">
+            <button
+              className="p-2 text-white bg-gray-300 rounded-full transition-all duration-500 hover:bg-neutral-400"
+              onClick={toggleImages}
+            >
+              <Icons.ChevronLeft />
+            </button>
+
+            <button
+              className="p-2 text-white bg-gray-300 rounded-full transition-all duration-500 hover:bg-neutral-400"
+              onClick={toggleImages}
+            >
+              <Icons.ChevronRight />
+            </button>
+          </div>
+        </div>
       </div>
       <div>
-        <p className="mb-5 ml-38 text-2xl text-gradient-color md:text-3xl">
+        <p className="mb-5 text-2xl text-gradient-color md:text-3xl text-center md:text-left">
           Popular Post
         </p>
-        <div className=" flex justify-center gap-5 mb-5">
-          <div className="max-w-sm rounded-2xl overflow-hidden shadow-lg bg-white transition-all duration-500 hover:scale-105">
-            {/* Hình ảnh */}
-            <img className="w-full h-48 object-cover" src={Images.News1} />
 
-            {/* Nội dung */}
+        <div className="flex justify-center gap-5 mb-5 md:flex-row flex-col items-center">
+          {/* Card 1 */}
+          <div className="max-w-sm rounded-2xl overflow-hidden shadow-lg bg-white transition-all duration-500 hover:scale-105 w-[90%] md:w-auto">
+            <img className="w-full h-48 object-cover" src={Images.News1} />
             <div className="p-4">
               <h2 className="text-lg font-semibold">
                 Opening Day Of Boating Season, Seattle WA
@@ -87,8 +145,6 @@ const News: React.FC = () => {
                 water, there are boats. Today is...
               </p>
             </div>
-
-            {/* Thông tin tác giả */}
             <div className="flex items-center justify-between p-4 border-t bg-zinc-200">
               <div className="flex items-center gap-3">
                 <img
@@ -119,11 +175,10 @@ const News: React.FC = () => {
               </button>
             </div>
           </div>
-          <div className="max-w-sm rounded-2xl overflow-hidden shadow-lg bg-white transition-all duration-500 hover:scale-105">
-            {/* Hình ảnh */}
-            <img className="w-full h-48 object-cover" src={Images.News2} />
 
-            {/* Nội dung */}
+          {/* Card 2 */}
+          <div className="max-w-sm rounded-2xl overflow-hidden shadow-lg bg-white transition-all duration-500 hover:scale-105 w-[90%] md:w-auto">
+            <img className="w-full h-48 object-cover" src={Images.News2} />
             <div className="p-4">
               <h2 className="text-lg font-semibold">
                 Opening Day Of Boating Season, Seattle WA
@@ -133,8 +188,6 @@ const News: React.FC = () => {
                 water, there are boats. Today is...
               </p>
             </div>
-
-            {/* Thông tin tác giả */}
             <div className="flex items-center justify-between p-4 border-t bg-zinc-200">
               <div className="flex items-center gap-3">
                 <img
@@ -165,11 +218,10 @@ const News: React.FC = () => {
               </button>
             </div>
           </div>
-          <div className="max-w-sm rounded-2xl overflow-hidden shadow-lg bg-white transition-all duration-500 hover:scale-105">
-            {/* Hình ảnh */}
-            <img className="w-full h-48 object-cover" src={Images.News3} />
 
-            {/* Nội dung */}
+          {/* Card 3 */}
+          <div className="max-w-sm rounded-2xl overflow-hidden shadow-lg bg-white transition-all duration-500 hover:scale-105 w-[90%] md:w-auto">
+            <img className="w-full h-48 object-cover" src={Images.News3} />
             <div className="p-4">
               <h2 className="text-lg font-semibold">
                 Opening Day Of Boating Season, Seattle WA
@@ -179,8 +231,6 @@ const News: React.FC = () => {
                 water, there are boats. Today is...
               </p>
             </div>
-
-            {/* Thông tin tác giả */}
             <div className="flex items-center justify-between p-4 border-t bg-zinc-200">
               <div className="flex items-center gap-3">
                 <img

@@ -1,5 +1,5 @@
 import React from "react";
-import { checkRole, isAuthenticated } from "../../services/auth";
+import { checkRole, isAuthenticated } from "../../services/authService";
 import { Navigate } from "react-router";
 import { toast } from "react-toastify";
 

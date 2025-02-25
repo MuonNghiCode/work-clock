@@ -6,13 +6,18 @@ import { Link } from "react-router";
 const Carousel: React.FC = () => {
   return (
     <>
-      <div className="relative w-full min-h-screen px-4 bg-white md:px-8">
-        <img
-          src={Images.Background}
-          alt="Background"
-          className="w-full h-auto"
-        />
-        <div className="absolute top-0 left-0 flex flex-col items-start justify-start w-full h-full px-4 md:px-10">
+      <div className="relative w-full min-h-[500px] md:h-[1000px] px-4 bg-white md:px-8">
+        {/* Background Image - Desktop */}
+        <picture className="absolute top-0 left-0 hidden w-full h-full overflow-hidden md:block">
+          <img
+            src={Images.Background}
+            alt="Background"
+            className="object-cover w-full h-full"
+          />
+        </picture>
+
+        {/* Content */}
+        <div className="relative z-10 flex flex-col items-start justify-start w-full h-full px-4 pt-10 pb-10 md:px-10 md:pt-0 md:pb-0">
           <div className="flex items-center">
             <img
               src={Images.Logo}
@@ -37,6 +42,15 @@ const Carousel: React.FC = () => {
             <span className="text-sm md:text-lg">Explore Now</span>
             <Icons.ArrowRight className="w-5 md:w-7 h-5 md:h-7 border border-white text-white rounded-3xl p-0.5 md:p-1" />
           </Link>
+
+          {/* Background Image - Responsive (Dưới Explore Now) */}
+          <picture className="block w-full mt-4 md:hidden">
+            <img
+              src={Images.Background5}
+              alt="Background"
+              className="w-full h-auto rounded-lg shadow-brand-orange"
+            />
+          </picture>
         </div>
       </div>
     </>

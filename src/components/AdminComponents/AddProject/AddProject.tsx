@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
-// import { Project } from "../../types/Project";
 import { Project } from "../../../types/Project";
+import ModalAddUser from "../../AddUserProject/ModalAddUser";
 
 interface AddProjectProps {
   onClose?: () => void;
@@ -23,8 +23,12 @@ const AddProject: React.FC<AddProjectProps> = ({ onClose, onAdd }) => {
     name: "",
     code: generateRandomCode(),
     date: "",
-    status: "Processing"
+    enddate: "",
+    status: "Processing",
+    user: "",
   });
+
+  const [isOpenModalAddUser, setIsOpenModalAddUser] = useState(false);
 
   const handleSubmit = () => {
     if (onAdd) {
@@ -35,26 +39,37 @@ const AddProject: React.FC<AddProjectProps> = ({ onClose, onAdd }) => {
     }
   };
 
+  const handleOpenModalAddUser = () => {
+    setIsOpenModalAddUser(true);
+  };
+
+  const handleCloseModalAddUser = () => {
+    setIsOpenModalAddUser(false);
+  };
+
   return (
-    <div className="w-[500px] max-w-full px-4">
-      <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">Add project</h2>
+    <div className="w-[800px] max-w-full px-6 py-4 bg-white shadow-lg rounded-lg">
+      <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">Add Project</h2>
 
       <div className="flex flex-col items-center gap-y-4">
-        <div className="flex flex-col items-center justify-center mb-3">
-          <div className="w-24 h-24 rounded-full bg-gray-200 overflow-hidden mb-3">
-            <img
-              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-              alt="User Avatar"
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <button className="bg-orange-400 text-white px-4 py-1.5 rounded-full flex items-center gap-1.5 hover:bg-orange-500 transition-colors text-sm">
+        <div className="flex flex-row items-center justify-between w-full mb-3">
+          <button
+            className="bg-orange-400 text-white px-4 py-2 rounded-full flex items-center gap-1.5 hover:bg-orange-500 transition-colors text-sm"
+            onClick={handleOpenModalAddUser}
+          >
             <FaPlus className="w-3 h-3" /> Add User
           </button>
         </div>
 
-        <div className="w-full space-y-4">
-          <div className="space-y-2">
+        <div className="flex flex-row justify-between w-full space-x-4">
+          <div className="flex-1 space-y-2">
+            <label className="block text-gray-700 font-medium text-lg">User</label>
+            <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-base">
+              {projectData.user || "No user selected"}
+            </div>
+          </div>
+
+          <div className="flex-1 space-y-2">
             <label className="block text-gray-700 font-medium text-lg">Project Name</label>
             <input
               type="text"
@@ -64,16 +79,21 @@ const AddProject: React.FC<AddProjectProps> = ({ onClose, onAdd }) => {
               placeholder="Enter project name"
             />
           </div>
+        </div>
 
-          <div className="space-y-2">
+        <div className="flex flex-row justify-between w-full space-x-4">
+          <div className="flex-1 space-y-2">
             <label className="block text-gray-700 font-medium text-lg">Project Code</label>
-            <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-base">
-              {projectData.code}
-            </div>
+            <input
+              type="text"
+              value={projectData.code}
+              onChange={(e) => setProjectData({ ...projectData, code: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-base"
+            />
           </div>
 
-          <div className="space-y-2">
-            <label className="block text-gray-700 font-medium text-lg">Date</label>
+          <div className="flex-1 space-y-2">
+            <label className="block text-gray-700 font-medium text-lg">Start Date</label>
             <input
               type="date"
               value={projectData.date}
@@ -81,39 +101,49 @@ const AddProject: React.FC<AddProjectProps> = ({ onClose, onAdd }) => {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-base"
             />
           </div>
+        </div>
 
-          <div className="space-y-2">
+        <div className="flex flex-row justify-between w-full space-x-4">
+          <div className="flex-1 space-y-2">
+            <label className="block text-gray-700 font-medium text-lg">End Date</label>
+            <input
+              type="date"
+              value={projectData.enddate}
+              onChange={(e) => setProjectData({ ...projectData, enddate: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-base"
+            />
+          </div>
+
+          <div className="flex-1 space-y-2">
             <label className="block text-gray-700 font-medium text-lg">Status</label>
-            <div className="relative">
-              <select
-                value={projectData.status}
-                onChange={(e) => setProjectData({ ...projectData, status: e.target.value as Project['status'] })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 appearance-none bg-white text-base"
-              >
-                <option value="Processing">Processing</option>
-                <option value="Pending">Pending</option>
-                <option value="Complete">Complete</option>
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">
-                <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
-            </div>
+            <select
+              value={projectData.status}
+              onChange={(e) => setProjectData({ ...projectData, status: e.target.value as Project['status'] })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 appearance-none bg-white text-base"
+            >
+              <option value="Processing">Processing</option>
+              <option value="Pending">Pending</option>
+              <option value="Complete">Complete</option>
+            </select>
           </div>
         </div>
       </div>
 
       <div className="mt-6 flex justify-center">
-        <button 
+        <button
           className="bg-orange-400 text-white px-6 py-2 rounded-full hover:bg-orange-500 transition-colors text-base"
           onClick={handleSubmit}
         >
-          Add project
+          Add Project
         </button>
       </div>
+
+      <ModalAddUser
+        isOpen={isOpenModalAddUser}
+        onClose={handleCloseModalAddUser}
+      />
     </div>
   );
 };
 
-export default AddProject; 
+export default AddProject;
