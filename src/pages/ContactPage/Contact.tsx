@@ -46,6 +46,7 @@ const Contact: React.FC = () => {
                 <input
                   type="text"
                   className="w-full border-b border-gray-400 p-1 focus:outline-none"
+                  required={true}
                 />
               </div>
               <div>
@@ -53,6 +54,7 @@ const Contact: React.FC = () => {
                 <input
                   type="text"
                   className="w-full border-b border-gray-400 p-1 focus:outline-none"
+                  required={true}
                 />
               </div>
             </div>
@@ -62,6 +64,7 @@ const Contact: React.FC = () => {
               <input
                 type="email"
                 className="w-full border-b border-gray-400 p-1 focus:outline-none"
+                required={true}
               />
             </div>
 
@@ -70,6 +73,7 @@ const Contact: React.FC = () => {
               <input
                 type="tel"
                 className="w-full border-b border-gray-400 p-1 focus:outline-none"
+                required={true}
                 defaultValue="+1 012 3456 789"
               />
             </div>
@@ -80,6 +84,7 @@ const Contact: React.FC = () => {
                 className="w-full border-b border-gray-400 p-1 focus:outline-none"
                 rows={3}
                 placeholder="Write your message.."
+                required={true}
               ></textarea>
             </div>
 

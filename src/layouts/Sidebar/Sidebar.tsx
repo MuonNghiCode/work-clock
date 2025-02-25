@@ -41,7 +41,7 @@ const Sidebar: React.FC = () => {
   > = {
     admin: [
       {
-        path: "/admin",
+        path: "dashboard",
         icon: <Icons.Dashboard className="w-8 h-8" />,
         label: "Dashboard",
       },
@@ -58,7 +58,7 @@ const Sidebar: React.FC = () => {
     ],
     approval: [
       {
-        path: "/approval",
+        path: "dashboard",
         icon: <Icons.Dashboard className="w-8 h-8" />,
         label: "Dashboard",
       },
@@ -70,7 +70,7 @@ const Sidebar: React.FC = () => {
     ],
     finance: [
       {
-        path: "/finance",
+        path: "dashboard",
         icon: <Icons.Dashboard className="w-8 h-8" />,
         label: "Dashboard",
       },
@@ -127,15 +127,40 @@ const Sidebar: React.FC = () => {
                         ? "bg-brand-gradient text-white translate-x-9"
                         : "bg-brand-gradient text-white translate-x-3"
                       : "bg-transparent"
-                    } ${hoveredIndex !== null && hoveredIndex !== index
-                      ? "text-gray-500 blur-[2px] "
-                      : "text-black"
-                    }`
+                      } ${hoveredIndex !== null && hoveredIndex !== index
+                        ? "text-gray-500 blur-[2px] "
+                        : "text-black"
+                      }`
+                      `flex items-center justify-start gap-3 mt-5 px-4 py-2 rounded-md transition-all duration-300 transform ${isSidebarOpen
+                        ? "justify-start gap-3 px-4"
+                        : "justify-center px-2"
+                      } py-2 rounded-md transition-all duration-300 overflow-hidden text-ellipsis whitespace-nowrap ${isActive
+                        ? isSidebarOpen
+                          ? "rounded-l-2xl bg-brand-gradient text-white translate-x-9"
+                          : "rounded-l-2xl bg-brand-gradient text-white translate-x-9"
+                        : "bg-transparent"
+                      } ${hoveredIndex !== null && hoveredIndex !== index
+                        ? "text-gray-500 blur-[2px]"
+                        : "text-black"
+                      } ${isSidebarOpen ? "max-w-[180px]" : "max-w-[50px]"}`
                   }
                   onMouseEnter={() => setHoveredIndex(index)}
                   onMouseLeave={() => setHoveredIndex(null)}
                 >
-                  {item.icon} {isSidebarOpen && item.label}
+                  {({ isActive }) => (
+                    <>
+                      {/* Icon xích trái khi sidebar đóng và active */}
+                      <span
+                        className={`flex-shrink-0 transition-all duration-300 ${isActive && !isSidebarOpen ? "ml-[-5px]" : ""
+                          }`}
+                      >
+                        {item.icon}
+                      </span>
+                      {isSidebarOpen && (
+                        <span className="truncate">{item.label}</span>
+                      )}
+                    </>
+                  )}
                 </NavLink>
               ))}
             </>
@@ -148,8 +173,12 @@ const Sidebar: React.FC = () => {
               setShowConfirm(true);
             }}
             className={`flex items-center justify-start gap-3 mt-5 px-4 py-2 rounded-md transition-all duration-300 transform ${isSidebarOpen
-                ? "hover:bg-red-600 hover:text-white hover:translate-x-9"
-                : "hover:bg-red-600 hover:text-white hover:translate-x-3"
+              ? "hover:bg-red-600 hover:text-white hover:translate-x-9"
+              : "hover:bg-red-600 hover:text-white hover:translate-x-3"
+              }`}
+            className={`flex items-center justify-start gap-3 mt-5 px-4 py-2 rounded-md transition-all duration-300 transform ${isSidebarOpen
+                ? "rounded-l-2xl hover:bg-red-600 hover:text-white hover:translate-x-9"
+                : "rounded-l-2xl hover:bg-red-600 hover:text-white hover:translate-x-3"
               }`}
           >
             <Icons.LogOut className="w-8 h-8" />
