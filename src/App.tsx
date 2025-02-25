@@ -116,7 +116,7 @@ const router = createBrowserRouter([
         element: <RequestPage />,
       },
       {
-        path: "/user/dashboard",
+        path: "calendar",
         element: (
           <div>
             <UserDashboardPage />
