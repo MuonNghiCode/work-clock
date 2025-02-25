@@ -3,7 +3,8 @@ import { useUser } from "../../contexts/UserContext";
 import { useSidebarStore } from "../../config/zustand";
 import { logout } from "../../services/authService";
 import Icons from "../../components/icon";
-import { NavLink } from "react-router-dom";
+import { Navigate, NavLink } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Sidebar: React.FC = () => {
   const { user } = useUser();
@@ -31,8 +32,8 @@ const Sidebar: React.FC = () => {
   }, [isSidebarOpen]);
 
   const handleLogout = () => {
-    logout();
     setShowConfirm(false);
+    logout();
   };
 
   const menuItems: Record<

@@ -34,6 +34,7 @@ import UserDashboardPage from "./pages/UserPage/UserDashboardPage";
 import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import UserCalendarPage from "./pages/UserCalendarPage/UserCalendarPage";
 import Contact from "./pages/ContactPage/Contact";
+import useToastStorage from "./hooks/useToastStorage";
 
 const router = createBrowserRouter([
   {
@@ -166,6 +167,8 @@ const App: React.FC = () => {
       setLoading(false);
     }
   }, []);
+
+  useToastStorage();
 
   return (
     <UserProvider>
