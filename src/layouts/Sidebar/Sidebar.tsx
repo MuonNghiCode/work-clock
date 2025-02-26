@@ -172,29 +172,26 @@ const Sidebar: React.FC = () => {
           </NavLink>
         </div>
       </div>
-
-      {
-        showConfirm && (
-          <div className="fixed inset-0 flex items-center justify-center bg-brand-orange-light backdrop-blur-sm z-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg text-center w-80">
-              <h2 className="text-lg font-semibold mb-4">Confirm Logout</h2>
-              <p className="text-gray-600 mb-4">
-                Are you sure you want to log out?
-              </p>
-              <div className="flex justify-center gap-4">
-                <button
-                  onClick={() => setShowConfirm(false)}
-                  className="px-4 py-2 rounded-md bg-gray-300 hover:bg-gray-400 hover:scale-120 transition cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleLogout}
-                  className="px-4 py-2 rounded-md bg-brand-gradient text-white hover:scale-120 transition cursor-pointer"
-                >
-                  Confirm Logout
-                </button>
-              </div>
+      {showConfirm && (
+        <div className="fixed inset-0 flex items-center justify-center bg-brand-orange-light backdrop-blur-sm z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center w-80">
+            <h2 className="text-lg font-semibold mb-4">Confirm Logout</h2>
+            <p className="text-gray-600 mb-4">
+              Are you sure you want to log out?
+            </p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => setShowConfirm(false)}
+                className="px-4 py-2 rounded-md bg-gray-300 hover:bg-gray-400 hover:scale-120 transition cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 rounded-md bg-brand-gradient text-white hover:scale-120 transition cursor-pointer"
+              >
+                Confirm Logout
+              </button>
             </div>
           </div>
         )
@@ -204,3 +201,4 @@ const Sidebar: React.FC = () => {
 };
 
 export default Sidebar;
+
