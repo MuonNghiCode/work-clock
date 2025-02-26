@@ -103,13 +103,13 @@ const TableUserDashboard: React.FC<DataProps> = ({ data }) => {
                   </td>
                   <td className={`px-4 py-2 border-t-2 border-b-2 `}>
                     <span
-                      className={`${item.status === "Approve"
+                      className={`${item.status === "Approved"
                         ? "text-green-500"
-                        : item.status === "Reject"
+                        : item.status === "Rejected"
                           ? "text-red-500"
                           : item.status === "Pending"
                             ? "text-yellow-500"
-                            : item.status === "Return"
+                            : item.status === "Canceled"
                               ? "text-purple-500"
                               : item.status === "Paid"
                                 ? "text-blue-500"

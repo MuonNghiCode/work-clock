@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useUser } from "../../contexts/UserContext";
 import { useSidebarStore } from "../../config/zustand";
 import { logout } from "../../services/authService";
 import Icons from "../../components/icon";
