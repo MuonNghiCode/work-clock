@@ -112,8 +112,7 @@ const Sidebar: React.FC = () => {
         className={`fixed lg:relative top-0 left-0 h-full transition-transform duration-300 transform bg-white z-50
         ${
           isSidebarOpen ? "translate-x-0 w-56" : "-translate-x-full w-24"
-        } lg:translate-x-0 lg:w-$
-        {isSidebarOpen ? "56" : "24"}`}
+        } lg:translate-x-0 lg:w-${isSidebarOpen ? "56" : "24"}`}
       >
         <div className="flex flex-col gap-3 space-y-4 mt-2">
           {user?.role && menuItems[user.role] && (
