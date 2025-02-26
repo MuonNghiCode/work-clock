@@ -4,33 +4,34 @@ import Images from "../../components/images";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Icons from "../../components/icon";
+import { getUserInfobyToken, login } from "../../services/authService";
 
-const userData = [
-  {
-    name: "user",
-    email: "user@example.com",
-    password: "user123",
-    role: "user",
-  },
-  {
-    name: "approval",
-    email: "approval@example.com",
-    password: "approval123",
-    role: "approval",
-  },
-  {
-    name: "finance",
-    email: "finance@example.com",
-    password: "finance123",
-    role: "finance",
-  },
-  {
-    name: "admin",
-    email: "admin@example.com",
-    password: "admin123",
-    role: "admin",
-  },
-];
+// const userData = [
+//   {
+//     name: "user",
+//     email: "user@example.com",
+//     password: "user123",
+//     role: "user",
+//   },
+//   {
+//     name: "approval",
+//     email: "approval@example.com",
+//     password: "approval123",
+//     role: "approval",
+//   },
+//   {
+//     name: "finance",
+//     email: "finance@example.com",
+//     password: "finance123",
+//     role: "finance",
+//   },
+//   {
+//     name: "admin",
+//     email: "admin@example.com",
+//     password: "admin123",
+//     role: "admin",
+//   },
+// ];
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -48,21 +49,21 @@ const LoginPage: React.FC = () => {
   );
   const navigate = useNavigate();
 
-  const checkUser = (data: { email: string; password: string }) => {
-    const user = userData.find(
-      (user) => user.email === data.email && user.password === data.password
-    );
-    if (user) {
-      const token = `${user.role}-${Date.now()}`;
-      localStorage.setItem("token", token);
-      localStorage.setItem("role", user.role);
-      localStorage.setItem("user", JSON.stringify(user));
-      return user;
-    } else {
-      console.log("Invalid email or password");
-      return null;
-    }
-  };
+  // const checkUser = (data: { email: string; password: string }) => {
+  //   const user = userData.find(
+  //     (user) => user.email === data.email && user.password === data.password
+  //   );
+  //   if (user) {
+  //     const token = `${user.role}-${Date.now()}`;
+  //     localStorage.setItem("token", token);
+  //     localStorage.setItem("role", user.role);
+  //     localStorage.setItem("user", JSON.stringify(user));
+  //     return user;
+  //   } else {
+  //     console.log("Invalid email or password");
+  //     return null;
+  //   }
+  // };
 
   const validate = () => {
     const newErrors: { email?: string; password?: string } = {};
@@ -80,44 +81,85 @@ const LoginPage: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleLoginSubmit = (e: React.FormEvent) => {
+  const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validate()) {
-      const user = checkUser({ email, password });
-      if (user) {
-        sessionStorage.setItem(
-          "toastMessage",
-          JSON.stringify({
-            type: "success",
-            message: "Login successful!",
-          })
-        );
-        setTimeout(() => {
-          switch (user.role) {
-            case "admin":
-              navigate("/admin");
-              break;
-            case "user":
-              navigate("/user");
-              break;
-            case "approval":
-              navigate("/approval");
-              break;
-            case "finance":
-              navigate("/finance");
-              break;
-            default:
-              navigate("/");
+      try {
+        await login(email, password);
+        const token = localStorage.getItem("token");
+        let user;
+        if (token) {
+          user = await getUserInfobyToken();
+          // await getAllRoles(user.data.role_code)
+          // console.log(localStorage.getItem("user"));
+          let role = localStorage.getItem("role");
+          console.log(role);
+          if (user && user.data) {
+            toast.success("Login successful!");
+            setTimeout(() => {
+              switch (role) {
+                case "A001":
+                  navigate("/admin");
+                  break;
+                case "A004":
+                  navigate("/user");
+                  break;
+                case "A003":
+                  navigate("/approval");
+                  break;
+                case "A002":
+                  navigate("/finance");
+                  break;
+                default:
+                  navigate("/");
+              }
+              // window.location.reload();
+            }, 1000);
+          } else {
+            toast.error("Invalid email or password!");
           }
-          window.location.reload();
-        }, 100);
-      } else {
-        toast.error("Invalid email or password!");
+        }
+      } catch (error) {
+        toast.error("Please fix the errors before submitting.");
       }
-    } else {
-      toast.error("Please fix the errors before submitting.");
     }
   };
+
+  //       //     await getUserInfobyToken();
+  //       // console.log("response in login", response);
+  //       const user = checkUser({ email, password });
+  //       if (user) {
+  //         toast.success("Login successful!");
+  //         setTimeout(() => {
+  //           switch (user.role) {
+  //             case "admin":
+  //               navigate("/admin");
+  //               break;
+  //             case "user":
+  //               navigate("/user");
+  //               break;
+  //             case "approval":
+  //               navigate("/approval");
+  //               break;
+  //             case "finance":
+  //               navigate("/finance");
+  //               break;
+  //             default:
+  //               navigate("/");
+  //           }
+  //           window.location.reload();
+  //         }, 1000);
+  //       } else {
+  //         toast.error("Invalid email or password!");
+  //       }
+  //     } else {
+  //       toast.error("Please fix the errors before submitting.");
+  //     }
+  //    catch (error) {
+  //       toast.error("Please fix the errors before submitting.");
+  //     }
+  //   }
+  // };
 
   const handleChangePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();

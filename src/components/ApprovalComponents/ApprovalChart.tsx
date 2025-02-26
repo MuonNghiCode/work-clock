@@ -17,7 +17,7 @@ const ApprovalChart: React.FC<DataProps> = ({ data }) => {
     }, {} as Record<string, number>);
 
     const chartData = {
-        labels: ['Approve', 'Reject', 'Return', 'Pending'],
+        labels: ['Approved', 'Rejected', 'Canceled', 'Pending'],
         datasets: [
             {
                 label: 'Claim Request',
