@@ -13,7 +13,7 @@ const AdminHeader: React.FC = () => {
   const items: MenuProps["items"] = [
     {
       key: "1",
-      label: 'Welcome back' + " " + `${user?.name || "Guest"}` + " !",
+      label: 'Welcome back' + " " + `${user?.user_name || "Guest"}` + " !",
       disabled: true,
     },
     {
