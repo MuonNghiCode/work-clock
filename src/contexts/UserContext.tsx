@@ -14,7 +14,6 @@ interface User {
   updated_at: string;
   is_deleted: boolean;
   __v: number;
-  role: string;
 }
 
 interface UserContextType {
