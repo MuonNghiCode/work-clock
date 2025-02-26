@@ -13,12 +13,12 @@ const AdminHeader: React.FC = () => {
   const items: MenuProps["items"] = [
     {
       key: "1",
-      label: 'Welcome back' + " " + `${user?.user_name || "Guest"}` + " !",
+      label: "Welcome back" + " " + `${user?.user_name || "Guest"}` + " !",
       disabled: true,
     },
     {
       type: "divider",
-      className: 'lg:!hidden'
+      className: "lg:!hidden",
     },
     {
       key: "2",
@@ -118,7 +118,11 @@ const AdminHeader: React.FC = () => {
         >
           <Icons.Menu strokeWidth={2.5} className="w-8 h-8" />
         </Button>
-        <img src={Images.Logo} alt="logo" className="lg:max-w-64 lg:h-25 max-w-40" />
+        <img
+          src={Images.Logo}
+          alt="logo"
+          className="lg:max-w-64 lg:h-25 max-w-40"
+        />
       </div>
       <div className="w-full flex justify-end items-center space-x-12 mr-5">
         <div className="w-12 h-12 lg:block hidden">

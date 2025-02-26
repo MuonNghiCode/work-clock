@@ -5,11 +5,12 @@ import Icons from "../../components/icon";
 import { NavLink } from "react-router-dom";
 
 const Sidebar: React.FC = () => {
-  const role = localStorage.getItem('role');
+  const role = localStorage.getItem("role");
   const sidebarRef = useRef<HTMLDivElement>(null);
   const { isSidebarOpen, closeSidebar } = useSidebarStore();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [showConfirm, setShowConfirm] = useState(false);
+
   const handleClickOutside = (event: MouseEvent) => {
     if (
       sidebarRef.current &&
@@ -113,7 +114,7 @@ const Sidebar: React.FC = () => {
         <div className="flex flex-col gap-3 space-y-4 mt-2">
           {role && menuItems[role] && (
             <>
-              <h2 className="flex items-center justify-start gap-3 px-4 py-2 rounded-md transition-all duration-300 text-gray-300">
+              <h2 className="flex items-center justify-start gap-3 px-4 py-2 rounded-md text-gray-300">
                 Menu
               </h2>
               {menuItems[role].map((item, index) => (
@@ -121,13 +122,8 @@ const Sidebar: React.FC = () => {
                   key={index}
                   to={item.path}
                   className={({ isActive }) =>
-                    `flex items-center justify-start gap-3 mt-5 px-4 py-2 rounded-md transition-all duration-300 transform ${isSidebarOpen
-                      ? "justify-start gap-3 px-4"
-                      : "justify-center px-2"
-                    } py-2 rounded-md transition-all duration-300 overflow-hidden text-ellipsis whitespace-nowrap ${isActive
-                      ? isSidebarOpen
-                        ? "rounded-l-2xl bg-brand-gradient text-white translate-x-9"
-                        : "rounded-l-2xl bg-brand-gradient text-white translate-x-9"
+                    `flex items-center gap-3 mt-5 px-4 py-2 rounded-md transition-all duration-300 transform ${isActive
+                      ? "bg-brand-gradient text-white translate-x-9"
                       : "bg-transparent"
                     } ${hoveredIndex !== null && hoveredIndex !== index
                       ? "text-gray-500 blur-[2px]"
@@ -137,41 +133,30 @@ const Sidebar: React.FC = () => {
                   onMouseEnter={() => setHoveredIndex(index)}
                   onMouseLeave={() => setHoveredIndex(null)}
                 >
-                  {({ isActive }) => (
-                    <>
-                      {/* Icon xích trái khi sidebar đóng và active */}
-                      <span
-                        className={`flex-shrink-0 transition-all duration-300 ${isActive && !isSidebarOpen ? "ml-[-5px]" : ""
-                          }`}
-                      >
-                        {item.icon}
-                      </span>
-                      {isSidebarOpen && (
-                        <span className="truncate">{item.label}</span>
-                      )}
-                    </>
+                  <span className="flex-shrink-0 transition-all duration-300">
+                    {item.icon}
+                  </span>
+                  {isSidebarOpen && (
+                    <span className="truncate">{item.label}</span>
                   )}
                 </NavLink>
               ))}
             </>
           )}
-
           <NavLink
             to="#"
             onClick={(e) => {
               e.preventDefault();
               setShowConfirm(true);
             }}
-            className={`flex items-center justify-start gap-3 mt-5 px-4 py-2 rounded-md transition-all duration-300 transform ${isSidebarOpen
-              ? "rounded-l-2xl hover:bg-red-600 hover:text-white hover:translate-x-9"
-              : "rounded-l-2xl hover:bg-red-600 hover:text-white hover:translate-x-3"
-              }`}
+            className="flex items-center justify-start gap-3 mt-5 px-4 py-2 rounded-md transition-all duration-300 transform hover:bg-red-600 hover:text-white"
           >
             <Icons.LogOut className="w-8 h-8" />
             {isSidebarOpen && "Log out"}
           </NavLink>
         </div>
       </div>
+
       {showConfirm && (
         <div className="fixed inset-0 flex items-center justify-center bg-brand-orange-light backdrop-blur-sm z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg text-center w-80">
@@ -182,13 +167,13 @@ const Sidebar: React.FC = () => {
             <div className="flex justify-center gap-4">
               <button
                 onClick={() => setShowConfirm(false)}
-                className="px-4 py-2 rounded-md bg-gray-300 hover:bg-gray-400 hover:scale-120 transition cursor-pointer"
+                className="px-4 py-2 rounded-md bg-gray-300 hover:bg-gray-400 hover:scale-110 transition cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={handleLogout}
-                className="px-4 py-2 rounded-md bg-brand-gradient text-white hover:scale-120 transition cursor-pointer"
+                className="px-4 py-2 rounded-md bg-brand-gradient text-white hover:scale-110 transition cursor-pointer"
               >
                 Confirm Logout
               </button>
@@ -201,4 +186,3 @@ const Sidebar: React.FC = () => {
 };
 
 export default Sidebar;
-

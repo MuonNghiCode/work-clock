@@ -95,7 +95,7 @@ const LoginPage: React.FC = () => {
           // await getAllRoles(user.data.role_code)
           // console.log(localStorage.getItem("user"));
           let role = localStorage.getItem("role");
-          console.log(role)
+          console.log(role);
           if (user && user.data) {
             toast.success("Login successful!");
             setTimeout(() => {
@@ -104,7 +104,7 @@ const LoginPage: React.FC = () => {
                   navigate("/admin");
                   break;
                 case "A004":
-                  navigate("/user/dashboard");
+                  navigate("/user");
                   break;
                 case "A003":
                   navigate("/approval");
@@ -203,8 +203,9 @@ const LoginPage: React.FC = () => {
 
       {/* Login Form */}
       <div
-        className={`w-230 h-140 flex border border-black rounded-[30px] bg-white z-10 ${isChangePassword ? "hidden" : ""
-          }`}
+        className={`w-230 h-140 flex border border-black rounded-[30px] bg-white z-10 ${
+          isChangePassword ? "hidden" : ""
+        }`}
       >
         <div className="w-full flex items-center justify-center">
           <img
@@ -227,10 +228,11 @@ const LoginPage: React.FC = () => {
               {/* Email Field */}
               <div className="relative py-10">
                 <span
-                  className={`absolute left-2 top-12 text-gray-500 transition-all pointer-events-none ${email || isEmailFocused
-                    ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
-                    : "text-base"
-                    }`}
+                  className={`absolute left-2 top-12 text-gray-500 transition-all pointer-events-none ${
+                    email || isEmailFocused
+                      ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
+                      : "text-base"
+                  }`}
                 >
                   Email
                 </span>
@@ -256,10 +258,11 @@ const LoginPage: React.FC = () => {
               {/* Password Field */}
               <div className="relative">
                 <span
-                  className={`absolute left-2 top-2 text-gray-500 transition-all pointer-events-none ${password || isPasswordFocused
-                    ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
-                    : "text-base"
-                    }`}
+                  className={`absolute left-2 top-2 text-gray-500 transition-all pointer-events-none ${
+                    password || isPasswordFocused
+                      ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
+                      : "text-base"
+                  }`}
                 >
                   Password
                 </span>
@@ -306,8 +309,9 @@ const LoginPage: React.FC = () => {
 
       {/* Change Password Form */}
       <div
-        className={`w-230 h-140 flex items-center border border-black rounded-[30px] bg-white z-20 ${!isChangePassword ? "hidden" : ""
-          }`}
+        className={`w-230 h-140 flex items-center border border-black rounded-[30px] bg-white z-20 ${
+          !isChangePassword ? "hidden" : ""
+        }`}
       >
         <div className="w-230 h-140 flex border border-black rounded-[30px] bg-white z-10">
           <div className="w-1/2 flex flex-col space-y-4 relative p-10">
@@ -326,10 +330,11 @@ const LoginPage: React.FC = () => {
             >
               <div className="relative py-4">
                 <span
-                  className={`absolute left-2 top-6 text-gray-500 transition-all pointer-events-none ${email || isEmailFocused
-                    ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
-                    : "text-base"
-                    }`}
+                  className={`absolute left-2 top-6 text-gray-500 transition-all pointer-events-none ${
+                    email || isEmailFocused
+                      ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
+                      : "text-base"
+                  }`}
                 >
                   Email
                 </span>
@@ -344,10 +349,11 @@ const LoginPage: React.FC = () => {
               </div>
               <div className="relative py-4">
                 <span
-                  className={`absolute left-2 top-6 text-gray-500 transition-all pointer-events-none ${oldPassword || isoldPasswordFocused
-                    ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
-                    : "text-base"
-                    }`}
+                  className={`absolute left-2 top-6 text-gray-500 transition-all pointer-events-none ${
+                    oldPassword || isoldPasswordFocused
+                      ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
+                      : "text-base"
+                  }`}
                 >
                   Old Password
                 </span>
@@ -361,10 +367,11 @@ const LoginPage: React.FC = () => {
               </div>
               <div className="relative py-4">
                 <span
-                  className={`absolute left-2 top-6 text-gray-500 transition-all pointer-events-none ${newPassword || isnewPasswordFocused
-                    ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
-                    : "text-base"
-                    }`}
+                  className={`absolute left-2 top-6 text-gray-500 transition-all pointer-events-none ${
+                    newPassword || isnewPasswordFocused
+                      ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
+                      : "text-base"
+                  }`}
                 >
                   New Password
                 </span>
