@@ -99,29 +99,28 @@ const TableUserDashboard: React.FC<DataProps> = ({ data }) => {
                     {new Date(item.dateCreate).toLocaleDateString()}
                   </td>
                   <td className={`px-4 py-2 border-t-2 border-b-2`}>
-                    {item.claimTable[0].day}
+                    {item.day}
                   </td>
                   <td className={`px-4 py-2 border-t-2 border-b-2 `}>
                     <span
-                      className={`${
-                        item.status === "Approve"
-                          ? "text-green-500"
-                          : item.status === "Reject"
+                      className={`${item.status === "Approved"
+                        ? "text-green-500"
+                        : item.status === "Rejected"
                           ? "text-red-500"
                           : item.status === "Pending"
-                          ? "text-yellow-500"
-                          : item.status === "Return"
-                          ? "text-purple-500"
-                          : item.status === "Paid"
-                          ? "text-blue-500"
-                          : ""
-                      }`}
+                            ? "text-yellow-500"
+                            : item.status === "Canceled"
+                              ? "text-purple-500"
+                              : item.status === "Paid"
+                                ? "text-blue-500"
+                                : ""
+                        }`}
                     >
                       {item.status}
                     </span>
                   </td>
                   <td className="px-4 py-2 border-t-2 border-b-2 border-r-2 rounded-r-lg">
-                    {item.claimTable[0].totalNoOfHours}
+                    {item.totalNoOfHours}
                   </td>
                 </tr>
               ))}
@@ -133,8 +132,8 @@ const TableUserDashboard: React.FC<DataProps> = ({ data }) => {
               pageSize={pageSize}
               total={filteredData.length}
               onChange={handlePageChange}
-              // showSizeChanger
-              // onShowSizeChange={handlePageChange}
+            // showSizeChanger
+            // onShowSizeChange={handlePageChange}
             />
           </div>
         </div>

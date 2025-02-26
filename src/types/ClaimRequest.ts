@@ -1,12 +1,4 @@
-export interface ClaimTableItem {
-  date: Date;
-  day: string;
-  from: string;
-  to: string;
-  totalNoOfHours: number;
-  remarks: string;
-}export interface ClaimRequest {
-  amountReceived?: number;
+export interface ClaimRequest {
   staffName: string;
   staffRole: string;
   staffId: string;
@@ -16,19 +8,21 @@ export interface ClaimTableItem {
   totalWorkingHour: number;
   additionalRemarks: string;
   auditTrail: string;
-  dateCreate: Date; // New field for date create
-  status: "Pending" | "Approve" | "Reject" | "Return";
-  claimTable: ClaimTableItem[];
+  dateCreate: string; // New field for date create
+  status: "Draft" | "Pending" | "Approval" | "Approved" | "Paid" | "Rejected" | "Canceled";
+  date: Date;
+  day: string;
+  from: string;
+  to: string;
+  totalNoOfHours: number;
+  remarks: string;
 }
 
 const generateFakeData = (): ClaimRequest[] => {
   const projects = ["Project A", "Project B", "Project C"];
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
   const statuses: ClaimRequest["status"][] = [
-    "Pending",
-    "Approve",
-    "Reject",
-    "Return",
+    "Draft" , "Pending" , "Approval" , "Approved" , "Paid" , "Rejected" , "Canceled"
   ];
   const fakeData: ClaimRequest[] = [];
 
@@ -40,26 +34,21 @@ const generateFakeData = (): ClaimRequest[] => {
       projectName: projects[i % projects.length],
       roleInProject: `Role ${i + 1}`,
       projectDuration: `${(i % 12) + 1} months`,
-      claimTable: Array.from({ length: 5 }).map((_, j) => ({
-        date: new Date(`2025-${(j % 28)} - ${(j % 28) + 1}`),
-        day: days[j % days.length],
-        from: `2025-02 - ${(j % 28) + 1}T08:00:00Z`,
-        to: `2025-02 - ${(j % 28) + 1} T16:00:00Z`,
-        totalNoOfHours: fakeData.length + j,
-        remarks: `Remark ${j + 1} `,
-      })),
+      date: new Date(`2025-${i % 28} - ${(i % 28) + 1}`),
+      day: days[i % days.length],
+      from: `2025-02 - ${(i % 28) + 1}T08:00:00Z`,
+      to: `2025-02 - ${(i % 28) + 1} T16:00:00Z`,
+      totalNoOfHours: fakeData.length + i,
+      remarks: `Remark ${i + 1} `,
       totalWorkingHour: fakeData.length,
       additionalRemarks: `Additional remarks for staff ${i + 1}`,
       auditTrail: `Audit trail for staff ${i + 1}`,
-      dateCreate: new Date(`2025-02-${String((i % 28) + 1).padStart(2, '0')}`),
+      dateCreate: new Date(`2025-02-${String((i % 28) + 1).padStart(2, "0")}`).toISOString(),
       status: statuses[i % statuses.length],
     });
   }
 
   return fakeData;
 };
-
-const fakeData = generateFakeData();
-console.log(fakeData);
 
 export { generateFakeData };
