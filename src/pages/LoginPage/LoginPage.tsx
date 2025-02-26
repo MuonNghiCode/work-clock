@@ -5,6 +5,8 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Icons from "../../components/icon";
 import { getUserInfobyToken, login } from "../../services/authService";
+// import LoadingScreen from "../../components/LoadingScreen/LoadingScreen";
+import { Spin } from "antd";
 
 // const userData = [
 //   {
@@ -44,9 +46,8 @@ const LoginPage: React.FC = () => {
   const [isChangePassword, setIsChangePassword] = useState(false);
   const [isnewPasswordFocused, setIsNewPasswordFocused] = useState(false);
   const [isoldPasswordFocused, setIsOldChangePassword] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
-    {}
-  );
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   // const checkUser = (data: { email: string; password: string }) => {
@@ -83,6 +84,7 @@ const LoginPage: React.FC = () => {
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     if (validate()) {
       try {
         await login(email, password);
@@ -123,6 +125,7 @@ const LoginPage: React.FC = () => {
         toast.error("Please fix the errors before submitting.");
       }
     }
+    setIsLoading(false);
   };
 
   //       //     await getUserInfobyToken();
@@ -188,6 +191,10 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className="relative flex justify-center items-center h-screen">
+      {isLoading &&
+        <div className="!w-screen !h-screen !bg-black !opacity-50 !absolute !top-0 !left-0 !z-9999">
+          <Spin size="large" spinning className="!w-screen !h-screen !flex !top-1/2 !left-1/2 !absolute !z-9999" />
+        </div>}
       <img
         src={Images.Background2}
         alt="Background"
@@ -395,7 +402,7 @@ const LoginPage: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 
