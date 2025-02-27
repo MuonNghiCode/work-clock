@@ -197,7 +197,7 @@ const TableProject: React.FC<DataProps> = ({
               <td className="px-4 py-2 rounded-l-2xl">{item.name}</td>
               <td className="px-4 py-2">{item.date}</td>
               <td className="px-4 py-2">{item.enddate}</td>
-              <td className="px-4 py-2">{item.department}</td>
+              <td className="px-4 py-2">{item.enddate}</td>
               <td className="px-4 py-2">
                 {handleStatusChangeHTML(item.status)}
               </td>
@@ -268,6 +268,7 @@ const TableProject: React.FC<DataProps> = ({
         visible={showProjectDetail}
         onClose={handleClose}
         Project={selectedProject}
+        users={users}
       />
       <ConfirmModal
         visible={showConfirmModal}

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
 import emailjs from '@emailjs/browser';
-import { toast } from 'react-toastify'; // Import Toastify
+import { toast } from 'react-toastify';
 import { NewUser } from '../../../pages/AdminPage/AdminUser/AdminUserManagement';
 
 interface UserManagementAddProps {

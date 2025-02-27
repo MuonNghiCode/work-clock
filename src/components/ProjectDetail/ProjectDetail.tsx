@@ -73,10 +73,6 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
             </div>
 
             <div className="flex flex-row justify-between w-full space-x-4">
-
-
-
-
               <div className="flex-1 space-y-2">
                 <label className="block text-gray-700 font-medium text-lg">Status</label>
                 <div className={`w-1/2 px-4 py-2 rounded-lg text-base text-center font-medium

@@ -124,13 +124,9 @@ const AddProject: React.FC<AddProjectProps> = ({ onClose, onAdd }) => {
               placeholder="Enter department"
             />
           </div>
-
-
         </div>
-
-
-
       </div>
+      
       <div className="flex flex-row justify-between w-full space-x-4">
         <div className="flex-1 space-y-2">
           <label className="block text-gray-700 font-medium text-lg">Status</label>
