@@ -24,22 +24,22 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return <Navigate to="/login" />;
   }
 
-  if (requireAdmin && !checkRole("admin")) {
+  if (requireAdmin && !checkRole("A001")) {
     toast.error("You do not have access to this page.");
     return <Navigate to="/" />;
   }
 
-  if (requireApproval && !checkRole("approval")) {
+  if (requireApproval && !checkRole("A003")) {
     toast.error("You do not have access to this page.");
     return <Navigate to="/" />;
   }
 
-  if (requireFinance && !checkRole("finance")) {
+  if (requireFinance && !checkRole("A002")) {
     toast.error("You do not have access to this page.");
     return <Navigate to="/" />;
   }
 
-  if (requireUser && !checkRole("user")) {
+  if (requireUser && !checkRole("A004")) {
     toast.error("You do not have access to this page.");
     return <Navigate to="/" />;
   }
