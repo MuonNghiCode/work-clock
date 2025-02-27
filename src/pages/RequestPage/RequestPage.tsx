@@ -35,123 +35,10 @@ const calculateHours = (timeFrom: string, timeTo: string): number => {
   return Math.round(toHours - fromHours);
 };
 
-const data: ClaimRequest[] = [
-  {
-    key: '1',
-    project: 'Anaconda address',
-    date: '10/02/2025',
-    timeFrom: '6:00 PM',
-    timeTo: '10:00 PM',
-    totalHours: calculateHours('6:00 PM', '10:00 PM').toString(),
-    status: 'Approved',
-  },
-  {
-    key: '2',
-    project: 'Anaconda address',
-    date: '10/02/2025',
-    timeFrom: '2:00 PM',
-    timeTo: '5:00 PM',
-    totalHours: calculateHours('2:00 PM', '5:00 PM').toString(),
-    status: 'Waiting',
-  },
-  {
-    key: '3',
-    project: 'Python Project',
-    date: '11/02/2025',
-    timeFrom: '6:00 PM',
-    timeTo: '10:00 PM',
-    totalHours: calculateHours('6:00 PM', '10:00 PM').toString(),
-    status: 'Draft',
-  },
-  {
-    key: '4',
-    project: 'React Development',
-    date: '12/02/2025',
-    timeFrom: '6:00 PM',
-    timeTo: '10:00 PM',
-    totalHours: calculateHours('6:00 PM', '10:00 PM').toString(),
-    status: 'Waiting',
-  },
-  {
-    key: '5',
-    project: 'Mobile App',
-    date: '13/02/2025',
-    timeFrom: '6:00 PM',
-    timeTo: '10:00 PM',
-    totalHours: calculateHours('6:00 PM', '10:00 PM').toString(),
-    status: 'Approved',
-  },
-  {
-    key: '6',
-    project: 'Database Migration',
-    date: '14/02/2025',
-    timeFrom: '6:00 PM',
-    timeTo: '10:00 PM',
-    totalHours: calculateHours('6:00 PM', '10:00 PM').toString(),
-    status: 'Draft',
-  },
-  {
-    key: '7',
-    project: 'Cloud Infrastructure',
-    date: '15/02/2025',
-    timeFrom: '6:00 PM',
-    timeTo: '10:00 PM',
-    totalHours: calculateHours('6:00 PM', '10:00 PM').toString(),
-    status: 'Approved',
-  },
-  {
-    key: '8',
-    project: 'Security Audit',
-    date: '16/02/2025',
-    timeFrom: '6:00 PM',
-    timeTo: '10:00 PM',
-    totalHours: calculateHours('6:00 PM', '10:00 PM').toString(),
-    status: 'Waiting',
-  },
-  {
-    key: '9',
-    project: 'UI/UX Design',
-    date: '17/02/2025',
-    timeFrom: '6:00 PM',
-    timeTo: '10:00 PM',
-    totalHours: calculateHours('6:00 PM', '10:00 PM').toString(),
-    status: 'Approved',
-  },
-  {
-    key: '10',
-    project: 'API ',
-    date: '18/02/2025',
-    timeFrom: '6:00 PM',
-    timeTo: '10:00 PM',
-    totalHours: calculateHours('6:00 PM', '10:00 PM').toString(),
-    status: 'Waiting',
-  },
-  {
-    key: '11',
-    project: 'API 2 ',
-    date: '19/02/2025',
-    timeFrom: '6:00 PM',
-    timeTo: '10:00 PM',
-    totalHours: calculateHours('6:00 PM', '10:00 PM').toString(),
-    status: 'Approved',
-  },
-  {
-    key: '12',
-    project: 'API 3',
-    date: '20/02/2025',
-    timeFrom: '10:00 PM',
-    timeTo: '15:00 PM',
-    totalHours: calculateHours('10:00 PM', '15:00 PM').toString(),
-    status: 'Rejected',
-  },
-
-];
-
 const RequestPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState<any>(null);
-  const [tableData, setTableData] = useState(data);
   const [form] = Form.useForm();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deletingRecord, setDeletingRecord] = useState<ClaimRequest | null>(null);
@@ -174,16 +61,11 @@ const RequestPage: React.FC = () => {
     try {
       const values = await form.validateFields();
       const totalHours = calculateHours(values.timeFrom, values.timeTo).toString();
+      const updatedRecord = { ...editingRecord, ...values, totalHours };
       
-      setTableData(prevData => 
-        prevData.map(item => 
-          item.key === editingRecord.key 
-            ? { ...item, ...values, totalHours } 
-            : item
-        )
-      );
       setIsEditModalOpen(false);
       form.resetFields();
+      return updatedRecord;
     } catch (error) {
       console.error('Validation failed:', error);
     }
@@ -196,7 +78,6 @@ const RequestPage: React.FC = () => {
 
   const handleDeleteModalOk = () => {
     if (deletingRecord) {
-      setTableData(prevData => prevData.filter(item => item.key !== deletingRecord.key));
       setIsDeleteModalOpen(false);
       setDeletingRecord(null);
     }
@@ -212,10 +93,13 @@ const RequestPage: React.FC = () => {
     setSearchText(value);
   };
 
-  const handlePageChange = (page: number, pageSize?: number) => {
-    setCurrentPage(page);
-    if (pageSize) {
-      setPageSize(pageSize);
+  const handlePageChange = (page: number, newPageSize?: number) => {
+    // Nếu pageSize thay đổi, reset currentPage về 1
+    if (newPageSize && newPageSize !== pageSize) {
+      setPageSize(newPageSize);
+      setCurrentPage(1); // Reset về trang 1 khi đổi pageSize
+    } else {
+      setCurrentPage(page);
     }
   };
 
@@ -228,7 +112,6 @@ const RequestPage: React.FC = () => {
     <div className="p-6 bg-orange-100 shadow-md rounded-lg ">
       <h1 className="text-3xl font-bold text-gray-800 mb-4">Request-Page Management</h1>
       <TableRequest
-        data={tableData}
         currentPage={currentPage}
         pageSize={pageSize}
         statusFilter={statusFilter}
