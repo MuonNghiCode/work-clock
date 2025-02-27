@@ -28,7 +28,6 @@ export const login = async (email: string, password: string): Promise<ResponseMo
 
 export const getUserInfobyToken = async (): Promise<ResponseModel<UserInfo>> => {
   const response = await get<UserInfo>(API_CONTANTS.AUTH.USER_INFO);
-  console.log("user", response.data);
   if (response.success) {
     localStorage.setItem("user", JSON.stringify(response.data));
   }
