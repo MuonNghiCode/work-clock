@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSidebarStore } from "../../config/zustand";
-import { logout } from "../../services/authService";
+
 import Icons from "../../components/icon";
 import { NavLink } from "react-router-dom";
+import { toast } from "react-toastify";
+import { logout } from "../../utils/userUtils";
 
 const Sidebar: React.FC = () => {
   const role = localStorage.getItem("role");
@@ -32,6 +34,9 @@ const Sidebar: React.FC = () => {
 
   const handleLogout = () => {
     setShowConfirm(false);
+    setTimeout(() => {
+      toast.success("Logout successfully!");
+    }, 1000);
     logout();
   };
 
