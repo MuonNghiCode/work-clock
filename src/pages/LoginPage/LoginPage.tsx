@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Images from "../../components/images";
 import { toast } from "react-toastify";
@@ -21,20 +21,11 @@ const LoginPage: React.FC = () => {
   const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
-  const [isAnimating, setIsAnimating] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
     {}
   );
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (isForgotPassword) {
-      setIsAnimating(true);
-    } else {
-      setTimeout(() => setIsAnimating(false), 800); // Đợi animation chạy xong rồi mới ẩn
-    }
-  }, [isForgotPassword]);
 
   const validate = () => {
     const newErrors: { email?: string; password?: string } = {};
