@@ -7,6 +7,7 @@ import Icons from "../../icon";
 import EditProject from "../EditProject/EditProject";
 import Modal from "../../Modal/Modal";
 import ProjectDetail from "../../ProjectDetail/ProjectDetail";
+//import axiosInstance from "../../../config/axiosConfig";
 
 type SearchProps = GetProps<typeof Input.Search>;
 const { Search } = Input;
@@ -31,6 +32,55 @@ const TableProject: React.FC<DataProps> = ({
   const [message, setMessage] = useState<string>("");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  // const [loading, setLoading] = useState(false);
+  // const [totalItems, setTotalItems] = useState(0);
+  // const [fetchData, setFetchData] = useState<DataProps[]>([]);
+
+  // const fetchProjects = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const response = await axiosInstance.post('projects/search', {
+
+  //       "searchCondition": {
+  //         "keyword": "",
+  //         "project_start_date": "",
+  //         "project_end_date": "",
+  //         "is_delete": false,
+  //         "user_id": ""
+  //       },
+  //       "pageInfo": {
+  //         "pageNum": 1,
+  //         "pageSize": 10
+  //       }
+  //     });
+
+  //     if (response.data.success) {
+  //       const projects = response.data.data.pageData.map((item: any) => ({
+  //         key: item._id,
+  //         project: item.project_name,
+  //         startdate: new Date(item.project_start_date).toLocaleDateString('vi-VN', {
+  //           timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+  //         }),
+  //         enddate: new Date(item.project_end_date).toLocaleDateString('vi-VN', {
+  //           timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+  //         }),
+  //         department: item.project_department,
+  //         status: item.project_status || 'New'
+  //       }));
+  //       setFetchData(projects);
+  //       setTotalItems(response.data.data.pageInfo.totalItems);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching projects:', error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchProjects();
+  // }, [currentPage, pageSize, statusFilter]);
 
   const handlePageChange = (page: number, pageSize?: number) => {
     setCurrentPage(page);
@@ -60,14 +110,14 @@ const TableProject: React.FC<DataProps> = ({
 
     const matchesSearch = searchValue
       ? searchValue
-          .toLowerCase()
-          .split("")
-          .every((char) => {
-            const charCount = searchValue.toLowerCase().split(char).length - 1;
-            const nameCharCount =
-              item.name.toLowerCase().split(char).length - 1;
-            return nameCharCount >= charCount;
-          })
+        .toLowerCase()
+        .split("")
+        .every((char) => {
+          const charCount = searchValue.toLowerCase().split(char).length - 1;
+          const nameCharCount =
+            item.name.toLowerCase().split(char).length - 1;
+          return nameCharCount >= charCount;
+        })
       : true;
 
     return matchesStatus && matchesSearch;
@@ -133,7 +183,7 @@ const TableProject: React.FC<DataProps> = ({
   };
 
 
-  const users = ["dngoc", "haaus", "ntdn"]; 
+  const users = ["dngoc", "haaus", "ntdn"];
   return (
     <>
       <div className="flex justify-between items-center mb-4">
@@ -143,7 +193,7 @@ const TableProject: React.FC<DataProps> = ({
               key={status}
               color={
                 statusFilter === status ||
-                (status === "All" && statusFilter === null)
+                  (status === "All" && statusFilter === null)
                   ? "#ff914d"
                   : "default"
               }
@@ -152,8 +202,8 @@ const TableProject: React.FC<DataProps> = ({
             >
               {(statusFilter === status ||
                 (status === "All" && statusFilter === null)) && (
-                <Icons.Check className="inline-flex" />
-              )}{" "}
+                  <Icons.Check className="inline-flex" />
+                )}{" "}
               {status}
             </Tag>
           ))}
@@ -197,7 +247,7 @@ const TableProject: React.FC<DataProps> = ({
               <td className="px-4 py-2 rounded-l-2xl">{item.name}</td>
               <td className="px-4 py-2">{item.date}</td>
               <td className="px-4 py-2">{item.enddate}</td>
-              <td className="px-4 py-2">{item.enddate}</td>
+              <td className="px-4 py-2">{item.department}</td>
               <td className="px-4 py-2">
                 {handleStatusChangeHTML(item.status)}
               </td>
