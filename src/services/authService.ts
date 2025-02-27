@@ -31,14 +31,12 @@ export const getUserInfobyToken = async (): Promise<ResponseModel<UserInfo>> => 
   console.log("user", response.data);
   if (response.success) {
     localStorage.setItem("user", JSON.stringify(response.data));
-    localStorage.setItem("role", response.data.role_code);
   }
   return response;
 };
 
 export const getAllRoles = async (keyword?: string): Promise<ResponseModel<Role[]>> => {
   const response = await get<Role[]>(API_CONTANTS.ROLES.GET_ALL, { keyword });
-  localStorage.setItem("role", JSON.stringify(response.data[0]));
   return response;
 };
 
