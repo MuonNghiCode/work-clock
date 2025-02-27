@@ -35,6 +35,8 @@ import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import UserCalendarPage from "./pages/UserCalendarPage/UserCalendarPage";
 import Contact from "./pages/ContactPage/Contact";
 import useToastStorage from "./hooks/useToastStorage";
+import { useLoadingStore } from "./config/zustand";
+
 
 const router = createBrowserRouter([
   {
@@ -155,6 +157,7 @@ const router = createBrowserRouter([
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
+  const isLoading = useLoadingStore((state) => state.isLoading);
 
   useEffect(() => {
     const hasVisited = sessionStorage.getItem("visited");
@@ -172,7 +175,9 @@ const App: React.FC = () => {
 
   return (
     <UserProvider>
-      {loading ? <LoadingScreen /> : <RouterProvider router={router} />}
+      {loading || isLoading ? <LoadingScreen /> : <RouterProvider router={router} />}
+
+      {/* {loading ? <LoadingScreen /> : <RouterProvider router={router} />} */}
       <ToastContainer />
     </UserProvider>
   );
