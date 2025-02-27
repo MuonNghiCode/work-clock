@@ -7,6 +7,7 @@ import Icons from "../../components/icon";
 import { getUserInfobyToken, login } from "../../services/authService";
 // import LoadingScreen from "../../components/LoadingScreen/LoadingScreen";
 import { Spin } from "antd";
+import { motion } from "framer-motion";
 
 // const userData = [
 //   {
@@ -38,15 +39,15 @@ import { Spin } from "antd";
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [oldPassword, setOldPassword] = useState("");
+
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [isChangePassword, setIsChangePassword] = useState(false);
-  const [isnewPasswordFocused, setIsNewPasswordFocused] = useState(false);
-  const [isoldPasswordFocused, setIsOldChangePassword] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
+    {}
+  );
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -165,36 +166,38 @@ const LoginPage: React.FC = () => {
   // };
 
   const handleChangePasswordSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email || !oldPassword || !newPassword) {
-      toast.error("Please fill all the fields.");
-      return;
-    }
-
-    const storedData = localStorage.getItem("userData");
-    const userData = storedData ? JSON.parse(storedData) : [];
-
-    const userIndex = userData.findIndex(
-      (user: { email: string; password: string }) =>
-        user.email === email && user.password === oldPassword
-    );
-
-    if (userIndex !== -1) {
-      userData[userIndex].password = newPassword;
-      localStorage.setItem("userData", JSON.stringify(userData));
-      toast.success("Password changed successfully!");
-      navigate("/login");
-    } else {
-      toast.error("Incorrect email or old password.");
-    }
+    // e.preventDefault();
+    // if (!email || !oldPassword || !newPassword) {
+    //   toast.error("Please fill all the fields.");
+    //   return;
+    // }
+    // const storedData = localStorage.getItem("userData");
+    // const userData = storedData ? JSON.parse(storedData) : [];
+    // const userIndex = userData.findIndex(
+    //   (user: { email: string; password: string }) =>
+    //     user.email === email && user.password === oldPassword
+    // );
+    // if (userIndex !== -1) {
+    //   userData[userIndex].password = newPassword;
+    //   localStorage.setItem("userData", JSON.stringify(userData));
+    //   toast.success("Password changed successfully!");
+    //   navigate("/login");
+    // } else {
+    //   toast.error("Incorrect email or old password.");
+    // }
   };
 
   return (
     <div className="relative flex justify-center items-center h-screen">
-      {isLoading &&
+      {isLoading && (
         <div className="!w-screen !h-screen !bg-black !opacity-50 !absolute !top-0 !left-0 !z-9999">
-          <Spin size="large" spinning className="!w-screen !h-screen !flex !top-1/2 !left-1/2 !absolute !z-9999" />
-        </div>}
+          <Spin
+            size="large"
+            spinning
+            className="!w-screen !h-screen !flex !top-1/2 !left-1/2 !absolute !z-9999"
+          />
+        </div>
+      )}
       <img
         src={Images.Background2}
         alt="Background"
@@ -202,19 +205,37 @@ const LoginPage: React.FC = () => {
       />
 
       {/* Login Form */}
+
       <div
         className={`lg:w-2/3 w-full m-0 lg:m-0 lg:h-4/5  h-5/6 flex border border-black rounded-[30px] bg-white z-10 ${
           isChangePassword ? "hidden" : ""
         }`}
       >
-        <div className=" items-center  lg:flex hidden">
+        <motion.div
+          initial={{ x: 1, opacity: 1 }}
+          animate={{
+            x: isChangePassword ? "100%" : "0%",
+            opacity: isChangePassword ? 1 : 1,
+          }}
+          transition={{ duration: 0.7 }}
+          className="items-center lg:flex hidden"
+        >
           <img
             src={Images.Background3}
             alt="Background"
-            className="w-full scale-x-120  h-12/13 translate-x-14 mr-16 object-contain "
+            className="w-full scale-x-120 h-12/13 translate-x-14 mr-16 object-contain"
           />
-        </div>
-        <div className="lg:w-1/2 w-full m-1  lg:flex flex-col space-y-4 relative">
+        </motion.div>
+
+        <motion.div
+          initial={{ x: 1, opacity: 1 }}
+          animate={{
+            x: isChangePassword ? "-100%" : "0%",
+            opacity: isChangePassword ? 1 : 1,
+          }}
+          transition={{ duration: 0.7 }}
+          className="lg:w-1/2 w-full m-1 lg:flex flex-col space-y-4 relative"
+        >
           <img
             src={Images.Logo}
             alt="Logo"
@@ -304,7 +325,7 @@ const LoginPage: React.FC = () => {
               Forgot Password
             </button>
           </form>
-        </div>
+        </motion.div>
       </div>
 
       {/* Change Password Form */}
@@ -315,7 +336,16 @@ const LoginPage: React.FC = () => {
       >
         <div className="w-full h-full flex border border-black rounded-[30px] bg-white z-10 flex-col lg:flex-row">
           {/* Left Section - Form */}
-          <div className="lg:w-1/2 w-full h-1/2 flex flex-col space-y-4 relative p-10">
+
+          <motion.div
+            initial={{ x: "100%", opacity: 0 }}
+            animate={{
+              x: isChangePassword ? "0%" : "100%",
+              opacity: isChangePassword ? 1 : 0,
+            }}
+            transition={{ duration: 0.7 }}
+            className="lg:w-1/2 w-full m-1  lg:flex flex-col space-y-4 relative"
+          >
             <img
               src={Images.Logo}
               alt="Logo"
@@ -350,48 +380,6 @@ const LoginPage: React.FC = () => {
                 />
               </div>
 
-              {/* Old Password Field */}
-              <div className="relative w-full lg:w-80">
-                <span
-                  className={`absolute left-2 top-2 text-gray-500 transition-all pointer-events-none ${
-                    oldPassword || isoldPasswordFocused
-                      ? "text-xs -translate-y-6 px-2 text-blue-500"
-                      : "text-base"
-                  }`}
-                >
-                  Old Password
-                </span>
-                <input
-                  type="password"
-                  value={oldPassword}
-                  onChange={(e) => setOldPassword(e.target.value)}
-                  onFocus={() => setIsOldChangePassword(true)}
-                  onBlur={() => setIsOldChangePassword(false)}
-                  className="w-full h-10 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              {/* New Password Field */}
-              <div className="relative w-full lg:w-80">
-                <span
-                  className={`absolute left-2 top-2 text-gray-500 transition-all pointer-events-none ${
-                    newPassword || isnewPasswordFocused
-                      ? "text-xs -translate-y-6 px-2 text-blue-500"
-                      : "text-base"
-                  }`}
-                >
-                  New Password
-                </span>
-                <input
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  onFocus={() => setIsNewPasswordFocused(true)}
-                  onBlur={() => setIsNewPasswordFocused(false)}
-                  className="w-full h-10 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
               {/* Buttons */}
 
               <button
@@ -408,17 +396,27 @@ const LoginPage: React.FC = () => {
                 Back
               </button>
             </form>
-          </div>
-          <div className=" items-center lg:flex hidden">
+          </motion.div>
+
+          <motion.div
+            initial={{ x: 1, opacity: 1 }}
+            animate={{
+              x: isChangePassword ? "0%" : "-100%",
+              opacity: isChangePassword ? 1 : 1,
+            }}
+            transition={{ duration: 0.7 }}
+            className="items-center lg:flex hidden"
+          >
             <img
               src={Images.Background4}
-              className="w-full scale-x-120  h-12/13 translate-x-7  object-contain "
+              className="w-full scale-x-120 h-12/13 translate-x-7 object-contain"
             />
-          </div>
+          </motion.div>
+
           {/* Right Section - Image */}
         </div>
       </div>
-    </div >
+    </div>
   );
 };
 
