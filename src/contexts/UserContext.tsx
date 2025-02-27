@@ -1,10 +1,19 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 interface User {
-  name: string;
+  _id: string;
   email: string;
-  password: string;
-  role: string;
+  user_name: string;
+  role_code: string;
+  is_verified: boolean;
+  verification_token: string;
+  verification_token_expires: string;
+  token_version: number;
+  is_blocked: boolean;
+  created_at: string;
+  updated_at: string;
+  is_deleted: boolean;
+  __v: number;
 }
 
 interface UserContextType {
@@ -23,13 +32,18 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
+    // console.log("Stored user:", storedUser);
     if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      setUser(parsedUser);
+      try {
+        const parsedUser: User = JSON.parse(storedUser);
+        setUser(parsedUser);
 
-      // Kiểm tra nếu chưa có mật khẩu trong localStorage thì lưu vào
-      if (!localStorage.getItem("userPassword")) {
-        localStorage.setItem("userPassword", parsedUser.password || "user123");
+        // Kiểm tra nếu chưa có mật khẩu trong localStorage thì lưu vào
+        // if (!localStorage.getItem("userPassword")) {
+        //   localStorage.setItem("userPassword", parsedUser.password || "user123");
+        // }
+      } catch (error) {
+        console.error("Error parsing stored user:", error);
       }
     }
   }, []);

@@ -1,16 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useUser } from "../../contexts/UserContext";
 import { useSidebarStore } from "../../config/zustand";
 import { logout } from "../../services/authService";
 import Icons from "../../components/icon";
 import { NavLink } from "react-router-dom";
 
 const Sidebar: React.FC = () => {
-  const { user } = useUser();
+  const role = localStorage.getItem("role");
   const sidebarRef = useRef<HTMLDivElement>(null);
   const { isSidebarOpen, closeSidebar } = useSidebarStore();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [showConfirm, setShowConfirm] = useState(false);
+
   const handleClickOutside = (event: MouseEvent) => {
     if (
       sidebarRef.current &&
@@ -39,9 +39,9 @@ const Sidebar: React.FC = () => {
     string,
     { path: string; icon: JSX.Element; label: string }[]
   > = {
-    admin: [
+    A001: [
       {
-        path: "/admin",
+        path: "dashboard",
         icon: <Icons.Dashboard className="w-8 h-8" />,
         label: "Dashboard",
       },
@@ -56,9 +56,9 @@ const Sidebar: React.FC = () => {
         label: "Project Management",
       },
     ],
-    approval: [
+    A003: [
       {
-        path: "/approval",
+        path: "dashboard",
         icon: <Icons.Dashboard className="w-8 h-8" />,
         label: "Dashboard",
       },
@@ -68,9 +68,9 @@ const Sidebar: React.FC = () => {
         label: "Approval Management",
       },
     ],
-    finance: [
+    A002: [
       {
-        path: "/finance",
+        path: "dashboard",
         icon: <Icons.Dashboard className="w-8 h-8" />,
         label: "Dashboard",
       },
@@ -80,7 +80,7 @@ const Sidebar: React.FC = () => {
         label: "Finance Management",
       },
     ],
-    user: [
+    A004: [
       {
         path: "dashboard",
         icon: <Icons.Dashboard className="w-8 h-8" />,
@@ -108,56 +108,56 @@ const Sidebar: React.FC = () => {
     <>
       <div
         ref={sidebarRef}
-        className={`flex justify-center text-xl transition-all duration-300 mt-1 ${
-          isSidebarOpen ? "w-56" : "w-24"
-        }`}
+        className={`fixed lg:relative top-0 left-0 h-full transition-all duration-300 bg-white shadow-lg z-50
+        ${
+          isSidebarOpen ? "translate-x-0 w-60" : "-translate-x-full lg:w-20"
+        } lg:translate-x-0`}
       >
-        <div className="flex flex-col gap-3 space-y-4 mt-2">
-          {user?.role && menuItems[user.role] && (
+        <div className="flex flex-col gap-4 p-4 mt-4">
+          {role && menuItems[role] && (
             <>
-              <h2 className="flex items-center justify-start gap-3 px-4 py-2 rounded-md transition-all duration-300 text-gray-300">
+              <h2 className="text-gray-400 text-sm font-semibold uppercase tracking-wider px-2">
                 Menu
               </h2>
-              {menuItems[user.role].map((item, index) => (
+              {menuItems[role].map((item, index) => (
                 <NavLink
                   key={index}
                   to={item.path}
                   className={({ isActive }) =>
-                    `flex items-center justify-start gap-3 px-4 py-2 rounded-md transition-all duration-300 ${
+                    `flex items-center gap-4 px-3 py-2 rounded-lg transition-all duration-300
+                    ${
                       isActive
-                        ? isSidebarOpen
-                          ? "bg-brand-gradient text-white translate-x-9"
-                          : "bg-brand-gradient text-white translate-x-3"
-                        : "bg-transparent"
-                    } ${
+                        ? "bg-brand-gradient text-white shadow-md"
+                        : "text-gray-700 hover:bg-gray-100"
+                    }
+                    ${
                       hoveredIndex !== null && hoveredIndex !== index
-                        ? "text-gray-500 blur-[2px] "
-                        : "text-black"
+                        ? "opacity-50"
+                        : "opacity-100"
                     }`
                   }
                   onMouseEnter={() => setHoveredIndex(index)}
                   onMouseLeave={() => setHoveredIndex(null)}
                 >
-                  {item.icon} {isSidebarOpen && item.label}
+                  <span className="flex-shrink-0 text-xl">{item.icon}</span>
+                  {isSidebarOpen && (
+                    <span className="truncate font-medium">{item.label}</span>
+                  )}
                 </NavLink>
               ))}
             </>
           )}
-
+          <div className="border-t border-gray-200 my-2"></div>
           <NavLink
             to="#"
             onClick={(e) => {
               e.preventDefault();
               setShowConfirm(true);
             }}
-            className={`flex items-center justify-start gap-3 mt-5 px-4 py-2 rounded-md transition-all duration-300 transform ${
-              isSidebarOpen
-                ? "hover:bg-red-600 hover:text-white hover:translate-x-9"
-                : "hover:bg-red-600 hover:text-white hover:translate-x-3"
-            }`}
+            className="flex items-center gap-4 px-3 py-2 rounded-lg text-red-600 transition-all duration-300 hover:bg-red-100"
           >
-            <Icons.LogOut className="w-8 h-8" />
-            {isSidebarOpen && "Log out"}
+            <Icons.LogOut className="w-6 h-6" />
+            {isSidebarOpen && <span className="font-medium">Log out</span>}
           </NavLink>
         </div>
       </div>

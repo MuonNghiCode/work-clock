@@ -3,13 +3,12 @@ import { Button, Pagination, Tag, Input } from "antd";
 import { ClaimRequest } from "../../types/ClaimRequest";
 import { GetProps } from "antd/lib/_util/type";
 import ClaimRequestDetail from "./ClaimRequestDetail";
-import ConfirmModal from "../ConfirmModal.tsx/ConfirmModal";
+import ConfirmModal from "../ConfirmModal/ConfirmModal";
 import Icons from "../icon";
-
-
 
 type SearchProps = GetProps<typeof Input.Search>;
 const { Search } = Input;
+
 interface DataProps {
   data: ClaimRequest[];
 }
@@ -42,13 +41,7 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
   const endIndex = startIndex + pageSize;
   const currentData = filteredData.slice(startIndex, endIndex);
 
-  const statusTags = [
-    "All",
-    "Pending",
-    "Return",
-    "Approve",
-    "Reject",
-  ];
+  const statusTags = ["All", "Pending", "Canceled", "Approved", "Rejected"];
 
   const onSearch: SearchProps["onSearch"] = (value, _e, info) =>
     console.log(info?.source, value);
@@ -65,7 +58,7 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
   };
 
   const handleReject = () => {
-    setMessage("ConfirmReject this request?");
+    setMessage("Confirm Reject this request?");
     setShowConfirmModal(true);
     console.log("Reject");
   };
@@ -79,31 +72,24 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
   const handleClose = () => {
     setShowApprovalDetail(false);
     setShowConfirmModal(false);
-    console.log("Close Approval Detail  ");
+    console.log("Close Approval Detail");
   };
+
   const handleStatusChangeHTML = (status: string) => {
     switch (status) {
       case "Pending":
-        return <span className="text-gray-300">
-          Pending
-        </span>;
-      case "Return":
-        return <span className="text-blue-500">
-          Return
-        </span>;
-      case "Approve":
-        return <span className="text-green-500">
-          Approve
-        </span>;
-      case "Reject":
-        return <span className="text-red-500">
-          Reject
-        </span>;
+        return <span className="text-gray-300">Pending</span>;
+      case "Canceled":
+        return <span className="text-blue-500">Canceled</span>;
+      case "Approved":
+        return <span className="text-green-500">Approved</span>;
+      case "Rejected":
+        return <span className="text-red-500">Rejected</span>;
       default:
-        setStatusFilter(null);
-        break;
+        return null;
     }
   };
+
   return (
     <>
       <div className="flex justify-between items-center mb-4">
@@ -111,11 +97,20 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
           {statusTags.map((status) => (
             <Tag
               key={status}
-              color={statusFilter === status || (status === "All" && statusFilter === null) ? "#ff914d" : "default"}
+              color={
+                statusFilter === status ||
+                  (status === "All" && statusFilter === null)
+                  ? "#ff914d"
+                  : "default"
+              }
               onClick={() => handleStatusChange(status)}
               className="cursor-pointer !px-2 !py-1 !font-squada !text-lg !rounded-lg"
             >
-              {(statusFilter === status || (status === "All" && statusFilter === null)) && <Icons.Check className="inline-flex" />} {status}
+              {(statusFilter === status ||
+                (status === "All" && statusFilter === null)) && (
+                  <Icons.Check className="inline-flex" />
+                )}{" "}
+              {status}
             </Tag>
           ))}
         </div>
@@ -138,7 +133,9 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
             <th className="border-l-2 border-white px-4 py-2">Time</th>
             <th className="border-l-2 border-white px-4 py-2">Status</th>
             <th className="border-l-2 border-white px-4 py-2">Date Create</th>
-            <th className="border-l-2 border-white px-4 py-2 !rounded-tr-2xl">Action</th>
+            <th className="border-l-2 border-white px-4 py-2 !rounded-tr-2xl">
+              Action
+            </th>
           </tr>
         </thead>
         <tbody className="w-full">
@@ -157,9 +154,11 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
               <td className="px-4 py-2 ">
                 {item.totalWorkingHour}
               </td>
-              <td className="px-4 py-2 ">{handleStatusChangeHTML(item.status)}</td>
               <td className="px-4 py-2 ">
-                {new Date(item.dateCreate).toLocaleDateString()}
+                {handleStatusChangeHTML(item.status)}
+              </td>
+              <td className="px-4 py-2 ">
+                {item.dateCreate}
               </td>
               <td
                 className="action px-4 py-2 rounded-r-2xl"
@@ -217,7 +216,6 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
           onChange={handlePageChange}
           showSizeChanger
           onShowSizeChange={handlePageChange}
-
         />
       </div>
       <ClaimRequestDetail visible={showApprovalDetail} onClose={handleClose} />
@@ -225,6 +223,9 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
         visible={showConfirmModal}
         onClose={handleClose}
         message={message}
+        onConfirm={() => {
+          console.log("Confirm");
+        }}
       />
     </>
   );
