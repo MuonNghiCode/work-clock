@@ -9,7 +9,7 @@ import {
   login,
   forgotPassword,
 } from "../../services/authService";
-import { Spin } from "antd";
+// import { Spin } from "antd";
 import LoadingScreen from "../../components/LoadingScreen/LoadingScreen";
 
 const LoginPage: React.FC = () => {
