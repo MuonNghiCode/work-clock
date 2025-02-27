@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Images from "../../components/images";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Icons from "../../components/icon";
+import { motion } from "framer-motion";
 import {
   getUserInfobyToken,
   login,
   forgotPassword,
 } from "../../services/authService";
 // import { Spin } from "antd";
-import { motion } from "framer-motion";
 import LoadingScreen from "../../components/LoadingScreen/LoadingScreen";
 
 const LoginPage: React.FC = () => {
@@ -21,11 +21,20 @@ const LoginPage: React.FC = () => {
   const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
     {}
   );
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isForgotPassword) {
+      setIsAnimating(true);
+    } else {
+      setTimeout(() => setIsAnimating(false), 800); // Đợi animation chạy xong rồi mới ẩn
+    }
+  }, [isForgotPassword]);
 
   const validate = () => {
     const newErrors: { email?: string; password?: string } = {};
@@ -108,173 +117,167 @@ const LoginPage: React.FC = () => {
       <img
         src={Images.Background2}
         alt="Background"
-        className="absolute inset-0 lg:w-2/3 w-full h-screen object-cover object-center opacity-50 blur-xs"
+        className="absolute inset-0 w-240 h-full object-cover object-center opacity-50 blur-xs"
       />
 
       {/* Login Form */}
-
       <div
         className={`w-230 h-140 flex border border-black rounded-[30px] bg-white z-10 ${
           isForgotPassword ? "hidden" : ""
         }`}
       >
         <motion.div
-          initial={{ x: 1, opacity: 1 }}
+          initial={{ x: 0, opacity: 0 }}
           animate={{
-            x: isForgotPassword ? "100%" : "0%",
+            x: isForgotPassword ? "70%" : "0%",
             opacity: isForgotPassword ? 1 : 1,
           }}
-          transition={{ duration: 0.7 }}
-          className="items-center lg:flex hidden"
+          transition={{ duration: 0.5 }}
+          className="w-full flex items-center justify-center"
         >
           <img
             src={Images.Background3}
             alt="Background"
-            className="w-full scale-x-120 h-12/13 translate-x-14 mr-16 object-contain"
+            className="w-120 h-130 scale-x-112 z-50 object-contain translate-x-[-30px]"
           />
         </motion.div>
 
         <motion.div
-          initial={{ x: 1, opacity: 1 }}
+          initial={{ x: 0, opacity: 0 }}
           animate={{
             x: isForgotPassword ? "-100%" : "0%",
-            opacity: isForgotPassword ? 1 : 1,
+            opacity: 1,
           }}
-          transition={{ duration: 0.7 }}
-          className="lg:w-1/2 w-full m-1 lg:flex flex-col space-y-4 relative"
+          exit={{ x: "100%", opacity: 1 }}
+          transition={{ duration: 1, ease: "easeOut" }}
+          className="w-1/2 flex flex-col space-y-4 relative z-[-1]"
         >
           <img
             src={Images.Logo}
             alt="Logo"
-            className="w-28 lg:w-40 mx-auto absolute lg:top-0 lg:right-0 "
+            className="w-40 mx-auto absolute top-10 right-10"
           />
+          <h1 className="text-4xl text-center absolute top-1/3 ">
+            Welcome User
+          </h1>
+          <div className="h-full flex flex-col justify-center absolute right-20 items-start">
+            <form onSubmit={handleLoginSubmit} className="gap-4">
+              {/* Email Field */}
+              <div className="relative py-10">
+                <span
+                  className={`absolute left-2 top-12 text-gray-500 transition-all pointer-events-none ${
+                    email || isEmailFocused
+                      ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
+                      : "text-base"
+                  }`}
+                >
+                  Email
+                </span>
+                <input
+                  id="Email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onFocus={() => setIsEmailFocused(true)}
+                  onBlur={() => setIsEmailFocused(false)}
+                  className="w-70 h-10 p-2 pl-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                {errors.email && (
+                  <p className="text-red-500 text-sm absolute">
+                    {errors.email}
+                  </p>
+                )}
+                <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-700">
+                  <Icons.Email />
+                </span>
+              </div>
 
-          <form
-            onSubmit={handleLoginSubmit}
-            className="w-full h-full relative top-10 flex flex-col justify-center items-center space-y-4 lg:space-y-5"
-          >
-            <h1 className="text-3xl lg:text-4xl text-center whitespace-nowrap">
-              Welcome User
-            </h1>
-            {/* Email Field */}
-            <div className="relative w-full lg:w-80">
-              <span
-                className={`absolute left-2 top-2 text-gray-500 transition-all pointer-events-none ${
-                  email || isEmailFocused
-                    ? "text-xs -translate-y-6 px-2 text-blue-500"
-                    : "text-base"
-                }`}
-              >
-                Email
-              </span>
-              <input
-                id="Email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                onFocus={() => setIsEmailFocused(true)}
-                onBlur={() => setIsEmailFocused(false)}
-                className="w-full h-10 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              {errors.email && (
-                <p className="text-red-500 text-sm absolute">{errors.email}</p>
-              )}
-              <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-700">
-                <Icons.Email />
-              </span>
-            </div>
+              {/* Password Field */}
+              <div className="relative">
+                <span
+                  className={`absolute left-2 top-2 text-gray-500 transition-all pointer-events-none ${
+                    password || isPasswordFocused
+                      ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
+                      : "text-base"
+                  }`}
+                >
+                  Password
+                </span>
+                <input
+                  id="Password"
+                  type={isPasswordVisible ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onFocus={() => setIsPasswordFocused(true)}
+                  onBlur={() => setIsPasswordFocused(false)}
+                  className="w-full h-10 p-2 pl-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <span
+                  onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-900 cursor-pointer"
+                >
+                  {isPasswordVisible ? <Icons.Unlock /> : <Icons.Lock />}
+                </span>
+                {errors.password && (
+                  <p className="text-red-500 text-sm absolute">
+                    {errors.password}
+                  </p>
+                )}
+              </div>
 
-            {/* Password Field */}
-            <div className="relative w-full lg:w-80">
-              <span
-                className={`absolute left-2 top-2 text-gray-500 transition-all pointer-events-none ${
-                  password || isPasswordFocused
-                    ? "text-xs -translate-y-6 px-2 text-blue-500"
-                    : "text-base"
-                }`}
+              {/* Submit Button */}
+              <button
+                type="submit"
+                className="absolute flex justify-center items-center w-40 top-105 right-17 h-8 px-4 py-2 bg-brand-grandient text-white rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
               >
-                Password
-              </span>
-              <input
-                id="Password"
-                type={isPasswordVisible ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onFocus={() => setIsPasswordFocused(true)}
-                onBlur={() => setIsPasswordFocused(false)}
-                className="w-full h-10 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <span
-                onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-900 cursor-pointer"
+                Login
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsForgotPassword(true)}
+                className="absolute flex justify-center items-center w-40 top-115 right-17 h-8 px-4 py-2 border-amber-500 border rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
               >
-                {isPasswordVisible ? <Icons.Unlock /> : <Icons.Lock />}
-              </span>
-              {errors.password && (
-                <p className="text-red-500 text-sm absolute">
-                  {errors.password}
-                </p>
-              )}
-            </div>
-
-            {/* Buttons */}
-            <button
-              type="submit"
-              className="mt-5 lg:mt-2 lg:w-50 w-4/6  h-10 px-4 py-2 bg-brand-grandient text-white rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
-            >
-              Login
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsForgotPassword(true)}
-              className="lg:w-50 w-4/6 h-10 px-4 py-2 bg-white text-black border-amber-500 border rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
-            >
-              Forgot Password
-            </button>
-          </form>
+                Forgot Password
+              </button>
+            </form>
+          </div>
         </motion.div>
       </div>
 
       {/* Forgot Password Form */}
       <div
-        className={`lg:w-2/3 w-full lg:h-4/5 h-5/6 flex items-center border border-black rounded-[30px] bg-white z-20 ${
+        className={`w-230 h-140 flex items-center border border-black rounded-[30px] bg-white z-20 ${
           !isForgotPassword ? "hidden" : ""
         }`}
       >
-        <div className="w-full h-full flex border border-black rounded-[30px] bg-white z-10 flex-col lg:flex-row">
-          {/* Left Section - Form */}
-
+        <div className="w-230 h-140 flex border border-black rounded-[30px] bg-white z-10">
           <motion.div
-            initial={{ x: "100%", opacity: 0 }}
+            initial={{ x: 0, opacity: 0 }}
             animate={{
               x: isForgotPassword ? "0%" : "100%",
-              opacity: isForgotPassword ? 1 : 0,
+              opacity: 1,
             }}
-            transition={{ duration: 0.7 }}
-            className="lg:w-1/2 w-full m-1  lg:flex flex-col space-y-4 relative"
+            transition={{ duration: 1, ease: "easeOut" }}
+            className="w-1/2 flex flex-col space-y-4 relative z-[-1]"
           >
             <img
               src={Images.Logo}
               alt="Logo"
-              className="w-28 lg:w-40 mx-auto absolute top-1 left-0  "
+              className="w-40 mx-auto absolute top-10 left-10"
             />
-            <h1 className="text-4xl w-full text-center absolute top-39">
+            <h1 className="text-4xl  w-full text-center absolute top-39">
               Forgot Password
             </h1>
 
             <form
               onSubmit={handleForgotPasswordSubmit}
-              className="h-3/6 flex flex-col justify-center items-center lg:space-y-5 space-y-4 mt-40 lg:mt-50"
+              className="h-full w-3/4 flex flex-col justify-center  left-20 absolute  "
             >
-              <h1 className="text-3xl lg:text-4xl text-center absolute top-20 whitespace-nowrap">
-                Change Password
-              </h1>
-              {/* Email Field */}
-              <div className="relative w-full lg:w-80">
+              <div className="relative py-4">
                 <span
-                  className={`absolute left-2 top-2 text-gray-500 transition-all pointer-events-none ${
+                  className={`absolute left-2 top-6 text-gray-500 transition-all pointer-events-none ${
                     forgotPasswordEmail || isEmailFocused
-                      ? "text-xs -translate-y-6 px-2 text-blue-500"
+                      ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
                       : "text-base"
                   }`}
                 >
@@ -288,42 +291,42 @@ const LoginPage: React.FC = () => {
                   onBlur={() => setIsEmailFocused(false)}
                   className="w-full h-10 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-              </div>
 
-              {/* Buttons */}
+                <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-700">
+                  <Icons.Email />
+                </span>
+              </div>
 
               <button
                 type="submit"
-                className=" lg:mt-2 lg:w-50 w-4/6 h-10 px-4 py-2 bg-brand-grandient text-white rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
+                className="absolute flex justify-center items-center w-40 top-98 left-13 h-8 px-4 py-2 bg-brand-grandient text-white rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
               >
                 Send Reset Link
               </button>
               <button
                 type="button"
                 onClick={() => setIsForgotPassword(false)}
-                className="lg:w-50 w-4/6 lg:h-10 h-10 px-4 py-2 bg-white text-black border-amber-500 border rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
+                className="absolute flex justify-center items-center w-40 top-108 left-13 h-8 px-4 py-2 bg-white text-black rounded-lg border-amber-500 border cursor-pointer transition-all hover:scale-105 focus:outline-none"
               >
                 Back
               </button>
             </form>
           </motion.div>
-
           <motion.div
-            initial={{ x: 1, opacity: 1 }}
+            initial={{ x: 0, opacity: 0 }}
             animate={{
-              x: isForgotPassword ? "0%" : "-100%",
-              opacity: isForgotPassword ? 1 : 1,
+              x: isForgotPassword ? "0%" : "-70%",
+              opacity: 1,
             }}
-            transition={{ duration: 0.7 }}
-            className="items-center lg:flex hidden"
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="w-full flex items-center justify-center"
           >
             <img
               src={Images.Background4}
-              className="w-full scale-x-120 h-12/13 translate-x-7 object-contain"
+              alt=""
+              className="w-120 h-130 scale-x-112 object-contain translate-x-7"
             />
           </motion.div>
-
-          {/* Right Section - Image */}
         </div>
       </div>
     </div>
