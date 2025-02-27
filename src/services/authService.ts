@@ -50,6 +50,17 @@ export const logoutApi = async () => {
   }
 }
 
+export const forgotPassword = async (email: string) => {
+  try {
+    const response = await axiosInstance.put('/auth/forgot-password', { email });
+    return response.data;
+  }
+  catch (error) {
+    console.error('Error forgot password:', error);
+    throw error;
+  }
+};
+
 
 export const isAuthenticated = (): boolean => {
   return !!localStorage.getItem("token");
@@ -71,41 +82,10 @@ export const logout = () => {
   localStorage.removeItem("token");
   localStorage.removeItem("role");
   localStorage.removeItem("user");
+  sessionStorage.setItem("toastMessage", JSON.stringify({
+    type: "success",
+    message: "Logout Successfully!",
+  }));
   logoutApi();
   window.location.href = "/";
 };
-// ========
-//     return !!localStorage.getItem("token");
-//   };
-  
-//   export const getRole = (): string | null => {
-//     return localStorage.getItem("role");
-//   };
-  
-//   export const checkRole = (role: string): boolean => {
-//     return getRole() === role;
-//   };
-  
-//   export const hasAnyRole = (...roles: string[]): boolean => {
-//     return roles.includes(getRole() || "");
-//   };
-  
-//   export const logout = () => {
-//     localStorage.removeItem("token");
-//     localStorage.removeItem("role");
-//     localStorage.removeItem("user");
-    
-//     sessionStorage.setItem("toastMessage", JSON.stringify({
-//       type: "success",
-//       message: "Logout Successfully!",
-//     }));
-  
-//     console.log("Saved toastMessage:", sessionStorage.getItem("toastMessage"));
-
-//     setTimeout(() => {
-//       window.location.href = "/";
-//     }, 100);
-
-//   };
-// >>>>>>>> aa48ac195e7e051e5c8afda3f3e35058650bdafc:src/services/authService.ts
-// >>>>>>> aa48ac195e7e051e5c8afda3f3e35058650bdafc

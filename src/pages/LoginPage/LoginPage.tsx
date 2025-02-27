@@ -4,68 +4,28 @@ import Images from "../../components/images";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Icons from "../../components/icon";
-import { getUserInfobyToken, login } from "../../services/authService";
-// import LoadingScreen from "../../components/LoadingScreen/LoadingScreen";
-import { Spin } from "antd";
+import {
+  getUserInfobyToken,
+  login,
+  forgotPassword,
+} from "../../services/authService";
+// import { Spin } from "antd";
 import { motion } from "framer-motion";
-
-// const userData = [
-//   {
-//     name: "user",
-//     email: "user@example.com",
-//     password: "user123",
-//     role: "user",
-//   },
-//   {
-//     name: "approval",
-//     email: "approval@example.com",
-//     password: "approval123",
-//     role: "approval",
-//   },
-//   {
-//     name: "finance",
-//     email: "finance@example.com",
-//     password: "finance123",
-//     role: "finance",
-//   },
-//   {
-//     name: "admin",
-//     email: "admin@example.com",
-//     password: "admin123",
-//     role: "admin",
-//   },
-// ];
+import LoadingScreen from "../../components/LoadingScreen/LoadingScreen";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
-  const [isChangePassword, setIsChangePassword] = useState(false);
-
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
     {}
   );
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-
-  // const checkUser = (data: { email: string; password: string }) => {
-  //   const user = userData.find(
-  //     (user) => user.email === data.email && user.password === data.password
-  //   );
-  //   if (user) {
-  //     const token = `${user.role}-${Date.now()}`;
-  //     localStorage.setItem("token", token);
-  //     localStorage.setItem("role", user.role);
-  //     localStorage.setItem("user", JSON.stringify(user));
-  //     return user;
-  //   } else {
-  //     console.log("Invalid email or password");
-  //     return null;
-  //   }
-  // };
 
   const validate = () => {
     const newErrors: { email?: string; password?: string } = {};
@@ -93,10 +53,7 @@ const LoginPage: React.FC = () => {
         let user;
         if (token) {
           user = await getUserInfobyToken();
-          // await getAllRoles(user.data.role_code)
-          // console.log(localStorage.getItem("user"));
           let role = localStorage.getItem("role");
-          console.log(role);
           if (user && user.data) {
             toast.success("Login successful!");
             setTimeout(() => {
@@ -116,7 +73,6 @@ const LoginPage: React.FC = () => {
                 default:
                   navigate("/");
               }
-              // window.location.reload();
             }, 1000);
           } else {
             toast.error("Invalid email or password!");
@@ -129,73 +85,24 @@ const LoginPage: React.FC = () => {
     setIsLoading(false);
   };
 
-  //       //     await getUserInfobyToken();
-  //       // console.log("response in login", response);
-  //       const user = checkUser({ email, password });
-  //       if (user) {
-  //         toast.success("Login successful!");
-  //         setTimeout(() => {
-  //           switch (user.role) {
-  //             case "admin":
-  //               navigate("/admin");
-  //               break;
-  //             case "user":
-  //               navigate("/user");
-  //               break;
-  //             case "approval":
-  //               navigate("/approval");
-  //               break;
-  //             case "finance":
-  //               navigate("/finance");
-  //               break;
-  //             default:
-  //               navigate("/");
-  //           }
-  //           window.location.reload();
-  //         }, 1000);
-  //       } else {
-  //         toast.error("Invalid email or password!");
-  //       }
-  //     } else {
-  //       toast.error("Please fix the errors before submitting.");
-  //     }
-  //    catch (error) {
-  //       toast.error("Please fix the errors before submitting.");
-  //     }
-  //   }
-  // };
-
-  const handleChangePasswordSubmit = (e: React.FormEvent) => {
-    // e.preventDefault();
-    // if (!email || !oldPassword || !newPassword) {
-    //   toast.error("Please fill all the fields.");
-    //   return;
-    // }
-    // const storedData = localStorage.getItem("userData");
-    // const userData = storedData ? JSON.parse(storedData) : [];
-    // const userIndex = userData.findIndex(
-    //   (user: { email: string; password: string }) =>
-    //     user.email === email && user.password === oldPassword
-    // );
-    // if (userIndex !== -1) {
-    //   userData[userIndex].password = newPassword;
-    //   localStorage.setItem("userData", JSON.stringify(userData));
-    //   toast.success("Password changed successfully!");
-    //   navigate("/login");
-    // } else {
-    //   toast.error("Incorrect email or old password.");
-    // }
+  const handleForgotPasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      await forgotPassword(forgotPasswordEmail);
+      toast.success("Password reset link sent to your email!");
+      setIsForgotPassword(false);
+    } catch (error) {
+      toast.error("Error sending password reset link.");
+    }
+    setIsLoading(false);
   };
 
   return (
     <div className="relative flex justify-center items-center h-screen">
       {isLoading && (
         <div className="!w-screen !h-screen !bg-black !opacity-50 !absolute !top-0 !left-0 !z-9999">
-          <Spin
-            size="large"
-            spinning
-            className="!w-screen !h-screen !flex !top-1/2 !left-1/2 !absolute !z-9999"
-          />
+          <LoadingScreen />
         </div>
       )}
       <img
@@ -207,15 +114,15 @@ const LoginPage: React.FC = () => {
       {/* Login Form */}
 
       <div
-        className={`lg:w-2/3 w-full m-0 lg:m-0 lg:h-4/5  h-5/6 flex border border-black rounded-[30px] bg-white z-10 ${
-          isChangePassword ? "hidden" : ""
+        className={`w-230 h-140 flex border border-black rounded-[30px] bg-white z-10 ${
+          isForgotPassword ? "hidden" : ""
         }`}
       >
         <motion.div
           initial={{ x: 1, opacity: 1 }}
           animate={{
-            x: isChangePassword ? "100%" : "0%",
-            opacity: isChangePassword ? 1 : 1,
+            x: isForgotPassword ? "100%" : "0%",
+            opacity: isForgotPassword ? 1 : 1,
           }}
           transition={{ duration: 0.7 }}
           className="items-center lg:flex hidden"
@@ -230,8 +137,8 @@ const LoginPage: React.FC = () => {
         <motion.div
           initial={{ x: 1, opacity: 1 }}
           animate={{
-            x: isChangePassword ? "-100%" : "0%",
-            opacity: isChangePassword ? 1 : 1,
+            x: isForgotPassword ? "-100%" : "0%",
+            opacity: isForgotPassword ? 1 : 1,
           }}
           transition={{ duration: 0.7 }}
           className="lg:w-1/2 w-full m-1 lg:flex flex-col space-y-4 relative"
@@ -319,7 +226,7 @@ const LoginPage: React.FC = () => {
             </button>
             <button
               type="button"
-              onClick={() => setIsChangePassword(true)}
+              onClick={() => setIsForgotPassword(true)}
               className="lg:w-50 w-4/6 h-10 px-4 py-2 bg-white text-black border-amber-500 border rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
             >
               Forgot Password
@@ -328,10 +235,10 @@ const LoginPage: React.FC = () => {
         </motion.div>
       </div>
 
-      {/* Change Password Form */}
+      {/* Forgot Password Form */}
       <div
         className={`lg:w-2/3 w-full lg:h-4/5 h-5/6 flex items-center border border-black rounded-[30px] bg-white z-20 ${
-          !isChangePassword ? "hidden" : ""
+          !isForgotPassword ? "hidden" : ""
         }`}
       >
         <div className="w-full h-full flex border border-black rounded-[30px] bg-white z-10 flex-col lg:flex-row">
@@ -340,8 +247,8 @@ const LoginPage: React.FC = () => {
           <motion.div
             initial={{ x: "100%", opacity: 0 }}
             animate={{
-              x: isChangePassword ? "0%" : "100%",
-              opacity: isChangePassword ? 1 : 0,
+              x: isForgotPassword ? "0%" : "100%",
+              opacity: isForgotPassword ? 1 : 0,
             }}
             transition={{ duration: 0.7 }}
             className="lg:w-1/2 w-full m-1  lg:flex flex-col space-y-4 relative"
@@ -351,9 +258,12 @@ const LoginPage: React.FC = () => {
               alt="Logo"
               className="w-28 lg:w-40 mx-auto absolute top-1 left-0  "
             />
+            <h1 className="text-4xl w-full text-center absolute top-39">
+              Forgot Password
+            </h1>
 
             <form
-              onSubmit={handleChangePasswordSubmit}
+              onSubmit={handleForgotPasswordSubmit}
               className="h-3/6 flex flex-col justify-center items-center lg:space-y-5 space-y-4 mt-40 lg:mt-50"
             >
               <h1 className="text-3xl lg:text-4xl text-center absolute top-20 whitespace-nowrap">
@@ -363,7 +273,7 @@ const LoginPage: React.FC = () => {
               <div className="relative w-full lg:w-80">
                 <span
                   className={`absolute left-2 top-2 text-gray-500 transition-all pointer-events-none ${
-                    email || isEmailFocused
+                    forgotPasswordEmail || isEmailFocused
                       ? "text-xs -translate-y-6 px-2 text-blue-500"
                       : "text-base"
                   }`}
@@ -372,8 +282,8 @@ const LoginPage: React.FC = () => {
                 </span>
                 <input
                   type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={forgotPasswordEmail}
+                  onChange={(e) => setForgotPasswordEmail(e.target.value)}
                   onFocus={() => setIsEmailFocused(true)}
                   onBlur={() => setIsEmailFocused(false)}
                   className="w-full h-10 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -386,11 +296,11 @@ const LoginPage: React.FC = () => {
                 type="submit"
                 className=" lg:mt-2 lg:w-50 w-4/6 h-10 px-4 py-2 bg-brand-grandient text-white rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
               >
-                Confirm
+                Send Reset Link
               </button>
               <button
                 type="button"
-                onClick={() => setIsChangePassword(false)}
+                onClick={() => setIsForgotPassword(false)}
                 className="lg:w-50 w-4/6 lg:h-10 h-10 px-4 py-2 bg-white text-black border-amber-500 border rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
               >
                 Back
@@ -401,8 +311,8 @@ const LoginPage: React.FC = () => {
           <motion.div
             initial={{ x: 1, opacity: 1 }}
             animate={{
-              x: isChangePassword ? "0%" : "-100%",
-              opacity: isChangePassword ? 1 : 1,
+              x: isForgotPassword ? "0%" : "-100%",
+              opacity: isForgotPassword ? 1 : 1,
             }}
             transition={{ duration: 0.7 }}
             className="items-center lg:flex hidden"
