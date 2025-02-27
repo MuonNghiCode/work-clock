@@ -114,22 +114,6 @@ const AddProject: React.FC<AddProjectProps> = ({ onClose, onAdd }) => {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-base"
             />
           </div>
-
-          <div className="flex-1 space-y-2">
-            <label className="block text-gray-700 font-medium text-lg">Status</label>
-            <select
-              value={projectData.status}
-              onChange={(e) => setProjectData({ ...projectData, status: e.target.value as Project['status'] })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 appearance-none bg-white text-base"
-            >
-              <option value="Processing">Processing</option>
-              <option value="Pending">Pending</option>
-              <option value="Complete">Complete</option>
-            </select>
-          </div>
-        </div>
-
-        <div className="flex flex-row justify-between w-full space-x-4">
           <div className="flex-1 space-y-2">
             <label className="block text-gray-700 font-medium text-lg">Department</label>
             <input
@@ -140,6 +124,25 @@ const AddProject: React.FC<AddProjectProps> = ({ onClose, onAdd }) => {
               placeholder="Enter department"
             />
           </div>
+
+
+        </div>
+
+
+
+      </div>
+      <div className="flex flex-row justify-between w-full space-x-4">
+        <div className="flex-1 space-y-2">
+          <label className="block text-gray-700 font-medium text-lg">Status</label>
+          <select
+            value={projectData.status}
+            onChange={(e) => setProjectData({ ...projectData, status: e.target.value as Project['status'] })}
+            className="w-1/2 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 appearance-none bg-white text-base"
+          >
+            <option value="Processing">Processing</option>
+            <option value="Pending">Pending</option>
+            <option value="Complete">Complete</option>
+          </select>
         </div>
       </div>
 

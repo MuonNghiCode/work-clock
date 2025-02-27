@@ -110,21 +110,7 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project, use
             </select>
           </div>
 
-          <div className="flex-1 space-y-2">
-            <label className="block text-gray-700 font-medium text-lg">Status</label>
-            <select
-              value={projectData.status}
-              onChange={(e) => setProjectData({ ...projectData, status: e.target.value as "Processing" | "Pending" | "Complete" })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 bg-white text-base"
-            >
-              <option value="Processing">Processing</option>
-              <option value="Pending">Pending</option>
-              <option value="Complete">Complete</option>
-            </select>
-          </div>
-        </div>
 
-        <div className="flex flex-row justify-between w-full space-x-4">
           <div className="flex-1 space-y-2">
             <label className="block text-gray-700 font-medium text-lg">Department</label>
             <input
@@ -136,10 +122,27 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project, use
             />
           </div>
         </div>
+
+
+      </div>
+
+      <div className="flex flex-row justify-between w-full space-x-4">
+        <div className="flex-1 space-y-2">
+          <label className="block text-gray-700 font-medium text-lg">Status</label>
+          <select
+            value={projectData.status}
+            onChange={(e) => setProjectData({ ...projectData, status: e.target.value as "Processing" | "Pending" | "Complete" })}
+            className="w-1/2 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 bg-white text-base"
+          >
+            <option value="Processing">Processing</option>
+            <option value="Pending">Pending</option>
+            <option value="Complete">Complete</option>
+          </select>
+        </div>
       </div>
 
       <div className="mt-6 flex justify-center">
-        <button 
+        <button
           className="bg-orange-400 text-white px-6 py-2 rounded-full hover:bg-orange-500 transition-colors text-base"
           onClick={handleSave}
         >

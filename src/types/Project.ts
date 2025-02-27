@@ -4,6 +4,7 @@ export interface Project {
   code: string;
   date: string;
   enddate: string;
+  department: string;
   status: "Processing" | "Pending" | "Complete";
   user?: string;
 } 

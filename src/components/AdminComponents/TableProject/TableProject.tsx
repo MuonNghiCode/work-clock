@@ -268,7 +268,6 @@ const TableProject: React.FC<DataProps> = ({
         visible={showProjectDetail}
         onClose={handleClose}
         Project={selectedProject}
-        users={users}
       />
       <ConfirmModal
         visible={showConfirmModal}

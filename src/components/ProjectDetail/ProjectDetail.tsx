@@ -55,20 +55,34 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
               </div>
             </div>
 
+
             <div className="flex flex-row justify-between w-full space-x-4">
+              <div className="flex-1 space-y-2">
+                <label className="block text-gray-700 font-medium text-lg">Department</label>
+                <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-base">
+                  {Project.department || "N/A"}
+                </div>
+              </div>
+
               <div className="flex-1 space-y-2">
                 <label className="block text-gray-700 font-medium text-lg">User</label>
                 <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-base">
                   {Project.user || "dngoc"}
                 </div>
               </div>
+            </div>
+
+            <div className="flex flex-row justify-between w-full space-x-4">
+
+
+
 
               <div className="flex-1 space-y-2">
                 <label className="block text-gray-700 font-medium text-lg">Status</label>
-                <div className={`w-full px-4 py-2 rounded-lg text-base text-center font-medium
+                <div className={`w-1/2 px-4 py-2 rounded-lg text-base text-center font-medium
                   ${Project.status === 'Processing' ? 'bg-[#F4ECFF] text-[#7B2CBF]' :
-                  Project.status === 'Pending' ? 'bg-[#FFE2E5] text-[#FF0420]' :
-                  'bg-[#E6FAF5] text-[#00B087]'}`}
+                    Project.status === 'Pending' ? 'bg-[#FFE2E5] text-[#FF0420]' :
+                      'bg-[#E6FAF5] text-[#00B087]'}`}
                 >
                   {Project.status}
                 </div>
@@ -78,7 +92,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
         </div>
 
         <div className="mt-6 flex justify-center">
-          <button 
+          <button
             className="bg-orange-400 text-white px-6 py-2 rounded-full hover:bg-orange-500 transition-colors text-base"
             onClick={onClose}
           >
