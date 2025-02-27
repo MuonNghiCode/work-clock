@@ -136,6 +136,7 @@ const FinancePage: React.FC = () => {
     if (selectedItem) {
       console.log(`Payment confirmed for item: ${selectedItem.key}`);
       setIsModalVisible(false);
+      setIsStatusModalVisible(true);
       setSelectedItem(null);
     }
   };
@@ -344,6 +345,7 @@ const FinancePage: React.FC = () => {
       )}
       {status && (
         <StatusModal
+          isModalVisible={isStatusModalVisible}
           type={status}
           date={format(new Date(), "dd/MM/yyyy")}
           onClose={handleStatusModalClose}
