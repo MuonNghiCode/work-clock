@@ -146,7 +146,7 @@ const LoginPage: React.FC = () => {
           <img
             src={Images.Logo}
             alt="Logo"
-            className="lg:w-40 w-25 mx-auto absolute lg:top-10 top-3 right-5 lg:right-10"
+            className="lg:w-40 w-25 mx-auto absolute top-10 right-5 lg:right-10"
           />
 
           <div className="h-full lg:mt-20 flex flex-col justify-center absolute lg:right-20 items-start">
@@ -256,14 +256,14 @@ const LoginPage: React.FC = () => {
           <img
             src={Images.Logo}
             alt="Logo"
-            className="lg:w-40 w-25 mx-auto absolute lg:top-10 top-3 right-5 lg:right-20"
+            className="lg:w-40 w-25 mx-auto absolute top-10 right-5 lg:right-20"
           />
 
           <form
             onSubmit={handleForgotPasswordSubmit}
-            className="relative gap-4 lg:ml-20 lg:mt-20 mt-15 "
+            className="relative gap-4 lg:ml-20 mt-10  "
           >
-            <h1 className="text-4xl w-full text-center  lg:mb-0 mb-15 lg:top-39">
+            <h1 className="text-4xl w-full text-center  lg:mb-0 mb-20 lg:top-39">
               Forgot Password
             </h1>
             <div className="lg:mt-10 relative py-4">
@@ -290,7 +290,7 @@ const LoginPage: React.FC = () => {
               </span>
             </div>
 
-            <div className="flex mt-10 flex-col items-center space-y-4">
+            <div className="flex mt-15 flex-col items-center space-y-4">
               <button
                 type="submit"
                 className="w-40 h-8 px-4 py-2 bg-brand-grandient text-white rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
