@@ -9,6 +9,7 @@ import PaymentModal from "../../components/PaymentModal/PaymentModal";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { Pagination } from "antd";
+import StatusModal from "../../components/PaymentModal/StatusModal";
 
 export interface DataType {
   key: string;
@@ -85,6 +86,8 @@ const FinancePage: React.FC = () => {
   const [selectedItem, setSelectedItem] = useState<DataType | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [isStatusModalVisible, setIsStatusModalVisible] = useState(false);
+  const [status, setStatus] = useState<"success" | "error" | null>(null);
 
   const toggleDatePicker = () => {
     setIsDatePickerVisible(!isDatePickerVisible);
@@ -190,7 +193,6 @@ const FinancePage: React.FC = () => {
       { header: "Project", key: "project" },
       { header: "Claimer", key: "claimer" },
       { header: "Time", key: "time" },
-      { header: "Status", key: "status" },
       { header: "Date Create", key: "dateCreate" },
     ];
 
@@ -211,6 +213,15 @@ const FinancePage: React.FC = () => {
     if (pageSize) {
       setPageSize(pageSize);
     }
+  };
+
+  const handleStatusChange = (newStatus: "success" | "error" | null) => {
+    setStatus(newStatus);
+  };
+
+  const handleStatusModalClose = () => {
+    setIsStatusModalVisible(false);
+    setStatus(null);
   };
 
   return (
@@ -290,7 +301,7 @@ const FinancePage: React.FC = () => {
               <td className="px-4 py-2 ">{item.claimer}</td>
               <td className="px-4 py-2 ">{item.time}</td>
               <td className="px-4 py-2 ">{item.dateCreate}</td>
-              <td className="action px-4 py-2 rounded-r-lg flex justify-center space-x-1">
+              <td className="action px-4 py-4 rounded-r-lg flex justify-center space-x-1">
                 <button
                   className="flex items-center justify-center h-10 w-28 bg-green-500 text-white rounded-lg shadow-md cursor-pointer"
                   onClick={() => handlePay(item)}
@@ -326,8 +337,16 @@ const FinancePage: React.FC = () => {
           isVisible={isModalVisible}
           onClose={() => setIsModalVisible(false)}
           onConfirm={handleConfirmPayment}
+          onStateChange={handleStatusChange}
           claimer={selectedItem.claimer}
-          date={selectedItem.dateCreate}
+          date={new Date()}
+        />
+      )}
+      {status && (
+        <StatusModal
+          type={status}
+          date={format(new Date(), "dd/MM/yyyy")}
+          onClose={handleStatusModalClose}
         />
       )}
     </div>
