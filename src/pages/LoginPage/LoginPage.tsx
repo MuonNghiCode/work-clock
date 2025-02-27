@@ -53,7 +53,7 @@ const LoginPage: React.FC = () => {
         let user;
         if (token) {
           user = await getUserInfobyToken();
-          let role = localStorage.getItem("role");
+          let role = user.data.role_code;
           if (user && user.data) {
             toast.success("Login successful!");
             setTimeout(() => {

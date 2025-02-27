@@ -5,9 +5,9 @@ import Icons from "../../components/icon";
 import { NavLink } from "react-router-dom";
 import { toast } from "react-toastify";
 import { logout } from "../../utils/userUtils";
-
 const Sidebar: React.FC = () => {
-  const role = localStorage.getItem("role");
+  let user = localStorage.getItem("user");
+  let parseUser = JSON.parse(user || "{}");
   const sidebarRef = useRef<HTMLDivElement>(null);
   const { isSidebarOpen, closeSidebar } = useSidebarStore();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -119,12 +119,12 @@ const Sidebar: React.FC = () => {
         } lg:translate-x-0`}
       >
         <div className="flex flex-col gap-4 p-4 mt-4">
-          {role && menuItems[role] && (
+          {parseUser.role_code && menuItems[parseUser.role_code] && (
             <>
               <h2 className="text-gray-400 text-sm font-semibold uppercase tracking-wider px-2">
                 Menu
               </h2>
-              {menuItems[role].map((item, index) => (
+              {menuItems[parseUser.role_code].map((item, index) => (
                 <NavLink
                   key={index}
                   to={item.path}
