@@ -5,55 +5,48 @@ import { Link } from "react-router";
 
 const Carousel: React.FC = () => {
   return (
-    <>
-      <div className="relative w-full min-h-[500px] md:h-[1000px] px-4 bg-white md:px-8">
-        {/* Background Image - Desktop */}
-        <picture className="absolute top-0 left-0 hidden w-full h-full overflow-hidden md:block">
-          <img
-            src={Images.Background}
-            alt="Background"
-            className="object-cover w-full h-full"
-          />
-        </picture>
+    <div className="relative w-full min-h-[500px] md:h-[800px] px-4 bg-white md:px-8 flex flex-col items-center md:items-start">
+      {/* Background Image - Desktop */}
+      <picture className="absolute top-0 left-0 hidden w-full h-full overflow-hidden md:block">
+        <img
+          src={Images.Background6}
+          alt="Background"
+          className="object-contain w-full h-full"
+        />
+      </picture>
 
-        {/* Content */}
-        <div className="relative z-10 flex flex-col items-start justify-start w-full h-full px-4 pt-10 pb-10 md:px-10 md:pt-0 md:pb-0">
-          <div className="flex items-center">
-            <img
-              src={Images.Logo}
-              alt="logo"
-              className="h-20 max-w-40 md:max-w-70 md:h-40"
-            />
-            <h1 className="ml-2 text-3xl text-gradient-color md:text-5xl">
-              | GR-1
-            </h1>
-          </div>
-          <p className="w-full px-2 text-sm text-black md:text-base md:px-5 md:w-150">
-            WorkClock enables employees to effortlessly create and track
-            overtime (OT) requests with transparency and efficiency. With an
-            intelligent management system, WorkClock helps monitor overtime
-            hours, streamline the approval process, and optimize work
-            productivity.
-          </p>
-          <Link
-            to="/login"
-            className="flex items-center gap-2 px-2 py-1 mt-5 ml-2 text-white md:gap-4 bg-brand-grandient md:px-4 md:py-2 rounded-xl md:ml-4"
-          >
-            <span className="text-sm md:text-lg">Explore Now</span>
-            <Icons.ArrowRight className="w-5 md:w-7 h-5 md:h-7 border border-white text-white rounded-3xl p-0.5 md:p-1" />
-          </Link>
-
-          {/* Background Image - Responsive (Dưới Explore Now) */}
-          <picture className="block w-full mt-4 md:hidden">
-            <img
-              src={Images.Background5}
-              alt="Background"
-              className="w-full h-auto rounded-lg shadow-brand-orange"
-            />
-          </picture>
+      {/* Content - Added ml-0 md:ml-8 to shift left on desktop */}
+      <div className="relative z-10 flex flex-col items-center md:items-start w-full max-w-4xl px-4 pt-10 pb-10 md:px-10 md:pt-0 md:pb-0 ml-0 md:ml-10">
+        <div className="flex items-center justify-center md:justify-start w-full">
+          <img src={Images.Logo} alt="logo" className="h-16 w-auto md:h-24" />
+          <h1 className="ml-2 text-3xl text-gradient-color md:text-5xl">
+            | GR-1
+          </h1>
         </div>
+        <p className="text-center md:text-left w-full text-sm text-black md:text-xl md:w-[80%] mt-4">
+          WorkClock enables employees to effortlessly create and track overtime
+          (OT) requests with transparency and efficiency. With an intelligent
+          management system, WorkClock helps monitor overtime hours, streamline
+          the approval process, and optimize work productivity.
+        </p>
+        <Link
+          to="/login"
+          className="flex items-center gap-2 px-4 py-2 mt-5 text-white bg-brand-grandient rounded-xl shadow-md md:px-6 md:py-3"
+        >
+          <span className="text-sm md:text-lg">Explore Now</span>
+          <Icons.ArrowRight className="w-5 h-5 md:w-7 md:h-7 border border-white text-white rounded-full p-1" />
+        </Link>
       </div>
-    </>
+
+      {/* Background Image - Mobile (Dưới Explore Now) */}
+      <picture className="block w-full mt-6 md:hidden px-4">
+        <img
+          src={Images.Background5}
+          alt="Background"
+          className="w-full h-auto rounded-lg shadow-lg"
+        />
+      </picture>
+    </div>
   );
 };
 
