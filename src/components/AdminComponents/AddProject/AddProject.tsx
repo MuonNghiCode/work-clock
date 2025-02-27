@@ -26,6 +26,7 @@ const AddProject: React.FC<AddProjectProps> = ({ onClose, onAdd }) => {
     enddate: "",
     status: "Processing",
     user: "",
+    department: "",
   });
 
   const [isOpenModalAddUser, setIsOpenModalAddUser] = useState(false);
@@ -125,6 +126,19 @@ const AddProject: React.FC<AddProjectProps> = ({ onClose, onAdd }) => {
               <option value="Pending">Pending</option>
               <option value="Complete">Complete</option>
             </select>
+          </div>
+        </div>
+
+        <div className="flex flex-row justify-between w-full space-x-4">
+          <div className="flex-1 space-y-2">
+            <label className="block text-gray-700 font-medium text-lg">Department</label>
+            <input
+              type="text"
+              value={projectData.department}
+              onChange={(e) => setProjectData({ ...projectData, department: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-base"
+              placeholder="Enter department"
+            />
           </div>
         </div>
       </div>

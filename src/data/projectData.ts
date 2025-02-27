@@ -6,6 +6,7 @@ export const projectData: Project[] = [
     code: "4669",
     date: "2025-06-04",
     enddate: "2025-07-04",
+    department: "QA",
     status: "Processing",
   },
   {
@@ -13,6 +14,7 @@ export const projectData: Project[] = [
     code: "4670",
     date: "2025-09-06",
     enddate: "2025-10-07",
+    department: "Frontend",
     status: "Pending",
   },
   {
@@ -20,6 +22,7 @@ export const projectData: Project[] = [
     code: "4671",
     date: "2025-05-27",
     enddate: "2025-07-27",
+    department: "Backend",
     status: "Processing",
   },
   {
@@ -27,6 +30,7 @@ export const projectData: Project[] = [
     code: "4672",
     date: "2025-12-11",
     enddate: "2026-02-17",
+    department: "QC",
     status: "Pending"
   },
   {
@@ -34,6 +38,7 @@ export const projectData: Project[] = [
     code: "4673",
     date: "2025-12-17",
     enddate: "2026-03-24",
+    department: "Business Analyst",
     status: "Complete",
   },
   {
@@ -41,6 +46,7 @@ export const projectData: Project[] = [
     code: "OR001",
     date: "2025-12-20",
     enddate: "2026-03-27",
+    department: "Product Owner",
     status: "Processing",
   },
   {
@@ -48,6 +54,7 @@ export const projectData: Project[] = [
     code: "AP001",
     date: "2025-12-25",
     enddate: "2026-04-15",
+    department: "Product Manager",
     status: "Complete",
   },
   {
@@ -55,6 +62,7 @@ export const projectData: Project[] = [
     code: "LM001",
     date: "2025-12-30",
     enddate: "2026-04-25",
+    department: "Project Manager",
     status: "Pending",
   },
   {
@@ -62,6 +70,7 @@ export const projectData: Project[] = [
     code: "KW001",
     date: "2026-01-05",
     enddate: "2026-05-07",
+    department: "Data Engineer",
     status: "Processing",
   },
   {
@@ -69,6 +78,7 @@ export const projectData: Project[] = [
     code: "BR001",
     date: "2026-01-10",
     enddate: "2026-05-17",
+    department: "Data Scientist",
     status: "Complete",
   },
   {
@@ -76,6 +86,7 @@ export const projectData: Project[] = [
     code: "PC001",
     date: "2026-01-15",
     enddate: "2026-04-26",
+    department: "Scrum Master",
     status: "Processing",
   },
   {
@@ -83,6 +94,7 @@ export const projectData: Project[] = [
     code: "PL001",
     date: "2026-01-20",
     enddate: "2026-07-20",
+    department: "Agile Coach",
     status: "Complete",
   },
   {
@@ -90,6 +102,7 @@ export const projectData: Project[] = [
     code: "FG001",
     date: "2026-01-25",
     enddate: "2026-06-14",
+    department: "Frontend",
     status: "Pending",
   },
   {
@@ -97,6 +110,7 @@ export const projectData: Project[] = [
     code: "PR001",
     date: "2026-01-30",
     enddate: "2026-05-23",
+    department: "QC",
     status: "Processing",
   },
   {
@@ -104,6 +118,7 @@ export const projectData: Project[] = [
     code: "CH001",
     date: "2026-02-05",
     enddate: "2026-05-18",
+    department: "QA",
     status: "Complete",
   },
   {
@@ -111,6 +126,7 @@ export const projectData: Project[] = [
     code: "LI001",
     date: "2026-02-10",
     enddate: "2026-06-19",
+    department: "Backend",
     status: "Pending",
   },
   {
@@ -118,6 +134,7 @@ export const projectData: Project[] = [
     code: "PP001",
     date: "2026-02-15",
     enddate: "2026-06-24",
+    department: "Backend",
     status: "Processing",
   },
   {
@@ -125,6 +142,7 @@ export const projectData: Project[] = [
     code: "GV001",
     date: "2026-02-20",
     enddate: "2026-06-04",
+    department: "Frontend",
     status: "Complete",
   },
   {
@@ -132,6 +150,7 @@ export const projectData: Project[] = [
     code: "DR001",
     date: "2026-02-25",
     enddate: "2026-09-06",
+    department: "Tester",
     status: "Pending",
   },
   {
@@ -139,6 +158,7 @@ export const projectData: Project[] = [
     code: "DU001",
     date: "2026-03-01",
     enddate: "2026-08-20",
+    department: "Tester",
     status: "Processing",
   }
 ]; 

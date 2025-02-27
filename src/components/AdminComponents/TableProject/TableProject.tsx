@@ -180,6 +180,7 @@ const TableProject: React.FC<DataProps> = ({
             </th>
             <th className="border-l-2 border-white px-4 py-2">Start Date</th>
             <th className="border-l-2 border-white px-4 py-2">End Date</th>
+            <th className="border-l-2 border-white px-4 py-2">Department</th>
             <th className="border-l-2 border-white px-4 py-2">Status</th>
             <th className="border-l-2 border-white px-4 py-2 !rounded-tr-2xl">
               Action
@@ -196,6 +197,7 @@ const TableProject: React.FC<DataProps> = ({
               <td className="px-4 py-2 rounded-l-2xl">{item.name}</td>
               <td className="px-4 py-2">{item.date}</td>
               <td className="px-4 py-2">{item.enddate}</td>
+              <td className="px-4 py-2">{item.department}</td>
               <td className="px-4 py-2">
                 {handleStatusChangeHTML(item.status)}
               </td>

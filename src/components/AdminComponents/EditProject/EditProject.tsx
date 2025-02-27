@@ -28,7 +28,8 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project, use
     date: project?.date ? convertDateFormat(project.date) : "",
     enddate: project?.enddate ? convertDateFormat(project.enddate) : "",
     status: project?.status || "Processing",
-    user: project?.user || ""
+    user: project?.user || "",
+    department: project?.department || ""
   });
 
   const handleSave = () => {
@@ -36,8 +37,8 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project, use
       console.error("onSave function is not defined");
       return;
     }
-    if (!projectData.name.trim() || !projectData.code.trim()) {
-      console.error("Project data is incomplete. Please provide a name and code.");
+    if (!projectData.name.trim() || !projectData.code.trim() || !projectData.department.trim()) {
+      console.error("Project data is incomplete. Please provide a name, code, and department.");
       return;
     }
     onSave({ ...projectData, date: formatDateToDDMMYYYY(projectData.date) });
@@ -120,6 +121,19 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project, use
               <option value="Pending">Pending</option>
               <option value="Complete">Complete</option>
             </select>
+          </div>
+        </div>
+
+        <div className="flex flex-row justify-between w-full space-x-4">
+          <div className="flex-1 space-y-2">
+            <label className="block text-gray-700 font-medium text-lg">Department</label>
+            <input
+              type="text"
+              value={projectData.department}
+              onChange={(e) => setProjectData({ ...projectData, department: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-base"
+              placeholder="Enter department"
+            />
           </div>
         </div>
       </div>
