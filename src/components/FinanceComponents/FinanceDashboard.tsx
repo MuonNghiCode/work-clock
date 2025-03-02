@@ -1,41 +1,110 @@
-import React from "react";
-import { Bar } from "react-chartjs-2";
-import { DataType } from "../../pages/FinancePage/FinancePage";
+import React, { useEffect, useState } from "react";
 
-interface FinanceDashboardProps {
-  data: DataType[];
-}
+const FinanceDashboard: React.FC = () => {
+  const [data, setData] = useState<any[]>([]); // Sử dụng any[] để bỏ kiểu DataType
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-const FinanceDashboard: React.FC<FinanceDashboardProps> = ({ data }) => {
-  // Calculate total hours
-  const totalHours = data.reduce((sum, item) => {
-    const hours = parseFloat(item.time.split(" ")[0]);
-    return sum + hours;
-  }, 0);
+  // Tạm thời bỏ gọi API
+  // const fetchData = async () => {
+  //   setLoading(true);
+  //   const requestPayload = {
+  //     searchCondition: {
+  //       keyword: "",
+  //       claim_status: "",
+  //       claim_start_date: "",
+  //       claim_end_date: "",
+  //       is_delete: false,
+  //     },
+  //     pageInfo: {
+  //       pageNum: 1,
+  //       pageSize: 10,
+  //     },
+  //   };
 
-  // Prepare data for the bar chart
-  const chartData = {
-    labels: data.map((item) => item.project),
-    datasets: [
+  //   try {
+  //     const response = await getFinanceInfo(requestPayload);
+  //     if (response.success) {
+  //       setData(response.data.pageData); // Lưu dữ liệu đã được định dạng
+  //     } else {
+  //       throw new Error(response.message || "Failed to fetch finance data");
+  //     }
+  //   } catch (err) {
+  //     console.error("Error fetching finance data:", err);
+  //     setError((err as Error).message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchData(); // Gọi fetchData chỉ một lần khi component mount
+  // }, []); // Đảm bảo mảng dependency rỗng
+
+  // Tạm thời sử dụng dữ liệu tĩnh
+  useEffect(() => {
+    setLoading(true);
+    // Dữ liệu tĩnh mẫu
+    const sampleData = [
       {
-        label: "Hours",
-        data: data.map((item) => parseFloat(item.time.split(" ")[0])),
-        backgroundColor: "rgba(255, 145, 77, 0.6)",
-        borderColor: "rgba(255, 145, 77, 1)",
-        borderWidth: 1,
+        _id: "67c0300421edc39d51e3d6ba",
+        project_info: {
+          project_name: "FMJFA Family Mart3",
+        },
+        employee_info: {
+          full_name: "danh235",
+        },
+        approval_info: {
+          user_name: "approval group1",
+        },
+        claim_start_date: "2025-02-27T10:48:36.083Z",
+        claim_end_date: "2025-02-27T14:48:36.083Z",
       },
-    ],
-  };
+    ];
+    setData(sampleData);
+    setLoading(false);
+  }, []);
+
+  const totalOrders = data.length;
+
+  if (error) return <div className="text-center text-red-500">{error}</div>;
 
   return (
-    <div className="finance-dashboard">
-      <h2 className="text-2xl font-bold mb-4">Finance Dashboard</h2>
-      <div className="mb-4">
-        <h3 className="text-xl">Total Hours: {totalHours}</h3>
-      </div>
-      <div className="chart-container">
-        <Bar data={chartData} />
-      </div>
+    <div className="rounded-xl p-6">
+      {loading ? (
+        <div className="text-center">Loading...</div>
+      ) : (
+        <>
+          <div className="p-4 bg-blue-100 rounded-lg text-center mb-6">
+            <h3 className="text-2xl font-bold text-blue-600">{totalOrders}</h3>
+            <p className="text-sm text-gray-700">Total Orders</p>
+          </div>
+          <div className="data-container bg-gray-100 p-4 rounded-lg">
+            {totalOrders > 0 ? (
+              <ul>
+                {data.map((item) => (
+                  <li key={item._id} className="mb-2">
+                    <strong>Project:</strong> {item.project_info.project_name},{" "}
+                    <strong>Claimer:</strong> {item.employee_info.full_name},{" "}
+                    <strong>Approver:</strong> {item.approval_info.user_name},{" "}
+                    <strong>Time:</strong>{" "}
+                    {`${new Date(
+                      item.claim_start_date
+                    ).toLocaleDateString()} - ${new Date(
+                      item.claim_end_date
+                    ).toLocaleDateString()}`}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="flex flex-col items-center text-gray-500">
+                <span className="text-4xl">📉</span>
+                <p>No orders recorded</p>
+              </div>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 };

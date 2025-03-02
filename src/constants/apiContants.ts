@@ -8,5 +8,8 @@ export const API_CONTANTS = {
     ROLES: {
       GET_ALL: "/roles/get-all",
     },
+    FINANCE: {
+      FINANCE_SEARCH: "/claims/finance-search",
+    }
   };
   

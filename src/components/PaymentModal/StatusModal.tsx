@@ -11,7 +11,6 @@ interface StatusModalProps {
 
 const StatusModal: React.FC<StatusModalProps> = ({ type, date, onClose, isModalVisible }) => {
   const isSuccess = type === "success";
-
   return (
     <Modal open={isModalVisible} footer={null} onCancel={onClose} centered>
       <div className="text-center">
