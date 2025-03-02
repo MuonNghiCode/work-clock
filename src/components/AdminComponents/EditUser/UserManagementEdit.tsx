@@ -28,7 +28,7 @@ const UserManagementEdit: React.FC<UserManagementEditProps> = ({
 
     // Email validation
     if (!editingUser.email) {
-      newErrors.email = "Email is required";
+      newErrors.email = "Email is required";  
     } else if (!editingUser.email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
       newErrors.email = "Invalid email format";
     }
@@ -152,18 +152,18 @@ const UserManagementEdit: React.FC<UserManagementEditProps> = ({
           <label className="block text-sm font-medium text-gray-600 mb-1">Account Status</label>
           <button
             type="button"
-            onClick={() => setEditingUser({ ...editingUser, isLocked: !editingUser.isLocked })}
+            onClick={() => setEditingUser({ ...editingUser, is_blocked: !editingUser.is_blocked })}
             disabled={editingUser.role_code === "A001"}
             className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 ${
               editingUser.role_code === "A001"
                 ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                : editingUser.isLocked
+                : editingUser.is_blocked
                 ? "bg-red-50 text-red-500 hover:bg-red-100"
                 : "bg-green-50 text-green-500 hover:bg-green-100"
             }`}
           >
             <Lock className="w-4 h-4" />
-            <span>{editingUser.isLocked ? "LOCKED" : "UNLOCK"}</span>
+            <span>{editingUser.is_blocked ? "LOCKED" : "UNLOCK"}</span>
           </button>
         </div>
 
