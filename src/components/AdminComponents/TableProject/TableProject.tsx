@@ -1,25 +1,27 @@
-import React, { useState } from "react";
-import { Button, Pagination, Tag, Input } from "antd";
+import React, { useState} from "react";
+import { Button, Pagination, Tag, Input, Modal } from "antd";
 import { Project } from "../../../types/Project";
 import { GetProps } from "antd/lib/_util/type";
 import ConfirmModal from "../../ConfirmModal/ConfirmModal";
 import Icons from "../../icon";
-import EditProject from "../EditProject/EditProject";
-import Modal from "../../Modal/Modal";
 import ProjectDetail from "../../ProjectDetail/ProjectDetail";
-//import axiosInstance from "../../../config/axiosConfig";
+import EditProject from "../EditProject/EditProject";
 
 type SearchProps = GetProps<typeof Input.Search>;
 const { Search } = Input;
 
-interface DataProps {
+interface TableProjectProps {
   data: Project[];
+  totalItems: number;
+  loading: boolean;
   onEditProject: (editedProject: Project) => void;
   onDeleteProject: (projectId: string | number) => void;
 }
 
-const TableProject: React.FC<DataProps> = ({
+const TableProject: React.FC<TableProjectProps> = ({
   data,
+  totalItems,
+  loading,
   onEditProject,
   onDeleteProject,
 }) => {
@@ -32,55 +34,6 @@ const TableProject: React.FC<DataProps> = ({
   const [message, setMessage] = useState<string>("");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-
-  // const [loading, setLoading] = useState(false);
-  // const [totalItems, setTotalItems] = useState(0);
-  // const [fetchData, setFetchData] = useState<DataProps[]>([]);
-
-  // const fetchProjects = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const response = await axiosInstance.post('projects/search', {
-
-  //       "searchCondition": {
-  //         "keyword": "",
-  //         "project_start_date": "",
-  //         "project_end_date": "",
-  //         "is_delete": false,
-  //         "user_id": ""
-  //       },
-  //       "pageInfo": {
-  //         "pageNum": 1,
-  //         "pageSize": 10
-  //       }
-  //     });
-
-  //     if (response.data.success) {
-  //       const projects = response.data.data.pageData.map((item: any) => ({
-  //         key: item._id,
-  //         project: item.project_name,
-  //         startdate: new Date(item.project_start_date).toLocaleDateString('vi-VN', {
-  //           timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-  //         }),
-  //         enddate: new Date(item.project_end_date).toLocaleDateString('vi-VN', {
-  //           timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-  //         }),
-  //         department: item.project_department,
-  //         status: item.project_status || 'New'
-  //       }));
-  //       setFetchData(projects);
-  //       setTotalItems(response.data.data.pageInfo.totalItems);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching projects:', error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchProjects();
-  // }, [currentPage, pageSize, statusFilter]);
 
   const handlePageChange = (page: number, pageSize?: number) => {
     setCurrentPage(page);
@@ -126,6 +79,7 @@ const TableProject: React.FC<DataProps> = ({
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = startIndex + pageSize;
   const currentData = filteredData.slice(startIndex, endIndex);
+  console.log('data', data)
 
   const statusTags = ["All", "Processing", "Pending", "Complete"];
 
@@ -155,8 +109,8 @@ const TableProject: React.FC<DataProps> = ({
 
   const handleConfirmDelete = () => {
     console.log("Confirming delete for project:", selectedProject);
-    if (selectedProject?.id) {
-      onDeleteProject(selectedProject.id);
+    if (selectedProject?.key) {
+      onDeleteProject(selectedProject.key);
       setShowConfirmModal(false);
       setSelectedProject(null);
     }
@@ -181,7 +135,6 @@ const TableProject: React.FC<DataProps> = ({
         return <span>{status}</span>;
     }
   };
-
 
   const users = ["dngoc", "haaus", "ntdn"];
   return (
@@ -222,6 +175,8 @@ const TableProject: React.FC<DataProps> = ({
         </div>
       </div>
 
+      {loading && <div>Loading...</div>}
+
       <table className="min-w-full !border-separate border-spacing-y-2.5 text-black border-0">
         <thead className="bg-brand-grandient h-[70px] text-lg text-white !rounded-t-lg">
           <tr className="bg-gradient from-[FEB78A] to-[FF914D]">
@@ -238,10 +193,11 @@ const TableProject: React.FC<DataProps> = ({
           </tr>
         </thead>
         <tbody className="w-full">
-          {currentData.map((item, index) => (
+          {/* {console.log(fetchData)} */}
+          {data.map((item) => (
             <tr
-              onClick={() => handleShowProjectDetail(item)}
-              key={index}
+              // onClick={() => handleShowProjectDetail()}
+              key={item.key}
               className="h-[70px] bg-white overflow-hidden text-center border-collapse hover:shadow-brand-orange !rounded-2xl cursor-pointer"
             >
               <td className="px-4 py-2 rounded-l-2xl">{item.name}</td>
@@ -307,7 +263,7 @@ const TableProject: React.FC<DataProps> = ({
           className="!font-squada flex justify-end"
           current={currentPage}
           pageSize={pageSize}
-          total={filteredData.length}
+          total={totalItems}
           onChange={handlePageChange}
           showSizeChanger
           onShowSizeChange={handlePageChange}
@@ -326,7 +282,7 @@ const TableProject: React.FC<DataProps> = ({
         message={message}
         onConfirm={handleConfirmDelete}
       />
-      <Modal isOpen={isEditModalOpen} onClose={handleClose}>
+      <Modal open={isEditModalOpen} onClose={handleClose}>
         {selectedProject && (
           <EditProject
             project={selectedProject}

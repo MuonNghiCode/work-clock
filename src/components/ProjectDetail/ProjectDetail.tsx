@@ -34,7 +34,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
               <div className="flex-1 space-y-2">
                 <label className="block text-gray-700 font-medium text-lg">Project Code</label>
                 <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-base">
-                  {Project.code}
+                  {Project.key}
                 </div>
               </div>
             </div>
@@ -67,7 +67,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
               <div className="flex-1 space-y-2">
                 <label className="block text-gray-700 font-medium text-lg">User</label>
                 <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-base">
-                  {Project.user || "dngoc"}
+                  {Project.name || "dngoc"}
                 </div>
               </div>
             </div>

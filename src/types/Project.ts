@@ -1,10 +1,10 @@
 export interface Project {
-  id?: string | number;
-  name: string;
-  code: string;
-  date: string;
-  enddate: string;
-  department: string;
-  status: "Processing" | "Pending" | "Complete";
-  user?: string;
+date: string;
+department: string;
+enddate: string;
+key: string;
+name: string;
+project: string;
+startdate: string;
+status:string;
 } 

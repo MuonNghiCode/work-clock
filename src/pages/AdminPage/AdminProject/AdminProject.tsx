@@ -1,23 +1,72 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TableProject from "../../../components/AdminComponents/TableProject/TableProject";
 import AddProject from "../../../components/AdminComponents/AddProject/AddProject";
 import Modal from "../../../components/Modal/Modal";
 import { Project } from "../../../types/Project";
-import { projectData } from "../../../data/projectData";
+import { getAllProject } from "../../../services/projectService"; // Import API
+import { PageInfo, SearchCondition } from "../../../types/ProjectTypes";
+import { ProjectItem } from "../../../types/ProjectTypes";
+
 
 const AdminProject: React.FC = () => {
-  // Thêm id cho mỗi project khi khởi tạo
-  const initialProjects = projectData.map((project, index) => ({
-    ...project,
-    id: index + 1
-  }));
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+  const [statusFilter, setStatusFilter] = useState<string | null>(null);
 
-  const [projects, setProjects] = useState<Project[]>(initialProjects);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [totalItems, setTotalItems] = useState(0);
+  const [loading, setLoading] = useState(false); // Thêm state loading
+
+  const fetchProjects = async () => {
+    setLoading(true); // Bắt đầu loading
+    try {
+      const searchCondition: SearchCondition = {
+        keyword: "",
+        project_start_date: "",
+        project_end_date: "",
+        is_delete: false,
+        user_id: "",
+      };
+
+      const pageInfo: PageInfo = {
+        pageNum: currentPage,
+        pageSize: pageSize,
+        totalItems: 0, // Default value
+        totalPages: 0, // Default value
+      };
+
+      const response = await getAllProject(searchCondition, pageInfo);
+      if (response.success) {
+        const formattedProjects: Project[] = response.data.pageData.map((item: ProjectItem) => ({
+          key: item._id, // Assuming _id is the unique identifier
+          name: item.project_name,
+          date: item.project_start_date, // Ensure this matches the Project type
+          enddate: item.project_end_date,
+          department: item.project_department,
+          status: item.project_status || 'New',
+          project: item.project_name,
+          startdate: item.project_start_date,
+          // Add any other required properties here
+        }));
+        setProjects(formattedProjects);
+        setTotalItems(response.data.pageInfo.totalItems);
+      }
+    } catch (error) {
+      console.error("Error fetching projects:", error);
+    } finally {
+      setLoading(false); // Kết thúc loading
+    }
+  };
+
+  useEffect(() => {
+    fetchProjects();
+  }, [currentPage, pageSize]);
+
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const handleEditProject = (editedProject: Project) => {
     const newProjects = projects.map(project =>
-      project.id === editedProject.id ? editedProject : project
+      project.key === editedProject.key ? editedProject : project
     );
     setProjects(newProjects);
   };
@@ -27,7 +76,7 @@ const AdminProject: React.FC = () => {
     // Sử dụng callback để đảm bảo có state mới nhất
     setProjects(prevProjects => {
       console.log("Previous projects:", prevProjects);
-      const newProjects = prevProjects.filter(project => project.id !== projectId);
+      const newProjects = prevProjects.filter(project => project.key !== projectId);
       console.log("New projects:", newProjects);
       return newProjects;
     });
@@ -42,10 +91,11 @@ const AdminProject: React.FC = () => {
     setProjects([...projects, projectWithId]);
     setIsAddModalOpen(false);
   };
+
   return (
     <>
-      <div className="p-6 w-full rounded-lg ">
-        <div className="w-full  flex-col">
+      <div className="p-6 w-full rounded-lg">
+        <div className="w-full flex-col">
           <div className="flex justify-between items-center py-9">
             <h1 className="text-5xl">Project Management</h1>
             <button
@@ -59,6 +109,8 @@ const AdminProject: React.FC = () => {
 
           <TableProject
             data={projects}
+            totalItems={totalItems}
+            loading={loading}
             onEditProject={handleEditProject}
             onDeleteProject={handleDeleteProject}
           />

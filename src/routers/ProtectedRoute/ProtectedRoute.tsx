@@ -1,7 +1,8 @@
 import React from "react";
-import { checkRole, isAuthenticated } from "../../services/authService";
+
 import { Navigate } from "react-router";
 import { toast } from "react-toastify";
+import { checkRole, isAuthenticated } from "../../utils/userUtils";
 
 interface ProtectedRouteProps {
   requireAdmin?: boolean;

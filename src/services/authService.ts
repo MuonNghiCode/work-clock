@@ -1,111 +1,48 @@
-import axiosInstance from '../config/axiosConfig';
+import { get, post, put } from "./apiService";
 
-export const login = async (email: string, password: string) => {
-  try {
-    const response = await axiosInstance.post('/auth', { email, password });
-    if (response.data.success) {
-      localStorage.setItem('token', response.data.data.token);
-    }
-    return response.data;
-  } catch (error) {
-    console.error('Error logging in:', error);
-    throw error;
-  }
-};
+import { ResponseModel } from "../models/ResponseModel";
+import { API_CONTANTS } from "../constants/apiContants";
 
-export const getUserInfobyToken = async () => {
-  try {
-    const response = await axiosInstance.get('/auth');
-    console.log('user', response.data.data);
-    if (response.data.success) {
-      localStorage.setItem('user', JSON.stringify(response.data.data));
-      localStorage.setItem('role', response.data.data.role_code)
-    }
-    return response.data;
-  } catch (error) {
-    console.error('Error getting user info:', error);
-    throw error;
-  }
+interface AuthResponse {
+  token: string;
 }
 
-export const getAllRoles = async (keyword?: string) => {
-  try {
-    const response = await axiosInstance.get('/roles/get-all', {
-      params: { keyword },
-    });
-    localStorage.setItem('role', JSON.stringify(response.data.data[0]))
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching roles:', error);
-    throw error;
-  }
-};
-
-export const logoutApi = async () => {
-  try {
-    await axiosInstance.post(`/auth/logout`);
-  } catch (error) {
-    console.error('Error Logout', error);
-    throw error;
-  }
+interface UserInfo {
+  id: string;
+  email: string;
+  role_code: string;
 }
 
+interface Role {
+  id: string;
+  name: string;
+}
 
-export const isAuthenticated = (): boolean => {
-  return !!localStorage.getItem("token");
+export const login = async (email: string, password: string): Promise<ResponseModel<AuthResponse>> => {
+  const response = await post<AuthResponse>(API_CONTANTS.AUTH.LOGIN, { email, password });
+  if (response.success) {
+    localStorage.setItem("token", response.data.token);
+  }
+  return response;
 };
 
-export const getRole = (): string | null => {
-  return localStorage.getItem("role");
+export const getUserInfobyToken = async (): Promise<ResponseModel<UserInfo>> => {
+  const response = await get<UserInfo>(API_CONTANTS.AUTH.USER_INFO);
+  if (response.success) {
+    localStorage.setItem("user", JSON.stringify(response.data));
+  }
+  return response;
 };
 
-export const checkRole = (role: string): boolean => {
-  return getRole() === role;
+export const getAllRoles = async (keyword?: string): Promise<ResponseModel<Role[]>> => {
+  const response = await get<Role[]>(API_CONTANTS.ROLES.GET_ALL, { keyword });
+  return response;
 };
 
-export const hasAnyRole = (...roles: string[]): boolean => {
-  return roles.includes(getRole() || "");
+export const logoutApi = async (): Promise<void> => {
+  await post(API_CONTANTS.AUTH.LOGOUT, {});
 };
 
-export const logout = () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("role");
-  localStorage.removeItem("user");
-  logoutApi();
-  window.location.href = "/";
+export const forgotPassword = async (email: string): Promise<ResponseModel<null>> => {
+  return await put<null>(API_CONTANTS.AUTH.FORGOT_PASSWORD, { email });
 };
-// ========
-//     return !!localStorage.getItem("token");
-//   };
-  
-//   export const getRole = (): string | null => {
-//     return localStorage.getItem("role");
-//   };
-  
-//   export const checkRole = (role: string): boolean => {
-//     return getRole() === role;
-//   };
-  
-//   export const hasAnyRole = (...roles: string[]): boolean => {
-//     return roles.includes(getRole() || "");
-//   };
-  
-//   export const logout = () => {
-//     localStorage.removeItem("token");
-//     localStorage.removeItem("role");
-//     localStorage.removeItem("user");
-    
-//     sessionStorage.setItem("toastMessage", JSON.stringify({
-//       type: "success",
-//       message: "Logout Successfully!",
-//     }));
-  
-//     console.log("Saved toastMessage:", sessionStorage.getItem("toastMessage"));
-
-//     setTimeout(() => {
-//       window.location.href = "/";
-//     }, 100);
-
-//   };
-// >>>>>>>> aa48ac195e7e051e5c8afda3f3e35058650bdafc:src/services/authService.ts
-// >>>>>>> aa48ac195e7e051e5c8afda3f3e35058650bdafc

@@ -23,11 +23,11 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project, use
 
   const [projectData, setProjectData] = useState({
     name: project?.name || "",
-    code: project?.code || "",
+    code: project?.key || "",
     date: project?.date ? convertDateFormat(project.date) : "",
     enddate: project?.enddate ? convertDateFormat(project.enddate) : "",
     status: project?.status || "Processing",
-    user: project?.user || "",
+    user: project?.project || "",
     department: project?.department || ""
   });
 
@@ -40,7 +40,13 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project, use
       console.error("Project data is incomplete. Please provide a name, code, and department.");
       return;
     }
-    onSave({ ...projectData, date: formatDateToDDMMYYYY(projectData.date) });
+    onSave({
+      ...projectData,
+      date: formatDateToDDMMYYYY(projectData.date),
+      key: project?.key || "",
+      project: project?.name || "",
+      startdate: project?.date ? convertDateFormat(project?.date) : "",
+    });
     onClose?.();
   };
 
