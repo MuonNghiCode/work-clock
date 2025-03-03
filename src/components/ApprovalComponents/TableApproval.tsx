@@ -7,7 +7,6 @@ import ConfirmModal from "../ConfirmModal/ConfirmModal";
 import Icons from "../icon";
 import { searchApprovalClaims } from "../../services/approvalService";
 import { toast } from "react-toastify";
-import { useLoadingStore } from "../../config/zustand";
 import { debounce } from 'lodash';
 
 type SearchProps = GetProps<typeof Input.Search>;
