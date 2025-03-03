@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button, Pagination, Tag, Input } from "antd";
 import { ClaimRequest } from "../../types/ClaimRequest";
 import { GetProps } from "antd/lib/_util/type";
@@ -6,6 +6,8 @@ import ClaimRequestDetail from "./ClaimRequestDetail";
 import ConfirmModal from "../ConfirmModal/ConfirmModal";
 import Icons from "../icon";
 import { searchApprovalClaims } from "../../services/approvalService";
+import { toast } from "react-toastify";
+import { useLoadingStore } from "../../config/zustand";
 
 type SearchProps = GetProps<typeof Input.Search>;
 const { Search } = Input;
@@ -14,44 +16,46 @@ const TableApproval: React.FC = () => {
   const [approvalData, setApprovalData] = useState<ClaimRequest[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [statusFilter, setStatusFilter] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState<string | null>("");
   const [showApprovalDetail, setShowApprovalDetail] = useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
 
+  const { isLoading } = useLoadingStore();
   const prevPageRef = useRef(currentPage);
   const prevPageSizeRef = useRef(pageSize);
   const prevStatusFilterRef = useRef(statusFilter);
-  useLayoutEffect(() => {
-    const fetchApprovalData = async () => {
-      const request = {
-        searchCondition: {
-          keyword: "",
-          claim_status: statusFilter || "",
-          claim_start_date: "",
-          claim_end_date: "",
-          is_delete: false,
-        },
-        pageInfo: {
-          pageNum: currentPage,
-          pageSize: pageSize,
-        },
-      };
 
-      try {
-        const response = await searchApprovalClaims(request);
-        if (response) {
-          console.log("Approval Data success");
-          setApprovalData(response.pageData);
-          console.log("Approval Data:", response.pageData);
-        } else {
-          console.error("Failed to fetch claims");
-        }
-      } catch (error) {
-        console.error("Error:", error);
-      }
+  const fetchApprovalData = async () => {
+    const request = {
+      searchCondition: {
+        keyword: "",
+        claim_status: statusFilter || "",
+        claim_start_date: "",
+        claim_end_date: "",
+        is_delete: false,
+      },
+      pageInfo: {
+        pageNum: currentPage,
+        pageSize: pageSize,
+      },
     };
+    try {
+      const response = await searchApprovalClaims(request);
+      if (response.success) {
+        setApprovalData(response.data.pageData);
+      } else {
+        toast.error(response.message);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+  useEffect(() => {
+    fetchApprovalData();
+  }, []);
 
+  useEffect(() => {
     if (
       prevPageRef.current !== currentPage ||
       prevPageSizeRef.current !== pageSize ||
@@ -135,6 +139,7 @@ const TableApproval: React.FC = () => {
 
   return (
     <>
+      {isLoading && <div>Loading...</div>}
       <div className="flex justify-between items-center mb-4">
         <div>
           {statusTags.map((status) => (

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { API_CONTANTS } from '../constants/apiContants';
+// import { API_CONTANTS } from '../constants/apiContants';
 
 interface SidebarState {
   isSidebarOpen: boolean;
@@ -22,10 +22,9 @@ type LoadingState = {
   removeRequest: (url: string) => void;
   skipUrls: string[];
 };
-
 export const useLoadingStore = create<LoadingState>((set) => ({
   isLoading: false,
-  skipUrls: [`${API_CONTANTS.APPROVAL.GET_CLAIM_APPROVAL}`, `${API_CONTANTS.AUTH.LOGIN}`], // Add any API endpoints you want to exclude from loading
+  skipUrls: [], // Add any API endpoints you want to exclude from loading
   addRequest: (url) =>
     set((state) => {
       if (state.skipUrls.includes(url)) return state;
