@@ -12,7 +12,7 @@ const Carousel: React.FC = () => {
           <img
             src={Images.Background}
             alt="Background"
-            className="object-cover w-full h-full"
+            className="object-contain w-full h-full"
           />
         </picture>
 
