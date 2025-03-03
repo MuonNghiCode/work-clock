@@ -19,6 +19,8 @@ export interface ClaimRequest {
   staff_id: string;
   staff_name: string;
   staff_role: string | null;
+  remark?: string;
+  totalNoOfHours?: number;
 }
 export const generateFakeData = (): ClaimRequest[] => {
   const projects = ["Project A", "Project B", "Project C"];
