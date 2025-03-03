@@ -13,5 +13,8 @@ export const API_CONTANTS = {
   },
   FINANCE: {
       FINANCE_SEARCH: "/claims/finance-search",
-    }
+  },
+  CLAIMS:{
+    CLAIMS_SEARCH: "/claims/search",
+  }
 };

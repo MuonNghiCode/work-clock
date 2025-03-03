@@ -6,7 +6,7 @@ import { EmployeeInfo } from "../types/Employee";
 import { ProjectInfo } from "../types/Project";
 
 
-interface FinanceData {
+interface ClaimInfo {
   _id: string;
   staff_id: string;
   staff_name: string;
@@ -25,8 +25,9 @@ interface FinanceData {
   updated_at: string;
 }
 
-interface FinanceResponse {
-  pageData: FinanceData[];
+
+interface ClaimsResponse {
+  pageData: ClaimInfo[];
   pageInfo: {
     pageNum: number;
     pageSize: number;
@@ -35,7 +36,7 @@ interface FinanceResponse {
   };
 }
 
-interface FinanceRequest {
+interface ClaimsRequest {
   searchCondition: {
     keyword: string;
     claim_status: string;
@@ -49,7 +50,8 @@ interface FinanceRequest {
   };
 }
 
-export const getFinanceData = async (request: FinanceRequest): Promise<ResponseModel<FinanceResponse>> => {
-  const response = await post<FinanceResponse>(API_CONTANTS.FINANCE.FINANCE_SEARCH, request);
+// Hàm để gọi API lấy dữ liệu yêu cầu
+export const getClaimsData = async (request: ClaimsRequest): Promise<ResponseModel<ClaimsResponse>> => {
+  const response = await post<ClaimsResponse>(API_CONTANTS.CLAIMS.CLAIMS_SEARCH, request);
   return response;
 }

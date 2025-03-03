@@ -11,6 +11,7 @@ import { saveAs } from "file-saver";
 import { Pagination } from "antd";
 import StatusModal from "../../components/PaymentModal/StatusModal";
 import { getFinanceData } from "../../services/financeService";
+import { getUserInfobyToken } from "../../services/authService";
 
 // Define the expected type for the API response items
 interface FinanceData {
@@ -65,6 +66,8 @@ const FinancePage: React.FC = () => {
   const [pageSize, setPageSize] = useState(10);
   const [isStatusModalVisible, setIsStatusModalVisible] = useState(false);
   const [status, setStatus] = useState<"success" | "error" | null>(null);
+  const [originalData, setOriginalData] = useState<FinanceData[]>([]);
+  const [accountantEmail, setAccountantEmail] = useState<string>("");
 
   useEffect(() => {
     console.log("Using API Data:", useApiData);
@@ -90,6 +93,7 @@ const FinancePage: React.FC = () => {
           if (response.success && response.data?.pageData) {
             console.log("Page Data:", response.data.pageData);
             setDataFinance(response.data.pageData);
+            setOriginalData(response.data.pageData);
           } else {
             console.error("Invalid data or response:", response);
           }
@@ -133,6 +137,17 @@ const FinancePage: React.FC = () => {
     fetchData();
   }, [currentPage, pageSize, searchQuery, useApiData]);
 
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      const response = await getUserInfobyToken();
+      if (response.success && response.data) {
+        setAccountantEmail(response.data.email);
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
+
   const toggleDataSource = () => {
     setUseApiData((prev) => !prev);
     console.log("Toggled useApiData to:", !useApiData);
@@ -158,7 +173,8 @@ const FinancePage: React.FC = () => {
         key: "selection",
       },
     ]);
-    setDataFinance([]);
+    // Khôi phục lại dữ liệu ban đầu
+    setDataFinance(originalData);
   };
 
   const handlePay = (item: FinanceData) => {
@@ -175,22 +191,30 @@ const FinancePage: React.FC = () => {
     }
   };
 
-  const handleDownload = (item: FinanceData) => {
-    const dataToDownload = [
-      {
-        Project: item.project_info.project_name,
-        Claimer: item.staff_name,
-        Time: item.created_at,
-        DateCreate: item.created_at,
-      },
-    ];
+  const handleDownload = (items?: FinanceData[]) => {
+    const dataToDownload = items
+      ? items.map((item) => ({
+          Project: item.project_info.project_name,
+          Claimer: item.staff_name,
+          Approver: item.approval_info.user_name,
+          Time: calculateHours(item.claim_start_date, item.claim_end_date),
+          DateCreate: item.created_at,
+        }))
+      : dataFinance.map((item) => ({
+          Project: item.project_info.project_name,
+          Claimer: item.staff_name,
+          Approver: item.approval_info.user_name,
+          Time: calculateHours(item.claim_start_date, item.claim_end_date),
+          DateCreate: item.created_at,
+        }));
 
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("DownloadData");
+    const worksheet = workbook.addWorksheet("FinanceData");
 
     worksheet.columns = [
       { header: "Project", key: "Project" },
       { header: "Claimer", key: "Claimer" },
+      { header: "Approver", key: "Approver" },
       { header: "Time", key: "Time" },
       { header: "Date Create", key: "DateCreate" },
     ];
@@ -201,7 +225,7 @@ const FinancePage: React.FC = () => {
       const blob = new Blob([buffer], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
-      saveAs(blob, `${item.project_info.project_name}_Data.xlsx`);
+      saveAs(blob, "Finance_Data.xlsx");
     });
   };
 
@@ -257,7 +281,25 @@ const FinancePage: React.FC = () => {
               <div className="absolute top-full mt-2 bg-white shadow-lg p-2 rounded-md z-50 right-0 sm:right-0 sm:left-auto">
                 <DateRangePicker
                   ranges={dateRange}
-                  onChange={(ranges) => setDateRange([ranges.selection])}
+                  onChange={(ranges) => {
+                    setDateRange([ranges.selection]);
+                    if (
+                      ranges.selection.startDate !== undefined &&
+                      ranges.selection.endDate !== undefined
+                    ) {
+                      const filteredData = originalData.filter((item) => {
+                        const startDate = parseISO(item.claim_start_date);
+                        const endDate = parseISO(item.claim_end_date);
+                        return (
+                          ranges.selection.startDate !== undefined &&
+                          ranges.selection.endDate !== undefined &&
+                          startDate >= ranges.selection.startDate &&
+                          endDate <= ranges.selection.endDate
+                        );
+                      });
+                      setDataFinance(filteredData);
+                    }
+                  }}
                 />
               </div>
             )}
@@ -269,7 +311,7 @@ const FinancePage: React.FC = () => {
             </button>
           </div>
           <button
-            onClick={() => console.log("Exporting...")} // Placeholder for export function
+            onClick={() => handleDownload()}
             className="flex items-center justify-center bg-[#ff8a65] rounded-full gap-2 w-25 h-10 cursor-pointer"
           >
             <span className="hidden sm:inline">Export</span>
@@ -283,6 +325,7 @@ const FinancePage: React.FC = () => {
         <thead className="bg-brand-gradient h-[70px] text-lg text-white !rounded-t-lg">
           <tr className="bg-[linear-gradient(45deg,#FEB78A,#FF914D)]">
             <th className="border-white px-4 py-2 !rounded-tl-2xl">Project</th>
+            <th className="border-l-2 border-white px-4 py-2">Claim Name</th>
             <th className="border-l-2 border-white px-4 py-2">Claimer</th>
             <th className="border-l-2 border-white px-4 py-2">Approver</th>
             <th className="border-l-2 border-white px-4 py-2">Time</th>
@@ -301,12 +344,15 @@ const FinancePage: React.FC = () => {
               <td className="px-4 py-2 rounded-l-2xl">
                 {item.project_info.project_name}
               </td>
+              <td className="px-4 py-2">{item.claim_name}</td>
               <td className="px-4 py-2">{item.staff_name}</td>
               <td className="px-4 py-2">{item.approval_info.user_name}</td>
               <td className="px-4 py-2">
-                {calculateHours(item.claim_start_date, item.claim_end_date)}
+                {calculateHours(item.claim_start_date, item.claim_end_date)}h
               </td>
-              <td className="px-4 py-2">{item.created_at}</td>
+              <td className="px-4 py-2">
+                {format(new Date(item.created_at), "dd/MM/yyyy")}
+              </td>
               <td className="action px-4 py-4 rounded-r-lg flex justify-center space-x-1">
                 <button
                   className="flex items-center justify-center h-10 w-28 bg-green-500 text-white rounded-lg shadow-md cursor-pointer"
@@ -317,7 +363,7 @@ const FinancePage: React.FC = () => {
                 </button>
                 <button
                   className="flex items-center justify-center h-10 w-28 bg-orange-500 text-white rounded-lg shadow-md cursor-pointer"
-                  onClick={() => handleDownload(item)}
+                  onClick={() => handleDownload([item])}
                 >
                   <FaDownload className="mr-1" />
                   <span className="hidden sm:inline">Download</span>
@@ -345,6 +391,8 @@ const FinancePage: React.FC = () => {
           onConfirm={handleConfirmPayment}
           onStateChange={handleStatusChange}
           claimer={selectedItem.staff_name}
+          email={selectedItem.staff_email}
+          accountantEmail={accountantEmail}
           date={new Date(selectedItem.created_at)}
         />
       )}

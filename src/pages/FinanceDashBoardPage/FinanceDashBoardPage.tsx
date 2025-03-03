@@ -3,9 +3,9 @@ import FinanceDashboard from "../../components/FinanceComponents/FinanceDashboar
 
 const FinanceDashboardPage: React.FC = () => {
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-4">Finance Dashboard</h1>
-      <div className="lg:w-10/12 w-full mx-auto">
+    <div className="mx-auto p-1">
+      <h1 className="text-[40px] font-bold mb-2">Finance Dashboard</h1>
+      <div className="w-full mx-auto">
         <FinanceDashboard />
       </div>
     </div>
