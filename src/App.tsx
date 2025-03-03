@@ -179,13 +179,8 @@ const App: React.FC = () => {
 
   return (
     <UserProvider>
-      {loading || isLoading ? (
-        <LoadingScreen />
-      ) : (
-        <RouterProvider router={router} />
-      )}
-
-      {/* {loading ? <LoadingScreen /> : <RouterProvider router={router} />} */}
+      {isLoading && <LoadingScreen />}
+      {loading ? <LoadingScreen /> : <RouterProvider router={router} />}
       <ToastContainer />
     </UserProvider>
   );
