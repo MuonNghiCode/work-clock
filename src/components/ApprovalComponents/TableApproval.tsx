@@ -97,11 +97,9 @@ const TableApproval: React.FC = () => {
   const handleSearch = useCallback(
     debounce((value: string) => {
       setSearchTerm(value);
-    }, 500), // Set debounce delay to 500ms
+    }, 3000),
     []
   );
-
-  // Ant Design Search component handler
   const onSearch: SearchProps['onSearch'] = (value) => {
     handleSearch(value);
   };
