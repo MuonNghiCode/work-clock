@@ -10,7 +10,7 @@ import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { Pagination } from "antd";
 import StatusModal from "../../components/PaymentModal/StatusModal";
-import { getFinanceInfo } from "../../services/financeService";
+import { getFinanceData } from "../../services/financeService";
 
 // Define the expected type for the API response items
 interface FinanceData {
@@ -49,7 +49,7 @@ const calculateHours = (startDate: string, endDate: string): number => {
 
 const FinancePage: React.FC = () => {
   const [dataFinance, setDataFinance] = useState<FinanceData[]>([]);
-  const [useApiData, setUseApiData] = useState(false);
+  const [useApiData, setUseApiData] = useState(true);
   const [dateRange, setDateRange] = useState<Range[]>([
     {
       startDate: undefined,
@@ -85,7 +85,7 @@ const FinancePage: React.FC = () => {
         };
 
         try {
-          const response = await getFinanceInfo(request);
+          const response = await getFinanceData(request);
           console.log("API Response:", response);
           if (response.success && response.data?.pageData) {
             console.log("Page Data:", response.data.pageData);

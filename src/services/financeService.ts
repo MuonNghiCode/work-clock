@@ -1,7 +1,6 @@
 import { post } from "./apiService";
 import { ResponseModel } from "../models/ResponseModel";
 import { API_CONTANTS } from "../constants/apiContants";
-import { toast } from "react-toastify";
 
 interface EmployeeInfo {
   _id: string;
@@ -98,11 +97,7 @@ interface FinanceRequest {
   };
 }
 
-export const getFinanceInfo = async (
-  request: FinanceRequest
-): Promise<ResponseModel<FinanceResponse>> => {
-  return await post<FinanceResponse>(
-    API_CONTANTS.FINANCE.FINANCE_SEARCH,
-    request
-  );
-};
+export const getFinanceData = async (request: FinanceRequest): Promise<ResponseModel<FinanceResponse>> => {
+  const response = await post<FinanceResponse>(API_CONTANTS.FINANCE.FINANCE_SEARCH, request);
+  return response;
+}
