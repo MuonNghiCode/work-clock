@@ -11,22 +11,22 @@ interface EditProjectProps {
 const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project, users }) => {
   const convertDateFormat = (dateStr: string) => {
     if (!dateStr) return "";
-    const [day, month, year] = dateStr.split('/');
+    const [year, month, day] = dateStr.split('-');
     return `${year}-${month}-${day}`;
   };
 
   const formatDateToDDMMYYYY = (dateStr: string) => {
     if (!dateStr) return "";
     const [year, month, day] = dateStr.split('-');
-    return `${day}/${month}/${year}`;
+    return `${day}-${month}${year}`;
   };
 
   const [projectData, setProjectData] = useState({
     name: project?.name || "",
     code: project?.key || "",
-    date: project?.date ? convertDateFormat(project.date) : "",
-    enddate: project?.enddate ? convertDateFormat(project.enddate) : "",
-    status: project?.status || "Processing",
+    date: project?.date ? project.date : "",
+    enddate: project?.enddate ? project.enddate : "",
+    status: project?.status || "New",
     user: project?.project || "",
     department: project?.department || ""
   });

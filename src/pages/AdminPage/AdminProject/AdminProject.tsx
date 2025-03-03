@@ -31,8 +31,8 @@ const AdminProject: React.FC = () => {
       const pageInfo: PageInfo = {
         pageNum: currentPage,
         pageSize: pageSize,
-        totalItems: 0, // Default value
-        totalPages: 0, // Default value
+        totalItems: 0,
+        totalPages: 0,
       };
 
       const response = await getAllProject(searchCondition, pageInfo);
