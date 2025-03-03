@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Contributor, fetchContributors } from "../../services/githubService";
-import ContributorCard from "../../components/ContributorCard/ContributorCard";
+import {
+  Contributor,
+  fetchContributors,
+} from "../../../services/githubService";
+import ContributorCard from "../../ContributorCard/ContributorCard";
 
 const ProfilePage = () => {
   const [contributors, setContributors] = useState<Contributor[]>([]);
