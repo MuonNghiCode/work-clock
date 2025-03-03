@@ -1,25 +1,76 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Button, Pagination, Tag, Input } from "antd";
 import { ClaimRequest } from "../../types/ClaimRequest";
 import { GetProps } from "antd/lib/_util/type";
 import ClaimRequestDetail from "./ClaimRequestDetail";
 import ConfirmModal from "../ConfirmModal/ConfirmModal";
 import Icons from "../icon";
+import { searchApprovalClaims } from "../../services/approvalService";
+import { toast } from "react-toastify";
+import { debounce } from 'lodash';
 
 type SearchProps = GetProps<typeof Input.Search>;
 const { Search } = Input;
 
-interface DataProps {
-  data: ClaimRequest[];
-}
-
-const TableApproval: React.FC<DataProps> = ({ data }) => {
+const TableApproval: React.FC = () => {
+  const [approvalData, setApprovalData] = useState<ClaimRequest[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [statusFilter, setStatusFilter] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState<string>("");
   const [showApprovalDetail, setShowApprovalDetail] = useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
+  const prevPageRef = useRef(currentPage);
+  const prevPageSizeRef = useRef(pageSize);
+  const prevStatusFilterRef = useRef(statusFilter);
+  const prevSearchTermRef = useRef(searchTerm);
+
+  const fetchApprovalData = async () => {
+    const request = {
+      searchCondition: {
+        keyword: searchTerm,
+        claim_status: statusFilter || "",
+        claim_start_date: "",
+        claim_end_date: "",
+        is_delete: false,
+      },
+      pageInfo: {
+        pageNum: currentPage,
+        pageSize: pageSize,
+      },
+    };
+    try {
+      const response = await searchApprovalClaims(request);
+      if (response.success) {
+        setApprovalData(response.data.pageData);
+      } else {
+        toast.error(response.message);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchApprovalData();
+  }, []);
+
+  useEffect(() => {
+    if (
+      prevPageRef.current !== currentPage ||
+      prevPageSizeRef.current !== pageSize ||
+      prevStatusFilterRef.current !== statusFilter ||
+      prevSearchTermRef.current !== searchTerm
+    ) {
+      fetchApprovalData();
+      prevPageRef.current = currentPage;
+      prevPageSizeRef.current = pageSize;
+      prevStatusFilterRef.current = statusFilter;
+      prevSearchTermRef.current = searchTerm;
+    }
+  }, [currentPage, pageSize, statusFilter, searchTerm]);
 
   const handlePageChange = (page: number, pageSize?: number) => {
     setCurrentPage(page);
@@ -29,22 +80,29 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
   };
 
   const handleStatusChange = (status: string) => {
-    setStatusFilter(status === "All" ? null : status);
+    setStatusFilter(status === "All" ? "" : status);
     setCurrentPage(1);
   };
 
   const filteredData = statusFilter
-    ? data.filter((item) => item.status === statusFilter)
-    : data;
+    ? approvalData.filter((item) => item.claim_status === statusFilter)
+    : approvalData;
 
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = startIndex + pageSize;
   const currentData = filteredData.slice(startIndex, endIndex);
 
-  const statusTags = ["All", "Pending", "Canceled", "Approved", "Rejected"];
+  const statusTags = ["All", "Pending Approval", "Approved", "Rejected", "Canceled"];
 
-  const onSearch: SearchProps["onSearch"] = (value, _e, info) =>
-    console.log(info?.source, value);
+  const handleSearch = useCallback(
+    debounce((value: string) => {
+      setSearchTerm(value);
+    }, 3000),
+    []
+  );
+  const onSearch: SearchProps['onSearch'] = (value) => {
+    handleSearch(value);
+  };
 
   const handleShowApprovalDetail = () => {
     setShowApprovalDetail(true);
@@ -77,8 +135,10 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
 
   const handleStatusChangeHTML = (status: string) => {
     switch (status) {
-      case "Pending":
-        return <span className="text-gray-300">Pending</span>;
+      case "Draft":
+        return <span className="text-gray-300">Draft</span>;
+      case "Pending Approval":
+        return <span className="text-gray-600">Pending</span>;
       case "Canceled":
         return <span className="text-blue-500">Canceled</span>;
       case "Approved":
@@ -90,6 +150,11 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
     }
   };
 
+  const formatDateTime = (date: string) => {
+    const dateTime = new Date(date);
+    return `${dateTime.toLocaleDateString('vi-VN')} - ${dateTime.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}`;
+  };
+
   return (
     <>
       <div className="flex justify-between items-center mb-4">
@@ -99,7 +164,7 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
               key={status}
               color={
                 statusFilter === status ||
-                  (status === "All" && statusFilter === null)
+                  (status === "All" && statusFilter === "")
                   ? "#ff914d"
                   : "default"
               }
@@ -107,7 +172,7 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
               className="cursor-pointer !px-2 !py-1 !font-squada !text-lg !rounded-lg"
             >
               {(statusFilter === status ||
-                (status === "All" && statusFilter === null)) && (
+                (status === "All" && statusFilter === "")) && (
                   <Icons.Check className="inline-flex" />
                 )}{" "}
               {status}
@@ -118,6 +183,7 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
           <Search
             placeholder="input search text"
             onSearch={onSearch}
+            onChange={(e) => handleSearch(e.target.value)}
             style={{ width: 250 }}
             size="large"
             className="custom-search pl-1"
@@ -128,7 +194,7 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
       <table className="min-w-full !border-separate border-spacing-y-2.5 text-black border-0">
         <thead className="bg-brand-grandient  h-[70px] text-lg text-white !rounded-t-lg">
           <tr className="bg-gradient from-[FEB78A] to-[FF914D]">
-            <th className="border-white px-4 py-2 !rounded-tl-2xl">Project</th>
+            <th className="border-white px-4 py-2 !rounded-tl-2xl">Claim Name</th>
             <th className="border-l-2 border-white px-4 py-2">Claimer</th>
             <th className="border-l-2 border-white px-4 py-2">Time</th>
             <th className="border-l-2 border-white px-4 py-2">Status</th>
@@ -139,27 +205,17 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
           </tr>
         </thead>
         <tbody className="w-full">
-          {currentData.map((item, index) => (
+          {currentData.map((item) => (
             <tr
               onClick={handleShowApprovalDetail}
-              key={index}
+              key={item._id}
               className="h-[70px] bg-white overflow-hidden text-center border-collapse  hover:shadow-brand-orange !rounded-2xl "
             >
-              <td className="px-4 py-2  rounded-l-2xl">
-                {item.projectName}
-              </td>
-              <td className="px-4 py-2">
-                {item.staffName}
-              </td>
-              <td className="px-4 py-2 ">
-                {item.totalWorkingHour}
-              </td>
-              <td className="px-4 py-2 ">
-                {handleStatusChangeHTML(item.status)}
-              </td>
-              <td className="px-4 py-2 ">
-                {item.dateCreate}
-              </td>
+              <td className="px-4 py-2  rounded-l-2xl">{item.claim_name}</td>
+              <td className="px-4 py-2">{item.staff_name}</td>
+              <td className="px-4 py-2 ">{formatDateTime(item.claim_start_date)}</td>
+              <td className="px-4 py-2 ">{handleStatusChangeHTML(item.claim_status)}</td>
+              <td className="px-4 py-2 ">{formatDateTime(item.created_at)}</td>
               <td
                 className="action px-4 py-2 rounded-r-2xl"
                 onClick={(e) => e.stopPropagation()}
@@ -170,7 +226,6 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
                       <span className="hover:scale-110">
                         <Icons.Approve
                           color="green"
-                          // strokeWidth={3}
                           onClick={handleApprove}
                           className="w-10 h-10"
                         />
@@ -182,7 +237,6 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
                       <span className="hover:scale-110">
                         <Icons.Reject
                           color="red"
-                          // strokeWidth={3}
                           onClick={handleReject}
                           className="w-10 h-10"
                         />
@@ -194,7 +248,6 @@ const TableApproval: React.FC<DataProps> = ({ data }) => {
                       <span className="hover:scale-110">
                         <Icons.Return
                           color="blue"
-                          // strokeWidth={3}
                           onClick={handleReturn}
                           className="w-10 h-10"
                         />
