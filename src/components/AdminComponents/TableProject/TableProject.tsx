@@ -1,11 +1,11 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 import { Button, Pagination, Tag, Input, Modal } from "antd";
 import { Project } from "../../../types/Project";
 import { GetProps } from "antd/lib/_util/type";
 import ConfirmModal from "../../ConfirmModal/ConfirmModal";
 import Icons from "../../icon";
-import ProjectDetail from "../../ProjectDetail/ProjectDetail";
 import EditProject from "../EditProject/EditProject";
+import ProjectDetail from "../../ProjectDetail/ProjectDetail";
 
 type SearchProps = GetProps<typeof Input.Search>;
 const { Search } = Input;
@@ -135,6 +135,7 @@ const TableProject: React.FC<TableProjectProps> = ({
         return <span>{status}</span>;
     }
   };
+
 
   const users = ["dngoc", "haaus", "ntdn"];
   return (
