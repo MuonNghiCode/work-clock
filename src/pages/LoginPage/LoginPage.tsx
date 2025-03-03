@@ -98,8 +98,9 @@ const LoginPage: React.FC = () => {
 
       {/* Login Form */}
       <div
-        className={`w-230 h-140 flex border border-black rounded-[30px] bg-white z-10 ${isForgotPassword ? "hidden" : ""
-          }`}
+        className={`w-230 h-140 flex border border-black rounded-[30px] bg-white z-10 ${
+          isForgotPassword ? "hidden" : ""
+        }`}
       >
         <motion.div
           initial={{ x: 0, opacity: 0 }}
@@ -140,10 +141,11 @@ const LoginPage: React.FC = () => {
               {/* Email Field */}
               <div className="relative py-10">
                 <span
-                  className={`absolute left-2 top-12 text-gray-500 transition-all pointer-events-none ${email || isEmailFocused
-                    ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
-                    : "text-base"
-                    }`}
+                  className={`absolute left-2 top-12 text-gray-500 transition-all pointer-events-none ${
+                    email || isEmailFocused
+                      ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
+                      : "text-base"
+                  }`}
                 >
                   Email
                 </span>
@@ -169,10 +171,11 @@ const LoginPage: React.FC = () => {
               {/* Password Field */}
               <div className="relative">
                 <span
-                  className={`absolute left-2 top-2 text-gray-500 transition-all pointer-events-none ${password || isPasswordFocused
-                    ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
-                    : "text-base"
-                    }`}
+                  className={`absolute left-2 top-2 text-gray-500 transition-all pointer-events-none ${
+                    password || isPasswordFocused
+                      ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
+                      : "text-base"
+                  }`}
                 >
                   Password
                 </span>
@@ -219,8 +222,9 @@ const LoginPage: React.FC = () => {
 
       {/* Forgot Password Form */}
       <div
-        className={`w-230 h-140 flex items-center border border-black rounded-[30px] bg-white z-20 ${!isForgotPassword ? "hidden" : ""
-          }`}
+        className={`w-230 h-140 flex items-center border border-black rounded-[30px] bg-white z-20 ${
+          !isForgotPassword ? "hidden" : ""
+        }`}
       >
         <div className="w-230 h-140 flex border border-black rounded-[30px] bg-white z-10">
           <motion.div
@@ -247,10 +251,11 @@ const LoginPage: React.FC = () => {
             >
               <div className="relative py-4">
                 <span
-                  className={`absolute left-2 top-6 text-gray-500 transition-all pointer-events-none ${forgotPasswordEmail || isEmailFocused
-                    ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
-                    : "text-base"
-                    }`}
+                  className={`absolute left-2 top-6 text-gray-500 transition-all pointer-events-none ${
+                    forgotPasswordEmail || isEmailFocused
+                      ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
+                      : "text-base"
+                  }`}
                 >
                   Email
                 </span>

@@ -100,17 +100,17 @@ export const triggerVerifyToken = async (email: string) => {
   }
 };
 
-// Xác thực token từ email
-export const verifyToken = async (token: string | undefined) => {
-  try {
-    // Gọi API verify token với flag unlock
-    const response = await axiosInstance.post("/auth/verify-token", {
-      verification_token: token,
-      unlock: true, // BE sẽ tự động unlock user
-    });
-    return response.data;
-  } catch (error: any) {
-    console.error("Error while authenticating token:", error);
-    throw error.response?.data || error;
-  }
-};
+// // Xác thực token từ email
+// export const verifyToken = async (token: string | undefined) => {
+//   try {
+//     // Gọi API verify token với flag unlock
+//     const response = await axiosInstance.post("/auth/verify-token", {
+//       verification_token: token,
+//       unlock: true, // BE sẽ tự động unlock user
+//     });
+//     return response.data;
+//   } catch (error: any) {
+//     console.error("Error while authenticating token:", error);
+//     throw error.response?.data || error;
+//   }
+// };

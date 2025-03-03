@@ -36,7 +36,7 @@ import UserCalendarPage from "./pages/UserCalendarPage/UserCalendarPage";
 import Contact from "./pages/ContactPage/Contact";
 import useToastStorage from "./hooks/useToastStorage";
 import { useLoadingStore } from "./config/zustand";
-
+import VerifyEmail from "./pages/VerifyEmailPage/VerifyEmail";
 
 const router = createBrowserRouter([
   {
@@ -153,6 +153,10 @@ const router = createBrowserRouter([
     path: "/change-password",
     element: <ChangePassword />,
   },
+  {
+    path: "/verify-email/:token",
+    element: <VerifyEmail />,
+  },
 ]);
 
 const App: React.FC = () => {
@@ -175,7 +179,11 @@ const App: React.FC = () => {
 
   return (
     <UserProvider>
-      {loading || isLoading ? <LoadingScreen /> : <RouterProvider router={router} />}
+      {loading || isLoading ? (
+        <LoadingScreen />
+      ) : (
+        <RouterProvider router={router} />
+      )}
 
       {/* {loading ? <LoadingScreen /> : <RouterProvider router={router} />} */}
       <ToastContainer />
