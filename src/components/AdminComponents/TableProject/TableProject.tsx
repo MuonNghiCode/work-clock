@@ -16,6 +16,8 @@ interface TableProjectProps {
   loading: boolean;
   onEditProject: (editedProject: Project) => void;
   onDeleteProject: (projectId: string | number) => void;
+  searchValue: string;
+  setSearchValue: (value: string) => void;
 }
 
 const TableProject: React.FC<TableProjectProps> = ({
@@ -24,11 +26,12 @@ const TableProject: React.FC<TableProjectProps> = ({
   loading,
   onEditProject,
   onDeleteProject,
+  searchValue,
+  setSearchValue,
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
-  const [searchValue, setSearchValue] = useState<string>("");
   const [showProjectDetail, setShowProjectDetail] = useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
@@ -60,19 +63,7 @@ const TableProject: React.FC<TableProjectProps> = ({
 
   const filteredData = data.filter((item) => {
     const matchesStatus = statusFilter ? item.status === statusFilter : true;
-
-    const matchesSearch = searchValue
-      ? searchValue
-        .toLowerCase()
-        .split("")
-        .every((char) => {
-          const charCount = searchValue.toLowerCase().split(char).length - 1;
-          const nameCharCount =
-            item.name.toLowerCase().split(char).length - 1;
-          return nameCharCount >= charCount;
-        })
-      : true;
-
+    const matchesSearch = item.name.toLowerCase().includes(searchValue.toLowerCase());
     return matchesStatus && matchesSearch;
   });
 

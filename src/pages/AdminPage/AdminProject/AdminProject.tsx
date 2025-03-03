@@ -7,21 +7,20 @@ import { getAllProject } from "../../../services/projectService"; // Import API
 import { PageInfo, SearchCondition } from "../../../types/ProjectTypes";
 import { ProjectItem } from "../../../types/ProjectTypes";
 
-
 const AdminProject: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
-
+  const [searchValue, setSearchValue] = useState<string>(""); // State for search input
   const [projects, setProjects] = useState<Project[]>([]);
   const [totalItems, setTotalItems] = useState(0);
-  const [loading, setLoading] = useState(false); // Thêm state loading
+  const [loading, setLoading] = useState(false); // Loading state
 
   const fetchProjects = async () => {
-    setLoading(true); // Bắt đầu loading
+    setLoading(true); // Start loading
     try {
       const searchCondition: SearchCondition = {
-        keyword: "",
+        keyword: searchValue, // Include search keyword
         project_start_date: "",
         project_end_date: "",
         is_delete: false,
@@ -40,13 +39,12 @@ const AdminProject: React.FC = () => {
         const formattedProjects: Project[] = response.data.pageData.map((item: ProjectItem) => ({
           key: item._id, // Assuming _id is the unique identifier
           name: item.project_name,
-          date: item.project_start_date, // Ensure this matches the Project type
+          date: item.project_start_date,
           enddate: item.project_end_date,
           department: item.project_department,
           status: item.project_status || 'New',
           project: item.project_name,
           startdate: item.project_start_date,
-          // Add any other required properties here
         }));
         setProjects(formattedProjects);
         setTotalItems(response.data.pageInfo.totalItems);
@@ -54,13 +52,13 @@ const AdminProject: React.FC = () => {
     } catch (error) {
       console.error("Error fetching projects:", error);
     } finally {
-      setLoading(false); // Kết thúc loading
+      setLoading(false); // End loading
     }
   };
 
   useEffect(() => {
     fetchProjects();
-  }, [currentPage, pageSize]);
+  }, [currentPage, pageSize, searchValue]); // Add searchValue to dependencies
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
@@ -113,6 +111,8 @@ const AdminProject: React.FC = () => {
             loading={loading}
             onEditProject={handleEditProject}
             onDeleteProject={handleDeleteProject}
+            searchValue={searchValue} // Pass searchValue
+            setSearchValue={setSearchValue} // Pass setSearchValue
           />
         </div>
       </div>
