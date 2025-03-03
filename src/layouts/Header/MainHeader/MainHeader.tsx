@@ -1,7 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router";
 import Images from "../../../components/images";
 import Icons from "../../../components/icon";
+
+const navItems = [
+  { href: "#home-section", label: "Home" },
+  { href: "#news-section", label: "News" },
+  { href: "#about-us-section", label: "About Us" },
+  { href: "#contact-us-section", label: "Contact Us" },
+];
 
 const Sidebar: React.FC<{ isOpen: boolean; closeMenu: () => void }> = ({
   isOpen,
@@ -24,18 +31,15 @@ const Sidebar: React.FC<{ isOpen: boolean; closeMenu: () => void }> = ({
           <Icons.Reject onClick={closeMenu} />
         </div>
         <div className="flex flex-col gap-3 justify-center items-start">
-          <a href="#home-section" className="hover:text-gradient-color">
-            Home
-          </a>
-          <a href="#news-section" className="hover:text-gradient-color">
-            News
-          </a>
-          <a href="#about-us-section" className="hover:text-gradient-color">
-            About Us
-          </a>
-          <a href="#contact-us-section" className="hover:text-gradient-color">
-            Contact Us
-          </a>
+          {navItems.map((item) => (
+            <a
+              key={item.href}
+              href={item.href}
+              className="hover:text-gradient-color"
+            >
+              {item.label}
+            </a>
+          ))}
         </div>
       </div>
     </>
@@ -46,6 +50,7 @@ const MainHeader: React.FC = () => {
   const location = useLocation();
   const isHomePage = location.pathname === "/";
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -53,6 +58,30 @@ const MainHeader: React.FC = () => {
   const closeMenu = () => {
     setMenuOpen(false);
   };
+
+  useEffect(() => {
+    const sections = document.querySelectorAll("section[id]");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    sections.forEach((section) => {
+      observer.observe(section);
+    });
+
+    return () => {
+      sections.forEach((section) => {
+        observer.unobserve(section);
+      });
+    };
+  }, []);
 
   return (
     <div className="flex bg-transparent justify-between items-center p-4 md:p-6">
@@ -66,18 +95,19 @@ const MainHeader: React.FC = () => {
       <div className="flex items-center justify-end w-full gap-4">
         {/* Desktop Navigation */}
         <div className="hidden md:flex justify-between gap-10 rounded-3xl bg-white border border-black px-10 py-0.5 text-lg">
-          <a href="#home-section" className="hover:text-gradient-color">
-            Home
-          </a>
-          <a href="#news-section" className="hover:text-gradient-color">
-            News
-          </a>
-          <a href="#about-us-section" className="hover:text-gradient-color">
-            About Us
-          </a>
-          <a href="#contact-us-section" className="hover:text-gradient-color">
-            Contact Us
-          </a>
+          {navItems.map((item) => (
+            <a
+              key={item.href}
+              href={item.href}
+              className={`hover:text-gradient-color ${
+                activeSection === item.href.substring(1)
+                  ? "text-gradient-color underline"
+                  : ""
+              }`}
+            >
+              {item.label}
+            </a>
+          ))}
         </div>
         {/* Mobile Navigation */}
         <div className="md:hidden flex gap-4 text-lg justify-around items-center">
