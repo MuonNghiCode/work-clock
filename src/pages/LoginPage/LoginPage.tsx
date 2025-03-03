@@ -146,12 +146,12 @@ const LoginPage: React.FC = () => {
           <img
             src={Images.Logo}
             alt="Logo"
-            className="lg:w-40 w-25 mx-auto absolute top-10 right-5 lg:right-10"
+            className="lg:w-40 w-25 mx-auto absolute  lg:mb-0 top-10 right-5 lg:right-10"
           />
 
           <div className="h-full lg:mt-20 flex flex-col justify-center absolute lg:right-20 items-start">
             <form onSubmit={handleLoginSubmit} className="gap-4">
-              <h1 className="text-3xl lg:text-4xl text-center whitespace-nowrap ">
+              <h1 className="text-3xl lg:text-4xl lg:mt-0 mt-10 text-center whitespace-nowrap ">
                 Welcome User
               </h1>
               {/* Email Field */}
@@ -317,7 +317,7 @@ const LoginPage: React.FC = () => {
           className="w-full  items-center justify-center  lg:flex hidden"
         >
           <img
-            src={Images.Background6}
+            src={Images.Background7}
             alt=""
             className="w-120 h-130 scale-x-112 object-contain translate-x-7"
           />
