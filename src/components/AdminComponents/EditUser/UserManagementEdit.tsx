@@ -3,9 +3,9 @@ import { X, Mail, Lock, UserCog } from "lucide-react";
 import { User } from '../../../pages/AdminPage/AdminUser/AdminUserManagement';
 
 interface UserManagementEditProps {
-  user: User;
+  user: User<any>;
   onClose: () => void;
-  onSubmit: (updatedUser: User) => void;
+  onSubmit: (updatedUser: User<any>) => void;
 } 
 0
 const UserManagementEdit: React.FC<UserManagementEditProps> = ({
@@ -13,7 +13,7 @@ const UserManagementEdit: React.FC<UserManagementEditProps> = ({
   onClose,
   onSubmit,
 }) => {
-  const [editingUser, setEditingUser] = useState<User>(user);
+  const [editingUser, setEditingUser] = useState<User<any>>(user);
   const [errors, setErrors] = useState<{[key: string]: string}>({});
 
   const validateForm = () => {
@@ -53,6 +53,7 @@ const UserManagementEdit: React.FC<UserManagementEditProps> = ({
     e.preventDefault();
     if (!validateForm()) return;
     onSubmit(editingUser);
+    // console.log(editingUser );
   };
 
   return (
