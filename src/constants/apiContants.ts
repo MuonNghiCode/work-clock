@@ -11,5 +11,8 @@ export const API_CONTANTS = {
   },
   APPROVAL: {
     GET_CLAIM_APPROVAL: "/claims/approval-search",
+  },
+  USER : {
+    CREATE_USER: "/users",
   }
 };

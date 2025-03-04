@@ -16,7 +16,7 @@ const UserManagementAdd: React.FC<UserManagementAddProps> = React.memo(({ onClos
     email: "",
     password: "",
     role_code: "A002",
-    is_blocked: true,
+    is_blocked: false,
     is_verified: false
   });
 
@@ -67,7 +67,7 @@ const UserManagementAdd: React.FC<UserManagementAddProps> = React.memo(({ onClos
         onSuccess(formData);
         
         try {
-          await triggerVerifyToken(formData.email);
+          // await triggerVerifyToken(formData.email);
           toast.success("Verification email sent successfully");
         } catch (verifyError: any) {
           toast.warning("User created but failed to send verification email");

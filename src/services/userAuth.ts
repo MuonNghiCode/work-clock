@@ -1,5 +1,8 @@
 // userAuth.ts
 import axiosInstance from "../config/axiosUser"; // Giả sử file axiosInstance.ts nằm cùng thư mục
+import { API_CONTANTS } from "../constants/apiContants";
+import { ResponseModel } from "../models/ResponseModel";
+import { post } from "./apiService";
 
 // Interface cho user data
 interface UserData {
@@ -27,18 +30,13 @@ export const getUsers = async (searchCondition: any, pageInfo: any) => {
 };
 
 // Tạo người dùng mới
-export const createUser = async (userData: UserData) => {
-  try {
-    const response = await axiosInstance.post("/users", {
+export const createUser = async (userData: UserData):Promise<ResponseModel<null>> => {
+    const response = await post(API_CONTANTS.USER.CREATE_USER, {
       ...userData,
       is_blocked: userData.is_blocked ?? true,
       is_verified: userData.is_verified ?? false,
     });
-    return response.data;
-  } catch (error: any) {
-    console.error("Error creating user:", error.response?.data || error);
-    throw error.response?.data || error;
-  }
+    return response as ResponseModel<null>;
 };
 
 // Cập nhật thông tin người dùng
