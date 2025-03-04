@@ -3,9 +3,9 @@ import { X, Mail, Lock, UserCog } from "lucide-react";
 import { User } from '../../../pages/AdminPage/AdminUser/AdminUserManagement';
 
 interface UserManagementEditProps {
-  user: User;
+  user: User<any>;
   onClose: () => void;
-  onSubmit: (updatedUser: User) => void;
+  onSubmit: (updatedUser: User<any>) => void;
 } 
 0
 const UserManagementEdit: React.FC<UserManagementEditProps> = ({
@@ -13,7 +13,7 @@ const UserManagementEdit: React.FC<UserManagementEditProps> = ({
   onClose,
   onSubmit,
 }) => {
-  const [editingUser, setEditingUser] = useState<User>(user);
+  const [editingUser, setEditingUser] = useState<User<any>>(user);
   const [errors, setErrors] = useState<{[key: string]: string}>({});
 
   const validateForm = () => {
@@ -28,7 +28,7 @@ const UserManagementEdit: React.FC<UserManagementEditProps> = ({
 
     // Email validation
     if (!editingUser.email) {
-      newErrors.email = "Email is required";
+      newErrors.email = "Email is required";  
     } else if (!editingUser.email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
       newErrors.email = "Invalid email format";
     }
@@ -53,6 +53,7 @@ const UserManagementEdit: React.FC<UserManagementEditProps> = ({
     e.preventDefault();
     if (!validateForm()) return;
     onSubmit(editingUser);
+    // console.log(editingUser );
   };
 
   return (
@@ -135,11 +136,10 @@ const UserManagementEdit: React.FC<UserManagementEditProps> = ({
                 errors.role_code ? 'border-red-500' : 'border-gray-200'
               }`}
             >
-              <option value="">Select Role</option>
-              <option value="A001">Admin (A001)</option>
-              <option value="A002">User (A002)</option>
-              <option value="A003">Staff (A003)</option>
-              <option value="A004">Paid (A004)</option>
+              <option value="A001">Admin</option>
+              <option value="A002">Finance</option>
+              <option value="A003">Approval</option>
+              <option value="A004">Member other</option>
             </select>
           </div>
           {errors.role_code && (
@@ -152,18 +152,18 @@ const UserManagementEdit: React.FC<UserManagementEditProps> = ({
           <label className="block text-sm font-medium text-gray-600 mb-1">Account Status</label>
           <button
             type="button"
-            onClick={() => setEditingUser({ ...editingUser, isLocked: !editingUser.isLocked })}
+            onClick={() => setEditingUser({ ...editingUser, is_blocked: !editingUser.is_blocked })}
             disabled={editingUser.role_code === "A001"}
             className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 ${
               editingUser.role_code === "A001"
                 ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                : editingUser.isLocked
+                : editingUser.is_blocked
                 ? "bg-red-50 text-red-500 hover:bg-red-100"
                 : "bg-green-50 text-green-500 hover:bg-green-100"
             }`}
           >
             <Lock className="w-4 h-4" />
-            <span>{editingUser.isLocked ? "LOCKED" : "UNLOCK"}</span>
+            <span>{editingUser.is_blocked ? "LOCKED" : "UNLOCK"}</span>
           </button>
         </div>
 

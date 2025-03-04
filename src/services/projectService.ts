@@ -1,6 +1,7 @@
 import {get, put, post} from './apiService'
 import { API_CONTANTS } from '../constants/apiContants'
 import { PageInfo, ProjectSearchResponse, SearchCondition } from '../types/ProjectTypes'
+import { ProjectInfo } from '../types/Project';
 
 export const getAllProject = async (
     searchCondition: SearchCondition,
@@ -13,3 +14,24 @@ export const getAllProject = async (
     return response as ProjectSearchResponse;
 }
 
+export const getInfoProject = async (
+    ProjectInfo: ProjectInfo,
+    pageInfo: PageInfo
+):Promise <ProjectSearchResponse> => {
+    const response = await post (API_CONTANTS.PROJECT.GET_ALLPROJECT, {
+        ProjectInfo, 
+        pageInfo
+    });
+    return response as ProjectSearchResponse;
+}
+
+export const getEditProject = async (
+    ProjectInfo: ProjectInfo,
+    id: string
+):Promise <ProjectSearchResponse> => {
+    const response = await put (API_CONTANTS.PROJECT.GET_ALLPROJECT, {
+        ProjectInfo, 
+        id
+    });
+    return response as ProjectSearchResponse;
+}

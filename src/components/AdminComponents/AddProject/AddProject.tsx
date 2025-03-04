@@ -27,7 +27,7 @@ const AddProject: React.FC<AddProjectProps> = ({ isAddModalOpen, onClose }) => {
   });
 
   const handleSubmit = () => {
-    console.log('submit')
+    console.log(projectData)
       onClose;
   };
 
@@ -53,6 +53,7 @@ const AddProject: React.FC<AddProjectProps> = ({ isAddModalOpen, onClose }) => {
             onClick={handleOpenModalAddUser}
           >
             <FaPlus className="w-3 h-3" /> Add User
+            
           </button>
         </div>
 

@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Project, ProjectInfo } from "../../../types/Project";
 import { Descriptions, Modal } from "antd";
+import { getEditProject } from "../../../services/projectService";
 
 interface EditProjectProps {
   onClose: () => void;
-  project?: ProjectInfo | null;
+  project: ProjectInfo;
   users: string[];
   isEditModalOpen: boolean;
 }
@@ -25,10 +26,10 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, project, users, isEd
   const [projectData, setProjectData] = useState({
     name: project?.project_name || "",
     code: project?._id || "",
-    date: project?.created_at ? project.created_at : "",
-    enddate: project?.project_end_date ? project.project_end_date : "",
+    date: project?.created_at ? formatDate(project.created_at) : "",
+    enddate: project?.project_end_date ? formatDate(project.project_end_date) : "",
     status: project?.project_status || "New",
-    user: project?.project_members || "",
+    user: project?.project_members[0]?.user_id || "",
     department: project?.project_department || "",
     descriptions: project?.project_description || ""
   });
@@ -41,35 +42,34 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, project, users, isEd
         project_description: projectData.descriptions,
         project_start_date: projectData.date,
         project_end_date: projectData.enddate,
+        project_status: projectData.status,
         project_members: [
             {
-                user_id: projectData.user,
-                project_role: "Project Manager"
+                user_id: projectData.user, // Assuming user ID is stored in projectData.user
+                project_role: "Project Manager" // Adjust as necessary
             }
         ],
-        project_status: projectData.status,
     };
-
+console.log(data)
     try {
         // Call the API to save the project data
-        const response = await fetch('/api/projects', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        });
-
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-
-        // Optionally handle the response
-        const result = await response.json();
-        console.log('Project saved successfully:', result);
+        const response = await getEditProject({
+            ...data,
+            created_at: project.created_at || new Date().toISOString(),
+            is_deleted: false,
+            updated_at: new Date().toISOString(),
+            updated_by: project.updated_by || "", // Assuming you have a way to get the updated_by info
+            _id: projectData.code
+        }, projectData.code);
         
-        // Close the modal after saving
-        onClose();
+        // Check if the response is OK before parsing
+        if (!response.success) {
+            throw new Error('Network response was not ok');
+          }
+          console.log('Project saved successfully:', response);
+          onClose();
+          // Optionally handle the response
+          // Close the modal after saving
     } catch (error) {
         console.error('Error saving project:', error);
     }
@@ -110,7 +110,7 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, project, users, isEd
             <label className="block text-gray-700 font-medium text-lg">Start Date</label>
             <input
               type="date"
-              value={project ? formatDate(project.project_start_date) : ""}
+              value={projectData.date}
               onChange={(e) => setProjectData({ ...projectData, date: e.target.value })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-base"
             />
@@ -120,7 +120,7 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, project, users, isEd
             <label className="block text-gray-700 font-medium text-lg">End Date</label>
             <input
               type="date"
-              value={project ? formatDate(project.project_end_date) : ""}
+              value={projectData.enddate}
               onChange={(e) => setProjectData({ ...projectData, enddate: e.target.value })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-base"
             />
@@ -166,6 +166,7 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, project, users, isEd
             onChange={(e) => setProjectData({ ...projectData, status: e.target.value as "Processing" | "Pending" | "Complete" })}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 bg-white text-base"
           >
+            <option value="New">New</option>
             <option value="Processing">Processing</option>
             <option value="Pending">Pending</option>
             <option value="Complete">Complete</option>
