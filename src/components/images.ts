@@ -16,25 +16,27 @@ import BackgroundLayout from "../assets/images/backgroundlayout.jpg";
 import Background4 from "../assets/images/background4.png";
 import Background5 from "../assets/images/background-large.png";
 import Background6 from "../assets/images/bg-5.png";
+import Background7 from "../assets/images/background6.png";
 const Images = {
-    Logo,
-    Logo2,
-    Work1,
-    Work2,
-    Background,
-    Background2,
-    Background3,
-    News1,
-    News2,
-    News3,
-    Auther1,
-    Auther2,
-    Auther3,
-    Error,
-    BackgroundLayout,
-    Background4,
-    Background5,
-    Background6,
+  Logo,
+  Logo2,
+  Work1,
+  Work2,
+  Background,
+  Background2,
+  Background3,
+  News1,
+  News2,
+  News3,
+  Auther1,
+  Auther2,
+  Auther3,
+  Error,
+  BackgroundLayout,
+  Background4,
+  Background5,
+  Background6,
+  Background7,
 };
 
 export default Images;
