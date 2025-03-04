@@ -15,7 +15,7 @@ import Error from "../assets/images/404.png";
 import BackgroundLayout from "../assets/images/backgroundlayout.jpg";
 import Background4 from "../assets/images/background4.png";
 import Background5 from "../assets/images/background-large.png";
-
+import Background6 from "../assets/images/bg-5.png";
 const Images = {
     Logo,
     Logo2,
@@ -33,8 +33,8 @@ const Images = {
     Error,
     BackgroundLayout,
     Background4,
-    Background5
-  
+    Background5,
+    Background6,
 };
 
 export default Images;

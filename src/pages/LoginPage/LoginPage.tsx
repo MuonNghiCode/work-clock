@@ -10,8 +10,6 @@ import {
   login,
   forgotPassword,
 } from "../../services/authService";
-// import { Spin } from "antd";
-import LoadingScreen from "../../components/LoadingScreen/LoadingScreen";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -24,7 +22,6 @@ const LoginPage: React.FC = () => {
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
     {}
   );
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const validate = () => {
@@ -45,49 +42,43 @@ const LoginPage: React.FC = () => {
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    if (validate()) {
-      try {
+    try {
+      if (validate()) {
         await login(email, password);
         const token = localStorage.getItem("token");
-        let user;
         if (token) {
-          user = await getUserInfobyToken();
+          let user = await getUserInfobyToken();
           let role = user.data.role_code;
           if (user && user.data) {
             toast.success("Login successful!");
             setTimeout(() => {
               switch (role) {
                 case "A001":
-                  navigate("/admin");
+                  navigate("/admin", { replace: true });
                   break;
                 case "A004":
-                  navigate("/user");
+                  navigate("/user", { replace: true });
                   break;
                 case "A003":
-                  navigate("/approval");
+                  navigate("/approval", { replace: true });
                   break;
                 case "A002":
-                  navigate("/finance");
+                  navigate("/finance", { replace: true });
                   break;
                 default:
                   navigate("/");
               }
             }, 1000);
-          } else {
-            toast.error("Invalid email or password!");
           }
         }
-      } catch (error) {
-        toast.error("Please fix the errors before submitting.");
       }
+    } catch (error) {
+      throw error;
     }
-    setIsLoading(false);
   };
 
   const handleForgotPasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     try {
       await forgotPassword(forgotPasswordEmail);
       toast.success("Password reset link sent to your email!");
@@ -95,16 +86,10 @@ const LoginPage: React.FC = () => {
     } catch (error) {
       toast.error("Error sending password reset link.");
     }
-    setIsLoading(false);
   };
 
   return (
     <div className="relative flex justify-center items-center h-screen">
-      {isLoading && (
-        <div className="!w-screen !h-screen !bg-black !opacity-50 !absolute !top-0 !left-0 !z-9999">
-          <LoadingScreen />
-        </div>
-      )}
       <img
         src={Images.Background2}
         alt="Background"
@@ -113,9 +98,8 @@ const LoginPage: React.FC = () => {
 
       {/* Login Form */}
       <div
-        className={`w-230 h-140 flex border border-black rounded-[30px] bg-white z-10 ${
-          isForgotPassword ? "hidden" : ""
-        }`}
+        className={`w-230 h-140 flex border border-black rounded-[30px] bg-white z-10 ${isForgotPassword ? "hidden" : ""
+          }`}
       >
         <motion.div
           initial={{ x: 0, opacity: 0 }}
@@ -156,11 +140,10 @@ const LoginPage: React.FC = () => {
               {/* Email Field */}
               <div className="relative py-10">
                 <span
-                  className={`absolute left-2 top-12 text-gray-500 transition-all pointer-events-none ${
-                    email || isEmailFocused
-                      ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
-                      : "text-base"
-                  }`}
+                  className={`absolute left-2 top-12 text-gray-500 transition-all pointer-events-none ${email || isEmailFocused
+                    ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
+                    : "text-base"
+                    }`}
                 >
                   Email
                 </span>
@@ -186,11 +169,10 @@ const LoginPage: React.FC = () => {
               {/* Password Field */}
               <div className="relative">
                 <span
-                  className={`absolute left-2 top-2 text-gray-500 transition-all pointer-events-none ${
-                    password || isPasswordFocused
-                      ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
-                      : "text-base"
-                  }`}
+                  className={`absolute left-2 top-2 text-gray-500 transition-all pointer-events-none ${password || isPasswordFocused
+                    ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
+                    : "text-base"
+                    }`}
                 >
                   Password
                 </span>
@@ -237,9 +219,8 @@ const LoginPage: React.FC = () => {
 
       {/* Forgot Password Form */}
       <div
-        className={`w-230 h-140 flex items-center border border-black rounded-[30px] bg-white z-20 ${
-          !isForgotPassword ? "hidden" : ""
-        }`}
+        className={`w-230 h-140 flex items-center border border-black rounded-[30px] bg-white z-20 ${!isForgotPassword ? "hidden" : ""
+          }`}
       >
         <div className="w-230 h-140 flex border border-black rounded-[30px] bg-white z-10">
           <motion.div
@@ -266,11 +247,10 @@ const LoginPage: React.FC = () => {
             >
               <div className="relative py-4">
                 <span
-                  className={`absolute left-2 top-6 text-gray-500 transition-all pointer-events-none ${
-                    forgotPasswordEmail || isEmailFocused
-                      ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
-                      : "text-base"
-                  }`}
+                  className={`absolute left-2 top-6 text-gray-500 transition-all pointer-events-none ${forgotPasswordEmail || isEmailFocused
+                    ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
+                    : "text-base"
+                    }`}
                 >
                   Email
                 </span>

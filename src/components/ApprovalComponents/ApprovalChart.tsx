@@ -12,7 +12,7 @@ interface DataProps {
 const ApprovalChart: React.FC<DataProps> = ({ data }) => {
 
     const statusCounts = data.reduce((acc, request) => {
-        acc[request.status] = (acc[request.status] || 0) + 1;
+        acc[request.claim_status] = (acc[request.claim_status] || 0) + 1;
         return acc;
     }, {} as Record<string, number>);
 

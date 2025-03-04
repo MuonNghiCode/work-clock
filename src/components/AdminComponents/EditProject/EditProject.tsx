@@ -1,14 +1,15 @@
 import { useState } from "react";
-import { Project } from "../../../types/Project";
+import { Project, ProjectInfo } from "../../../types/Project";
+import { Modal } from "antd";
 
 interface EditProjectProps {
-  onClose?: () => void;
-  onSave?: (project: Project) => void;
-  project?: Project | null;
+  onClose: () => void;
+  project?: ProjectInfo | null;
   users: string[];
+  isEditModalOpen: boolean;
 }
 
-const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project, users }) => {
+const EditProject: React.FC<EditProjectProps> = ({ onClose, project, users, isEditModalOpen }) => {
   const convertDateFormat = (dateStr: string) => {
     if (!dateStr) return "";
     const [year, month, day] = dateStr.split('-');
@@ -21,39 +22,29 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project, use
     return `${day}-${month}${year}`;
   };
 
+
   const [projectData, setProjectData] = useState({
-    name: project?.name || "",
-    code: project?.key || "",
-    date: project?.date ? project.date : "",
-    enddate: project?.enddate ? project.enddate : "",
-    status: project?.status || "New",
-    user: project?.project || "",
-    department: project?.department || ""
+    name: project?.project_name || "",
+    code: project?._id || "",
+    date: project?.created_at ? project.created_at : "",
+    enddate: project?.project_end_date ? project.project_end_date : "",
+    status: project?.project_status || "New",
+    user: project?.project_members || "",
+    department: project?.project_department || ""
   });
 
-  const handleSave = () => {
-    if (!onSave) {
-      console.error("onSave function is not defined");
-      return;
-    }
-    if (!projectData.name.trim() || !projectData.code.trim() || !projectData.department.trim()) {
-      console.error("Project data is incomplete. Please provide a name, code, and department.");
-      return;
-    }
-    onSave({
-      ...projectData,
-      date: formatDateToDDMMYYYY(projectData.date),
-      key: project?.key || "",
-      project: project?.name || "",
-      startdate: project?.date ? convertDateFormat(project?.date) : "",
-    });
-    onClose?.();
-  };
+  const handleSave = () =>{
+    //goi api vo day
+
+    onClose;
+  }
+ 
 
   return (
+  <Modal open={isEditModalOpen} onCancel={onClose} onOk={handleSave} okText='Save'>
+
     <div className="w-[1000px] max-w-full px-4">
       <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">Edit project</h2>
-
       <div className="flex flex-col items-center gap-y-4">
         <div className="flex flex-row justify-between w-full space-x-4">
           <div className="flex-1 space-y-2">
@@ -145,17 +136,9 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, onSave, project, use
           </select>
         </div>
       </div>
-
-      <div className="mt-6 flex justify-center">
-        <button
-          className="bg-orange-400 text-white px-6 py-2 rounded-full hover:bg-orange-500 transition-colors text-base"
-          onClick={handleSave}
-        >
-          Save changes
-        </button>
-      </div>
     </div>
-  );
-};
+  </Modal>
+)};
+
 
 export default EditProject;

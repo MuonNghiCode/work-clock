@@ -1,11 +1,11 @@
 import React from "react";
-import { Project } from "../../types/Project";
+import { ProjectInfo } from "../../types/Project";
 import Modal from "../Modal/Modal";
 
 interface ProjectDetailProps {
   visible: boolean;
   onClose: () => void;
-  Project: Project | null;
+  Project: ProjectInfo | null;
   users: string[];
 }
 
@@ -27,14 +27,14 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
               <div className="flex-1 space-y-2">
                 <label className="block text-gray-700 font-medium text-lg">Project Name</label>
                 <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-base">
-                  {Project.name}
+                  {Project.project_name}
                 </div>
               </div>
 
               <div className="flex-1 space-y-2">
                 <label className="block text-gray-700 font-medium text-lg">Project Code</label>
                 <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-base">
-                  {Project.key}
+                  {Project._id}
                 </div>
               </div>
             </div>
@@ -43,14 +43,14 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
               <div className="flex-1 space-y-2">
                 <label className="block text-gray-700 font-medium text-lg">Start Date</label>
                 <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-base">
-                  {Project.date}
+                  {Project.project_start_date}
                 </div>
               </div>
 
               <div className="flex-1 space-y-2">
                 <label className="block text-gray-700 font-medium text-lg">End Date</label>
                 <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-base">
-                  {Project.enddate}
+                  {Project.project_end_date}
                 </div>
               </div>
             </div>
@@ -60,14 +60,14 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
               <div className="flex-1 space-y-2">
                 <label className="block text-gray-700 font-medium text-lg">Department</label>
                 <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-base">
-                  {Project.department || "N/A"}
+                  {Project.project_department || "N/A"}
                 </div>
               </div>
 
               <div className="flex-1 space-y-2">
                 <label className="block text-gray-700 font-medium text-lg">User</label>
                 <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-base">
-                  {Project.name || "dngoc"}
+                  {Project.project_members || "dngoc"}
                 </div>
               </div>
             </div>
@@ -76,11 +76,11 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
               <div className="flex-1 space-y-2">
                 <label className="block text-gray-700 font-medium text-lg">Status</label>
                 <div className={`w-1/2 px-4 py-2 rounded-lg text-base text-center font-medium
-                  ${Project.status === 'Processing' ? 'bg-[#F4ECFF] text-[#7B2CBF]' :
-                    Project.status === 'Pending' ? 'bg-[#FFE2E5] text-[#FF0420]' :
+                  ${Project.project_status === 'Processing' ? 'bg-[#F4ECFF] text-[#7B2CBF]' :
+                    Project.project_status === 'Pending' ? 'bg-[#FFE2E5] text-[#FF0420]' :
                       'bg-[#E6FAF5] text-[#00B087]'}`}
                 >
-                  {Project.status}
+                  {Project.project_status}
                 </div>
               </div>
             </div>

@@ -128,7 +128,7 @@ const News: React.FC = () => {
         </div>
       </div>
       <div>
-        <p className="mb-5 text-2xl text-gradient-color md:text-3xl text-center md:text-left">
+        <p className="mb-5 text-2xl text-gradient-color md:text-3xl text-center md:text-center">
           Popular Post
         </p>
 
