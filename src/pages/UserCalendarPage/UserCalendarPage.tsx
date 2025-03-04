@@ -5,9 +5,9 @@ import UserCalendar from "../../components/UserCalendar/UserCalendar"; // Adjust
 const UserCalendarPage: React.FC = () => {
   return (
     <div>
-      <div className="w-full flex justify-center">
-        <div className="flex flex-col w-11/12">
-          <h1 className="text-5xl !py-9">User Calendar</h1>
+      <div className="mx-auto p-1">
+        <div className="flex flex-col w-full">
+          <h1 className="text-[40px] font-bold mb-2">User Calendar</h1>
           <UserCalendar/>
         </div>
       </div>

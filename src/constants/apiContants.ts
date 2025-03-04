@@ -4,11 +4,30 @@ export const API_CONTANTS = {
     LOGOUT: "/auth/logout",
     USER_INFO: "/auth",
     FORGOT_PASSWORD: "/auth/forgot-password",
+    VERIFY_TOKEN: "/auth/verify-token",
   },
   ROLES: {
     GET_ALL: "/roles/get-all",
   },
   APPROVAL: {
     GET_CLAIM_APPROVAL: "/claims/approval-search",
-  }
+  },
+  FINANCE: {
+    FINANCE_SEARCH: "/claims/finance-search",
+  },
+  CLAIMS: {
+    CLAIMS_SEARCH: "/claims/search",
+    CLAIMERS_SEARCH: "/claims/claimer-search",
+    CLAIM_DETAIL: "/claims",
+  },
+
+  USERS: {
+    CHANGE_PASSWORD: "/users/change-password",
+    GET_ALL: "/users/get-all",
+    CREATE_USER: "/users",
+    UPDATE_USER: "/users/${id}",
+    DELETE_USER: "/users/${id}",
+    CHANGE_STATUS: "/users/change-status",
+    SEARCH_USER: "/users/search",
+  },
 };
