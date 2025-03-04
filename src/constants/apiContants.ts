@@ -15,5 +15,6 @@ export const API_CONTANTS = {
   USER : {
     CREATE_USER: "/users",
     UPDATE_USER: "/users/{id}",
+    CHANGE_STATUS_USER: "/users/change-status",
   }
 };

@@ -136,11 +136,10 @@ const UserManagementEdit: React.FC<UserManagementEditProps> = ({
                 errors.role_code ? 'border-red-500' : 'border-gray-200'
               }`}
             >
-              <option value="">Select Role</option>
-              <option value="A001">Admin (A001)</option>
-              <option value="A002">User (A002)</option>
-              <option value="A003">Staff (A003)</option>
-              <option value="A004">Paid (A004)</option>
+              <option value="A001">Admin</option>
+              <option value="A002">Finance</option>
+              <option value="A003">Approval</option>
+              <option value="A004">Member other</option>
             </select>
           </div>
           {errors.role_code && (

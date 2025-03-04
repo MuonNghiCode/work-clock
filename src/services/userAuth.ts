@@ -2,7 +2,7 @@
 import axiosInstance from "../config/axiosUser"; // Giả sử file axiosInstance.ts nằm cùng thư mục
 import { API_CONTANTS } from "../constants/apiContants";
 import { ResponseModel } from "../models/ResponseModel";
-import { post } from "./apiService";
+import { post, put } from "./apiService";
 
 // Interface cho user data
 interface UserData {
@@ -43,19 +43,13 @@ export const createUser = async (userData: UserData):Promise<ResponseModel<null>
 export const updateUser = async (
   userId: string,
   userData: Partial<UserData>
-) => {
-  try {
-    // Kiểm tra userId tồn tại
+):Promise<ResponseModel<null>> => {
     if (!userId) {
       throw new Error("User ID is required");
     }
-
-    const response = await axiosInstance.put(`/users/${userId}`, userData);
-    return response.data;
-  } catch (error: any) {
-    console.error("Error Updating User:", error);
-    throw error.response?.data || error;
-  }
+    const response = await put(API_CONTANTS.USER.UPDATE_USER
+      , userData);
+    return response.data as ResponseModel<null>;
 };
 
 
@@ -74,16 +68,11 @@ export const deleteUser = async (userId: string) => {
 
 // Thay đổi trạng thái khóa/mở khóa người dùng
 export const changeUserStatus = async (userId: string, isLocked: boolean) => {
-  try {
-    const response = await axiosInstance.put("/users/change-status", {
+    const response = await put(API_CONTANTS.USER.CHANGE_STATUS_USER, {
       user_id: userId,
       is_blocked: isLocked,
     });
     return response.data;
-  } catch (error) {
-    console.error("Error changing user status:", error);
-    throw error;
-  }
 };
 
 // Gửi email xác thực
