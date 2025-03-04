@@ -131,7 +131,11 @@ html {
   .rbc-event {
     background: linear-gradient(135deg, #ff914d 10%, #feb78a 90%);
     color: white;
-    font-weight: 200;
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
   }
   .rbc-today {
     background-color: rgba(255, 145, 77, 0.1) !important;

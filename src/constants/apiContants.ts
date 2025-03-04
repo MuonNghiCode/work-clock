@@ -16,5 +16,6 @@ export const API_CONTANTS = {
   },
   CLAIMS:{
     CLAIMS_SEARCH: "/claims/search",
+    ClAIMS_CLAIMER_SEARCH: "/claims/claimer-search",
   }
 };

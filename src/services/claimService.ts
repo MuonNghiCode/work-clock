@@ -55,3 +55,8 @@ export const getClaimsData = async (request: ClaimsRequest): Promise<ResponseMod
   const response = await post<ClaimsResponse>(API_CONTANTS.CLAIMS.CLAIMS_SEARCH, request);
   return response;
 }
+
+export const getUserClaimsData = async (request: ClaimsRequest): Promise<ResponseModel<ClaimsResponse>> => {
+  const response = await post<ClaimsResponse>(API_CONTANTS.CLAIMS.ClAIMS_CLAIMER_SEARCH, request);
+  return response;
+}
