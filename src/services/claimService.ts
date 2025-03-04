@@ -1,9 +1,10 @@
-import { post } from "./apiService";
+import { get, post } from "./apiService";
 import { ResponseModel } from "../models/ResponseModel";
 import { API_CONTANTS } from "../constants/apiContants";
 import { ApprovalInfo } from "../types/Approval";
 import { EmployeeInfo } from "../types/Employee";
 import { ProjectInfo } from "../types/Project";
+import { SearchCondition, PageInfoRequest, ClaimItem, PageInfo } from "../types/ClaimType";
 
 
 interface ClaimInfo {
@@ -57,6 +58,25 @@ export const getClaimsData = async (request: ClaimsRequest): Promise<ResponseMod
 }
 
 export const getUserClaimsData = async (request: ClaimsRequest): Promise<ResponseModel<ClaimsResponse>> => {
-  const response = await post<ClaimsResponse>(API_CONTANTS.CLAIMS.ClAIMS_CLAIMER_SEARCH, request);
+  const response = await post<ClaimsResponse>(API_CONTANTS.CLAIMS.CLAIMERS_SEARCH, request);
   return response;
 }
+
+
+
+
+export const getClaimerSearch = async (
+  searchCondition: SearchCondition,
+  pageInfo: PageInfoRequest
+): Promise<ResponseModel<{ pageData: ClaimItem[], pageInfo: PageInfo }>> => {
+  const response = await post<{ pageData: ClaimItem[], pageInfo: PageInfo }>(API_CONTANTS.CLAIMS.CLAIMERS_SEARCH, { 
+    searchCondition, 
+    pageInfo 
+  });
+  return response;
+};
+
+export const getClaimDetail = async (id: string): Promise<ResponseModel<ClaimItem>> => {
+  const response = await get<ClaimItem>(`${API_CONTANTS.CLAIMS.CLAIM_DETAIL}/${id}`); 
+  return response;
+};

@@ -13,11 +13,12 @@ interface CalendarEvent {
 }
 
 const EventComponent = ({ event }: { event: CalendarEvent }) => (
-  <div className="event-container">
+  <div className="rbc-events-container">
     <div className="event-time">
       {moment(event.start).format("h:mm A")} -{" "}
       {moment(event.end).format("h:mm A")}
     </div>
+    <div className="event-content">{event.title}</div>
   </div>
 );
 

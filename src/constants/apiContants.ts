@@ -16,6 +16,10 @@ export const API_CONTANTS = {
   },
   CLAIMS:{
     CLAIMS_SEARCH: "/claims/search",
-    ClAIMS_CLAIMER_SEARCH: "/claims/claimer-search",
+    CLAIMERS_SEARCH: "/claims/claimer-search",
+    CLAIM_DETAIL: "/claims",
   }
 };
+
+  
+  
