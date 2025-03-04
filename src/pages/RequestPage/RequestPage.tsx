@@ -4,12 +4,13 @@ import EditRequestModal from '../../components/RequestComponents/EditRequestModa
 import DeleteRequestModal from '../../components/RequestComponents/DeleteRequestModal/DeleteRequestModal';
 import TableRequest from '../../components/RequestComponents/TableRequest/TableRequest';
 import { getClaimerSearch } from '../../services/claimService';
-import { ClaimItem, SearchCondition, PageInfoRequest } from '../../types/ClaimType';
+import { ClaimItem, SearchCondition, PageInfoRequest, PageInfo } from '../../types/ClaimType';
+import { ResponseModel } from '../../models/ResponseModel';
 
 interface ClaimRequest {
   key: string;
   claimname: string;
-  project: string; // Thêm project vào interface
+  project: string; 
   date: string;
   totalHours: string;
   timeFrom: string;
@@ -67,7 +68,7 @@ const RequestPage: React.FC = () => {
       };
       const pageInfo: PageInfoRequest = { pageNum: currentPage, pageSize };
 
-      const response = await getClaimerSearch(searchCondition, pageInfo);
+      const response: ResponseModel<{ pageData: ClaimItem[], pageInfo: PageInfo }> = await getClaimerSearch(searchCondition, pageInfo);
       if (response.success) {
         const claims = response.data.pageData.map(mapClaimToRequest);
         setApiData(claims);
