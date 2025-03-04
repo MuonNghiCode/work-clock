@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from "react";
 import { useInView } from "react-intersection-observer";
 import { motion } from "framer-motion";
+import Footer from "../../layouts/Footer/Footer";
 
 const LazyCarousel = lazy(
   () => import("../../components/HomeComponents/Carousel/Carousel")
@@ -116,6 +117,7 @@ const HomePage: React.FC = () => {
           </motion.div>
         </Suspense>
       </div>
+      <Footer />
     </>
   );
 };
