@@ -34,6 +34,7 @@ import UserCalendarPage from "./pages/UserCalendarPage/UserCalendarPage";
 import useToastStorage from "./hooks/useToastStorage";
 import { useLoadingStore } from "./config/zustand";
 import WelcomeScreen from "./components/WelcomeScreen/WelcomeScreen";
+import VerifyEmail from "./pages/VerifyEmailPage/VerifyEmail";
 
 const router = createBrowserRouter([
   {
@@ -142,6 +143,10 @@ const router = createBrowserRouter([
   {
     path: "/change-password",
     element: <ChangePassword />,
+  },
+  {
+    path: "/verify-email/:token",
+    element: <VerifyEmail />,
   },
 ]);
 
