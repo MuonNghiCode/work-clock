@@ -13,5 +13,11 @@ export const API_CONTANTS = {
     },
   APPROVAL: {
     GET_CLAIM_APPROVAL: "/claims/approval-search",
-  }
+  },
+  CLAIMS: {
+    CLAIMER_SEARCH: "/claims/claimer-search",
+    CLAIM_DETAIL: "/claims",
+  },
 };
+  
+  

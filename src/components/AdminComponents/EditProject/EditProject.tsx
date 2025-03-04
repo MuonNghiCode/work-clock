@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Project, ProjectInfo } from "../../../types/Project";
-import { Modal } from "antd";
+import { Descriptions, Modal } from "antd";
 
 interface EditProjectProps {
   onClose: () => void;
@@ -16,12 +16,11 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, project, users, isEd
     return `${year}-${month}-${day}`;
   };
 
-  const formatDateToDDMMYYYY = (dateStr: string) => {
-    if (!dateStr) return "";
-    const [year, month, day] = dateStr.split('-');
-    return `${day}-${month}${year}`;
+  const formatDate = (dateString: string) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toISOString().split("T")[0];
   };
-
 
   const [projectData, setProjectData] = useState({
     name: project?.project_name || "",
@@ -30,13 +29,50 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, project, users, isEd
     enddate: project?.project_end_date ? project.project_end_date : "",
     status: project?.project_status || "New",
     user: project?.project_members || "",
-    department: project?.project_department || ""
+    department: project?.project_department || "",
+    descriptions: project?.project_description || ""
   });
 
-  const handleSave = () =>{
-    //goi api vo day
+  const handleSave = async () => {
+    const data = {
+        project_name: projectData.name,
+        project_code: projectData.code,
+        project_department: projectData.department,
+        project_description: projectData.descriptions,
+        project_start_date: projectData.date,
+        project_end_date: projectData.enddate,
+        project_members: [
+            {
+                user_id: projectData.user,
+                project_role: "Project Manager"
+            }
+        ],
+        project_status: projectData.status,
+    };
 
-    onClose;
+    try {
+        // Call the API to save the project data
+        const response = await fetch('/api/projects', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        // Optionally handle the response
+        const result = await response.json();
+        console.log('Project saved successfully:', result);
+        
+        // Close the modal after saving
+        onClose();
+    } catch (error) {
+        console.error('Error saving project:', error);
+    }
   }
  
 
@@ -74,7 +110,7 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, project, users, isEd
             <label className="block text-gray-700 font-medium text-lg">Start Date</label>
             <input
               type="date"
-              value={projectData.date}
+              value={project ? formatDate(project.project_start_date) : ""}
               onChange={(e) => setProjectData({ ...projectData, date: e.target.value })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-base"
             />
@@ -84,7 +120,7 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, project, users, isEd
             <label className="block text-gray-700 font-medium text-lg">End Date</label>
             <input
               type="date"
-              value={projectData.enddate}
+              value={project ? formatDate(project.project_end_date) : ""}
               onChange={(e) => setProjectData({ ...projectData, enddate: e.target.value })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-base"
             />
@@ -128,13 +164,25 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, project, users, isEd
           <select
             value={projectData.status}
             onChange={(e) => setProjectData({ ...projectData, status: e.target.value as "Processing" | "Pending" | "Complete" })}
-            className="w-1/2 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 bg-white text-base"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 bg-white text-base"
           >
             <option value="Processing">Processing</option>
             <option value="Pending">Pending</option>
             <option value="Complete">Complete</option>
           </select>
         </div>
+
+        <div className="flex-1 space-y-2">
+            <label className="block text-gray-700 font-medium text-lg">Description</label>
+            <input
+              type="text"
+              value={projectData.descriptions}
+              onChange={(e) => setProjectData({ ...projectData, department: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-base"
+              placeholder="Enter department"
+            />
+          </div>
+
       </div>
     </div>
   </Modal>

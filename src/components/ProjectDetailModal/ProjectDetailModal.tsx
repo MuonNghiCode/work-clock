@@ -32,7 +32,7 @@ const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ project, onClos
 
           <div className="space-y-4">
             <label className="block text-gray-700 font-medium text-2xl">Project Code</label>
-            <p className="w-full px-8 py-4 border border-gray-300 rounded-lg bg-gray-50 text-xl">{project.code}</p>
+            <p className="w-full px-8 py-4 border border-gray-300 rounded-lg bg-gray-50 text-xl">{project.key}</p>
           </div>
 
           <div className="space-y-4">

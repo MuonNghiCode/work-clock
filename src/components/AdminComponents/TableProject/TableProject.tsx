@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Button, Pagination, Tag, Input, Modal } from "antd";
+import { Button, Pagination, Tag, Input } from "antd";
 import { Project, ProjectInfo } from "../../../types/Project";
 import { GetProps } from "antd/lib/_util/type";
 import ConfirmModal from "../../ConfirmModal/ConfirmModal";
 import Icons from "../../icon";
 import EditProject from "../EditProject/EditProject";
 import ProjectDetail from "../../ProjectDetail/ProjectDetail";
-import { PageInfo, SearchCondition } from "../../../types/ProjectTypes";
+import { PageInfo, ProjectItem, SearchCondition } from "../../../types/ProjectTypes";
 import { getAllProject } from "../../../services/projectService";
 import AddProject from "../AddProject/AddProject";
+import '../../../types/Project';
+import '../../../types/ProjectTypes';
+import { ResponseModel } from "../../../models/ResponseModel";
 
 type SearchProps = GetProps<typeof Input.Search>;
 const { Search } = Input;
@@ -76,10 +79,27 @@ const TableProject: React.FC = ({
   console.log('data', projects)
 
   const statusTags = ["All", "Processing", "Pending", "Complete"];
+
+  const projectDetail = (data: ProjectItem): ProjectInfo => ({
+    _id: data.project_code,
+    project_name: data.project_name,
+    project_code: data.project_code,
+    project_start_date: data.project_start_date,
+    project_end_date: data.project_end_date,
+    project_status: data.project_status,
+    project_members: data.project_members || [],
+    project_department: data.project_department,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    updated_by: "",
+    is_deleted: false,
+    project_description: data.project_description || "",
+  });
+
   const fetchProjects = async () => {
     try {
       const searchCondition: SearchCondition = {
-        keyword: searchValue, // Include search keyword
+        keyword: searchValue,
         project_start_date: "",
         project_end_date: "",
         is_delete: false,
@@ -93,21 +113,13 @@ const TableProject: React.FC = ({
         totalPages: 0,
       };
 
-      const response = await getAllProject(searchCondition, pageInfo);
+      const response: ResponseModel<{ pageData: ProjectItem[], pageInfo: PageInfo }> = await getAllProject(searchCondition, pageInfo);
       if (response.success) {
-        // const formattedProjects: Project[] = response.data.pageData.map((item: ProjectItem) => ({
-        //   key: item._id, // Assuming _id is the unique identifier
-        //   name: item.project_name,
-        //   date: item.project_start_date,
-        //   enddate: item.project_end_date,
-        //   department: item.project_department,
-        //   status: item.project_status || 'New',
-        //   project: item.project_name,
-        //   startdate: item.project_start_date,
-        // }));
-        // setProjects(formattedProjects);
-        setProjects(response.data.pageData)
+        const projects = response.data.pageData.map(projectDetail);
+        setProjects(projects);
         setTotalItems(response.data.pageInfo.totalItems);
+      } else {
+        console.error(response.message);
       }
     } catch (error) {
       console.error("Error fetching projects:", error);
@@ -340,7 +352,7 @@ const TableProject: React.FC = ({
       <ProjectDetail
         visible={showProjectDetail}
         onClose={handleClose}
-        Project={selectedProject} // Cast selectedProject to Project type
+        project={selectedProject}
         users={users}
       />
       <ConfirmModal

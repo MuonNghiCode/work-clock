@@ -12,3 +12,4 @@ export const getAllProject = async (
     });
     return response as ProjectSearchResponse;
 }
+
