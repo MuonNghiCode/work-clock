@@ -13,6 +13,8 @@ interface PaymentModalProps {
   onStateChange: (status: "success" | "error") => void;
   claimer: string;
   date: Date;
+  email: string;
+  accountantEmail: string;
 }
 
 const PaymentModal: React.FC<PaymentModalProps> = ({
@@ -22,6 +24,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   onStateChange,
   claimer,
   date,
+  email,
+  accountantEmail,
 }) => {
   const [form] = Form.useForm();
 
@@ -97,6 +101,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
         layout="vertical"
         initialValues={{
           payment: "Card",
+          email: accountantEmail,
+          to_email: email,
         }}
       >
         <div className="grid grid-cols-2 gap-4">
@@ -138,25 +144,11 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
           </Form.Item>
         </div>
         <div className="grid grid-cols-2 gap-4">
-          <Form.Item
-            label="Accountant Email"
-            name="email"
-            rules={[
-              { required: true, message: "Email is required" },
-              { type: "email", message: "Please enter a valid email" },
-            ]}
-          >
-            <Input type="email" placeholder="Your email address" />
+          <Form.Item label="Accountant Email" name="email">
+            <Input type="email" placeholder="Your email address" readOnly />
           </Form.Item>
-          <Form.Item
-            label="Recipient Email"
-            name="to_email"
-            rules={[
-              { required: true, message: "Recipient email is required" },
-              { type: "email", message: "Please enter a valid email" },
-            ]}
-          >
-            <Input type="email" placeholder="Recipient email address" />
+          <Form.Item label="Recipient Email" name="to_email">
+            <Input placeholder="Recipient email address" readOnly />
           </Form.Item>
           <Form.Item
             label="Payment"
