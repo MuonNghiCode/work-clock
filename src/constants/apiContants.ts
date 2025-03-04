@@ -8,11 +8,13 @@ export const API_CONTANTS = {
   ROLES: {
     GET_ALL: "/roles/get-all",
   },
-  USERS: {
-    CHANGE_PASSWORD: "/users/change-password",
-    GET_ALL: "/users/get-all",
-    APPROVAL: {
-      GET_CLAIM_APPROVAL: "/claims/approval-search",
-    }
+  APPROVAL: {
+    GET_CLAIM_APPROVAL: "/claims/approval-search",
+  },
+  CLAIMS: {
+    CLAIMER_SEARCH: "/claims/claimer-search",
+    CLAIM_DETAIL: "/claims",
   },
 };
+
+

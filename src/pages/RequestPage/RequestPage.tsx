@@ -1,12 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form } from 'antd';
 import EditRequestModal from '../../components/RequestComponents/EditRequestModal/EditRequestModal';
 import DeleteRequestModal from '../../components/RequestComponents/DeleteRequestModal/DeleteRequestModal';
 import TableRequest from '../../components/RequestComponents/TableRequest/TableRequest';
+import { getClaimerSearch } from '../../services/claimService';
+import { ClaimItem, SearchCondition, PageInfoRequest, PageInfo } from '../../types/ClaimType';
+import { ResponseModel } from '../../models/ResponseModel';
 
 interface ClaimRequest {
   key: string;
-  project: string;
+  claimname: string;
+  project: string; 
   date: string;
   totalHours: string;
   timeFrom: string;
@@ -18,146 +22,75 @@ const calculateHours = (timeFrom: string, timeTo: string): number => {
   const convertTime = (timeStr: string): number => {
     const [time, period] = timeStr.split(' ');
     let [hours, minutes] = time.split(':').map(Number);
-    
-    if (period === 'PM' && hours !== 12) {
-      hours += 12;
-    }
-    if (period === 'AM' && hours === 12) {
-      hours = 0;
-    }
-    
+    if (period === 'PM' && hours !== 12) hours += 12;
+    if (period === 'AM' && hours === 12) hours = 0;
     return hours + minutes / 60;
   };
-
   const fromHours = convertTime(timeFrom);
   const toHours = convertTime(timeTo);
-  
   return Math.round(toHours - fromHours);
 };
 
-const data: ClaimRequest[] = [
-  {
-    key: '1',
-    project: 'Anaconda address',
-    date: '10/02/2025',
-    timeFrom: '6:00 PM',
-    timeTo: '10:00 PM',
-    totalHours: calculateHours('6:00 PM', '10:00 PM').toString(),
-    status: 'Approved',
-  },
-  {
-    key: '2',
-    project: 'Anaconda address',
-    date: '10/02/2025',
-    timeFrom: '2:00 PM',
-    timeTo: '5:00 PM',
-    totalHours: calculateHours('2:00 PM', '5:00 PM').toString(),
-    status: 'Waiting',
-  },
-  {
-    key: '3',
-    project: 'Python Project',
-    date: '11/02/2025',
-    timeFrom: '6:00 PM',
-    timeTo: '10:00 PM',
-    totalHours: calculateHours('6:00 PM', '10:00 PM').toString(),
-    status: 'Draft',
-  },
-  {
-    key: '4',
-    project: 'React Development',
-    date: '12/02/2025',
-    timeFrom: '6:00 PM',
-    timeTo: '10:00 PM',
-    totalHours: calculateHours('6:00 PM', '10:00 PM').toString(),
-    status: 'Waiting',
-  },
-  {
-    key: '5',
-    project: 'Mobile App',
-    date: '13/02/2025',
-    timeFrom: '6:00 PM',
-    timeTo: '10:00 PM',
-    totalHours: calculateHours('6:00 PM', '10:00 PM').toString(),
-    status: 'Approved',
-  },
-  {
-    key: '6',
-    project: 'Database Migration',
-    date: '14/02/2025',
-    timeFrom: '6:00 PM',
-    timeTo: '10:00 PM',
-    totalHours: calculateHours('6:00 PM', '10:00 PM').toString(),
-    status: 'Draft',
-  },
-  {
-    key: '7',
-    project: 'Cloud Infrastructure',
-    date: '15/02/2025',
-    timeFrom: '6:00 PM',
-    timeTo: '10:00 PM',
-    totalHours: calculateHours('6:00 PM', '10:00 PM').toString(),
-    status: 'Approved',
-  },
-  {
-    key: '8',
-    project: 'Security Audit',
-    date: '16/02/2025',
-    timeFrom: '6:00 PM',
-    timeTo: '10:00 PM',
-    totalHours: calculateHours('6:00 PM', '10:00 PM').toString(),
-    status: 'Waiting',
-  },
-  {
-    key: '9',
-    project: 'UI/UX Design',
-    date: '17/02/2025',
-    timeFrom: '6:00 PM',
-    timeTo: '10:00 PM',
-    totalHours: calculateHours('6:00 PM', '10:00 PM').toString(),
-    status: 'Approved',
-  },
-  {
-    key: '10',
-    project: 'API ',
-    date: '18/02/2025',
-    timeFrom: '6:00 PM',
-    timeTo: '10:00 PM',
-    totalHours: calculateHours('6:00 PM', '10:00 PM').toString(),
-    status: 'Waiting',
-  },
-  {
-    key: '11',
-    project: 'API 2 ',
-    date: '19/02/2025',
-    timeFrom: '6:00 PM',
-    timeTo: '10:00 PM',
-    totalHours: calculateHours('6:00 PM', '10:00 PM').toString(),
-    status: 'Approved',
-  },
-  {
-    key: '12',
-    project: 'API 3',
-    date: '20/02/2025',
-    timeFrom: '10:00 PM',
-    timeTo: '15:00 PM',
-    totalHours: calculateHours('10:00 PM', '15:00 PM').toString(),
-    status: 'Rejected',
-  },
-
-];
-
 const RequestPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+  const [statusFilter, setStatusFilter] = useState<string | null>(null);
+  const [searchText, setSearchText] = useState('');
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState<any>(null);
-  const [tableData, setTableData] = useState(data);
-  const [form] = Form.useForm();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deletingRecord, setDeletingRecord] = useState<ClaimRequest | null>(null);
-  const [statusFilter, setStatusFilter] = useState<string | null>(null);
-  const [pageSize, setPageSize] = useState(5);
-  const [searchText, setSearchText] = useState('');
+  const [form] = Form.useForm();
+  const [apiData, setApiData] = useState<ClaimRequest[]>([]);
+  const [totalItems, setTotalItems] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  const mapClaimToRequest = (item: ClaimItem): ClaimRequest => ({
+    key: item._id,
+    claimname: item.claim_name || 'Unnamed Claim',
+    project: item.project_info?.project_name || 'Unknown', // Thêm project
+    date: new Date(item.claim_start_date).toLocaleDateString('vi-VN'),
+    timeFrom: new Date(item.claim_start_date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
+    timeTo: new Date(item.claim_end_date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
+    totalHours: item.total_work_time?.toString() || String(Math.round((new Date(item.claim_end_date).getTime() - new Date(item.claim_start_date).getTime()) / (1000 * 60 * 60))),
+    status: item.claim_status || 'Unknown'
+  });
+
+  const fetchClaims = async () => {
+    setLoading(true);
+    try {
+      const searchCondition: SearchCondition = {
+        keyword: searchText,
+        claim_status: statusFilter === 'All' || !statusFilter ? '' : statusFilter,
+        claim_start_date: '',
+        claim_end_date: '',
+        is_delete: false
+      };
+      const pageInfo: PageInfoRequest = { pageNum: currentPage, pageSize };
+
+      const response: ResponseModel<{ pageData: ClaimItem[], pageInfo: PageInfo }> = await getClaimerSearch(searchCondition, pageInfo);
+      if (response.success) {
+        const claims = response.data.pageData.map(mapClaimToRequest);
+        setApiData(claims);
+        setTotalItems(response.data.pageInfo.totalItems);
+      } else {
+        console.warn('API returned no data for this search:', searchCondition);
+      }
+    } catch (error) {
+      console.error('Error fetching claims:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSearch = (value: string) => {
+    setCurrentPage(1);
+    setSearchText(value);
+  };
+
+  useEffect(() => {
+    fetchClaims();
+  }, [currentPage, pageSize, statusFilter, searchText]);
 
   const handleEdit = (record: any) => {
     setEditingRecord(record);
@@ -174,16 +107,10 @@ const RequestPage: React.FC = () => {
     try {
       const values = await form.validateFields();
       const totalHours = calculateHours(values.timeFrom, values.timeTo).toString();
-      
-      setTableData(prevData => 
-        prevData.map(item => 
-          item.key === editingRecord.key 
-            ? { ...item, ...values, totalHours } 
-            : item
-        )
-      );
+      const updatedRecord = { ...editingRecord, ...values, totalHours };
       setIsEditModalOpen(false);
       form.resetFields();
+      return updatedRecord;
     } catch (error) {
       console.error('Validation failed:', error);
     }
@@ -196,7 +123,6 @@ const RequestPage: React.FC = () => {
 
   const handleDeleteModalOk = () => {
     if (deletingRecord) {
-      setTableData(prevData => prevData.filter(item => item.key !== deletingRecord.key));
       setIsDeleteModalOpen(false);
       setDeletingRecord(null);
     }
@@ -207,15 +133,12 @@ const RequestPage: React.FC = () => {
     setDeletingRecord(null);
   };
 
-  const handleSearch = (value: string) => {
-    setCurrentPage(1);
-    setSearchText(value);
-  };
-
-  const handlePageChange = (page: number, pageSize?: number) => {
-    setCurrentPage(page);
-    if (pageSize) {
-      setPageSize(pageSize);
+  const handlePageChange = (page: number, newPageSize?: number) => {
+    if (newPageSize && newPageSize !== pageSize) {
+      setPageSize(newPageSize);
+      setCurrentPage(1);
+    } else {
+      setCurrentPage(page);
     }
   };
 
@@ -225,21 +148,17 @@ const RequestPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 bg-orange-100 shadow-md rounded-lg ">
-      <h1 className="text-3xl font-bold text-gray-800 mb-4">Request-Page Management</h1>
+    <div className="p-6 bg-orange-100 shadow-md rounded-lg">
+      <h1 className="text-3xl font-bold text-gray-800 mb-4">Claim Request Management</h1>
       <TableRequest
-        data={tableData}
-        currentPage={currentPage}
-        pageSize={pageSize}
-        statusFilter={statusFilter}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        onStatusChange={handleStatusChange}
-        onSearch={handleSearch}
-        onPageChange={handlePageChange}
-        searchText={searchText}
+        apiData={apiData}
+        totalItems={totalItems}
+        loading={loading}
+        pagination={{ currentPage, pageSize, onPageChange: handlePageChange }}
+        filter={{ statusFilter, onStatusChange: handleStatusChange }}
+        search={{ searchText, onSearch: handleSearch }}
+        actions={{ onEdit: handleEdit, onDelete: handleDelete }}
       />
-
       <EditRequestModal
         isOpen={isEditModalOpen}
         onCancel={handleEditModalCancel}
@@ -247,7 +166,6 @@ const RequestPage: React.FC = () => {
         form={form}
         editingRecord={editingRecord}
       />
-
       <DeleteRequestModal
         isOpen={isDeleteModalOpen}
         onOk={handleDeleteModalOk}
