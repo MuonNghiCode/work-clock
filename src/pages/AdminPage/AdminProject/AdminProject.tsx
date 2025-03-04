@@ -111,8 +111,8 @@ const AdminProject: React.FC = () => {
             loading={loading}
             onEditProject={handleEditProject}
             onDeleteProject={handleDeleteProject}
-            searchValue={searchValue} // Pass searchValue
-            setSearchValue={setSearchValue} // Pass setSearchValue
+            searchValue={searchValue} // Pass searchValue to TableProject
+            setSearchValue={setSearchValue} // Pass setSearchValue to TableProject
           />
         </div>
       </div>
