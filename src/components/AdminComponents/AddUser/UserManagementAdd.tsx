@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { X } from "lucide-react";
 import { toast } from "react-toastify";
-import { createUser, triggerVerifyToken } from "../../../services/userAuth";
+import { createUser } from "../../../services/userAuth";
 import { NewUser } from "../../../pages/AdminPage/AdminUser/AdminUserManagement";
 
 interface UserManagementAddProps {
