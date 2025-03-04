@@ -1,7 +1,7 @@
 // userAuth.ts
 import { API_CONTANTS } from "../constants/apiContants";
 import { ResponseModel } from "../models/ResponseModel";
-import { get, post, put, del } from "./apiService";
+import {  post, put, del } from "./apiService";
 
 // Interface cho user data
 interface UserData {

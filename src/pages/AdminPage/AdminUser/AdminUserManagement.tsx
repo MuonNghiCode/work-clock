@@ -197,7 +197,7 @@ const AdminUserManagement: React.FC = () => {
               : statusFilter === "unlocked"
               ? false
               : undefined,
-          is_deleted: statusFilter === "deleted" ? true : false,
+          // is_deleted: statusFilter === "deleted" ? true : false,
           is_verified:
             statusFilter === "verified"
               ? true
@@ -249,9 +249,13 @@ const AdminUserManagement: React.FC = () => {
       // Only include changed fields
       if (updatedUser.user_name !== editingUser?.user_name) {
         updateData.user_name = updatedUser.user_name;
+      } else {
+        updateData.user_name = editingUser?.user_name;
       }
       if (updatedUser.role_code !== editingUser?.role_code) {
         updateData.role_code = updatedUser.role_code;
+      } else {
+        updateData.role_code = editingUser?.role_code;
       }
       if (updatedUser.is_blocked !== editingUser?.is_blocked) {
         updateData.is_blocked = updatedUser.is_blocked;
@@ -410,7 +414,7 @@ const AdminUserManagement: React.FC = () => {
               <option value="all">All Status</option>
               <option value="unlocked">Unlocked</option>
               <option value="locked">Locked</option>
-              <option value="deleted">Deleted</option>
+              {/* <option value="deleted">Deleted</option> */}
             </select>
           </div>
 
