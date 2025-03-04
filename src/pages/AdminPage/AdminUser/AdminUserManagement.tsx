@@ -25,6 +25,7 @@ import { getUsers, updateUser } from "../../../services/userAuth";
 import axiosInstance from "../../../config/axiosUser";
 import { getEmployeeByUserId } from "../../../services/userService";
 import EditEmployeeModal from "../../../components/AdminComponents/EditEmployee/EditEmployeeModal";
+import { debounce } from "lodash";
 
 // Định nghĩa interface User dựa trên dữ liệu từ API
 export interface User<T> {
@@ -177,6 +178,15 @@ const AdminUserManagement: React.FC = () => {
 
   // Lấy thông tin admin đang đăng nhập từ localStorage
   const currentAdmin = JSON.parse(localStorage.getItem("user") || "{}");
+
+  // Add debounced search handler
+  const handleSearch = useCallback(
+    debounce((value: string) => {
+      setSearchTerm(value.trim());
+      setCurrentPage(1); // Reset to first page when searching
+    }, 500),
+    []
+  );
 
   // Di chuyển fetchUsers vào bên trong component
   const fetchUsers = useCallback(
@@ -424,12 +434,8 @@ const AdminUserManagement: React.FC = () => {
                 type="text"
                 placeholder="Search by username..."
                 className="w-[300px] px-4 py-2 border rounded-full pr-10"
-                value={searchTerm}
-                onChange={(e) => {
-                  const value = e.target.value.trim();
-                  setSearchTerm(value);
-                  setCurrentPage(1); // Reset to first page when searching
-                }}
+                defaultValue={searchTerm}
+                onChange={(e) => handleSearch(e.target.value)}
               />
               <Search
                 className="absolute right-3 top-2.5 text-gray-400"
