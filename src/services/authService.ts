@@ -1,5 +1,4 @@
 import { get, post, put } from "./apiService";
-
 import { ResponseModel } from "../models/ResponseModel";
 import { API_CONTANTS } from "../constants/apiContants";
 
@@ -45,4 +44,13 @@ export const logoutApi = async (): Promise<void> => {
 
 export const forgotPassword = async (email: string): Promise<ResponseModel<null>> => {
   return await put<null>(API_CONTANTS.AUTH.FORGOT_PASSWORD, { email });
+};
+
+export const verifyToken = async (token: string): Promise<ResponseModel<null>> => {
+  return await post<null>(API_CONTANTS.AUTH.VERIFY_TOKEN, { token });
+};
+export const triggerVerifyToken = async (email: string): Promise<ResponseModel<any>> => {
+  return post(API_CONTANTS.AUTH.VERIFY_TOKEN, {
+    email,
+  });
 };
