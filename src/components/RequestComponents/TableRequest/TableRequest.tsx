@@ -6,7 +6,8 @@ interface ClaimRequest {
   key: string;
   claimname: string;
   project: string; 
-  date: string;
+  start_date: string;
+  end_date: string;
   totalHours: string;
   timeFrom: string;
   timeTo: string;
@@ -59,7 +60,8 @@ const TableRequest: React.FC<TableRequestProps> = ({
             <thead className="request-table-header bg-gradient-to-r from-[#FEB78A] to-[#FF914D] h-[70px] text-lg text-white rounded-t-lg">
               <tr>
                 <th className="request-table-header-cell px-4 py-2 rounded-tl-2xl">Claim Name</th>
-                <th className="request-table-header-cell px-4 py-2 border-l-2 border-white">Date</th>
+                <th className="request-table-header-cell px-4 py-2 border-l-2 border-white">Start Date</th>
+                <th className="request-table-header-cell px-4 py-2 border-l-2 border-white">End Date</th>
                 <th className="request-table-header-cell px-4 py-2 border-l-2 border-white">Total Hours</th>
                 <th className="request-table-header-cell px-4 py-2 border-l-2 border-white">Status</th>
                 <th className="request-table-header-cell px-4 py-2 border-l-2 border-white rounded-tr-2xl">Action</th>
@@ -67,7 +69,7 @@ const TableRequest: React.FC<TableRequestProps> = ({
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={5} className="request-table-loading text-center py-4">Loading...</td></tr>
+                <tr><td colSpan={6} className="request-table-loading text-center py-4">Loading...</td></tr>
               ) : apiData.length > 0 ? (
                 apiData.map(item => (
                   <tr
@@ -76,7 +78,8 @@ const TableRequest: React.FC<TableRequestProps> = ({
                     onClick={() => handleRowClick(item)}
                   >
                     <td className="request-table-cell px-4 py-2 rounded-l-2xl">{item.claimname}</td>
-                    <td className="request-table-cell px-4 py-2">{item.date}</td>
+                    <td className="request-table-cell px-4 py-2">{item.start_date}</td>
+                    <td className="request-table-cell px-4 py-2">{item.end_date}</td>
                     <td className="request-table-cell px-4 py-2">
                       <div className="request-table-hours flex flex-col items-center">
                         <span className="text-gray-700">{`(${item.timeFrom}-${item.timeTo})`}</span>
@@ -110,7 +113,7 @@ const TableRequest: React.FC<TableRequestProps> = ({
                   </tr>
                 ))
               ) : (
-                <tr><td colSpan={5} className="request-table-no-data text-center py-4">No data available</td></tr>
+                <tr><td colSpan={6} className="request-table-no-data text-center py-4">No data available</td></tr>
               )}
             </tbody>
           </table>
@@ -137,15 +140,23 @@ const TableRequest: React.FC<TableRequestProps> = ({
           className="request-modal"
         >
           {selectedClaim ? (
-            <div className="request-modal-content">
-              <p><strong>ID:</strong> {selectedClaim.key}</p>
-              <p><strong>Claim Name:</strong> {selectedClaim.claimname}</p>
-              <p><strong>Project:</strong> {selectedClaim.project}</p>
-              <p><strong>Date:</strong> {selectedClaim.date}</p>
-              <p><strong>Time From:</strong> {selectedClaim.timeFrom}</p>
-              <p><strong>Time To:</strong> {selectedClaim.timeTo}</p>
-              <p><strong>Total Hours:</strong> {selectedClaim.totalHours} hours</p>
-              <p><strong>Status:</strong> {selectedClaim.status}</p>
+            <div className="request-modal-content grid grid-cols-2 gap-4">
+
+              <div>
+                <p><strong>ID:</strong> {selectedClaim.key}</p>
+                <p><strong>Claim Name:</strong> {selectedClaim.claimname}</p>
+                <p><strong>Project:</strong> {selectedClaim.project}</p>
+                <p><strong>Status:</strong> {selectedClaim.status}</p>
+              </div>
+
+              <div>
+                <p><strong>Start Date:</strong> {selectedClaim.start_date}</p>
+                <p><strong>End Date:</strong> {selectedClaim.end_date}</p>
+                <p><strong>Time From:</strong> {selectedClaim.timeFrom}</p>
+                <p><strong>Time To:</strong> {selectedClaim.timeTo}</p>
+                <p><strong>Total Hours:</strong> {selectedClaim.totalHours} hours</p>
+                
+              </div>
             </div>
           ) : (
             <p className="request-modal-no-data">No data available</p>

@@ -17,7 +17,8 @@ interface ClaimRequest {
   key: string;
   claimname: string;
   project: string;
-  date: string;
+  start_date: string;
+  end_date: string;
   totalHours: string;
   timeFrom: string;
   timeTo: string;
@@ -55,7 +56,8 @@ const RequestPage: React.FC = () => {
     key: item._id,
     claimname: item.claim_name || 'Unnamed Claim',
     project: item.project_info?.project_name || 'Unknown',
-    date: new Date(item.claim_start_date).toLocaleDateString('vi-VN'),
+    start_date: new Date(item.claim_start_date).toLocaleDateString('vi-VN'),
+    end_date: new Date(item.claim_end_date).toLocaleDateString('vi-VN'),
     timeFrom: new Date(item.claim_start_date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
     timeTo: new Date(item.claim_end_date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
     totalHours: item.total_work_time?.toString() || String(Math.round((new Date(item.claim_end_date).getTime() - new Date(item.claim_start_date).getTime()) / (1000 * 60 * 60))),
@@ -77,8 +79,12 @@ const RequestPage: React.FC = () => {
       const response: ResponseModel<{ pageData: ClaimItem[], pageInfo: PageInfo }> = await getClaimerSearch(searchCondition, pageInfo);
       if (response.success) {
         const claims = response.data.pageData.map(mapClaimToRequest);
-        // Sort claims by date (most recent to oldest)
-        claims.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        // Sort claims by start_date (most recent to oldest), then by end_date if start_dates are equal
+        claims.sort((a, b) => {
+          const startDateDiff = new Date(b.start_date).getTime() - new Date(a.start_date).getTime();
+          if (startDateDiff !== 0) return startDateDiff;
+          return new Date(b.end_date).getTime() - new Date(a.end_date).getTime();
+        });
         setApiData(claims);
         setTotalItems(response.data.pageInfo.totalItems);
       } else {
