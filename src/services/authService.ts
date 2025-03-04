@@ -22,6 +22,7 @@ export const login = async (email: string, password: string): Promise<ResponseMo
   if (response.success) {
     localStorage.setItem("token", response.data.token);
   }
+  console.log(response.data.token);
   return response;
 };
 

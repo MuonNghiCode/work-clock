@@ -20,7 +20,10 @@ export const API_CONTANTS = {
     CLAIMERS_SEARCH: "/claims/claimer-search",
     CLAIM_DETAIL: "/claims",
   },
-  USER: {
+
+  USERS: {
+    CHANGE_PASSWORD: "/users/change-password",
+    GET_ALL: "/users/get-all",
     CREATE_USER: "/users",
     UPDATE_USER: "/users/${id}",
     DELETE_USER: "/users/${id}",

@@ -1,7 +1,7 @@
 // userAuth.ts
 import { API_CONTANTS } from "../constants/apiContants";
 import { ResponseModel } from "../models/ResponseModel";
-import {  post, put, del } from "./apiService";
+import { post, put, del } from "./apiService";
 
 // Interface cho user data
 interface UserData {
@@ -16,7 +16,7 @@ interface UserData {
 
 // Lấy danh sách người dùng với phân trang và tìm kiếm
 export const getUsers = async (searchCondition: any, pageInfo: any): Promise<ResponseModel<any>> => {
-  return post(API_CONTANTS.USER.SEARCH_USER, {
+  return post(API_CONTANTS.USERS.SEARCH_USER, {
     searchCondition,
     pageInfo,
   });
@@ -24,7 +24,7 @@ export const getUsers = async (searchCondition: any, pageInfo: any): Promise<Res
 
 // Tạo người dùng mới
 export const createUser = async (userData: UserData): Promise<ResponseModel<null>> => {
-  return post(API_CONTANTS.USER.CREATE_USER, {
+  return post(API_CONTANTS.USERS.CREATE_USER, {
     ...userData,
     is_blocked: userData.is_blocked ?? true,
     is_verified: userData.is_verified ?? false,
@@ -41,17 +41,17 @@ export const updateUser = async (
     throw new Error("User ID is required");
   }
 
-  return put(API_CONTANTS.USER.UPDATE_USER.replace("${id}", userId), userData);
+  return put(API_CONTANTS.USERS.UPDATE_USER.replace("${id}", userId), userData);
 };
 
 // Xóa người dùng (soft delete)
 export const deleteUser = async (userId: string): Promise<ResponseModel<any>> => {
-  return del(API_CONTANTS.USER.DELETE_USER.replace("${id}", userId));
+  return del(API_CONTANTS.USERS.DELETE_USER.replace("${id}", userId));
 };
 
 // Thay đổi trạng thái khóa/mở khóa người dùng
 export const changeUserStatus = async (userId: string, isLocked: boolean): Promise<ResponseModel<any>> => {
-  return put(API_CONTANTS.USER.CHANGE_STATUS, {
+  return put(API_CONTANTS.USERS.CHANGE_STATUS, {
     user_id: userId,
     is_blocked: isLocked,
   });
