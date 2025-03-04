@@ -108,7 +108,7 @@ html {
     -webkit-text-fill-color: transparent;
   }
   .box-shadow-brand-orange {
-    box-shadow: 12px 12px 20px 0px rgba(255, 168, 113, 0.797);
+    box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.3);
   }
   .rbc-calendar {
     background-color: #ffffff;

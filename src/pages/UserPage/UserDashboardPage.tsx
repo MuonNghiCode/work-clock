@@ -18,34 +18,53 @@ const UserDashboardPage = () => {
   return (
     <>
       <div className="flex items-center justify-between w-full">
-        <h1 className="text-3xl">User Dashboard</h1>
+        <h1 className="text-[40px] mt-4 font-bold">User Dashboard</h1>
         <Button
-          className="w-42 !h-12 !p-4 !bg-[#ff914d] !text-lg !font-semibold !text-white hover:!bg-[#feb78a]"
+          className="w-50 !h-12 !p-4 !bg-[#ff914d] !text-lg !font-semibold !text-white hover:!bg-[#feb78a] z-[-10]"
           onClick={handleOpenModalAddNewClaim}
         >
           Add New Claim
         </Button>
       </div>
       <div className="flex justify-between w-full mt-4">
-        <div className="text-2xl border w-1/4 mr-5 pl-4 pt-5 flex flex-col items-start rounded-[10px] text-center h-25 cursor-pointer transition duration-300 bg-gradient-to-b from-white to-transparent hover:from-white hover:to-[#feb78a] active:to-[#feb78a]">
-          <div className="text-4xl font-bold">0</div>
-          <div>Created Claims</div>
+        <div className="bg-white p-4 rounded-lg shadow w-1/4 mr-5">
+          <div className="text-3xl text-blue-600 font-bold">0</div>
+          <div className="text-lg font-bold">Created Claims</div>
         </div>
-        {/*-----------------------------------*/}
-        <div className="text-2xl border w-1/4 mr-5 pl-4 pt-5 flex flex-col items-start rounded-[10px] text-center h-25 cursor-pointer transition duration-300 bg-gradient-to-b from-white to-transparent hover:from-white hover:to-[#feb78a] active:to-[#feb78a]">
-          <div className="text-4xl font-bold">0</div>
-          <div>Draft Claims</div>
+
+        <div className="bg-white p-4 rounded-lg shadow w-1/4 mr-5">
+          <div className="text-3xl text-blue-600 font-bold">0</div>
+          <div className="text-lg font-bold">Draft Claims</div>
         </div>
-        {/*-----------------------------------*/}
-        <div className="text-2xl border w-1/4 mr-5 pl-4 pt-5 flex flex-col items-start rounded-[10px] text-center h-25 cursor-pointer transition duration-300 bg-gradient-to-b from-white to-transparent hover:from-white hover:to-[#feb78a] active:to-[#feb78a]">
-          <div className="text-4xl font-bold">0</div>
-          <div>Pending Claims</div>
+
+        <div className="bg-white p-4 rounded-lg shadow w-1/4 mr-5">
+          <div className="text-3xl text-blue-600 font-bold">0</div>
+          <div className="text-lg font-bold">Pending Claims</div>
         </div>
-        {/*-----------------------------------*/}
-        <div className="text-2xl border w-1/4 pl-4 pt-5 flex flex-col items-start rounded-[10px] text-center h-25 cursor-pointer transition duration-300 bg-gradient-to-b from-white to-transparent hover:from-white hover:to-[#feb78a] active:to-[#feb78a]">
-          <div className="text-4xl font-bold">0</div>
-          <div>Success Claims</div>
+
+        <div className="bg-white p-4 rounded-lg shadow w-1/4">
+          <div className="text-3xl text-blue-600 font-bold">0</div>
+          <div className="text-lg font-bold">Success Claims</div>
         </div>
+      </div>
+      <div className="col-span-4 p-4 rounded-lg">
+        <h3 className="text-lg font-bold">History Transaction</h3>
+        <table className="min-w-full border-separate border-spacing-y-2.5 border-0 text-black w-full">
+          <thead className="bg-brand-gradient h-[70px] text-lg text-white !rounded-t-lg">
+            <tr className="bg-[linear-gradient(45deg,#FEB78A,#FF914D)]">
+              <th className="border-white px-4 py-2 !rounded-tl-2xl">
+                Claims ID
+              </th>
+              <th className="border-l-2 border-white px-4 py-2">Claimer</th>
+              <th className="border-l-2 border-white px-4 py-2">Salary</th>
+              <th className="border-l-2 border-white px-4 py-2">Status</th>
+              <th className="border-l-2 border-white px-4 py-2 !rounded-tr-2xl">
+                Date
+              </th>
+            </tr>
+          </thead>
+          <tbody className="w-full"></tbody>
+        </table>
       </div>
 
       {/* <TableUserDashboard data={data} /> */}
