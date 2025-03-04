@@ -16,5 +16,5 @@ export const API_CONTANTS = {
       CLAIM_DETAIL: "/claims",
     },
   };
-  
+    
   

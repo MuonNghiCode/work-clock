@@ -1,16 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { Form } from 'antd';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Form, Input, Tag } from 'antd';
 import EditRequestModal from '../../components/RequestComponents/EditRequestModal/EditRequestModal';
 import DeleteRequestModal from '../../components/RequestComponents/DeleteRequestModal/DeleteRequestModal';
 import TableRequest from '../../components/RequestComponents/TableRequest/TableRequest';
 import { getClaimerSearch } from '../../services/claimService';
 import { ClaimItem, SearchCondition, PageInfoRequest, PageInfo } from '../../types/ClaimType';
 import { ResponseModel } from '../../models/ResponseModel';
+import { debounce } from 'lodash';
+import { GetProps } from 'antd/es/_util/type';
+import { CheckOutlined } from "@ant-design/icons";
+
+type SearchProps = GetProps<typeof Input.Search>;
+const { Search } = Input;
 
 interface ClaimRequest {
   key: string;
   claimname: string;
-  project: string; 
+  project: string;
   date: string;
   totalHours: string;
   timeFrom: string;
@@ -48,7 +54,7 @@ const RequestPage: React.FC = () => {
   const mapClaimToRequest = (item: ClaimItem): ClaimRequest => ({
     key: item._id,
     claimname: item.claim_name || 'Unnamed Claim',
-    project: item.project_info?.project_name || 'Unknown', // Thêm project
+    project: item.project_info?.project_name || 'Unknown',
     date: new Date(item.claim_start_date).toLocaleDateString('vi-VN'),
     timeFrom: new Date(item.claim_start_date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
     timeTo: new Date(item.claim_end_date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
@@ -71,6 +77,8 @@ const RequestPage: React.FC = () => {
       const response: ResponseModel<{ pageData: ClaimItem[], pageInfo: PageInfo }> = await getClaimerSearch(searchCondition, pageInfo);
       if (response.success) {
         const claims = response.data.pageData.map(mapClaimToRequest);
+        // Sort claims by date (most recent to oldest)
+        claims.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
         setApiData(claims);
         setTotalItems(response.data.pageInfo.totalItems);
       } else {
@@ -83,9 +91,16 @@ const RequestPage: React.FC = () => {
     }
   };
 
-  const handleSearch = (value: string) => {
-    setCurrentPage(1);
-    setSearchText(value);
+  const handleSearch = useCallback(
+    debounce((value: string) => {
+      setCurrentPage(1);
+      setSearchText(value);
+    }, 1000), 
+    []
+  );
+
+  const onSearch: SearchProps['onSearch'] = (value) => {
+    handleSearch(value);
   };
 
   useEffect(() => {
@@ -150,13 +165,36 @@ const RequestPage: React.FC = () => {
   return (
     <div className="p-6 bg-orange-100 shadow-md rounded-lg">
       <h1 className="text-3xl font-bold text-gray-800 mb-4">Claim Request Management</h1>
+      <div className="flex justify-between items-center mb-4">
+        <div>
+          {["All", "Draft", "Pending Approval", "Approved", "Rejected", "Canceled", "Paid"].map((status) => (
+            <Tag
+              key={status}
+              color={statusFilter === status || (status === "All" && !statusFilter) ? "#ff914d" : "default"}
+              onClick={() => handleStatusChange(status)}
+              className="cursor-pointer !px-2 !py-1 !font-squada !text-lg !rounded-lg"
+            >
+              {(statusFilter === status || (status === "All" && !statusFilter)) && <CheckOutlined />} {status}
+            </Tag>
+          ))}
+        </div>
+        <div className="w-[250px] height-[48px] overflow-hidden rounded-full border-[1px] border-gray-300 bg-white !font-squada">
+          <Search
+            placeholder="Search claim name"
+            onSearch={onSearch}
+            onChange={(e) => handleSearch(e.target.value)}
+            style={{ width: 250 }}
+            size="large"
+            className="custom-search pl-1"
+            variant="borderless"
+          />
+        </div>
+      </div>
       <TableRequest
         apiData={apiData}
         totalItems={totalItems}
         loading={loading}
         pagination={{ currentPage, pageSize, onPageChange: handlePageChange }}
-        filter={{ statusFilter, onStatusChange: handleStatusChange }}
-        search={{ searchText, onSearch: handleSearch }}
         actions={{ onEdit: handleEdit, onDelete: handleDelete }}
       />
       <EditRequestModal
