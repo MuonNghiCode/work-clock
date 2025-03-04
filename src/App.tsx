@@ -18,7 +18,6 @@ import FinanceDashBoardPage from "./pages/FinanceDashBoardPage/FinanceDashBoardP
 import UserLayout from "./layouts/UserLayout/UserLayout";
 import AdminUserManagement from "./pages/AdminPage/AdminUser/AdminUserManagement";
 import HomePage from "./pages/HomePage/HomePage";
-import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
 
 import EditProfilePage from "./pages/EditProfilePage/EditProfilePage";
 import { ToastContainer } from "react-toastify";
@@ -31,11 +30,10 @@ import ApprovalDashBoardPage from "./pages/ApprovalDashBoardPage/ApprovalDashBoa
 import AdminDashBoard from "./pages/AdminPage/AdminDashboard/AdminDashBoard";
 import ChangePassword from "./pages/ChangePassword/ChangePassword";
 import UserDashboardPage from "./pages/UserPage/UserDashboardPage";
-import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import UserCalendarPage from "./pages/UserCalendarPage/UserCalendarPage";
-import Contact from "./pages/ContactPage/Contact";
 import useToastStorage from "./hooks/useToastStorage";
 import { useLoadingStore } from "./config/zustand";
+import WelcomeScreen from "./components/WelcomeScreen/WelcomeScreen";
 import VerifyEmail from "./pages/VerifyEmailPage/VerifyEmail";
 
 const router = createBrowserRouter([
@@ -43,14 +41,7 @@ const router = createBrowserRouter([
     path: "/",
     element: <MainLayout />,
     errorElement: <ErrorPage />,
-    children: [
-      { path: "/", element: <HomePage /> },
-      {
-        path: "contact",
-        element: <Contact />,
-      },
-      { path: "about", element: <ProfilePage /> },
-    ],
+    children: [{ path: "/", element: <HomePage /> }],
   },
   {
     path: "/admin",
@@ -179,8 +170,8 @@ const App: React.FC = () => {
 
   return (
     <UserProvider>
-      {isLoading && <LoadingScreen />}
-      {loading ? <LoadingScreen /> : <RouterProvider router={router} />}
+      {isLoading && <WelcomeScreen />}
+      {loading ? <WelcomeScreen /> : <RouterProvider router={router} />}
       <ToastContainer />
     </UserProvider>
   );

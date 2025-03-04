@@ -116,17 +116,23 @@ const AnimatedModal: React.FC<{
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto transition-opacity duration-300 ease-in-out"
-         style={{ opacity: isAnimating ? 1 : 0 }}>
-      <div className="fixed inset-0 bg-black/30 transition-opacity duration-300 ease-in-out"
-           style={{ opacity: isAnimating ? 1 : 0 }}
-           onClick={onClose}></div>
+    <div
+      className="fixed inset-0 z-50 overflow-y-auto transition-opacity duration-300 ease-in-out"
+      style={{ opacity: isAnimating ? 1 : 0 }}
+    >
+      <div
+        className="fixed inset-0 bg-black/30 transition-opacity duration-300 ease-in-out"
+        style={{ opacity: isAnimating ? 1 : 0 }}
+        onClick={onClose}
+      ></div>
       <div className="relative min-h-screen flex items-center justify-center p-4">
-        <div className="relative bg-white rounded-lg max-w-[800px] w-full shadow-xl transition-all duration-300 ease-in-out transform"
-             style={{ 
-               opacity: isAnimating ? 1 : 0,
-               transform: isAnimating ? 'scale(1)' : 'scale(0.95)'
-             }}>
+        <div
+          className="relative bg-white rounded-lg max-w-[800px] w-full shadow-xl transition-all duration-300 ease-in-out transform"
+          style={{
+            opacity: isAnimating ? 1 : 0,
+            transform: isAnimating ? "scale(1)" : "scale(0.95)",
+          }}
+        >
           {children}
         </div>
       </div>
@@ -233,11 +239,13 @@ const AdminUserManagement: React.FC = () => {
     fetchUsers,
   ]);
 
-  const handleUpdateUser = async (updatedUser: User<string> & { password?: string }) => {
-    console.log('update user', updatedUser);
+  const handleUpdateUser = async (
+    updatedUser: User<string> & { password?: string }
+  ) => {
+    console.log("update user", updatedUser);
     try {
       const updateData: Record<string, unknown> = {};
-      
+
       // Only include changed fields
       if (updatedUser.user_name !== editingUser?.user_name) {
         updateData.user_name = updatedUser.user_name;
@@ -251,6 +259,12 @@ const AdminUserManagement: React.FC = () => {
       if (updatedUser.password) {
         updateData.password = updatedUser.password;
       }
+      // Ensure email is not empty
+      if (updatedUser.email) {
+        updateData.email = updatedUser.email;
+      } else {
+        updateData.email = editingUser?.email;
+      }
 
       if (Object.keys(updateData).length === 0) {
         toast.info("No changes to update");
@@ -260,8 +274,10 @@ const AdminUserManagement: React.FC = () => {
       const response = await updateUser(updatedUser.id, updateData);
 
       if (response.success) {
-        setUsers(prev => 
-          prev.map(user => user.id === updatedUser.id ? { ...user, ...updateData } : user)
+        setUsers((prev) =>
+          prev.map((user) =>
+            user.id === updatedUser.id ? { ...user, ...updateData } : user
+          )
         );
         toast.success("User updated successfully");
         setIsEditModalOpen(false);
@@ -270,7 +286,8 @@ const AdminUserManagement: React.FC = () => {
         throw new Error(response.message || "Failed to update user");
       }
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Failed to update user";
+      const message =
+        error instanceof Error ? error.message : "Failed to update user";
       console.error("Error updating user:", error);
       toast.error(message);
     }
@@ -289,16 +306,16 @@ const AdminUserManagement: React.FC = () => {
 
     try {
       const response = await axiosInstance.delete(`/users/${userToDelete.id}`);
-      
+
       if (response.data.success) {
         if (statusFilter !== "deleted") {
-          setUsers(users.filter(user => user.id !== userToDelete.id));
+          setUsers(users.filter((user) => user.id !== userToDelete.id));
         } else {
-          setUsers(users.map(user => 
-            user.id === userToDelete.id 
-              ? { ...user, is_deleted: true }
-              : user
-          ));
+          setUsers(
+            users.map((user) =>
+              user.id === userToDelete.id ? { ...user, is_deleted: true } : user
+            )
+          );
         }
         toast.success("User deleted successfully");
       }
@@ -553,7 +570,10 @@ const AdminUserManagement: React.FC = () => {
         </div>
 
         {/* Detail Modal */}
-        <AnimatedModal isOpen={isDetailModalOpen} onClose={() => setIsDetailModalOpen(false)}>
+        <AnimatedModal
+          isOpen={isDetailModalOpen}
+          onClose={() => setIsDetailModalOpen(false)}
+        >
           {selectedUser && (
             <div className="p-8 bg-gray-50 rounded-xl">
               <div className="flex justify-between items-center mb-6">
@@ -831,10 +851,13 @@ const AdminUserManagement: React.FC = () => {
         </AnimatedModal>
 
         {/* Edit Modal */}
-        <AnimatedModal isOpen={isEditModalOpen} onClose={() => {
-          setIsEditModalOpen(false);
-          setEditingUser(null);
-        }}>
+        <AnimatedModal
+          isOpen={isEditModalOpen}
+          onClose={() => {
+            setIsEditModalOpen(false);
+            setEditingUser(null);
+          }}
+        >
           {editingUser && (
             <UserManagementEdit
               user={editingUser}
@@ -848,7 +871,10 @@ const AdminUserManagement: React.FC = () => {
         </AnimatedModal>
 
         {/* Add User Modal */}
-        <AnimatedModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)}>
+        <AnimatedModal
+          isOpen={isAddModalOpen}
+          onClose={() => setIsAddModalOpen(false)}
+        >
           <UserManagementAdd
             onClose={() => setIsAddModalOpen(false)}
             onSuccess={handleAddSuccess}
@@ -856,7 +882,10 @@ const AdminUserManagement: React.FC = () => {
         </AnimatedModal>
 
         {/* Delete Confirmation Modal */}
-        <AnimatedModal isOpen={showDeleteConfirm} onClose={() => setShowDeleteConfirm(false)}>
+        <AnimatedModal
+          isOpen={showDeleteConfirm}
+          onClose={() => setShowDeleteConfirm(false)}
+        >
           <div className="p-6">
             <div className="flex flex-col items-center gap-4">
               <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">

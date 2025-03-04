@@ -1,9 +1,9 @@
 import React from "react";
-import Icons from "../../components/icon";
+import Icons from "../../icon";
 
 const Contact: React.FC = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-orange-100">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="w-[900px] bg-white rounded-xl shadow-lg overflow-hidden grid grid-cols-2">
         {/* Left Side - Contact Information */}
         <div className="bg-brand-grandient text-white p-8">
