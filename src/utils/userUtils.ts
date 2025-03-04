@@ -1,11 +1,12 @@
 import { logoutApi } from "../services/authService";
-
 export const isAuthenticated = (): boolean => {
     return !!localStorage.getItem("token");
   };
   
   export const getRole = (): string | null => {
-    return localStorage.getItem("role");
+    let user = localStorage.getItem("user");
+    let parseUser = JSON.parse(user || "{}");
+    return parseUser.role_code;
   };
   
   export const checkRole = (role: string): boolean => {

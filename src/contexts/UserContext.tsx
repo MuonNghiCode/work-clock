@@ -37,11 +37,6 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       try {
         const parsedUser: User = JSON.parse(storedUser);
         setUser(parsedUser);
-
-        // Kiểm tra nếu chưa có mật khẩu trong localStorage thì lưu vào
-        // if (!localStorage.getItem("userPassword")) {
-        //   localStorage.setItem("userPassword", parsedUser.password || "user123");
-        // }
       } catch (error) {
         console.error("Error parsing stored user:", error);
       }

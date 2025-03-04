@@ -4,13 +4,12 @@ import Images from "../../components/images";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Icons from "../../components/icon";
+import { motion } from "framer-motion";
 import {
   getUserInfobyToken,
   login,
   forgotPassword,
 } from "../../services/authService";
-// import { Spin } from "antd";
-import LoadingScreen from "../../components/LoadingScreen/LoadingScreen";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -23,7 +22,6 @@ const LoginPage: React.FC = () => {
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
     {}
   );
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const validate = () => {
@@ -44,49 +42,43 @@ const LoginPage: React.FC = () => {
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    if (validate()) {
-      try {
+    try {
+      if (validate()) {
         await login(email, password);
         const token = localStorage.getItem("token");
-        let user;
         if (token) {
-          user = await getUserInfobyToken();
-          let role = localStorage.getItem("role");
+          let user = await getUserInfobyToken();
+          let role = user.data.role_code;
           if (user && user.data) {
             toast.success("Login successful!");
             setTimeout(() => {
               switch (role) {
                 case "A001":
-                  navigate("/admin");
+                  navigate("/admin", { replace: true });
                   break;
                 case "A004":
-                  navigate("/user");
+                  navigate("/user", { replace: true });
                   break;
                 case "A003":
-                  navigate("/approval");
+                  navigate("/approval", { replace: true });
                   break;
                 case "A002":
-                  navigate("/finance");
+                  navigate("/finance", { replace: true });
                   break;
                 default:
                   navigate("/");
               }
             }, 1000);
-          } else {
-            toast.error("Invalid email or password!");
           }
         }
-      } catch (error) {
-        toast.error("Please fix the errors before submitting.");
       }
+    } catch (error) {
+      throw error;
     }
-    setIsLoading(false);
   };
 
   const handleForgotPasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     try {
       await forgotPassword(forgotPasswordEmail);
       toast.success("Password reset link sent to your email!");
@@ -94,16 +86,10 @@ const LoginPage: React.FC = () => {
     } catch (error) {
       toast.error("Error sending password reset link.");
     }
-    setIsLoading(false);
   };
 
   return (
     <div className="relative flex justify-center items-center h-screen">
-      {isLoading && (
-        <div className="!w-screen !h-screen !bg-black !opacity-50 !absolute !top-0 !left-0 !z-9999">
-          <LoadingScreen />
-        </div>
-      )}
       <img
         src={Images.Background2}
         alt="Background"
@@ -116,14 +102,32 @@ const LoginPage: React.FC = () => {
           isForgotPassword ? "hidden" : ""
         }`}
       >
-        <div className="w-full flex items-center justify-center">
+        <motion.div
+          initial={{ x: 0, opacity: 0 }}
+          animate={{
+            x: isForgotPassword ? "70%" : "0%",
+            opacity: isForgotPassword ? 1 : 1,
+          }}
+          transition={{ duration: 0.5 }}
+          className="w-full flex items-center justify-center"
+        >
           <img
             src={Images.Background3}
             alt="Background"
-            className="w-120 h-130 scale-x-112 object-contain translate-x-[-30px]"
+            className="w-120 h-130 scale-x-112 z-50 object-contain translate-x-[-30px]"
           />
-        </div>
-        <div className="w-1/2 flex flex-col space-y-4 relative">
+        </motion.div>
+
+        <motion.div
+          initial={{ x: 0, opacity: 0 }}
+          animate={{
+            x: isForgotPassword ? "-100%" : "0%",
+            opacity: 1,
+          }}
+          exit={{ x: "100%", opacity: 1 }}
+          transition={{ duration: 1, ease: "easeOut" }}
+          className="w-1/2 flex flex-col space-y-4 relative z-[-1]"
+        >
           <img
             src={Images.Logo}
             alt="Logo"
@@ -213,7 +217,7 @@ const LoginPage: React.FC = () => {
               </button>
             </form>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Forgot Password Form */}
@@ -223,13 +227,21 @@ const LoginPage: React.FC = () => {
         }`}
       >
         <div className="w-230 h-140 flex border border-black rounded-[30px] bg-white z-10">
-          <div className="w-1/2 flex flex-col space-y-4 relative p-10">
+          <motion.div
+            initial={{ x: 0, opacity: 0 }}
+            animate={{
+              x: isForgotPassword ? "0%" : "100%",
+              opacity: 1,
+            }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            className="w-1/2 flex flex-col space-y-4 relative z-[-1]"
+          >
             <img
               src={Images.Logo}
               alt="Logo"
               className="w-40 mx-auto absolute top-10 left-10"
             />
-            <h1 className="text-4xl w-full text-center absolute top-39">
+            <h1 className="text-4xl  w-full text-center absolute top-39">
               Forgot Password
             </h1>
 
@@ -255,6 +267,10 @@ const LoginPage: React.FC = () => {
                   onBlur={() => setIsEmailFocused(false)}
                   className="w-full h-10 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
+
+                <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-700">
+                  <Icons.Email />
+                </span>
               </div>
 
               <button
@@ -271,14 +287,22 @@ const LoginPage: React.FC = () => {
                 Back
               </button>
             </form>
-          </div>
-          <div className="w-full flex items-center justify-center">
+          </motion.div>
+          <motion.div
+            initial={{ x: 0, opacity: 0 }}
+            animate={{
+              x: isForgotPassword ? "0%" : "-70%",
+              opacity: 1,
+            }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="w-full flex items-center justify-center"
+          >
             <img
               src={Images.Background4}
               alt=""
               className="w-120 h-130 scale-x-112 object-contain translate-x-7"
             />
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>
