@@ -9,6 +9,18 @@ export const API_CONTANTS = {
   ROLES: {
     GET_ALL: "/roles/get-all",
   },
+  APPROVAL: {
+    GET_CLAIM_APPROVAL: "/claims/approval-search",
+  },
+  FINANCE: {
+    FINANCE_SEARCH: "/claims/finance-search",
+  },
+  CLAIMS: {
+    CLAIMS_SEARCH: "/claims/search",
+    CLAIMERS_SEARCH: "/claims/claimer-search",
+    CLAIM_DETAIL: "/claims",
+  },
+
   USERS: {
     CHANGE_PASSWORD: "/users/change-password",
     GET_ALL: "/users/get-all",
@@ -17,12 +29,5 @@ export const API_CONTANTS = {
     DELETE_USER: "/users/${id}",
     CHANGE_STATUS: "/users/change-status",
     SEARCH_USER: "/users/search",
-  },
-  APPROVAL: {
-    GET_CLAIM_APPROVAL: "/claims/approval-search",
-  },
-  CLAIMS: {
-    CLAIMER_SEARCH: "/claims/claimer-search",
-    CLAIM_DETAIL: "/claims",
   },
 };
