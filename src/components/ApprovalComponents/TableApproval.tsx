@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Button, Pagination, Tag, Input } from "antd";
 import { ClaimRequest } from "../../types/ClaimRequest";
 import { GetProps } from "antd/lib/_util/type";
@@ -7,7 +7,7 @@ import ConfirmModal from "../ConfirmModal/ConfirmModal";
 import Icons from "../icon";
 import { searchApprovalClaims } from "../../services/approvalService";
 import { toast } from "react-toastify";
-import { useLoadingStore } from "../../config/zustand";
+import { debounce } from 'lodash';
 
 type SearchProps = GetProps<typeof Input.Search>;
 const { Search } = Input;
@@ -16,20 +16,21 @@ const TableApproval: React.FC = () => {
   const [approvalData, setApprovalData] = useState<ClaimRequest[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [statusFilter, setStatusFilter] = useState<string | null>("");
+  const [statusFilter, setStatusFilter] = useState<string>("");
   const [showApprovalDetail, setShowApprovalDetail] = useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
-  const { isLoading } = useLoadingStore();
   const prevPageRef = useRef(currentPage);
   const prevPageSizeRef = useRef(pageSize);
   const prevStatusFilterRef = useRef(statusFilter);
+  const prevSearchTermRef = useRef(searchTerm);
 
   const fetchApprovalData = async () => {
     const request = {
       searchCondition: {
-        keyword: "",
+        keyword: searchTerm,
         claim_status: statusFilter || "",
         claim_start_date: "",
         claim_end_date: "",
@@ -51,6 +52,7 @@ const TableApproval: React.FC = () => {
       console.error("Error:", error);
     }
   };
+
   useEffect(() => {
     fetchApprovalData();
   }, []);
@@ -59,14 +61,16 @@ const TableApproval: React.FC = () => {
     if (
       prevPageRef.current !== currentPage ||
       prevPageSizeRef.current !== pageSize ||
-      prevStatusFilterRef.current !== statusFilter
+      prevStatusFilterRef.current !== statusFilter ||
+      prevSearchTermRef.current !== searchTerm
     ) {
       fetchApprovalData();
       prevPageRef.current = currentPage;
       prevPageSizeRef.current = pageSize;
       prevStatusFilterRef.current = statusFilter;
+      prevSearchTermRef.current = searchTerm;
     }
-  }, [currentPage, pageSize, statusFilter]);
+  }, [currentPage, pageSize, statusFilter, searchTerm]);
 
   const handlePageChange = (page: number, pageSize?: number) => {
     setCurrentPage(page);
@@ -90,8 +94,15 @@ const TableApproval: React.FC = () => {
 
   const statusTags = ["All", "Pending Approval", "Approved", "Rejected", "Canceled"];
 
-  const onSearch: SearchProps["onSearch"] = (value, _e, info) =>
-    console.log(info?.source, value);
+  const handleSearch = useCallback(
+    debounce((value: string) => {
+      setSearchTerm(value);
+    }, 3000),
+    []
+  );
+  const onSearch: SearchProps['onSearch'] = (value) => {
+    handleSearch(value);
+  };
 
   const handleShowApprovalDetail = () => {
     setShowApprovalDetail(true);
@@ -124,8 +135,10 @@ const TableApproval: React.FC = () => {
 
   const handleStatusChangeHTML = (status: string) => {
     switch (status) {
+      case "Draft":
+        return <span className="text-gray-300">Draft</span>;
       case "Pending Approval":
-        return <span className="text-gray-300">Pending</span>;
+        return <span className="text-gray-600">Pending</span>;
       case "Canceled":
         return <span className="text-blue-500">Canceled</span>;
       case "Approved":
@@ -137,9 +150,13 @@ const TableApproval: React.FC = () => {
     }
   };
 
+  const formatDateTime = (date: string) => {
+    const dateTime = new Date(date);
+    return `${dateTime.toLocaleDateString('vi-VN')} - ${dateTime.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}`;
+  };
+
   return (
     <>
-      {isLoading && <div>Loading...</div>}
       <div className="flex justify-between items-center mb-4">
         <div>
           {statusTags.map((status) => (
@@ -166,6 +183,7 @@ const TableApproval: React.FC = () => {
           <Search
             placeholder="input search text"
             onSearch={onSearch}
+            onChange={(e) => handleSearch(e.target.value)}
             style={{ width: 250 }}
             size="large"
             className="custom-search pl-1"
@@ -176,7 +194,7 @@ const TableApproval: React.FC = () => {
       <table className="min-w-full !border-separate border-spacing-y-2.5 text-black border-0">
         <thead className="bg-brand-grandient  h-[70px] text-lg text-white !rounded-t-lg">
           <tr className="bg-gradient from-[FEB78A] to-[FF914D]">
-            <th className="border-white px-4 py-2 !rounded-tl-2xl">Project</th>
+            <th className="border-white px-4 py-2 !rounded-tl-2xl">Claim Name</th>
             <th className="border-l-2 border-white px-4 py-2">Claimer</th>
             <th className="border-l-2 border-white px-4 py-2">Time</th>
             <th className="border-l-2 border-white px-4 py-2">Status</th>
@@ -193,11 +211,11 @@ const TableApproval: React.FC = () => {
               key={item._id}
               className="h-[70px] bg-white overflow-hidden text-center border-collapse  hover:shadow-brand-orange !rounded-2xl "
             >
-              <td className="px-4 py-2  rounded-l-2xl">{item.project_info.project_name}</td>
+              <td className="px-4 py-2  rounded-l-2xl">{item.claim_name}</td>
               <td className="px-4 py-2">{item.staff_name}</td>
-              <td className="px-4 py-2 ">{item.claim_start_date}</td>
+              <td className="px-4 py-2 ">{formatDateTime(item.claim_start_date)}</td>
               <td className="px-4 py-2 ">{handleStatusChangeHTML(item.claim_status)}</td>
-              <td className="px-4 py-2 ">{item.created_at}</td>
+              <td className="px-4 py-2 ">{formatDateTime(item.created_at)}</td>
               <td
                 className="action px-4 py-2 rounded-r-2xl"
                 onClick={(e) => e.stopPropagation()}
