@@ -35,6 +35,7 @@ import useToastStorage from "./hooks/useToastStorage";
 import { useLoadingStore } from "./config/zustand";
 import WelcomeScreen from "./components/WelcomeScreen/WelcomeScreen";
 import VerifyEmail from "./pages/VerifyEmailPage/VerifyEmail";
+import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
 
 const router = createBrowserRouter([
   {
@@ -170,7 +171,7 @@ const App: React.FC = () => {
 
   return (
     <UserProvider>
-      {isLoading && <WelcomeScreen />}
+      {isLoading && <LoadingScreen />}
       {loading ? <WelcomeScreen /> : <RouterProvider router={router} />}
       <ToastContainer />
     </UserProvider>
