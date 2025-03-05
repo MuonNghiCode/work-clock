@@ -14,8 +14,6 @@ const ModalAddUser: React.FC<ModalAddUserProps> = ({ isOpen, onClose }) => {
   const [newUser, setNewUser] = useState<string>("");
   const [newUserRole, setNewUserRole] = useState<string>("");
 
-  
-
   const handleAddUser = () => {
     if (newUser.trim() && newUserRole.trim()) {
       setUsers([...users, { name: newUser.trim(), role: newUserRole.trim() }]);
@@ -31,7 +29,13 @@ const ModalAddUser: React.FC<ModalAddUserProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <Modal title="Add New User" open={isOpen} onCancel={onClose} footer={null} centered>
+    <Modal
+      title="Add New User"
+      open={isOpen}
+      onCancel={onClose}
+      footer={null}
+      centered
+    >
       <div className="space-y-4">
         <div className="flex flex-col space-y-2">
           <input
@@ -49,7 +53,7 @@ const ModalAddUser: React.FC<ModalAddUserProps> = ({ isOpen, onClose }) => {
             className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
           />
         </div>
-        <button 
+        <button
           className="w-full bg-orange-500 text-white font-semibold px-4 py-2 rounded-lg hover:bg-orange-600 transition duration-300"
           onClick={handleAddUser}
         >
@@ -60,7 +64,9 @@ const ModalAddUser: React.FC<ModalAddUserProps> = ({ isOpen, onClose }) => {
             <tr className="bg-gray-100 text-left">
               <th className="border border-gray-300 px-4 py-2">User</th>
               <th className="border border-gray-300 px-4 py-2">Role</th>
-              <th className="border border-gray-300 px-4 py-2 text-center">Action</th>
+              <th className="border border-gray-300 px-4 py-2 text-center">
+                Action
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -80,8 +86,8 @@ const ModalAddUser: React.FC<ModalAddUserProps> = ({ isOpen, onClose }) => {
             ))}
           </tbody>
         </table>
-        <button 
-          onClick={onClose} 
+        <button
+          onClick={onClose}
           className="w-full bg-orange-500 text-white font-semibold px-4 py-2 rounded-lg hover:bg-orange-600 transition duration-300"
         >
           Close

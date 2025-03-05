@@ -6,11 +6,15 @@ import ConfirmModal from "../../ConfirmModal/ConfirmModal";
 import Icons from "../../icon";
 import EditProject from "../EditProject/EditProject";
 import ProjectDetail from "../../ProjectDetail/ProjectDetail";
-import { PageInfo, ProjectItem, SearchCondition } from "../../../types/ProjectTypes";
+import {
+  PageInfo,
+  ProjectItem,
+  SearchCondition,
+} from "../../../types/ProjectTypes";
 import { getAllProject } from "../../../services/projectService";
 import AddProject from "../AddProject/AddProject";
-import '../../../types/Project';
-import '../../../types/ProjectTypes';
+import "../../../types/Project";
+import "../../../types/ProjectTypes";
 import { ResponseModel } from "../../../models/ResponseModel";
 
 type SearchProps = GetProps<typeof Input.Search>;
@@ -26,8 +30,7 @@ interface TableProjectProps {
   setSearchValue: (value: string) => void;
 }
 
-const TableProject: React.FC = ({
-}) => {
+const TableProject: React.FC = ({}) => {
   const [projects, setProjects] = useState<ProjectInfo[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
@@ -35,15 +38,16 @@ const TableProject: React.FC = ({
   const [showProjectDetail, setShowProjectDetail] = useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
-  const [selectedProject, setSelectedProject] = useState<ProjectInfo | null>(null);
+  const [selectedProject, setSelectedProject] = useState<ProjectInfo | null>(
+    null
+  );
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [searchValue, setSearchValue] = useState<string>('');
+  const [searchValue, setSearchValue] = useState<string>("");
   const [totalItems, setTotalItems] = useState<number>(1);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   // const [project, setProject] = useState<ProjectInfo[]>([]);
 
-  
   const handlePageChange = (page: number, pageSize?: number) => {
     setCurrentPage(page);
     if (pageSize) {
@@ -68,20 +72,24 @@ const TableProject: React.FC = ({
   };
 
   const filteredData = projects.filter((item) => {
-    const matchesStatus = statusFilter ? item.project_status === statusFilter : true;
-    const matchesSearch = item.project_name.toLowerCase().includes(searchValue.toLowerCase());
+    const matchesStatus = statusFilter
+      ? item.project_status === statusFilter
+      : true;
+    const matchesSearch = item.project_name
+      .toLowerCase()
+      .includes(searchValue.toLowerCase());
     return matchesStatus && matchesSearch;
   });
-  
+
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = startIndex + pageSize;
   const currentData = filteredData.slice(startIndex, endIndex);
-  console.log('data', projects)
+  console.log("data", projects);
 
   const statusTags = ["All", "Processing", "Pending", "Complete"];
 
   const projectDetail = (data: ProjectItem): ProjectInfo => ({
-    _id: data.project_code,
+    _id: data._id,
     project_name: data.project_name,
     project_code: data.project_code,
     project_start_date: data.project_start_date,
@@ -113,7 +121,10 @@ const TableProject: React.FC = ({
         totalPages: 0,
       };
 
-      const response: ResponseModel<{ pageData: ProjectItem[], pageInfo: PageInfo }> = await getAllProject(searchCondition, pageInfo);
+      const response: ResponseModel<{
+        pageData: ProjectItem[];
+        pageInfo: PageInfo;
+      }> = await getAllProject(searchCondition, pageInfo);
       if (response.success) {
         const projects = response.data.pageData.map(projectDetail);
         setProjects(projects);
@@ -130,9 +141,8 @@ const TableProject: React.FC = ({
     fetchProjects();
   }, [currentPage, pageSize, searchValue]); // Add searchValue to dependencies
 
-
   const handleEditProject = (editedProject: ProjectInfo) => {
-    const newProjects = projects.map(project =>
+    const newProjects = projects.map((project) =>
       project._id === editedProject._id ? editedProject : project
     );
     setProjects(newProjects);
@@ -141,9 +151,11 @@ const TableProject: React.FC = ({
   const handleDeleteProject = (projectId: string | number) => {
     console.log("Deleting project with id:", projectId);
     // Sử dụng callback để đảm bảo có state mới nhất
-    setProjects(prevProjects => {
+    setProjects((prevProjects) => {
       console.log("Previous projects:", prevProjects);
-      const newProjects = prevProjects.filter(project => project._id !== projectId);
+      const newProjects = prevProjects.filter(
+        (project) => project._id !== projectId
+      );
       console.log("New projects:", newProjects);
       return newProjects;
     });
@@ -160,12 +172,12 @@ const TableProject: React.FC = ({
     setIsEditModalOpen(true);
   };
 
-
-
   const handleDelete = (project: ProjectInfo) => {
     console.log("Deleting project:", project);
     setSelectedProject(project);
-    setMessage(`Are you sure you want to delete project "${project.project_name}"?`);
+    setMessage(
+      `Are you sure you want to delete project "${project.project_name}"?`
+    );
     setShowConfirmModal(true);
   };
 
@@ -206,18 +218,18 @@ const TableProject: React.FC = ({
   const users = ["dngoc", "haaus", "ntdn"];
   return (
     <>
-     <button
-              onClick={handleAddProject}
-              className="bg-orange-400 text-white px-6 py-3 rounded-full hover:bg-orange-500 transition-colors flex items-center gap-2"
-            >
-              <span className="text-xl">+</span>
-              <span className="text-lg">Add Project</span>
-            </button>
-            
-        <AddProject
-          onClose={() => setIsAddModalOpen(false)}
-          isAddModalOpen={isAddModalOpen}
-        />
+      <button
+        onClick={handleAddProject}
+        className="bg-orange-400 text-white px-6 py-3 rounded-full hover:bg-orange-500 transition-colors flex items-center gap-2"
+      >
+        <span className="text-xl">+</span>
+        <span className="text-lg">Add Project</span>
+      </button>
+
+      <AddProject
+        onClose={() => setIsAddModalOpen(false)}
+        isAddModalOpen={isAddModalOpen}
+      />
       {/* </Modal> */}
       <div className="flex justify-between items-center mb-4">
         <div>
@@ -226,7 +238,7 @@ const TableProject: React.FC = ({
               key={status}
               color={
                 statusFilter === status ||
-                  (status === "All" && statusFilter === null)
+                (status === "All" && statusFilter === null)
                   ? "#ff914d"
                   : "default"
               }
@@ -235,8 +247,8 @@ const TableProject: React.FC = ({
             >
               {(statusFilter === status ||
                 (status === "All" && statusFilter === null)) && (
-                  <Icons.Check className="inline-flex" />
-                )}{" "}
+                <Icons.Check className="inline-flex" />
+              )}{" "}
               {status}
             </Tag>
           ))}
@@ -254,7 +266,6 @@ const TableProject: React.FC = ({
           />
         </div>
       </div>
-
 
       <table className="min-w-full !border-separate border-spacing-y-2.5 text-black border-0">
         <thead className="bg-brand-grandient h-[70px] text-lg text-white !rounded-t-lg">
@@ -361,14 +372,14 @@ const TableProject: React.FC = ({
         message={message}
         onConfirm={handleConfirmDelete}
       />
-        {selectedProject && (
-          <EditProject
-            project={selectedProject}
-            onClose={handleClose}
-            users={users}
-            isEditModalOpen={isEditModalOpen}
-          />
-        )}
+      {selectedProject && (
+        <EditProject
+          project={selectedProject}
+          onClose={handleClose}
+          users={users}
+          isEditModalOpen={isEditModalOpen}
+        />
+      )}
     </>
   );
 };

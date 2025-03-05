@@ -25,7 +25,7 @@ const CustomCursor = () => {
   return (
     <>
       {/* Ẩn con trỏ mặc định */}
-      <style>{`* { cursor: none; }`}</style>
+      {/* <style>{`* { cursor: none; }`}</style> */}
 
       {/* Con trỏ tùy chỉnh */}
       <div
