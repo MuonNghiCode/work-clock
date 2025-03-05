@@ -1,8 +1,8 @@
 import { Button, DatePicker, Form, Input, Modal, Select, Spin } from "antd";
 import { useEffect, useMemo, useState } from "react";
-import { getUsers } from "../../../services/userAuth";
-import { createProject, getAllRoleProject } from "../../../services/projectService";
-import { ProjectInfo } from "../../../types/Project";
+import { getUsers } from "../../services/userAuth";
+import { createProject, getAllRoleProject } from "../../services/projectService";
+import { ProjectInfo } from "../../types/Project";
 import { debounce } from "lodash";
 import { toast } from "react-toastify";
 

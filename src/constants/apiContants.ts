@@ -18,6 +18,9 @@ export const API_CONTANTS = {
   APPROVAL: {
     GET_CLAIM_APPROVAL: "/claims/approval-search",
   },
+  FINANCE: {
+    FINANCE_SEARCH: "/claims/finance-search",
+  },
   CLAIMS: {
     CLAIMS_SEARCH: "/claims/search",
     CLAIMERS_SEARCH: "/claims/claimer-search",
