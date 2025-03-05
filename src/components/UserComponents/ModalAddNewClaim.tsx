@@ -67,34 +67,34 @@ const sampleProject = [
 
     }];
 
+interface ClaimRequestDataField {
+    project_id: string;
+    approval_id: string;
+    claim_name: string;
+    claim_start_date: string;
+    claim_end_date: string;
+    totalNoOfHours: number;
+    remark: string;
+}
+
 const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({ isOpen, onClose }) => {
     const [form] = Form.useForm();
-    const [claimRequestData, setClaimRequestData] = useState<ClaimRequest>({
-        staffName: '',
-        staffRole: '',
-        staffId: '',
-        additionalRemarks: '',
-        auditTrail: '',
-        dateCreate: '',
-        status: 'Draft',
-        projectName: '',
-        roleInProject: '',
-        projectDuration: '',
-        totalWorkingHour: 0,
-        date: new Date,
-        day: '',
-        from: '',
-        to: '',
+    const [claimRequestData, setClaimRequestData] = useState<ClaimRequestDataField>({
+        project_id: '',
+        approval_id: '',
+        claim_name: '',
+        claim_start_date: '',
+        claim_end_date: '',
         totalNoOfHours: 0,
-        remarks: ''
+        remark: '',
     });
 
     const handleClaimRequestDataChange = (key: keyof ClaimRequest, value: any) => {
         setClaimRequestData((prevData) => ({
             ...prevData,
             [key]: value,
-            ...(key === 'from' && { from: value.toISOString() }),
-            ...(key === 'to' && { to: value.toISOString() })
+            ...(key === 'claim_start_date' && { from: value.toISOString() }),
+            ...(key === 'claim_end_date' && { to: value.toISOString() })
         }));
     };
 
@@ -140,15 +140,15 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({ isOpen, onClose }) 
                             ))}
                     </Select>
                 </Form.Item >
-                <Form.Item label={<strong>Role in Project</strong>} name="roleInProject">
+                {/* <Form.Item label={<strong>Role in Project</strong>} name="role_in_project">
                     <Input
                         className=''
-                        value={claimRequestData.roleInProject}
-                        onChange={(e) => handleClaimRequestDataChange('roleInProject', e.target.value)}
+                        value={claimRequestData.role_in_project}
+                        onChange={(e) => handleClaimRequestDataChange('role_in_project', e.target.value)}
                     />
-                </Form.Item>
+                </Form.Item> */}
                 <Space direction='horizontal' size='large' className='!w-full justify-between !flex-wrap'>
-                    <Form.Item label="From" name='from'>
+                    <Form.Item label="From" name='claim_start_date'>
                         {/* <TimePicker
                             className='!w-full max-w-full'
                             format="HH:mm"
@@ -158,28 +158,28 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({ isOpen, onClose }) 
                         <DatePicker
                             showTime
                             format={'DD-MM-YYYY - HH:mm'}
-                            onChange={(value) => handleClaimRequestDataChange('from', value)}
+                            onChange={(value) => handleClaimRequestDataChange('claim_start_date', value)}
                         />
                     </Form.Item>
-                    <Form.Item label="To" name='to'>
+                    <Form.Item label="To" name='claim_end_date'>
                         <DatePicker
                             showTime
                             format={'DD-MM-YYYY - HH:mm'}
-                            onChange={(value) => handleClaimRequestDataChange('to', value)}
+                            onChange={(value) => handleClaimRequestDataChange('claim_end_date', value)}
                         />
                     </Form.Item>
-                    <Form.Item label={<strong>Total Working Hours</strong>}>
+                    <Form.Item label={<strong>Total Working Hours</strong>} name='totalNoOfHours'>
                         <Input
                             type='number'
-                            value={claimRequestData.totalWorkingHour}
-                            onChange={(e) => handleClaimRequestDataChange('totalWorkingHour', Number(e.target.value))}
+                            value={claimRequestData.totalNoOfHours}
+                            onChange={(e) => handleClaimRequestDataChange('totalNoOfHours', Number(e.target.value))}
                         />
                     </Form.Item>
                 </Space>
-                <Form.Item label={<strong>Remarks</strong>} name="additionalRemarks">
+                <Form.Item label={<strong>Remarks</strong>} name="remark">
                     <Input.TextArea
-                        value={claimRequestData.additionalRemarks}
-                        onChange={(e) => handleClaimRequestDataChange('additionalRemarks', e.target.value)}
+                        value={claimRequestData.remark}
+                        onChange={(e) => handleClaimRequestDataChange('remark', e.target.value)}
                     />
                 </Form.Item>
             </Form >

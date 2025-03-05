@@ -18,7 +18,6 @@ import FinanceDashBoardPage from "./pages/FinanceDashBoardPage/FinanceDashBoardP
 import UserLayout from "./layouts/UserLayout/UserLayout";
 import AdminUserManagement from "./pages/AdminPage/AdminUser/AdminUserManagement";
 import HomePage from "./pages/HomePage/HomePage";
-import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
 
 import EditProfilePage from "./pages/EditProfilePage/EditProfilePage";
 import { ToastContainer } from "react-toastify";
@@ -31,24 +30,20 @@ import ApprovalDashBoardPage from "./pages/ApprovalDashBoardPage/ApprovalDashBoa
 import AdminDashBoard from "./pages/AdminPage/AdminDashboard/AdminDashBoard";
 import ChangePassword from "./pages/ChangePassword/ChangePassword";
 import UserDashboardPage from "./pages/UserPage/UserDashboardPage";
-import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import UserCalendarPage from "./pages/UserCalendarPage/UserCalendarPage";
-import Contact from "./pages/ContactPage/Contact";
 import useToastStorage from "./hooks/useToastStorage";
+import { useLoadingStore } from "./config/zustand";
+import WelcomeScreen from "./components/WelcomeScreen/WelcomeScreen";
+import VerifyEmail from "./pages/VerifyEmailPage/VerifyEmail";
+import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
+import CustomCursor from "./components/CustomCursor/CustomCursor";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
     errorElement: <ErrorPage />,
-    children: [
-      { path: "/", element: <HomePage /> },
-      {
-        path: "contact",
-        element: <Contact />,
-      },
-      { path: "about", element: <ProfilePage /> },
-    ],
+    children: [{ path: "/", element: <HomePage /> }],
   },
   {
     path: "/admin",
@@ -151,10 +146,15 @@ const router = createBrowserRouter([
     path: "/change-password",
     element: <ChangePassword />,
   },
+  {
+    path: "/verify-email/:token",
+    element: <VerifyEmail />,
+  },
 ]);
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
+  const isLoading = useLoadingStore((state) => state.isLoading);
 
   useEffect(() => {
     const hasVisited = sessionStorage.getItem("visited");
@@ -171,10 +171,14 @@ const App: React.FC = () => {
   useToastStorage();
 
   return (
-    <UserProvider>
-      {loading ? <LoadingScreen /> : <RouterProvider router={router} />}
-      <ToastContainer />
-    </UserProvider>
+    <>
+      <UserProvider>
+        {isLoading && <LoadingScreen />}
+        {loading ? <WelcomeScreen /> : <RouterProvider router={router} />}
+        <ToastContainer />
+        <CustomCursor />
+      </UserProvider>
+    </>
   );
 };
 

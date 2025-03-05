@@ -113,7 +113,7 @@ const LoginPage: React.FC = () => {
 
       {/* Login Form */}
       <div
-        className={`w-230 h-140 flex border border-black rounded-[30px] bg-white z-10 ${
+        className={`lg:w-230 lg:h-140 w-full h-5/6 flex border border-black rounded-[30px] bg-white z-10 ${
           isForgotPassword ? "hidden" : ""
         }`}
       >
@@ -124,7 +124,7 @@ const LoginPage: React.FC = () => {
             opacity: isForgotPassword ? 1 : 1,
           }}
           transition={{ duration: 0.5 }}
-          className="w-full flex items-center justify-center"
+          className="w-full lg:flex hidden items-center justify-center"
         >
           <img
             src={Images.Background3}
@@ -141,18 +141,19 @@ const LoginPage: React.FC = () => {
           }}
           exit={{ x: "100%", opacity: 1 }}
           transition={{ duration: 1, ease: "easeOut" }}
-          className="w-1/2 flex flex-col space-y-4 relative z-[-1]"
+          className="lg:w-1/2 w-full h-full relative flex flex-col justify-center items-center space-y-4 lg:space-y-5 lg:z-[-1]"
         >
           <img
             src={Images.Logo}
             alt="Logo"
-            className="w-40 mx-auto absolute top-10 right-10"
+            className="lg:w-40 w-25 mx-auto absolute  lg:mb-0 top-10 right-5 lg:right-10"
           />
-          <h1 className="text-4xl text-center absolute top-1/3 ">
-            Welcome User
-          </h1>
-          <div className="h-full flex flex-col justify-center absolute right-20 items-start">
+
+          <div className="h-full lg:mt-20 flex flex-col justify-center absolute lg:right-20 items-start">
             <form onSubmit={handleLoginSubmit} className="gap-4">
+              <h1 className="text-3xl lg:text-4xl lg:mt-0 mt-10 text-center whitespace-nowrap ">
+                Welcome User
+              </h1>
               {/* Email Field */}
               <div className="relative py-10">
                 <span
@@ -217,19 +218,21 @@ const LoginPage: React.FC = () => {
               </div>
 
               {/* Submit Button */}
-              <button
-                type="submit"
-                className="absolute flex justify-center items-center w-40 top-105 right-17 h-8 px-4 py-2 bg-brand-grandient text-white rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
-              >
-                Login
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsForgotPassword(true)}
-                className="absolute flex justify-center items-center w-40 top-115 right-17 h-8 px-4 py-2 border-amber-500 border rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
-              >
-                Forgot Password
-              </button>
+              <div className="flex mt-15 flex-col items-center space-y-4">
+                <button
+                  type="submit"
+                  className="w-40 h-8 px-4 py-2 bg-brand-grandient text-white rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
+                >
+                  Login
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsForgotPassword(true)}
+                  className="w-40 h-8 px-4 py-2 border-amber-500 border rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
+                >
+                  Forgot Password
+                </button>
+              </div>
             </form>
           </div>
         </motion.div>
@@ -237,88 +240,88 @@ const LoginPage: React.FC = () => {
 
       {/* Forgot Password Form */}
       <div
-        className={`w-230 h-140 flex items-center border border-black rounded-[30px] bg-white z-20 ${
+        className={`lg:w-230 lg:h-140 w-full h-5/6 flex border border-black rounded-[30px] bg-white z-20 ${
           !isForgotPassword ? "hidden" : ""
         }`}
       >
-        <div className="w-230 h-140 flex border border-black rounded-[30px] bg-white z-10">
-          <motion.div
-            initial={{ x: 0, opacity: 0 }}
-            animate={{
-              x: isForgotPassword ? "0%" : "100%",
-              opacity: 1,
-            }}
-            transition={{ duration: 1, ease: "easeOut" }}
-            className="w-1/2 flex flex-col space-y-4 relative z-[-1]"
+        <motion.div
+          initial={{ x: 0, opacity: 0 }}
+          animate={{
+            x: isForgotPassword ? "0%" : "100%",
+            opacity: 1,
+          }}
+          transition={{ duration: 1, ease: "easeOut" }}
+          className="lg:w-1/2 w-full h-full relative flex flex-col justify-center items-center space-y-4 lg:space-y-5 lg:z-[-1]"
+        >
+          <img
+            src={Images.Logo}
+            alt="Logo"
+            className="lg:w-40 w-25 mx-auto absolute top-10 right-5 lg:right-20"
+          />
+
+          <form
+            onSubmit={handleForgotPasswordSubmit}
+            className="relative gap-4 lg:ml-20 mt-10  "
           >
-            <img
-              src={Images.Logo}
-              alt="Logo"
-              className="w-40 mx-auto absolute top-10 left-10"
-            />
-            <h1 className="text-4xl  w-full text-center absolute top-39">
+            <h1 className="text-4xl w-full text-center  lg:mb-0 mb-20 lg:top-39">
               Forgot Password
             </h1>
+            <div className="lg:mt-10 relative py-4">
+              <span
+                className={`  absolute  left-2 top-6 text-gray-500 transition-all pointer-events-none ${
+                  forgotPasswordEmail || isEmailFocused
+                    ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
+                    : "text-base"
+                }`}
+              >
+                Email
+              </span>
+              <input
+                type="email"
+                value={forgotPasswordEmail}
+                onChange={(e) => setForgotPasswordEmail(e.target.value)}
+                onFocus={() => setIsEmailFocused(true)}
+                onBlur={() => setIsEmailFocused(false)}
+                className="w-full h-10 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
 
-            <form
-              onSubmit={handleForgotPasswordSubmit}
-              className="h-full w-3/4 flex flex-col justify-center  left-20 absolute  "
-            >
-              <div className="relative py-4">
-                <span
-                  className={`absolute left-2 top-6 text-gray-500 transition-all pointer-events-none ${
-                    forgotPasswordEmail || isEmailFocused
-                      ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
-                      : "text-base"
-                  }`}
-                >
-                  Email
-                </span>
-                <input
-                  type="email"
-                  value={forgotPasswordEmail}
-                  onChange={(e) => setForgotPasswordEmail(e.target.value)}
-                  onFocus={() => setIsEmailFocused(true)}
-                  onBlur={() => setIsEmailFocused(false)}
-                  className="w-full h-10 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+              <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-700">
+                <Icons.Email />
+              </span>
+            </div>
 
-                <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-700">
-                  <Icons.Email />
-                </span>
-              </div>
-
+            <div className="flex mt-15 flex-col items-center space-y-4">
               <button
                 type="submit"
-                className="absolute flex justify-center items-center w-40 top-98 left-13 h-8 px-4 py-2 bg-brand-grandient text-white rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
+                className="w-40 h-8 px-4 py-2 bg-brand-grandient text-white rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
               >
-                Send Reset Link
+                Send link
               </button>
               <button
                 type="button"
                 onClick={() => setIsForgotPassword(false)}
-                className="absolute flex justify-center items-center w-40 top-108 left-13 h-8 px-4 py-2 bg-white text-black rounded-lg border-amber-500 border cursor-pointer transition-all hover:scale-105 focus:outline-none"
+                className="w-40 h-8 px-4 py-2 border-amber-500 border rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
               >
                 Back
               </button>
-            </form>
-          </motion.div>
-          <motion.div
-            initial={{ x: 0, opacity: 0 }}
-            animate={{
-              x: isForgotPassword ? "0%" : "-70%",
-              opacity: 1,
-            }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="w-full flex items-center justify-center"
-          >
-            <img
-              src={Images.Background4}
-              alt=""
-              className="w-120 h-130 scale-x-112 object-contain translate-x-7"
-            />
-          </motion.div>
-        </div>
+            </div>
+          </form>
+        </motion.div>
+        <motion.div
+          initial={{ x: 0, opacity: 0 }}
+          animate={{
+            x: isForgotPassword ? "0%" : "-70%",
+            opacity: 1,
+          }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="w-full  items-center justify-center  lg:flex hidden"
+        >
+          <img
+            src={Images.Background7}
+            alt=""
+            className="w-120 h-130 scale-x-112 object-contain translate-x-7"
+          />
+        </motion.div>
       </div>
     </div>
   );

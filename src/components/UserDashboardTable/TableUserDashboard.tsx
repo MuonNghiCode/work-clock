@@ -27,7 +27,7 @@ const TableUserDashboard: React.FC<DataProps> = ({ data }) => {
   };
 
   const filteredData = statusFilter
-    ? data.filter((item) => item.status === statusFilter)
+    ? data.filter((item) => item.claim_status === statusFilter)
     : data;
 
   const startIndex = (currentPage - 1) * pageSize;
@@ -93,34 +93,34 @@ const TableUserDashboard: React.FC<DataProps> = ({ data }) => {
                   className="h-[100px] bg-white border-black !border-2 !rounded-lg text-center border-collapse shadow-lg hover:shadow-2xl"
                 >
                   <td className="px-4 py-2 border-t-2 border-b-2 border-l-2 rounded-l-lg">
-                    {item.projectName}
+                    {item.project_info.project_name}
                   </td>
                   <td className="px-4 py-2 border-t-2 border-b-2">
-                    {new Date(item.dateCreate).toLocaleDateString()}
+                    {new Date(item.created_at).toLocaleDateString()}
                   </td>
                   <td className={`px-4 py-2 border-t-2 border-b-2`}>
-                    {item.day}
+                    {item.claim_start_date}
                   </td>
                   <td className={`px-4 py-2 border-t-2 border-b-2 `}>
                     <span
-                      className={`${item.status === "Approved"
+                      className={`${item.claim_status === "Approved"
                         ? "text-green-500"
-                        : item.status === "Rejected"
+                        : item.claim_status === "Rejected"
                           ? "text-red-500"
-                          : item.status === "Pending"
+                          : item.claim_status === "Pending Approval"
                             ? "text-yellow-500"
-                            : item.status === "Canceled"
+                            : item.claim_status === "Canceled"
                               ? "text-purple-500"
-                              : item.status === "Paid"
+                              : item.claim_status === "Paid"
                                 ? "text-blue-500"
                                 : ""
                         }`}
                     >
-                      {item.status}
+                      {item.claim_status}
                     </span>
                   </td>
                   <td className="px-4 py-2 border-t-2 border-b-2 border-r-2 rounded-r-lg">
-                    {item.totalNoOfHours}
+                    {/* {item.totalNoOfHours} */}
                   </td>
                 </tr>
               ))}
