@@ -14,6 +14,8 @@ const ModalAddUser: React.FC<ModalAddUserProps> = ({ isOpen, onClose }) => {
   const [newUser, setNewUser] = useState<string>("");
   const [newUserRole, setNewUserRole] = useState<string>("");
 
+  
+
   const handleAddUser = () => {
     if (newUser.trim() && newUserRole.trim()) {
       setUsers([...users, { name: newUser.trim(), role: newUserRole.trim() }]);

@@ -9,18 +9,17 @@ export const API_CONTANTS = {
   ROLES: {
     GET_ALL: "/roles/get-all",
   },
+    PROJECT: {
+      GET_ALLPROJECT: "/projects/search"
+    },
   APPROVAL: {
     GET_CLAIM_APPROVAL: "/claims/approval-search",
-  },
-  FINANCE: {
-    FINANCE_SEARCH: "/claims/finance-search",
   },
   CLAIMS: {
     CLAIMS_SEARCH: "/claims/search",
     CLAIMERS_SEARCH: "/claims/claimer-search",
     CLAIM_DETAIL: "/claims",
   },
-
   USERS: {
     CHANGE_PASSWORD: "/users/change-password",
     GET_ALL: "/users/get-all",
@@ -34,3 +33,6 @@ export const API_CONTANTS = {
       GET_ALLPROJECT: "/projects/search"
     }
 };
+  
+  
+  
