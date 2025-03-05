@@ -30,6 +30,20 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, project, users, isEd
   });
 
   const handleSave = async () => {
+    // Validate required fields
+    if (!projectData.name.trim()) {
+      console.error("Project name is required.");
+      return; // Prevent API call if project name is empty
+    }
+    if (!projectData.code.trim()) {
+      console.error("Project code is required.");
+      return; // Prevent API call if project code is empty
+    }
+    if (!projectData.department.trim()) {
+      console.error("Project department is required.");
+      return; // Prevent API call if project department is empty
+    }
+
     const data = {
       project_name: projectData.name,
       project_code: projectData.code,
@@ -41,12 +55,12 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, project, users, isEd
       project_members: [
         {
           user_id: projectData.user,
-          project_role: "Project Manager"
+          project_role: "Project Manager" // Adjust as necessary
         }
       ],
     };
 
-    console.log("Data being sent to API:", data);
+    console.log("Data being sent to API:", data); // Log the data
 
     try {
       const response: ResponseModel<any> = await getEditProject({
@@ -58,7 +72,7 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, project, users, isEd
         _id: projectData.code
       }, projectData.code);
 
-      console.log("API Response:", response);
+      console.log("API Response:", response); // Log the API response
 
       if (!response.success) {
         throw new Error(response.message || 'Failed to save project');
@@ -67,7 +81,12 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, project, users, isEd
       console.log('Project saved successfully:', response);
       onClose();
     } catch (error) {
-      console.error('Error saving project:', error);
+      // Improved error logging
+      if (error instanceof Error) {
+        console.error('Error saving project:', error.message); // Log the error message
+      } else {
+        console.error('Error saving project:', error); // Log the entire error object
+      }
     }
   };
 
