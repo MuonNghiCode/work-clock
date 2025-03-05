@@ -60,4 +60,11 @@ export interface ProjectMember {
     searchCondition: SearchCondition;
     pageInfo: PageInfoRequest;
   }
+
+  export interface ProjectEditRespone {
+    success: boolean;
+    data: ProjectItem;
+  }
+
+
   
