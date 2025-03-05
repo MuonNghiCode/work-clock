@@ -18,7 +18,8 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, project, users, isEd
     return date.toISOString().split("T")[0]; // Format to YYYY-MM-DD
   };
 
-  const [projectData, setProjectData] = useState({
+  // Store original project data
+  const [originalProjectData] = useState({
     name: project?.project_name || "",
     code: project?._id || "",
     date: project?.created_at ? formatDate(project.created_at) : "",
@@ -29,66 +30,80 @@ const EditProject: React.FC<EditProjectProps> = ({ onClose, project, users, isEd
     descriptions: project?.project_description || ""
   });
 
-  const handleSave = async () => {
-    // Validate required fields
-    if (!projectData.name.trim()) {
-      console.error("Project name is required.");
-      return; // Prevent API call if project name is empty
-    }
-    if (!projectData.code.trim()) {
-      console.error("Project code is required.");
-      return; // Prevent API call if project code is empty
-    }
-    if (!projectData.department.trim()) {
-      console.error("Project department is required.");
-      return; // Prevent API call if project department is empty
-    }
+  const [projectData, setProjectData] = useState(originalProjectData);
 
-    const data = {
-      project_name: projectData.name,
-      project_code: projectData.code,
-      project_department: projectData.department,
-      project_description: projectData.descriptions,
-      project_start_date: projectData.date,
-      project_end_date: projectData.enddate,
-      project_status: projectData.status,
+  const handleSave = async () => {
+    // Ensure values are properly formatted
+    const formattedData = {
+      name: projectData.name?.trim() || "",
+      code: projectData.code?.trim() || "",
+      department: projectData.department?.trim() || "",
+      descriptions: projectData.descriptions?.trim() || "",
+      date: projectData.date || "",
+      enddate: projectData.enddate || "",
+      status: projectData.status || "New",
+      user: projectData.user || "",
+    };
+  
+    // Validate required fields
+    if (!formattedData.name) {
+      console.error("Project name is required.");
+      return;
+    }
+    if (!formattedData.code) {
+      console.error("Project code is required.");
+      return;
+    }
+    if (!formattedData.department) {
+      console.error("Project department is required.");
+      return;
+    }
+  
+    // Check if there are changes
+    if (JSON.stringify(formattedData) === JSON.stringify(originalProjectData)) {
+      console.log("No changes detected. Skipping API call.");
+      return;
+    }
+  
+    const data: ProjectInfo = {
+      project_name: formattedData.name,
+      project_code: formattedData.code,
+      project_department: formattedData.department,
+      project_description: formattedData.descriptions,
+      project_start_date: formattedData.date,
+      project_end_date: formattedData.enddate,
+      project_status: formattedData.status,
       project_members: [
         {
-          user_id: projectData.user,
-          project_role: "Project Manager" // Adjust as necessary
-        }
+          user_id: formattedData.user,
+          project_role: "Project Manager",
+        },
       ],
+      created_at: originalProjectData.date, 
+      is_deleted: false,
+      updated_at: new Date().toISOString(),
+      updated_by: "", 
+      _id: formattedData.code,
     };
-
-    console.log("Data being sent to API:", data); // Log the data
-
+  
+    console.log("Data being sent to API:", data);
+  
     try {
-      const response: ResponseModel<any> = await getEditProject({
-        ...data,
-        created_at: project.created_at || new Date().toISOString(),
-        is_deleted: false,
-        updated_at: new Date().toISOString(),
-        updated_by: project.updated_by || "",
-        _id: projectData.code
-      }, projectData.code);
-
-      console.log("API Response:", response); // Log the API response
-
+      const response: ResponseModel<any> = await getEditProject(data, formattedData.code);
+  
+      console.log("API Response:", response);
+  
       if (!response.success) {
-        throw new Error(response.message || 'Failed to save project');
+        throw new Error(response.message || "Failed to save project");
       }
-
-      console.log('Project saved successfully:', response);
+  
+      console.log("Project saved successfully:", response);
       onClose();
     } catch (error) {
-      // Improved error logging
-      if (error instanceof Error) {
-        console.error('Error saving project:', error.message); // Log the error message
-      } else {
-        console.error('Error saving project:', error); // Log the entire error object
-      }
+      console.error("Error saving project:", error instanceof Error ? error.message : error);
     }
   };
+  
 
   return (
     <Modal open={isEditModalOpen} onCancel={onClose} onOk={handleSave} okText='Save'>
