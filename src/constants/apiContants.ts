@@ -9,9 +9,11 @@ export const API_CONTANTS = {
   ROLES: {
     GET_ALL: "/roles/get-all",
   },
-    PROJECT: {
-      GET_ALLPROJECT: "/projects/search"
-    },
+  PROJECT: {
+    CREATE_PROJECT: "/projects",
+    GET_ALLPROJECT: "/projects/search",
+    GET_ALLROLEPROJECT: "/projects/roles",
+  },
   APPROVAL: {
     GET_CLAIM_APPROVAL: "/claims/approval-search",
   },
@@ -30,6 +32,5 @@ export const API_CONTANTS = {
     SEARCH_USER: "/users/search",
   },
 };
-  
-  
-  
+
+

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Pagination, Tag, Input } from "antd";
-import { Project, ProjectInfo } from "../../../types/Project";
+import { ProjectInfo } from "../../../types/Project";
 import { GetProps } from "antd/lib/_util/type";
 import ConfirmModal from "../../ConfirmModal/ConfirmModal";
 import Icons from "../../icon";
@@ -8,23 +8,15 @@ import EditProject from "../EditProject/EditProject";
 import ProjectDetail from "../../ProjectDetail/ProjectDetail";
 import { PageInfo, ProjectItem, SearchCondition } from "../../../types/ProjectTypes";
 import { getAllProject } from "../../../services/projectService";
-import AddProject from "../AddProject/AddProject";
 import '../../../types/Project';
 import '../../../types/ProjectTypes';
 import { ResponseModel } from "../../../models/ResponseModel";
+import ModalAddProject from "../ModalAddProject/ModalAddProject";
 
 type SearchProps = GetProps<typeof Input.Search>;
 const { Search } = Input;
 
-interface TableProjectProps {
-  data: Project[];
-  totalItems: number;
-  loading: boolean;
-  onEditProject: (editedProject: Project) => void;
-  onDeleteProject: (projectId: string | number) => void;
-  searchValue: string;
-  setSearchValue: (value: string) => void;
-}
+
 
 const TableProject: React.FC = ({
 }) => {
@@ -43,7 +35,7 @@ const TableProject: React.FC = ({
 
   // const [project, setProject] = useState<ProjectInfo[]>([]);
 
-  
+
   const handlePageChange = (page: number, pageSize?: number) => {
     setCurrentPage(page);
     if (pageSize) {
@@ -67,17 +59,6 @@ const TableProject: React.FC = ({
     setCurrentPage(1);
   };
 
-  const filteredData = projects.filter((item) => {
-    const matchesStatus = statusFilter ? item.project_status === statusFilter : true;
-    const matchesSearch = item.project_name.toLowerCase().includes(searchValue.toLowerCase());
-    return matchesStatus && matchesSearch;
-  });
-  
-  const startIndex = (currentPage - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
-  const currentData = filteredData.slice(startIndex, endIndex);
-  console.log('data', projects)
-
   const statusTags = ["All", "Processing", "Pending", "Complete"];
 
   const projectDetail = (data: ProjectItem): ProjectInfo => ({
@@ -87,7 +68,10 @@ const TableProject: React.FC = ({
     project_start_date: data.project_start_date,
     project_end_date: data.project_end_date,
     project_status: data.project_status,
-    project_members: data.project_members || [],
+    project_members: data.project_members.map(member => ({
+      user_id: member.user_id,
+      project_role: member.project_role
+    })),
     project_department: data.project_department,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
@@ -154,11 +138,11 @@ const TableProject: React.FC = ({
     setShowProjectDetail(true);
   };
 
-  const handleEdit = (project: ProjectInfo) => {
-    console.log("Opening edit modal for project:", project);
-    setSelectedProject(project);
-    setIsEditModalOpen(true);
-  };
+  // const handleEdit = (project: ProjectInfo) => {
+  //   console.log("Opening edit modal for project:", project);
+  //   setSelectedProject(project);
+  //   setIsEditModalOpen(true);
+  // };
 
 
 
@@ -199,25 +183,24 @@ const TableProject: React.FC = ({
     }
   };
   const handleAddProject = () => {
-    // Thêm id cho project mới
     setIsAddModalOpen(true);
   };
 
   const users = ["dngoc", "haaus", "ntdn"];
   return (
     <>
-     <button
-              onClick={handleAddProject}
-              className="bg-orange-400 text-white px-6 py-3 rounded-full hover:bg-orange-500 transition-colors flex items-center gap-2"
-            >
-              <span className="text-xl">+</span>
-              <span className="text-lg">Add Project</span>
-            </button>
-            
-        <AddProject
-          onClose={() => setIsAddModalOpen(false)}
-          isAddModalOpen={isAddModalOpen}
-        />
+      <button
+        onClick={handleAddProject}
+        className="bg-orange-400 text-white px-6 py-3 rounded-full hover:bg-orange-500 transition-colors flex items-center gap-2"
+      >
+        <span className="text-xl">+</span>
+        <span className="text-lg">Add Project</span>
+      </button>
+
+      <ModalAddProject
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+      />
       {/* </Modal> */}
       <div className="flex justify-between items-center mb-4">
         <div>
@@ -272,10 +255,9 @@ const TableProject: React.FC = ({
           </tr>
         </thead>
         <tbody className="w-full">
-          {/* {console.log(fetchData)} */}
-          {currentData.map((item) => (
+          {projects.map((item) => (
             <tr
-              // onClick={() => handleShowProjectDetail()}
+              onClick={() => handleShowProjectDetail(item)}
               key={item._id}
               className="h-[70px] bg-white overflow-hidden text-center border-collapse hover:shadow-brand-orange !rounded-2xl cursor-pointer"
             >
@@ -298,7 +280,7 @@ const TableProject: React.FC = ({
                           color="blue"
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleEdit(item);
+                            handleEditProject(item);
                           }}
                           className="w-5 h-5"
                         />
@@ -346,6 +328,7 @@ const TableProject: React.FC = ({
           onChange={handlePageChange}
           showSizeChanger
           onShowSizeChange={handlePageChange}
+          pageSizeOptions={["5", "10", "20", "50"]}
         />
       </div>
 
@@ -361,14 +344,14 @@ const TableProject: React.FC = ({
         message={message}
         onConfirm={handleConfirmDelete}
       />
-        {selectedProject && (
-          <EditProject
-            project={selectedProject}
-            onClose={handleClose}
-            users={users}
-            isEditModalOpen={isEditModalOpen}
-          />
-        )}
+      {selectedProject && (
+        <EditProject
+          project={selectedProject}
+          onClose={handleClose}
+          users={users}
+          isEditModalOpen={isEditModalOpen}
+        />
+      )}
     </>
   );
 };
