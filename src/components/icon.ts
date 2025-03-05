@@ -24,7 +24,9 @@ import {
   Phone ,
   Mail,
   MapPin,
-  Menu 
+  Menu,
+  Facebook,
+  Instagram,
 } from "lucide-react";
 import {
   FaUsers,
@@ -89,7 +91,9 @@ const Icons: IconType = {
   Phone: Phone,
   Mail: Mail,
   MapPin: MapPin,
-  Menu2: Menu
+  Menu2: Menu,
+  Facebook: Facebook,
+  Instagram: Instagram
 };
 
 export default Icons;

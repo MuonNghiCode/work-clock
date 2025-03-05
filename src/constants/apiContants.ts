@@ -12,6 +12,7 @@ export const API_CONTANTS = {
   PROJECT: {
     CREATE_PROJECT: "/projects",
     GET_ALLPROJECT: "/projects/search",
+    UPDATE_PROJECT: "/project/${id}",
     GET_ALLROLEPROJECT: "/projects/roles",
   },
   APPROVAL: {
