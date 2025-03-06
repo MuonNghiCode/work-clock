@@ -2,32 +2,35 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { CircularBarsSpinnerLoader } from "../../components/common/Spinner";
 import { motion, AnimatePresence } from "framer-motion";
-import { verifyToken } from "../../services/authService";
-
+import { verifyToken, resendToken } from "../../services/authService";
+import Icons from "../../components/icon";
 const VerifyEmail: React.FC = () => {
   const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();
+
   const [message, setMessage] = useState("Verifying email...");
   const [isLoading, setIsLoading] = useState(true);
   const [isSuccess, setIsSuccess] = useState<boolean | null>(null);
   const [isRedirecting, setIsRedirecting] = useState(false);
 
+  const [resendEmail, setResendEmail] = useState("");
+  const [resendMessage, setResendMessage] = useState("");
+
   useEffect(() => {
     const verifyEmail = async () => {
       try {
         if (!token) {
-          setMessage("Token not valid");
+          setMessage(
+            "Invalid token. Please enter your email to receive a new one."
+          );
           setIsSuccess(false);
           setIsLoading(false);
           return;
         }
 
         const verifyResponse = await verifyToken(token);
-        console.log("Verify response:", verifyResponse);
 
-        setMessage(
-          verifyResponse.message || "Email has been successfully verified"
-        );
+        setMessage(verifyResponse.message || "Email verified successfully!");
         setIsSuccess(verifyResponse.success);
 
         if (verifyResponse.success) {
@@ -40,7 +43,7 @@ const VerifyEmail: React.FC = () => {
         const errorMessage =
           error.response?.data?.message ||
           error.message ||
-          "Authentication failed";
+          "Verification failed";
         setMessage(errorMessage);
         setIsSuccess(false);
       } finally {
@@ -49,6 +52,24 @@ const VerifyEmail: React.FC = () => {
     };
     verifyEmail();
   }, [token, navigate]);
+
+  const handleResendToken = async () => {
+    if (!resendEmail) {
+      setResendMessage("Please enter your email.");
+      return;
+    }
+
+    try {
+      const response = await resendToken(resendEmail);
+      setResendMessage(
+        response.message || "Token has been resent. Please check your email."
+      );
+    } catch (error: any) {
+      setResendMessage(
+        error.response?.data?.message || "Resending token failed."
+      );
+    }
+  };
 
   return (
     <motion.div
@@ -155,18 +176,31 @@ const VerifyEmail: React.FC = () => {
                   >
                     {message}
                   </p>
-                  {!isSuccess && (
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => {
-                        setIsRedirecting(true);
-                        setTimeout(() => navigate("/login"), 800);
-                      }}
-                      className="mt-6 px-6 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600"
-                    >
-                      Back to Login
-                    </motion.button>
+
+                  {!isSuccess && !isLoading && (
+                    <div className="mt-4 w-full">
+                      <div className="relative">
+                        <input
+                          type="email"
+                          className="w-full p-2 border border-gray-300 rounded-md"
+                          placeholder="Enter your email to receive a new token"
+                          value={resendEmail}
+                          onChange={(e) => setResendEmail(e.target.value)}
+                        />
+                        <Icons.Mail className="w-5 h-5 text-gray-400 absolute right-3 top-1/2 transform -translate-y-1/2" />
+                      </div>
+                      <button
+                        className="mt-3 w-full px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600"
+                        onClick={handleResendToken}
+                      >
+                        Resend Token
+                      </button>
+                      {resendMessage && (
+                        <p className="text-sm text-center mt-2 text-red-600">
+                          {resendMessage}
+                        </p>
+                      )}
+                    </div>
                   )}
                 </div>
               </motion.div>

@@ -1,6 +1,6 @@
 import { post } from "./apiService";
 import { ResponseModel } from "../models/ResponseModel";
-import { API_CONTANTS } from "../constants/apiContants";
+import { API_CONSTANTS } from "../constants/apiConstants";
 import { ApprovalInfo } from "../types/Approval";
 import { EmployeeInfo } from "../types/Employee";
 import { ProjectInfo } from "../types/Project";
@@ -50,6 +50,6 @@ interface FinanceRequest {
 }
 
 export const getFinanceData = async (request: FinanceRequest): Promise<ResponseModel<FinanceResponse>> => {
-  const response = await post<FinanceResponse>(API_CONTANTS.FINANCE.FINANCE_SEARCH, request);
+  const response = await post<FinanceResponse>(API_CONSTANTS.FINANCE.FINANCE_SEARCH, request);
   return response;
 }
