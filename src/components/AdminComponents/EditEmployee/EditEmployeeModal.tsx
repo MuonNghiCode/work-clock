@@ -222,9 +222,9 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                   </label>
                   <input
                     type="text"
-                    value={formData.department_name || ""}
+                    value={formData.department_code || ""}
                     onChange={(e) =>
-                      handleInputChange("department_name", e.target.value)
+                      handleInputChange("department_code", e.target.value)
                     }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
                   />
