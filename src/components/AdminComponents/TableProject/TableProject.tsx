@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Button, Pagination, Tag, Input } from "antd";
 import { ProjectInfo } from "../../../types/Project";
 import { GetProps } from "antd/lib/_util/type";
@@ -16,6 +16,7 @@ import '../../../types/Project';
 import '../../../types/ProjectTypes';
 import { ResponseModel } from "../../../models/ResponseModel";
 import ModalAddProject from "../ModalAddProject/ModalAddProject";
+import { debounce } from "lodash";
 
 type SearchProps = GetProps<typeof Input.Search>;
 const { Search } = Input;
@@ -53,18 +54,24 @@ const TableProject: React.FC = ({ }) => {
     setStatusFilter(status === "All" ? null : status);
     setCurrentPage(1);
   };
+  // Tạo hàm debounce cho tìm kiếm
+  const handleSearch = useCallback(
+    debounce((value: string) => {
+    setSearchValue(value);
+    setCurrentPage(1);
+  }, 1000),
+  []);
 
   const onSearch: SearchProps["onSearch"] = (value) => {
-    setSearchValue(value);
-    setCurrentPage(1);
+    handleSearch(value);
   };
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchValue(value);
-    setCurrentPage(1);
-  };
+  
 
+
+  // const handleSearchChangeDebounced: SearchProps['onSearch'] = (value)=> {
+  //   debouncedSearch(value);
+  // };
 
   const statusTags = ["All", "Processing", "Pending", "Complete"];
 
@@ -80,8 +87,8 @@ const TableProject: React.FC = ({ }) => {
       project_role: member.project_role
     })),
     project_department: data.project_department,
-    // created_at: new Date().toISOString(),
-    // updated_at: new Date().toISOString(),
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
     updated_by: "",
     is_deleted: false,
     project_description: data.project_description || "",
@@ -122,6 +129,7 @@ const TableProject: React.FC = ({ }) => {
 
   useEffect(() => {
     fetchProjects();
+    console.log(projects[0])
   }, [currentPage, pageSize, searchValue]); // Add searchValue to dependencies
 
   const handleEditProject = (editedProject: ProjectInfo) => {
@@ -239,8 +247,7 @@ const TableProject: React.FC = ({ }) => {
           <Search
             placeholder="Search project..."
             onSearch={onSearch}
-            onChange={handleSearchChange}
-            value={searchValue}
+            onChange={(e) => handleSearch(e.target.value)}
             style={{ width: 250 }}
             size="large"
             className="custom-search pl-1"
