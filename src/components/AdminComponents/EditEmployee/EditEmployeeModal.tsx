@@ -13,7 +13,7 @@ interface Employee {
   phone: string;
   full_name: string;
   avatar_url: string;
-  department_name: string;
+  department_code: string;
   salary: number;
   start_date: string;
   end_date: string | null;
@@ -46,12 +46,12 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
     address: "",
     phone: "",
     avatar_url: "",
-    department_name: "",
+    department_code: "",
     salary: 0,
     start_date: "",
     end_date: "",
   });
-  
+
   // Animation states
   const [isAnimating, setIsAnimating] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -133,16 +133,16 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto transition-opacity duration-300 ease-in-out"
-         style={{ opacity: isAnimating ? 1 : 0 }}>
+      style={{ opacity: isAnimating ? 1 : 0 }}>
       <div className="fixed inset-0 bg-black/30 transition-opacity duration-300 ease-in-out"
-           style={{ opacity: isAnimating ? 1 : 0 }}
-           onClick={handleClose}></div>
+        style={{ opacity: isAnimating ? 1 : 0 }}
+        onClick={handleClose}></div>
       <div className="relative min-h-screen flex items-center justify-center p-4">
         <div className="relative bg-white rounded-lg w-full max-w-4xl p-6 transition-all duration-300 ease-in-out transform"
-             style={{ 
-               opacity: isAnimating ? 1 : 0,
-               transform: isAnimating ? 'scale(1)' : 'scale(0.95)'
-             }}>
+          style={{
+            opacity: isAnimating ? 1 : 0,
+            transform: isAnimating ? 'scale(1)' : 'scale(0.95)'
+          }}>
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-[#FF9447]">Edit Employee</h2>
             <button
@@ -237,9 +237,9 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                     </label>
                     <input
                       type="text"
-                      value={formData.department_name || ""}
+                      value={formData.department_code || ""}
                       onChange={(e) =>
-                        handleInputChange("department_name", e.target.value)
+                        handleInputChange("department_code", e.target.value)
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
                     />

@@ -30,7 +30,7 @@ interface Employee {
     phone: string;
     full_name: string;
     avatar_url: string;
-    department_name: string;
+    department_code: string;
     salary: number;
     start_date: string;
     end_date: string | null;
@@ -68,8 +68,8 @@ export const updateEmployee = async (
         if (employeeData.phone) requestBody.phone = employeeData.phone;
         if (employeeData.avatar_url)
             requestBody.avatar_url = employeeData.avatar_url;
-        if (employeeData.department_name)
-            requestBody.department_name = employeeData.department_name;
+        if (employeeData.department_code)
+            requestBody.department_code = employeeData.department_code;
         if (typeof employeeData.salary === "number")
             requestBody.salary = employeeData.salary;
 
@@ -101,4 +101,52 @@ export const updateEmployee = async (
         throw error;
     }
 };
+// Interface for Department
+interface Department {
+    _id: string;
+    department_code: string;
+    description: string;
+    is_deleted: boolean;
+    created_at: string;
+    updated_at: string;
+}export const getDepartments = async (): Promise<Department[]> => {
+    try {
+        const response = await axiosInstance.get(API_CONTANTS.DEPARTMENTS.LIST);
 
+        if (response.data.success) {
+            return response.data.data; // return departments list
+        } else {
+            console.error("Error while getting list departments:", response.data);
+            return [];
+        }
+    } catch (error) {
+        console.error("Error API while getting list departments", error);
+        throw error;
+    }
+};
+// Interface for Contract
+interface Contract {
+    _id: string;
+    contract_type: string;
+    description: string;
+    is_deleted: boolean;
+    created_at: string;
+    updated_at: string;
+}
+
+// Fetch all contracts
+export const fetchContracts = async (): Promise<Contract[]> => {
+    try {
+        const response = await axiosInstance.get(API_CONTANTS.CONTRACTS.LIST);
+
+        if (response.data.success) {
+            return response.data.data; // Return contract list
+        } else {
+            console.error("Error fetching contracts:", response.data);
+            return [];
+        }
+    } catch (error) {
+        console.error("API call failed:", error);
+        throw error;
+    }
+};

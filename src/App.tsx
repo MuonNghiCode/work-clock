@@ -70,6 +70,10 @@ const router = createBrowserRouter([
         path: "project",
         element: <AdminProject />,
       },
+      {
+        path: "edit_profile",
+        element: <EditProfilePage />,
+      },
     ],
   },
   {
@@ -84,6 +88,14 @@ const router = createBrowserRouter([
       {
         path: "",
         element: <Navigate to="dashboard" replace />,
+      },
+      {
+        path: "edit_profile",
+        element: <EditProfilePage />,
+      },
+      {
+        path: "edit_profile",
+        element: <EditProfilePage />,
       },
       { path: "dashboard", element: <ApprovalDashBoardPage /> },
       { path: "approval-management", element: <ApprovalPage /> },
@@ -102,6 +114,10 @@ const router = createBrowserRouter([
       {
         path: "",
         element: <Navigate to="dashboard" replace />,
+      },
+      {
+        path: "edit_profile",
+        element: <EditProfilePage />,
       },
       { path: "dashboard", element: <FinanceDashBoardPage /> },
       { path: "paid-management", element: <FinancePage /> },

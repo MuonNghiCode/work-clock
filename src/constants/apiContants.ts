@@ -30,4 +30,10 @@ export const API_CONTANTS = {
     CHANGE_STATUS: "/users/change-status",
     SEARCH_USER: "/users/search",
   },
+  DEPARTMENTS: {
+    LIST: "/departments/get-all",
+  },
+  CONTRACTS: {
+    LIST: "/contracts",
+  },
 };

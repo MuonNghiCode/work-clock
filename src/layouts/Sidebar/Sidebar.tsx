@@ -60,6 +60,11 @@ const Sidebar: React.FC = () => {
         icon: <Icons.FolderDot className="w-8 h-8" />,
         label: "Project Management",
       },
+      {
+        path: "edit_profile",
+        icon: <Icons.Settings className="w-8 h-8" />,
+        label: "SETTING",
+      },
     ],
     A003: [
       {
@@ -72,6 +77,11 @@ const Sidebar: React.FC = () => {
         icon: <Icons.MdApproval className="w-8 h-8" />,
         label: "Approval Management",
       },
+      {
+        path: "edit_profile",
+        icon: <Icons.Settings className="w-8 h-8" />,
+        label: "SETTING",
+      },
     ],
     A002: [
       {
@@ -83,6 +93,11 @@ const Sidebar: React.FC = () => {
         path: "paid-management",
         icon: <Icons.Wallet className="w-8 h-8" />,
         label: "Finance Management",
+      },
+      {
+        path: "edit_profile",
+        icon: <Icons.Settings className="w-8 h-8" />,
+        label: "SETTING",
       },
     ],
     A004: [
