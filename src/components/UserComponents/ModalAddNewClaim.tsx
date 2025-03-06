@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Modal, Form, Input, Space, DatePicker, Select, Spin } from 'antd';
 import { ClaimRequest } from '../../types/ClaimRequest';
 import { ProjectInfo } from '../../types/Project';
-import { ApprovalInfo } from '../../types/Approval';
 import { getAllProject } from '../../services/projectService';
 import { getUsers } from '../../services/userAuth';
 import { debounce } from 'lodash';
@@ -25,26 +24,29 @@ interface ClaimRequestDataField {
 const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({ isOpen, onClose }) => {
     const [form] = Form.useForm();
     const [projects, setProjects] = useState<ProjectInfo[]>([]);
-    const [approvals, setApprovals] = useState<ApprovalInfo[]>([]);
+    const [approvals, setApprovals] = useState<{ label: string, value: string }[]>([]);
     const [fetching, setFetching] = useState(false);
     let userId = JSON.parse(localStorage.getItem('user') || '{}')._id;
 
     const fetchProjects = async () => {
         try {
-            const response = await getAllProject(
-                {
+            const response = await getAllProject({
+                searchCondition: {
                     keyword: '',
                     project_start_date: '',
                     project_end_date: '',
                     user_id: userId,
                     is_delete: false
-                }, {
-                pageNum: 1,
-                pageSize: 10,
+                },
+                pageInfo: {
+                    pageNum: 1,
+                    pageSize: 10,
+                    totalItems: 0,
+                    totalPages: 0
+                }
             });
             setProjects(response.data.pageData);
-            console.log(response.data.pageData);
-            return response.data.pageData;
+            return response.data;
         } catch (error) {
             console.log(error);
         }
@@ -63,12 +65,14 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({ isOpen, onClose }) 
             role_code: 'A003',
             user_id: userId,
         }, { pageNum: 1, pageSize: 10 });
+        console.log(response.data.pageData);
         setApprovals(response.data.pageData.map((user: any) => ({
             label: `${user.user_name} | (${user.email})`,
             value: user._id,
         })));
         setFetching(false);
     };
+
     const debounceFetcher = useMemo(() => debounce(fetchUserList, 300), []);
 
 

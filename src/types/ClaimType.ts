@@ -10,21 +10,3 @@ export interface ClaimItem {
   claim_status: string;
 }
 
-export interface PageInfo {
-  pageNum: number;
-  pageSize: number;
-  totalItems: number;
-}
-
-export interface SearchCondition {
-  keyword: string;
-  claim_status: string;
-  claim_start_date: string;
-  claim_end_date: string;
-  is_delete: boolean;
-}
-
-export interface PageInfoRequest {
-  pageNum: number;
-  pageSize: number;
-}

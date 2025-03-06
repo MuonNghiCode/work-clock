@@ -12,7 +12,7 @@ export const API_CONTANTS = {
   PROJECT: {
     CREATE_PROJECT: "/projects",
     GET_ALLPROJECT: "/projects/search",
-    UPDATE_PROJECT: "/project/${id}",
+    UPDATE_PROJECT: "/projects/${id}",
     GET_ALLROLEPROJECT: "/projects/roles",
   },
   APPROVAL: {
@@ -34,5 +34,8 @@ export const API_CONTANTS = {
     DELETE_USER: "/users/${id}",
     CHANGE_STATUS: "/users/change-status",
     SEARCH_USER: "/users/search",
+    CHANGE_ROLE: "/users/change-role",
   },
 };
+
+

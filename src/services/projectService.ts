@@ -1,37 +1,55 @@
 import { get, put, post } from './apiService';
 import { API_CONTANTS } from '../constants/apiContants';
-import { PageInfo, ProjectEditRespone, ProjectSearchResponse, SearchCondition } from '../types/ProjectTypes';
 import { ProjectInfo } from '../types/Project';
 import { ResponseModel } from '../models/ResponseModel';
+export interface PageInfo {
+    pageNum: number;
+    pageSize: number;
+    totalItems?: number;
+    totalPages?: number;
+}
 
-export const getAllProject = async (
-    searchCondition: SearchCondition,
-    pageInfo: PageInfo
-): Promise<ProjectSearchResponse> => {
-    const response = await post(API_CONTANTS.PROJECT.GET_ALLPROJECT, {
-        searchCondition,
-        pageInfo
-    });
-    return response as ProjectSearchResponse;
+export interface SearchConditionProject {
+    keyword: string;
+    project_start_date: string;
+    project_end_date: string;
+    user_id: string;
+    is_delete: boolean;
+}
+
+export interface ProjectSearchRequest {
+    searchCondition: SearchConditionProject;
+    pageInfo: PageInfo;
+}
+
+
+export const getAllProject = async ({ searchCondition, pageInfo }: ProjectSearchRequest): Promise<ResponseModel<{ pageData: ProjectInfo[], pageInfo: PageInfo }>> => {
+    const response = await post(API_CONTANTS.PROJECT.GET_ALLPROJECT,
+        {
+            searchCondition,
+            pageInfo
+        }
+    );
+    return response as ResponseModel<{ pageData: ProjectInfo[], pageInfo: PageInfo }>;
 };
 
 export const getInfoProject = async (
     ProjectInfo: ProjectInfo,
     pageInfo: PageInfo
-): Promise<ProjectSearchResponse> => {
+): Promise<ResponseModel<ProjectInfo>> => {
     const response = await post(API_CONTANTS.PROJECT.GET_ALLPROJECT, {
         ProjectInfo,
         pageInfo
     });
-    return response as ProjectSearchResponse;
+    return response as ResponseModel<ProjectInfo>;
 }
 
 export const getEditProject = async (
     ProjectInfo: ProjectInfo,
     id: string
-): Promise<ProjectEditRespone> => {
+): Promise<ResponseModel<ProjectInfo>> => {
     const response = await put(API_CONTANTS.PROJECT.UPDATE_PROJECT.replace("${id}", id), ProjectInfo);
-    return response as ProjectEditRespone;
+    return response as ResponseModel<ProjectInfo>;
 };
 
 export const getAllRoleProject = async (): Promise<{ name: string, value: string }[]> => {

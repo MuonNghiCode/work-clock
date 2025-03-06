@@ -4,8 +4,20 @@ import { API_CONTANTS } from "../constants/apiContants";
 import { ApprovalInfo } from "../types/Approval";
 import { EmployeeInfo } from "../types/Employee";
 import { ProjectInfo } from "../types/Project";
-import { SearchCondition, PageInfoRequest, ClaimItem, PageInfo } from "../types/ClaimType";
-
+import { ClaimItem } from "../types/ClaimType";
+interface SearchCondition {
+  keyword: string;
+  claim_status: string;
+  claim_start_date: string;
+  claim_end_date: string;
+  is_delete: boolean;
+}
+interface PageInfoRequest {
+  pageNum: number;
+  pageSize: number;
+  totalItems?: number;
+  totalPages?: number;
+}
 
 interface ClaimInfo {
   _id: string;
@@ -68,15 +80,15 @@ export const getUserClaimsData = async (request: ClaimsRequest): Promise<Respons
 export const getClaimerSearch = async (
   searchCondition: SearchCondition,
   pageInfo: PageInfoRequest
-): Promise<ResponseModel<{ pageData: ClaimItem[], pageInfo: PageInfo }>> => {
-  const response = await post<{ pageData: ClaimItem[], pageInfo: PageInfo }>(API_CONTANTS.CLAIMS.CLAIMERS_SEARCH, { 
-    searchCondition, 
-    pageInfo 
+): Promise<ResponseModel<{ pageData: ClaimItem[], pageInfo: PageInfoRequest }>> => {
+  const response = await post<{ pageData: ClaimItem[], pageInfo: PageInfoRequest }>(API_CONTANTS.CLAIMS.CLAIMERS_SEARCH, {
+    searchCondition,
+    pageInfo
   });
   return response;
 };
 
 export const getClaimDetail = async (id: string): Promise<ResponseModel<ClaimItem>> => {
-  const response = await get<ClaimItem>(`${API_CONTANTS.CLAIMS.CLAIM_DETAIL}/${id}`); 
+  const response = await get<ClaimItem>(`${API_CONTANTS.CLAIMS.CLAIM_DETAIL}/${id}`);
   return response;
 };
