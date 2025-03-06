@@ -150,4 +150,41 @@ html {
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
+
+  @keyframes glowing-border {
+    0% {
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5),
+        0 0 20px rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.6);
+    }
+    25% {
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
+        0 0 30px rgba(255, 255, 255, 0.5);
+      border-color: rgba(255, 255, 255, 0.8);
+    }
+    50% {
+      box-shadow: 0 0 30px rgba(255, 255, 255, 1),
+        0 0 40px rgba(255, 255, 255, 0.7);
+      border-color: rgba(255, 255, 255, 1);
+    }
+    75% {
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
+        0 0 30px rgba(255, 255, 255, 0.5);
+      border-color: rgba(255, 255, 255, 0.8);
+    }
+    100% {
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5),
+        0 0 20px rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.6);
+    }
+  }
+
+  .glow-effect {
+    animation: glowing-border 1.5s infinite ease-in-out;
+    border: 2px solid rgba(255, 255, 255, 0.7);
+    /* filter: blur(0.5px); */
+  }
+}
+
+@layer utilities {
 }
