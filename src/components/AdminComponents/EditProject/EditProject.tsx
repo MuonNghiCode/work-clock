@@ -113,11 +113,11 @@ const EditProject: React.FC<EditProjectProps> = ({
       okText="Save"
       width={800}
     >
-      <div className="w-full px-6 py-4">
-        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+      <div className="w-full px-4">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">
           Edit Project
         </h2>
-        <div className="flex flex-col items-center gap-y-6">
+        <div className="flex flex-col items-center gap-y-4">
           <div className="flex flex-row justify-between w-full space-x-4">
             <div className="flex-1 space-y-2">
               <label className="block text-gray-700 font-medium text-lg">
@@ -129,7 +129,7 @@ const EditProject: React.FC<EditProjectProps> = ({
                 onChange={(e) =>
                   setProjectData({ ...projectData, name: e.target.value })
                 }
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-xl"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-base"
                 placeholder="Enter project name"
               />
             </div>
@@ -144,7 +144,7 @@ const EditProject: React.FC<EditProjectProps> = ({
                 onChange={(e) =>
                   setProjectData({ ...projectData, code: e.target.value })
                 }
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-xl"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-base"
               />
             </div>
           </div>
@@ -160,7 +160,7 @@ const EditProject: React.FC<EditProjectProps> = ({
                 onChange={(e) =>
                   setProjectData({ ...projectData, date: e.target.value })
                 }
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-xl"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-base"
               />
             </div>
 
@@ -174,7 +174,7 @@ const EditProject: React.FC<EditProjectProps> = ({
                 onChange={(e) =>
                   setProjectData({ ...projectData, enddate: e.target.value })
                 }
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-xl"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-base"
               />
             </div>
           </div>
@@ -189,7 +189,7 @@ const EditProject: React.FC<EditProjectProps> = ({
                 onChange={(e) =>
                   setProjectData({ ...projectData, user: e.target.value })
                 }
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 bg-white text-xl"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 bg-white text-base"
               >
                 <option value="">Select a user</option>
                 {users.map((user, index) => (
@@ -210,48 +210,48 @@ const EditProject: React.FC<EditProjectProps> = ({
                 onChange={(e) =>
                   setProjectData({ ...projectData, role: e.target.value })
                 }
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-xl"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-base"
                 placeholder="Enter role"
               />
             </div>
           </div>
+          <div className="flex flex-row justify-between w-full space-x-4">
+            <div className="flex-1 space-y-2 w-full">
+              <label className="block text-gray-700 font-medium text-lg">
+                Department
+              </label>
+              <input
+                type="text"
+                value={projectData.department}
+                onChange={(e) =>
+                  setProjectData({
+                    ...projectData,
+                    department: e.target.value,
+                  })
+                }
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-base"
+                placeholder="Enter department"
+              />
+            </div>
 
-          <div className="flex-1 space-y-2 w-full">
-            <label className="block text-gray-700 font-medium text-lg">
-              Department
-            </label>
-            <input
-              type="text"
-              value={projectData.department}
-              onChange={(e) =>
-                setProjectData({
-                  ...projectData,
-                  department: e.target.value,
-                })
-              }
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-xl"
-              placeholder="Enter department"
-            />
+            <div className="flex-1 space-y-2 w-full">
+              <label className="block text-gray-700 font-medium text-lg">
+                Status
+              </label>
+              <select
+                value={projectData.status}
+                onChange={(e) =>
+                  setProjectData({ ...projectData, status: e.target.value })
+                }
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 bg-white text-base"
+              >
+                <option value="New">New</option>
+                <option value="Processing">Processing</option>
+                <option value="Pending">Pending</option>
+                <option value="Complete">Complete</option>
+              </select>
+            </div>
           </div>
-
-          <div className="flex-1 space-y-2 w-full">
-            <label className="block text-gray-700 font-medium text-lg">
-              Status
-            </label>
-            <select
-              value={projectData.status}
-              onChange={(e) =>
-                setProjectData({ ...projectData, status: e.target.value })
-              }
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 bg-white text-xl"
-            >
-              <option value="New">New</option>
-              <option value="Processing">Processing</option>
-              <option value="Pending">Pending</option>
-              <option value="Complete">Complete</option>
-            </select>
-          </div>
-
           <div className="flex-1 space-y-2 w-full">
             <label className="block text-gray-700 font-medium text-lg">
               Descriptions
@@ -265,7 +265,7 @@ const EditProject: React.FC<EditProjectProps> = ({
                   descriptions: e.target.value,
                 })
               }
-              className="w-full px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-xl"
+              className="w-full px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-base"
               placeholder="Enter description"
             />
           </div>
