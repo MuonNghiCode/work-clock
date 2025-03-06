@@ -13,6 +13,8 @@ interface SearchCondition {
 interface PageInfo {
     pageNum: number;
     pageSize: number;
+    totalPage?: number;
+    totalItems?: number;
 }
 
 interface ApprovalSearchRequest {

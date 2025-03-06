@@ -1,20 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Button, Pagination, Tag, Input } from "antd";
+import { Button, Pagination, Input } from "antd";
 import { ProjectInfo } from "../../../types/Project";
 import { GetProps } from "antd/lib/_util/type";
 import ConfirmModal from "../../ConfirmModal/ConfirmModal";
 import Icons from "../../icon";
 import EditProject from "../EditProject/EditProject";
 import ProjectDetail from "../../ProjectDetail/ProjectDetail";
-import {
-  PageInfo,
-  ProjectItem,
-  SearchCondition,
-} from "../../../types/ProjectTypes";
-import { getAllProject } from "../../../services/projectService";
-import '../../../types/Project';
-import '../../../types/ProjectTypes';
-import { ResponseModel } from "../../../models/ResponseModel";
+import { getAllProject, PageInfo, SearchConditionProject } from "../../../services/projectService";
 import ModalAddProject from "../ModalAddProject/ModalAddProject";
 
 type SearchProps = GetProps<typeof Input.Search>;
@@ -26,7 +18,6 @@ const TableProject: React.FC = ({ }) => {
   const [projects, setProjects] = useState<ProjectInfo[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
-  const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [showProjectDetail, setShowProjectDetail] = useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
@@ -49,10 +40,6 @@ const TableProject: React.FC = ({ }) => {
     }
   };
 
-  const handleStatusChange = (status: string) => {
-    setStatusFilter(status === "All" ? null : status);
-    setCurrentPage(1);
-  };
 
   const onSearch: SearchProps["onSearch"] = (value) => {
     setSearchValue(value);
@@ -65,10 +52,7 @@ const TableProject: React.FC = ({ }) => {
     setCurrentPage(1);
   };
 
-
-  const statusTags = ["All", "Processing", "Pending", "Complete"];
-
-  const projectDetail = (data: ProjectItem): ProjectInfo => ({
+  const projectDetail = (data: ProjectInfo): ProjectInfo => ({
     _id: data._id,
     project_name: data.project_name,
     project_code: data.project_code,
@@ -80,8 +64,8 @@ const TableProject: React.FC = ({ }) => {
       project_role: member.project_role
     })),
     project_department: data.project_department,
-    // created_at: new Date().toISOString(),
-    // updated_at: new Date().toISOString(),
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
     updated_by: "",
     is_deleted: false,
     project_description: data.project_description || "",
@@ -89,7 +73,7 @@ const TableProject: React.FC = ({ }) => {
 
   const fetchProjects = async () => {
     try {
-      const searchCondition: SearchCondition = {
+      const searchCondition: SearchConditionProject = {
         keyword: searchValue,
         project_start_date: "",
         project_end_date: "",
@@ -104,14 +88,12 @@ const TableProject: React.FC = ({ }) => {
         totalPages: 0,
       };
 
-      const response: ResponseModel<{
-        pageData: ProjectItem[];
-        pageInfo: PageInfo;
-      }> = await getAllProject(searchCondition, pageInfo);
+      const response = await getAllProject({ searchCondition, pageInfo });
+      console.log("Response:", response.data.pageData);
       if (response.success) {
         const projects = response.data.pageData.map(projectDetail);
         setProjects(projects);
-        setTotalItems(response.data.pageInfo.totalItems);
+        setTotalItems(response.data.pageInfo.totalItems || 1);
       } else {
         console.error(response.message);
       }
@@ -146,13 +128,6 @@ const TableProject: React.FC = ({ }) => {
     setSelectedProject(project);
     setShowProjectDetail(true);
   };
-
-  // const handleEdit = (project: ProjectInfo) => {
-  //   console.log("Opening edit modal for project:", project);
-  //   setSelectedProject(project);
-  //   setIsEditModalOpen(true);
-  // };
-
 
 
   const handleDelete = (project: ProjectInfo) => {
@@ -200,13 +175,6 @@ const TableProject: React.FC = ({ }) => {
   const users = ["dngoc", "haaus", "ntdn"];
   return (
     <>
-      <button
-        onClick={handleAddProject}
-        className="bg-orange-400 text-white px-6 py-3 rounded-full hover:bg-orange-500 transition-colors flex items-center gap-2"
-      >
-        <span className="text-xl">+</span>
-        <span className="text-lg">Add Project</span>
-      </button>
 
       <ModalAddProject
         isOpen={isAddModalOpen}
@@ -214,7 +182,14 @@ const TableProject: React.FC = ({ }) => {
       />
       {/* </Modal> */}
       <div className="flex justify-between items-center mb-4">
-        <div>
+        <button
+          onClick={handleAddProject}
+          className="bg-orange-400 text-white px-6 py-3 rounded-full hover:bg-orange-500 transition-colors flex items-center gap-2"
+        >
+          <span className="text-xl">+</span>
+          <span className="text-lg">Add Project</span>
+        </button>
+        {/* <div>
           {statusTags.map((status) => (
             <Tag
               key={status}
@@ -234,7 +209,7 @@ const TableProject: React.FC = ({ }) => {
               {status}
             </Tag>
           ))}
-        </div>
+        </div> */}
         <div className="w-[250px] height-[48px] overflow-hidden rounded-full border-[1px] border-gray-300 bg-white !font-squada">
           <Search
             placeholder="Search project..."
