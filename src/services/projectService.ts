@@ -1,5 +1,5 @@
 import { get, put, post } from './apiService';
-import { API_CONTANTS } from '../constants/apiContants';
+import { API_CONSTANTS } from '../constants/apiConstants';
 import { ProjectInfo } from '../types/Project';
 import { ResponseModel } from '../models/ResponseModel';
 export interface PageInfo {
@@ -24,7 +24,7 @@ export interface ProjectSearchRequest {
 
 
 export const getAllProject = async ({ searchCondition, pageInfo }: ProjectSearchRequest): Promise<ResponseModel<{ pageData: ProjectInfo[], pageInfo: PageInfo }>> => {
-    const response = await post(API_CONTANTS.PROJECT.GET_ALLPROJECT,
+    const response = await post(API_CONSTANTS.PROJECT.GET_ALLPROJECT,
         {
             searchCondition,
             pageInfo
@@ -37,7 +37,7 @@ export const getInfoProject = async (
     ProjectInfo: ProjectInfo,
     pageInfo: PageInfo
 ): Promise<ResponseModel<ProjectInfo>> => {
-    const response = await post(API_CONTANTS.PROJECT.GET_ALLPROJECT, {
+    const response = await post(API_CONSTANTS.PROJECT.GET_ALLPROJECT, {
         ProjectInfo,
         pageInfo
     });
@@ -48,16 +48,16 @@ export const getEditProject = async (
     ProjectInfo: ProjectInfo,
     id: string
 ): Promise<ResponseModel<ProjectInfo>> => {
-    const response = await put(API_CONTANTS.PROJECT.UPDATE_PROJECT.replace("${id}", id), ProjectInfo);
+    const response = await put(API_CONSTANTS.PROJECT.UPDATE_PROJECT.replace("${id}", id), ProjectInfo);
     return response as ResponseModel<ProjectInfo>;
 };
 
 export const getAllRoleProject = async (): Promise<{ name: string, value: string }[]> => {
-    const response = await get(API_CONTANTS.PROJECT.GET_ALLROLEPROJECT);
+    const response = await get(API_CONSTANTS.PROJECT.GET_ALLROLEPROJECT);
     return response.data as { name: string, value: string }[];
 }
 
 export const createProject = async (project: ProjectInfo): Promise<ResponseModel<ProjectInfo>> => {
-    const response = await post(API_CONTANTS.PROJECT.CREATE_PROJECT, project);
+    const response = await post(API_CONSTANTS.PROJECT.CREATE_PROJECT, project);
     return response as ResponseModel<ProjectInfo>;
 }

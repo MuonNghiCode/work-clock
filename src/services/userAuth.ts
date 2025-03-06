@@ -1,5 +1,5 @@
 // userAuth.ts
-import { API_CONTANTS } from "../constants/apiContants";
+import { API_CONSTANTS } from "../constants/apiConstants";
 import { ResponseModel } from "../models/ResponseModel";
 import { post, put, del } from "./apiService";
 // Interface cho user data
@@ -40,7 +40,7 @@ export const getUsers = async (
   searchCondition: SearchCondition,
   pageInfo: PageInfo
 ): Promise<ResponseModel<UserResponse>> => {
-  return post(API_CONTANTS.USERS.SEARCH_USER, {
+  return post(API_CONSTANTS.USERS.SEARCH_USER, {
     searchCondition,
     pageInfo,
   });
@@ -50,7 +50,7 @@ export const getUsers = async (
 export const createUser = async (
   userData: Omit<UserData, '_id' | 'is_deleted'>
 ): Promise<ResponseModel<null>> => {
-  return post(API_CONTANTS.USERS.CREATE_USER, {
+  return post(API_CONSTANTS.USERS.CREATE_USER, {
     ...userData,
     is_blocked: userData.is_blocked ?? true,
     is_verified: userData.is_verified ?? false,
@@ -72,7 +72,7 @@ export const updateUser = async (
     };
 
     const response = await put<ResponseModel<UserData>>(
-      API_CONTANTS.USERS.UPDATE_USER.replace("${id}", userId),
+      API_CONSTANTS.USERS.UPDATE_USER.replace("${id}", userId),
       updateData
     );
 
@@ -95,7 +95,7 @@ export const deleteUser = async (userId: string): Promise<ResponseModel<null>> =
     if (!userId) throw new Error("User ID is required");
 
     const response = await del<ResponseModel<null>>(
-      API_CONTANTS.USERS.DELETE_USER.replace("${id}", userId)
+      API_CONSTANTS.USERS.DELETE_USER.replace("${id}", userId)
     );
 
     if (!response.success) {
@@ -120,7 +120,7 @@ export const changeUserStatus = async (
   userId: string,
   isLocked: boolean
 ): Promise<ResponseModel<null>> => {
-  return put(API_CONTANTS.USERS.CHANGE_STATUS, {
+  return put(API_CONSTANTS.USERS.CHANGE_STATUS, {
     user_id: userId,
     is_blocked: isLocked,
   });
@@ -131,7 +131,7 @@ export const changeUserStatus = async (
 // // Xác thực token từ email
 // export const verifyToken = async (token: string | undefined): Promise<ResponseModel<any>> => {
 //   // Gọi API verify token với flag unlock
-//   return post(API_CONTANTS.AUTH.VERIFY_TOKEN, {
+//   return post(API_CONSTANTS.AUTH.VERIFY_TOKEN, {
 //     verification_token: token,
 //     unlock: true, // BE sẽ tự động unlock user
 //   });
@@ -149,7 +149,7 @@ export const changePassword = async (oldPassword: string, newPassword: string): 
     const userId = userData._id;
 
     const response = await put<ResponseModel<null>>(
-      API_CONTANTS.USERS.CHANGE_PASSWORD,
+      API_CONSTANTS.USERS.CHANGE_PASSWORD,
       {
         user_id: userId,
         old_password: oldPassword,
@@ -179,7 +179,7 @@ export const updateUserRole = async (
     if (!userId) throw new Error("User ID is required");
 
     const response = await put<ResponseModel<UserData>>(
-      API_CONTANTS.USERS.CHANGE_ROLE,
+      API_CONSTANTS.USERS.CHANGE_ROLE,
       {
         user_id: userId,
         role_code: roleCode
