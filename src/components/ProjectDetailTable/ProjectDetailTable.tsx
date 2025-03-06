@@ -84,14 +84,14 @@ const ProjectDetailTable: React.FC<ProjectDetailTableProps> = ({ project }) => {
                 <div className="flex flex-row justify-between w-full space-x-4">
                 <div className="flex-1 space-y-2">
                     <label className="block text-gray-700 font-medium text-lg">User</label>
-                    <Input
-                        value={project.project_members.join(", ") || ""}
-                        className="w-full"
-                        readOnly
-                    />
-                </div>
-                <div className="flex-1 space-y-2 w-full">
-                    <label className="block text-gray-700 font-medium text-lg">Description</label>
+                        {project.project_members && project.project_members.map((item) => (
+                            <span key={item.user_id}>
+                                {item.user_id} - {item.project_role}
+                                <br />
+                            </span>
+                        ))}
+                                    <label className="block text-gray-700 font-medium text-lg">Description</label>
+
                     <Input
                         value={project.project_description || ""}
                         className="w-full"
