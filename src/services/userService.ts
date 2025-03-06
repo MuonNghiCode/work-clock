@@ -111,7 +111,7 @@ interface Department {
     updated_at: string;
 }export const getDepartments = async (): Promise<Department[]> => {
     try {
-        const response = await axiosInstance.get(API_CONTANTS.DEPARTMENTS.LIST);
+        const response = await axiosInstance.get(API_CONSTANTS.DEPARTMENTS.LIST);
 
         if (response.data.success) {
             return response.data.data; // return departments list
@@ -137,7 +137,7 @@ interface Contract {
 // Fetch all contracts
 export const fetchContracts = async (): Promise<Contract[]> => {
     try {
-        const response = await axiosInstance.get(API_CONTANTS.CONTRACTS.LIST);
+        const response = await axiosInstance.get(API_CONSTANTS.CONTRACTS.LIST);
 
         if (response.data.success) {
             return response.data.data; // Return contract list
