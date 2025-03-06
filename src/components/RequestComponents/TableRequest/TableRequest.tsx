@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Pagination, Modal } from 'antd';
-import { Trash, Edit, UserCheck, X, User, Shield, Briefcase, Calendar, Clock, CheckCircle } from 'lucide-react'; 
+import { Trash, Edit, UserCheck, X, User, Briefcase, Calendar, Clock, CheckCircle } from 'lucide-react'; 
 
 interface ClaimRequest {
   key: string;
@@ -161,26 +161,14 @@ const TableRequest: React.FC<TableRequestProps> = ({
                     <h4 className="text-lg font-bold text-[#FF9447] mb-4 border-b pb-2">
                       Claim Information
                     </h4>
-                    <div className="space-y-4">
-                      <div className="flex items-center">
-                        <Shield
-                          size={18}
-                          className="text-[#FF9447] mr-3 flex-shrink-0"
-                        />
-                        <span className="w-1/3 font-medium text-gray-600">
-                          Claim ID:
-                        </span>
-                        <span className="w-2/3 text-gray-800 font-semibold truncate font-mono text-sm">
-                          {selectedClaim.key}
-                        </span>
-                      </div>
+                    <div className="space-y-4">                     
                       <div className="flex items-center">
                         <User
                           size={18}
                           className="text-[#FF9447] mr-3 flex-shrink-0"
                         />
                         <span className="w-1/3 font-medium text-gray-600">
-                          Claim Name:
+                          Claim Name: 
                         </span>
                         <span className="w-2/3 text-gray-800 font-semibold truncate">
                           {selectedClaim.claimname}

@@ -48,7 +48,7 @@ const Carousel: React.FC = () => {
       <div className="flex flex-col items-center w-full max-w-4xl px-4 pt-10 pb-10 ml-0 md:items-start md:px-10 md:pt-0 md:pb-0 md:ml-10">
         <StatusBadge />
         <div className="flex items-center justify-center w-full md:justify-start">
-          <img src={Images.Logo} alt="logo" className="w-auto h-16 md:h-50" />
+          <img src={Images.Logo} alt="logo" className="w-auto h-16 md:h-40" />
           <h1 className="ml-2 text-3xl text-gradient-color md:text-5xl">
             | GR-1
           </h1>

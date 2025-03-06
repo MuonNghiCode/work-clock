@@ -8,6 +8,8 @@ export interface ClaimItem {
   claim_end_date: string;
   total_work_time?: number;
   claim_status: string;
+  project_id: string;
+  approval_id: string;
 }
 
 export interface PageInfo {

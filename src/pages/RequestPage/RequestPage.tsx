@@ -17,8 +17,8 @@ interface ClaimRequest {
   key: string;
   claimname: string;
   project: string;
-  start_date: string;
-  end_date: string;
+  start_date: string; // "DD/MM/YYYY"
+  end_date: string;   // "DD/MM/YYYY"
   totalHours: string;
   timeFrom: string;
   timeTo: string;
@@ -31,7 +31,7 @@ const RequestPage: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [searchText, setSearchText] = useState('');
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editingRecord, setEditingRecord] = useState<any>(null);
+  const [editingRecord, setEditingRecord] = useState<ClaimRequest | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deletingRecord, setDeletingRecord] = useState<ClaimRequest | null>(null);
   const [form] = Form.useForm();
@@ -43,12 +43,12 @@ const RequestPage: React.FC = () => {
     key: item._id,
     claimname: item.claim_name || 'Unnamed Claim',
     project: item.project_info?.project_name || 'Unknown',
-    start_date: new Date(item.claim_start_date).toLocaleDateString('vi-VN'),
-    end_date: new Date(item.claim_end_date).toLocaleDateString('vi-VN'),
+    start_date: new Date(item.claim_start_date).toLocaleDateString('vi-VN'), // "DD/MM/YYYY"
+    end_date: new Date(item.claim_end_date).toLocaleDateString('vi-VN'),     // "DD/MM/YYYY"
     timeFrom: new Date(item.claim_start_date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
     timeTo: new Date(item.claim_end_date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
-    totalHours: item.total_work_time?.toString() || '0', // Use total_work_time directly from API
-    status: item.claim_status || 'Unknown'
+    totalHours: item.total_work_time?.toString() || '0',
+    status: item.claim_status || 'Unknown',
   });
 
   const fetchClaims = async () => {
@@ -59,18 +59,17 @@ const RequestPage: React.FC = () => {
         claim_status: statusFilter === 'All' || !statusFilter ? '' : statusFilter,
         claim_start_date: '',
         claim_end_date: '',
-        is_delete: false
+        is_delete: false,
       };
       const pageInfo: PageInfoRequest = { pageNum: currentPage, pageSize };
 
       const response: ResponseModel<{ pageData: ClaimItem[], pageInfo: PageInfo }> = await getClaimerSearch(searchCondition, pageInfo);
       if (response.success) {
         const claims = response.data.pageData.map(mapClaimToRequest);
-        // Sort claims by start_date (most recent to oldest), then by end_date if start_dates are equal
         claims.sort((a, b) => {
-          const startDateDiff = new Date(b.start_date).getTime() - new Date(a.start_date).getTime();
+          const startDateDiff = new Date(a.start_date.split('/').reverse().join('-')).getTime() - new Date(b.start_date.split('/').reverse().join('-')).getTime();
           if (startDateDiff !== 0) return startDateDiff;
-          return new Date(b.end_date).getTime() - new Date(a.end_date).getTime();
+          return new Date(a.end_date.split('/').reverse().join('-')).getTime() - new Date(b.end_date.split('/').reverse().join('-')).getTime();
         });
         setApiData(claims);
         setTotalItems(response.data.pageInfo.totalItems);
@@ -88,7 +87,7 @@ const RequestPage: React.FC = () => {
     debounce((value: string) => {
       setCurrentPage(1);
       setSearchText(value);
-    }, 1000), 
+    }, 1000),
     []
   );
 
@@ -100,9 +99,8 @@ const RequestPage: React.FC = () => {
     fetchClaims();
   }, [currentPage, pageSize, statusFilter, searchText]);
 
-  const handleEdit = (record: any) => {
+  const handleEdit = (record: ClaimRequest) => {
     setEditingRecord(record);
-    form.setFieldsValue(record);
     setIsEditModalOpen(true);
   };
 
@@ -113,14 +111,11 @@ const RequestPage: React.FC = () => {
 
   const handleEditModalOk = async () => {
     try {
-      const values = await form.validateFields();
-      // Use totalHours directly from the form or existing record
-      const updatedRecord = { ...editingRecord, ...values, totalHours: values.totalHours || editingRecord.totalHours };
+      if (!editingRecord) throw new Error('No record being edited');
       setIsEditModalOpen(false);
       form.resetFields();
-      return updatedRecord;
     } catch (error) {
-      console.error('Validation failed:', error);
+      console.error('Error in handleEditModalOk:', error);
     }
   };
 
@@ -131,6 +126,7 @@ const RequestPage: React.FC = () => {
 
   const handleDeleteModalOk = () => {
     if (deletingRecord) {
+      setApiData((prev) => prev.filter((item) => item.key !== deletingRecord.key));
       setIsDeleteModalOpen(false);
       setDeletingRecord(null);
     }
@@ -194,8 +190,9 @@ const RequestPage: React.FC = () => {
         isOpen={isEditModalOpen}
         onCancel={handleEditModalCancel}
         onOk={handleEditModalOk}
-        form={form}
         editingRecord={editingRecord}
+        claimId={editingRecord?.key || ''}
+        refreshData={fetchClaims}
       />
       <DeleteRequestModal
         isOpen={isDeleteModalOpen}
