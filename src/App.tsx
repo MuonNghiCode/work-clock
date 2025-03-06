@@ -37,6 +37,7 @@ import WelcomeScreen from "./components/WelcomeScreen/WelcomeScreen";
 import VerifyEmail from "./pages/VerifyEmailPage/VerifyEmail";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
 import CustomCursor from "./components/CustomCursor/CustomCursor";
+import AnimatedBackground from "./components/AnimatedBackground/AnimatedBackground";
 
 const router = createBrowserRouter([
   {
@@ -173,6 +174,7 @@ const App: React.FC = () => {
   return (
     <>
       <UserProvider>
+        <AnimatedBackground />
         {isLoading && <LoadingScreen />}
         {loading ? <WelcomeScreen /> : <RouterProvider router={router} />}
         <ToastContainer />
