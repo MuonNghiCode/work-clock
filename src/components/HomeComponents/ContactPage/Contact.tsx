@@ -31,7 +31,6 @@ const Contact: React.FC = () => {
         console.error("Failed to send email:", error);
         toast.error("Failed to send email");
       });
-    e.currentTarget.reset();
   };
 
   const sendRequestEmail = (e: React.FormEvent<HTMLFormElement>) => {
@@ -44,7 +43,8 @@ const Contact: React.FC = () => {
       email: formData.get("email"),
       phone: formData.get("phone"),
       message: formData.get("message"),
-      cc_email: "tylum123@gmail.com, meme91men@gmail.com",
+      cc_email:
+        "tylum123@gmail.com, meme91men@gmail.com, phamdanh0305@gmail.com, miruhinana@gmail.com, haitrilehuu@gmail.com, kietvippro123009@gmail.com, ",
     };
 
     emailjs
@@ -52,7 +52,7 @@ const Contact: React.FC = () => {
         "service_05enpzu",
         "template_661t2y1",
         templateParams,
-        "EV-tXrDmzrcr5DOwr"
+        "aH8eHJqYKgYrG2SB8"
       )
       .then((response) => {
         console.log(
