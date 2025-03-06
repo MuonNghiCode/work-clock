@@ -34,6 +34,8 @@ import UserCalendarPage from "./pages/UserCalendarPage/UserCalendarPage";
 import useToastStorage from "./hooks/useToastStorage";
 import { useLoadingStore } from "./config/zustand";
 import WelcomeScreen from "./components/WelcomeScreen/WelcomeScreen";
+import VerifyEmail from "./pages/VerifyEmailPage/VerifyEmail";
+import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
 
 const router = createBrowserRouter([
   {
@@ -143,6 +145,10 @@ const router = createBrowserRouter([
     path: "/change-password",
     element: <ChangePassword />,
   },
+  {
+    path: "/verify-email/:token",
+    element: <VerifyEmail />,
+  },
 ]);
 
 const App: React.FC = () => {
@@ -165,7 +171,7 @@ const App: React.FC = () => {
 
   return (
     <UserProvider>
-      {isLoading && <WelcomeScreen />}
+      {isLoading && <LoadingScreen />}
       {loading ? <WelcomeScreen /> : <RouterProvider router={router} />}
       <ToastContainer />
     </UserProvider>

@@ -108,7 +108,7 @@ html {
     -webkit-text-fill-color: transparent;
   }
   .box-shadow-brand-orange {
-    box-shadow: 12px 12px 20px 0px rgba(255, 168, 113, 0.797);
+    box-shadow: 5px 5px 10px 0px rgba(0, 0, 0, 0.3);
   }
   .rbc-calendar {
     background-color: #ffffff;
@@ -131,7 +131,14 @@ html {
   .rbc-event {
     background: linear-gradient(135deg, #ff914d 10%, #feb78a 90%);
     color: white;
-    font-weight: 200;
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+  }
+  .rbc-event-label {
+    display: none !important;
   }
   .rbc-today {
     background-color: rgba(255, 145, 77, 0.1) !important;

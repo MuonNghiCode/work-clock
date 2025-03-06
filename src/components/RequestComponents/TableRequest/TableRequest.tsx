@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Pagination, Modal } from 'antd';
-import { Trash, Edit, UserCheck } from 'lucide-react';
+import { Trash, Edit, UserCheck, X, User, Shield, Briefcase, Calendar, Clock, CheckCircle } from 'lucide-react'; 
 
 interface ClaimRequest {
   key: string;
@@ -133,29 +133,181 @@ const TableRequest: React.FC<TableRequestProps> = ({
         </div>
 
         <Modal
-          title="Claim Details"
+          title=""
           open={isModalVisible}
           onCancel={handleModalClose}
-          footer={<Button onClick={handleModalClose}>Close</Button>}
+          footer={null} 
           className="request-modal"
+          closeIcon={null} 
+          width={800} 
         >
           {selectedClaim ? (
-            <div className="request-modal-content grid grid-cols-2 gap-4">
-
-              <div>
-                <p><strong>ID:</strong> {selectedClaim.key}</p>
-                <p><strong>Claim Name:</strong> {selectedClaim.claimname}</p>
-                <p><strong>Project:</strong> {selectedClaim.project}</p>
-                <p><strong>Status:</strong> {selectedClaim.status}</p>
+            <div className="p-8 bg-gray-50 rounded-xl">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-3xl font-bold text-[#FF9447]">
+                  Claim Details
+                </h2>
+                <button
+                  onClick={handleModalClose}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <X className="w-6 h-6" />
+                </button>
               </div>
 
-              <div>
-                <p><strong>Start Date:</strong> {selectedClaim.start_date}</p>
-                <p><strong>End Date:</strong> {selectedClaim.end_date}</p>
-                <p><strong>Time From:</strong> {selectedClaim.timeFrom}</p>
-                <p><strong>Time To:</strong> {selectedClaim.timeTo}</p>
-                <p><strong>Total Hours:</strong> {selectedClaim.totalHours} hours</p>
-                
+              <div className="grid grid-cols-2 gap-10">
+                <div className="flex flex-col">
+                  <div className="bg-white rounded-lg p-6 shadow-sm h-full">
+                    <h4 className="text-lg font-bold text-[#FF9447] mb-4 border-b pb-2">
+                      Claim Information
+                    </h4>
+                    <div className="space-y-4">
+                      <div className="flex items-center">
+                        <Shield
+                          size={18}
+                          className="text-[#FF9447] mr-3 flex-shrink-0"
+                        />
+                        <span className="w-1/3 font-medium text-gray-600">
+                          Claim ID:
+                        </span>
+                        <span className="w-2/3 text-gray-800 font-semibold truncate font-mono text-sm">
+                          {selectedClaim.key}
+                        </span>
+                      </div>
+                      <div className="flex items-center">
+                        <User
+                          size={18}
+                          className="text-[#FF9447] mr-3 flex-shrink-0"
+                        />
+                        <span className="w-1/3 font-medium text-gray-600">
+                          Claim Name:
+                        </span>
+                        <span className="w-2/3 text-gray-800 font-semibold truncate">
+                          {selectedClaim.claimname}
+                        </span>
+                      </div>
+                      <div className="flex items-center">
+                        <Briefcase
+                          size={18}
+                          className="text-[#FF9447] mr-3 flex-shrink-0"
+                        />
+                        <span className="w-1/3 font-medium text-gray-600">
+                          Project:
+                        </span>
+                        <span className="w-2/3 text-gray-800 font-semibold truncate">
+                          {selectedClaim.project}
+                        </span>
+                      </div>
+                      <div className="flex items-center">
+                        <Calendar
+                          size={18}
+                          className="text-[#FF9447] mr-3 flex-shrink-0"
+                        />
+                        <span className="w-1/3 font-medium text-gray-600">
+                          Start Date:
+                        </span>
+                        <span className="w-2/3 text-gray-800 font-semibold">
+                          {selectedClaim.start_date}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <div className="bg-white rounded-lg p-6 shadow-sm h-full">
+                    <h4 className="text-lg font-bold text-[#FF9447] mb-4 border-b pb-2">
+                      Time and Status
+                    </h4>
+                    <div className="space-y-4">
+                      <div className="flex items-center">
+                        <Calendar
+                          size={18}
+                          className="text-[#FF9447] mr-3 flex-shrink-0"
+                        />
+                        <span className="w-1/3 font-medium text-gray-600">
+                          End Date:
+                        </span>
+                        <span className="w-2/3 text-gray-800 font-semibold">
+                          {selectedClaim.end_date}
+                        </span>
+                      </div>
+                      <div className="flex items-center">
+                        <Clock
+                          size={18}
+                          className="text-[#FF9447] mr-3 flex-shrink-0"
+                        />
+                        <span className="w-1/3 font-medium text-gray-600">
+                          Time From:
+                        </span>
+                        <span className="w-2/3 text-gray-800 font-semibold">
+                          {selectedClaim.timeFrom}
+                        </span>
+                      </div>
+                      <div className="flex items-center">
+                        <Clock
+                          size={18}
+                          className="text-[#FF9447] mr-3 flex-shrink-0"
+                        />
+                        <span className="w-1/3 font-medium text-gray-600">
+                          Time To:
+                        </span>
+                        <span className="w-2/3 text-gray-800 font-semibold">
+                          {selectedClaim.timeTo}
+                        </span>
+                      </div>
+                      <div className="flex items-center">
+                        <Clock
+                          size={18}
+                          className="text-[#FF9447] mr-3 flex-shrink-0"
+                        />
+                        <span className="w-1/3 font-medium text-gray-600">
+                          Total Hours:
+                        </span>
+                        <span className="w-2/3 text-gray-800 font-semibold">
+                          {selectedClaim.totalHours} hours
+                        </span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle
+                          size={18}
+                          className="text-[#FF9447] mr-3 flex-shrink-0"
+                        />
+                        <span className="w-1/3 font-medium text-gray-600">
+                          Status:
+                        </span>
+                        <span className="w-2/3">
+                          <span
+                            className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                              selectedClaim.status === 'Approved'
+                                ? 'bg-green-50 text-green-600'
+                                : selectedClaim.status === 'Rejected'
+                                ? 'bg-red-50 text-red-600'
+                                : selectedClaim.status === 'Pending Approval'
+                                ? 'bg-yellow-50 text-yellow-600'
+                                : selectedClaim.status === 'Canceled'
+                                ? 'bg-purple-50 text-purple-600'
+                                : selectedClaim.status === 'Paid'
+                                ? 'bg-blue-50 text-blue-600'
+                                : 'bg-gray-50 text-gray-600'
+                            }`}
+                          >
+                            {selectedClaim.status}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-8 flex justify-end">
+                <button
+                  onClick={handleModalClose}
+                  className="px-6 py-2 bg-[#FFB17A] text-white rounded-md hover:bg-[#FF9447] transition-colors font-medium"
+                >
+                  Close
+                </button>
               </div>
             </div>
           ) : (

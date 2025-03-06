@@ -25,19 +25,6 @@ interface ClaimRequest {
   status: string;
 }
 
-const calculateHours = (timeFrom: string, timeTo: string): number => {
-  const convertTime = (timeStr: string): number => {
-    const [time, period] = timeStr.split(' ');
-    let [hours, minutes] = time.split(':').map(Number);
-    if (period === 'PM' && hours !== 12) hours += 12;
-    if (period === 'AM' && hours === 12) hours = 0;
-    return hours + minutes / 60;
-  };
-  const fromHours = convertTime(timeFrom);
-  const toHours = convertTime(timeTo);
-  return Math.round(toHours - fromHours);
-};
-
 const RequestPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
@@ -60,7 +47,7 @@ const RequestPage: React.FC = () => {
     end_date: new Date(item.claim_end_date).toLocaleDateString('vi-VN'),
     timeFrom: new Date(item.claim_start_date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
     timeTo: new Date(item.claim_end_date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
-    totalHours: item.total_work_time?.toString() || String(Math.round((new Date(item.claim_end_date).getTime() - new Date(item.claim_start_date).getTime()) / (1000 * 60 * 60))),
+    totalHours: item.total_work_time?.toString() || '0', // Use total_work_time directly from API
     status: item.claim_status || 'Unknown'
   });
 
@@ -127,8 +114,8 @@ const RequestPage: React.FC = () => {
   const handleEditModalOk = async () => {
     try {
       const values = await form.validateFields();
-      const totalHours = calculateHours(values.timeFrom, values.timeTo).toString();
-      const updatedRecord = { ...editingRecord, ...values, totalHours };
+      // Use totalHours directly from the form or existing record
+      const updatedRecord = { ...editingRecord, ...values, totalHours: values.totalHours || editingRecord.totalHours };
       setIsEditModalOpen(false);
       form.resetFields();
       return updatedRecord;
