@@ -1,28 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
-import {
-  Search,
-  Edit2,
-  Trash2,
-  Eye,
-  X,
-  User,
-  Mail,
-  Shield,
-  CheckCircle,
-  AlertCircle,
-  Phone,
-  MapPin,
-  Briefcase,
-  Calendar,
-  Building,
-  Award,
-} from "lucide-react";
+import {Search, Edit2, Trash2, Eye, X, User, Mail, Shield,  CheckCircle,  AlertCircle,  Phone,  MapPin,  Briefcase, Calendar, Building, Award, ArrowRight, ArrowLeft, UserCog} from "lucide-react";
 import { toast } from "react-toastify";
 import { Pagination } from "antd";
 import UserManagementAdd from "../../../components/AdminComponents/AddUser/UserManagementAdd";
 import UserManagementEdit from "../../../components/AdminComponents/EditUser/UserManagementEdit";
-import { getUsers, updateUser } from "../../../services/userAuth";
-import axiosInstance from "../../../config/axiosUser";
+import { getUsers,deleteUser, changeUserStatus, updateUserRole } from "../../../services/userAuth";
+import type { UserData } from "../../../services/userAuth";
 import { getEmployeeByUserId } from "../../../services/userService";
 import EditEmployeeModal from "../../../components/AdminComponents/EditEmployee/EditEmployeeModal";
 import { debounce } from "lodash";
@@ -40,13 +23,9 @@ export interface User<T> {
   is_deleted: boolean;
 }
 
-export interface NewUser {
-  user_name: string;
-  email: string;
-  password: string;
-  role_code: string;
-  is_blocked?: boolean;
-  is_verified?: boolean;
+export interface NewUser extends Omit<UserData, '_id' | 'is_deleted'> {
+  _id?: string;
+  is_deleted?: boolean;
 }
 
 interface Employee {
@@ -81,7 +60,7 @@ interface ApiUser {
   is_deleted: boolean;
 }
 
-const mapApiUserToUser = (apiUser: ApiUser): User<String> => ({
+const mapApiUserToUser = (apiUser: ApiUser): User<string> => ({
   id: apiUser._id,
   user_id: apiUser._id,
   user_name: apiUser.user_name,
@@ -160,8 +139,8 @@ const AdminUserManagement: React.FC = () => {
   const [users, setUsers] = useState<User<string>[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedUser, setSelectedUser] = useState<User<String> | null>(null);
-  const [editingUser, setEditingUser] = useState<User<String> | null>(null);
+  const [selectedUser, setSelectedUser] = useState<User<string> | null>(null);
+  const [editingUser, setEditingUser] = useState<User<string> | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -170,11 +149,16 @@ const AdminUserManagement: React.FC = () => {
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [userToDelete, setUserToDelete] = useState<User<String> | null>(null);
+  const [userToDelete, setUserToDelete] = useState<User<string> | null>(null);
   const [isEmployeeModalOpen, setIsEmployeeModalOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
     null
   );
+  const [activeEditTab, setActiveEditTab] = useState<'account' | 'information'>('account');
+  const [showRoleChangeConfirm, setShowRoleChangeConfirm] = useState(false);
+  const [userToChangeRole, setUserToChangeRole] = useState<User<string> | null>(null);
+  const [newRole, setNewRole] = useState("");
+  const [editingRoleId, setEditingRoleId] = useState<string | null>(null);
 
   // Lấy thông tin admin đang đăng nhập từ localStorage
   const currentAdmin = JSON.parse(localStorage.getItem("user") || "{}");
@@ -222,9 +206,9 @@ const AdminUserManagement: React.FC = () => {
         };
         const response = await getUsers(searchCondition, pageInfo);
         if (response.success) {
-          const mappedUsers = response.data.pageData.map(mapApiUserToUser);
+          const mappedUsers = response.data.pageData.map((user: UserData) => mapApiUserToUser(user as ApiUser));
           setUsers(mappedUsers);
-          setTotalItems(response.data.pageInfo.totalItems);
+          setTotalItems(response.data.pageInfo.totalItems ?? 0);
         }
       } catch (error: unknown) {
         console.error("Error fetching users:", error);
@@ -249,61 +233,18 @@ const AdminUserManagement: React.FC = () => {
     fetchUsers,
   ]);
 
-  const handleUpdateUser = async (
-    updatedUser: User<string> & { password?: string }
-  ) => {
-    console.log("update user", updatedUser);
+  const handleUpdateUser = async (updatedUser: User<string>) => {
     try {
-      const updateData: Record<string, unknown> = {};
-
-      // Only include changed fields
-      if (updatedUser.user_name !== editingUser?.user_name) {
-        updateData.user_name = updatedUser.user_name;
-      } else {
-        updateData.user_name = editingUser?.user_name;
-      }
-      if (updatedUser.role_code !== editingUser?.role_code) {
-        updateData.role_code = updatedUser.role_code;
-      } else {
-        updateData.role_code = editingUser?.role_code;
-      }
-      if (updatedUser.is_blocked !== editingUser?.is_blocked) {
-        updateData.is_blocked = updatedUser.is_blocked;
-      }
-      if (updatedUser.password) {
-        updateData.password = updatedUser.password;
-      }
-      // Ensure email is not empty
-      if (updatedUser.email) {
-        updateData.email = updatedUser.email;
-      } else {
-        updateData.email = editingUser?.email;
-      }
-
-      if (Object.keys(updateData).length === 0) {
-        toast.info("No changes to update");
-        return;
-      }
-
-      const response = await updateUser(updatedUser.id, updateData);
-
-      if (response.success) {
-        setUsers((prev) =>
-          prev.map((user) =>
-            user.id === updatedUser.id ? { ...user, ...updateData } : user
-          )
-        );
-        toast.success("User updated successfully");
-        setIsEditModalOpen(false);
-        setEditingUser(null);
-      } else {
-        throw new Error(response.message || "Failed to update user");
-      }
+      setUsers(prev => 
+        prev.map(user => 
+          user.id === updatedUser.id ? updatedUser : user
+        )
+      );
+      setIsEditModalOpen(false); // Đóng form
+      setEditingUser(null);
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Failed to update user";
       console.error("Error updating user:", error);
-      toast.error(message);
+      toast.error(error instanceof Error ? error.message : "Failed to update user");
     }
   };
 
@@ -319,26 +260,18 @@ const AdminUserManagement: React.FC = () => {
     }
 
     try {
-      const response = await axiosInstance.delete(`/users/${userToDelete.id}`);
-
-      if (response.data.success) {
-        if (statusFilter !== "deleted") {
-          setUsers(users.filter((user) => user.id !== userToDelete.id));
-        } else {
-          setUsers(
-            users.map((user) =>
-              user.id === userToDelete.id ? { ...user, is_deleted: true } : user
-            )
-          );
-        }
+      const response = await deleteUser(userToDelete.id);
+      
+      if (response.success) {
+        setUsers(users.filter(user => user.id !== userToDelete.id));
         toast.success("User deleted successfully");
+        setShowDeleteConfirm(false);
+        setUserToDelete(null);
       }
     } catch (error) {
       console.error("Error deleting user:", error);
-      toast.error("Failed to delete user");
+      toast.error(error instanceof Error ? error.message : "Failed to delete user");
     }
-    setShowDeleteConfirm(false);
-    setUserToDelete(null);
   };
 
   const handleAddSuccess = async () => {
@@ -365,26 +298,8 @@ const AdminUserManagement: React.FC = () => {
     return user.is_blocked ? "Locked" : "Unlocked";
   };
 
-  const getStatusColor = (user: User<String>) => {
-    if (user.is_deleted) return "bg-gray-50 text-gray-500";
-    if (!user.is_verified) return "bg-yellow-50 text-yellow-600";
-    return user.is_blocked
-      ? "bg-red-50 text-red-500"
-      : "bg-green-50 text-green-500";
-  };
-
-  const handleEditInformation = async (userId: string) => {
-    try {
-      const employee = await getEmployeeByUserId(userId);
-      setSelectedEmployee(employee);
-      setIsEmployeeModalOpen(true);
-    } catch (error: unknown) {
-      console.error("Failed to fetch employee details:", error);
-    }
-  };
-
   // Add this function to fetch employee details when viewing user details
-  const handleViewUserDetails = async (user: User<String>) => {
+  const handleViewUserDetails = async (user: User<string>) => {
     setSelectedUser(user);
     try {
       const employeeData = await getEmployeeByUserId(user.id);
@@ -394,6 +309,73 @@ const AdminUserManagement: React.FC = () => {
       setSelectedEmployee(null);
     }
     setIsDetailModalOpen(true);
+  };
+
+  const handleChangeStatus = async (user: User<string>) => {
+    try {
+      // Kiểm tra quyền thay đổi status
+      const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+      
+      // Không cho phép:
+      // 1. Thay đổi status của chính mình
+      // 2. Thay đổi status của admin khác
+      // 3. User không phải admin không được thay đổi status
+      if (
+        user.id === currentUser._id || // Không thể thay đổi status của chính mình
+        user.role_code === "A001" ||   // Không thể thay đổi status của admin khác
+        currentUser.role_code !== "A001" // Chỉ admin mới có quyền thay đổi status
+      ) {
+        toast.error("You don't have permission to change this user's status");
+        return;
+      }
+
+      const response = await changeUserStatus(user.id, !user.is_blocked);
+      if (response.success) {
+        setUsers(users.map(u => 
+          u.id === user.id ? { ...u, is_blocked: !u.is_blocked } : u
+        ));
+        toast.success(`User ${user.is_blocked ? 'unlocked' : 'locked'} successfully`);
+      }
+    } catch (error) {
+      console.error("Error changing user status:", error);
+      toast.error("Failed to change user status");
+    }
+  };
+
+  const handleChangeRole = async (user: User<string>, roleCode: string) => {
+    setUserToChangeRole(user);
+    setNewRole(roleCode);
+    setShowRoleChangeConfirm(true);
+  };
+
+  const confirmChangeRole = async () => {
+    if (!userToChangeRole || !newRole) return;
+
+    try {
+      // Kiểm tra quyền thay đổi role
+      if (
+        userToChangeRole.id === currentAdmin._id || // Không thể thay đổi role của chính mình
+        (userToChangeRole.role_code === "A001" && currentAdmin.role_code !== "A001") // Chỉ admin mới có thể thay đổi role của admin khác
+      ) {
+        toast.error("You don't have permission to change this user's role");
+        return;
+      }
+
+      await updateUserRole(userToChangeRole.id, newRole);
+
+      // Cập nhật UI nếu thành công
+      setUsers(users.map(u => 
+        u.id === userToChangeRole.id ? { ...u, role_code: newRole } : u
+      ));
+      toast.success("User role updated successfully");
+      setShowRoleChangeConfirm(false);
+      setUserToChangeRole(null);
+      setNewRole("");
+
+    } catch (error) {
+      console.error("Error changing role:", error);
+      toast.error("Failed to change user role");
+    }
   };
 
   return (
@@ -482,53 +464,77 @@ const AdminUserManagement: React.FC = () => {
                   </td>
                   <td className="px-4 py-2">{user.email}</td>
                   <td className="px-4 py-2">
-                    <span className="px-3 py-1 rounded-full bg-orange-50 text-orange-700 font-medium">
-                      {getRoleName(user.role_code)}
-                    </span>
+                    <div className="relative">
+                      {editingRoleId === user.id ? (
+                        <div className="relative inline-block animate-fadeIn">
+                          <select
+                            value={user.role_code}
+                            onChange={(e) => {
+                              handleChangeRole(user, e.target.value);
+                              setEditingRoleId(null);
+                            }}
+                            onBlur={() => setEditingRoleId(null)}
+                            autoFocus
+                            className="px-3 py-1 rounded-full bg-orange-50 text-orange-700 font-medium appearance-none cursor-pointer pr-8 transition-all duration-200 ease-in-out"
+                          >
+                            <option value="A001">Admin</option>
+                            <option value="A002">Finance</option>
+                            <option value="A003">Approval</option>
+                            <option value="A004">Member other</option>
+                          </select>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            if (user.id !== currentAdmin._id) {
+                              setEditingRoleId(user.id);
+                            }
+                          }}
+                          disabled={user.id === currentAdmin._id}
+                          className={`px-3 py-1 rounded-full font-medium transition-all duration-200 ease-in-out ${
+                            user.id === currentAdmin._id
+                              ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                              : "bg-orange-50 text-orange-700 hover:bg-orange-100"
+                          }`}
+                        >
+                          {getRoleName(user.role_code)}
+                        </button>
+                      )}
+                    </div>
                   </td>
                   <td className="px-4 py-2">
-                    <span
-                      className={`px-3 py-1 rounded-full font-medium ${getStatusColor(
-                        user
-                      )}`}
+                    <button
+                      onClick={() => handleChangeStatus(user)}
+                      disabled={
+                        user.id === currentAdmin._id || // Không thể thay đổi status của chính mình
+                        user.role_code === "A001" ||    // Không thể thay đổi status của admin khác
+                        currentAdmin.role_code !== "A001" // Chỉ admin mới có quyền thay đổi status
+                      }
+                      className={`px-3 py-1 rounded-full font-medium ${
+                        user.id === currentAdmin._id || user.role_code === "A001" || currentAdmin.role_code !== "A001"
+                          ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                          : user.is_blocked
+                          ? "bg-red-50 text-red-500 hover:bg-red-100"
+                          : "bg-green-50 text-green-500 hover:bg-green-100"
+                      }`}
                     >
                       {getUserStatus(user)}
-                    </span>
+                    </button>
                   </td>
                   <td className="px-4 py-2 rounded-r-2xl">
                     <div className="flex justify-center gap-4">
                       {!user.is_deleted && (
                         <>
-                          <div className="relative group">
-                            <button className="text-blue-500 hover:text-blue-600 flex items-center">
-                              <Edit2 size={18} />
-                            </button>
-                            <div className="absolute hidden group-hover:block bg-white border rounded shadow-lg right-1 bottom-4 ">
-                              <ul className="menu p-2">
-                                <li>
-                                  <a
-                                    className="block whitespace-nowrap"
-                                    onClick={() => {
-                                      setEditingUser(user);
-                                      setIsEditModalOpen(true);
-                                    }}
-                                  >
-                                    Edit Account
-                                  </a>
-                                </li>
-                                <li>
-                                  <a
-                                    className="block whitespace-nowrap"
-                                    onClick={() =>
-                                      handleEditInformation(user.id)
-                                    }
-                                  >
-                                    Edit Information
-                                  </a>
-                                </li>
-                              </ul>
-                            </div>
-                          </div>
+                          <button
+                            className="text-blue-500 hover:text-blue-600"
+                            onClick={() => {
+                              setEditingUser(user);
+                              setActiveEditTab('account');
+                              setIsEditModalOpen(true);
+                            }}
+                          >
+                            <Edit2 size={18} />
+                          </button>
                           <button
                             className="text-red-500 hover:text-red-600"
                             onClick={() => handleDeleteUser(user)}
@@ -869,14 +875,75 @@ const AdminUserManagement: React.FC = () => {
           }}
         >
           {editingUser && (
-            <UserManagementEdit
-              user={editingUser}
-              onClose={() => {
-                setIsEditModalOpen(false);
-                setEditingUser(null);
-              }}
-              onSubmit={handleUpdateUser}
-            />
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <div className="flex items-center gap-4">
+                  <h2 className="text-2xl font-bold text-[#FF9447]">
+                    {activeEditTab === 'account' ? 'Edit Account' : 'Edit Information'}
+                  </h2>
+                  <button
+                    className={`p-2 rounded-full transition-all duration-300 transform hover:scale-110 ${
+                      activeEditTab === 'account'
+                        ? 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        : 'bg-[#FF9447] text-white hover:bg-[#FF8347]'
+                    }`}
+                    onClick={() => setActiveEditTab(activeEditTab === 'account' ? 'information' : 'account')}
+                  >
+                    {activeEditTab === 'account' ? <ArrowRight size={20} /> : <ArrowLeft size={20} />}
+                  </button>
+                </div>
+                <button
+                  onClick={() => {
+                    setIsEditModalOpen(false);
+                    setEditingUser(null);
+                  }}
+                  className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <X className="w-6 h-6 text-gray-500" />
+                </button>
+              </div>
+
+              {/* Content based on active tab */}
+              <div className="relative">
+                <div
+                  className={`transition-all duration-300 transform ${
+                    activeEditTab === 'account' 
+                      ? 'translate-x-0 opacity-100' 
+                      : '-translate-x-full opacity-0 absolute inset-0'
+                  }`}
+                >
+                  {activeEditTab === 'account' && (
+                    <UserManagementEdit
+                      user={editingUser}
+                      onClose={() => {
+                        setIsEditModalOpen(false);
+                        setEditingUser(null);
+                      }}
+                      onSubmit={handleUpdateUser}
+                    />
+                  )}
+                </div>
+                <div
+                  className={`transition-all duration-300 transform ${
+                    activeEditTab === 'information' 
+                      ? 'translate-x-0 opacity-100' 
+                      : 'translate-x-full opacity-0 absolute inset-0'
+                  }`}
+                >
+                  {activeEditTab === 'information' && (
+                    <EditEmployeeModal
+                      isOpen={true}
+                      onClose={() => {
+                        setIsEditModalOpen(false);
+                        setEditingUser(null);
+                      }}
+                      employee={selectedEmployee}
+                      isEmbedded={true}
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
           )}
         </AnimatedModal>
 
@@ -927,6 +994,37 @@ const AdminUserManagement: React.FC = () => {
           onClose={() => setIsEmployeeModalOpen(false)}
           employee={selectedEmployee}
         />
+
+        {/* Role Change Confirmation Modal */}
+        <AnimatedModal
+          isOpen={showRoleChangeConfirm}
+          onClose={() => setShowRoleChangeConfirm(false)}
+        >
+          <div className="p-6">
+            <div className="flex flex-col items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center">
+                <UserCog className="w-6 h-6 text-orange-500" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900">
+                Confirm change role to {getRoleName(newRole)}
+              </h3>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowRoleChangeConfirm(false)}
+                  className="px-6 py-2 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmChangeRole}
+                  className="px-6 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 transition-colors"
+                >
+                  Accept
+                </button>
+              </div>
+            </div>
+          </div>
+        </AnimatedModal>
       </div>
     </div>
   );

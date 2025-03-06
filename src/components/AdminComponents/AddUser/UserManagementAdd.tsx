@@ -64,38 +64,35 @@ const UserManagementAdd: React.FC<UserManagementAddProps> = React.memo(
         e.preventDefault();
         if (!validateForm() || isSubmitting) return;
 
-        setIsSubmitting(true);
+    setIsSubmitting(true);
+    try {
+      const response = await createUser(formData);
+      if (response.success) {
+        toast.success("User created successfully");
+        
+        onSuccess(formData);
+        
         try {
-          const response = await createUser(formData);
-          if (response.success) {
-            toast.success("User created successfully");
-
-            onSuccess(formData);
-
-            try {
-              // await triggerVerifyToken(formData.email);
-              toast.success("Verification email sent successfully");
-            } catch (verifyError: any) {
-              toast.warning(
-                "User created but failed to send verification email"
-              );
-            }
-
-            setTimeout(() => {
-              onClose();
-            }, 1000);
-          } else {
-            toast.error(response.message || "Failed to create user");
-          }
-        } catch (error: any) {
-          console.error("Error creating user:", error);
-          toast.error(error.message || "Error creating user");
-        } finally {
-          setIsSubmitting(false);
+          // await triggerVerifyToken(formData.email);
+          toast.success("Verification email sent successfully");
+        } catch (error) {
+          console.error("Error sending verification email:", error);
+          toast.warning("User created but failed to send verification email");
         }
-      },
-      [formData, validateForm, isSubmitting, onSuccess, onClose]
-    );
+        
+        setTimeout(() => {
+          onClose();
+        }, 1000);
+      } else {
+        toast.error(response.message || "Failed to create user");
+      }
+    } catch (error: unknown) {
+      console.error("Error creating user:", error);
+      toast.error(error instanceof Error ? error.message : "Error creating user");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [formData, validateForm, isSubmitting, onSuccess, onClose]);
 
     // Tối ưu handleChange
     const handleChange = useCallback(

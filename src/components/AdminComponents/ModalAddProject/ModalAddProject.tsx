@@ -28,7 +28,7 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({ isOpen, onClose }) =>
   const fetchUserList = async (search: string) => {
     if (!search) return;
     setFetching(true);
-    const response = await getUsers({ keyword: search }, { pageNum: 1, pageSize: 10 });
+    const response = await getUsers({ keyword: search, search_by: "username" }, { pageNum: 1, pageSize: 10 });
     setUserOptions(response.data.pageData.map((user: any) => ({
       label: `${user.user_name} | (${user.email})`,
       value: user._id,
