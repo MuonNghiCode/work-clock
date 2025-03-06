@@ -4,6 +4,7 @@ import Icons from "../../icon";
 import { Link } from "react-router";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { Sparkles } from "lucide-react";
+import Magnet from "../../Magnet/Magnet";
 
 const Carousel: React.FC = () => {
   const [isHovering, setIsHovering] = useState(false);
@@ -59,13 +60,15 @@ const Carousel: React.FC = () => {
           management system, WorkClock helps monitor overtime hours, streamline
           the approval process, and optimize work productivity.
         </p>
-        <Link
-          to="/login"
-          className="flex items-center gap-2 px-4 py-2 mt-5 text-white shadow-md bg-brand-grandient rounded-xl md:px-6 md:py-3 hover:scale-125 border border-transparent glow-effect"
-        >
-          <span className="text-sm md:text-lg">Explore Now</span>
-          <Icons.ArrowRight className="w-5 h-5 p-1 text-white border border-white rounded-full md:w-7 md:h-7" />
-        </Link>
+        <Magnet padding={100} disabled={false} magnetStrength={2}>
+          <Link
+            to="/login"
+            className="flex items-center gap-2 px-4 py-2 mt-5 text-white shadow-md bg-brand-grandient rounded-xl md:px-6 md:py-3 border border-transparent glow-effect"
+          >
+            <span className="text-sm md:text-lg">Explore Now</span>
+            <Icons.ArrowRight className="w-5 h-5 p-1 text-white border border-white rounded-full md:w-7 md:h-7" />
+          </Link>
+        </Magnet>
       </div>
 
       {/*  Lottie Animation */}
