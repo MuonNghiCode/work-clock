@@ -1,10 +1,11 @@
-export const API_CONTANTS = {
+export const API_CONSTANTS = {
   AUTH: {
     LOGIN: "/auth",
     LOGOUT: "/auth/logout",
     USER_INFO: "/auth",
     FORGOT_PASSWORD: "/auth/forgot-password",
     VERIFY_TOKEN: "/auth/verify-token",
+    RESEND_TOKEN: "/auth/resend-token",
   },
   ROLES: {
     GET_ALL: "/roles/get-all",
@@ -25,6 +26,8 @@ export const API_CONTANTS = {
     CLAIMS_SEARCH: "/claims/search",
     CLAIMERS_SEARCH: "/claims/claimer-search",
     CLAIM_DETAIL: "/claims",
+    GET_BY_ID: "/claims",
+    UPDATE_CLAIM: "/claims",
   },
   USERS: {
     CHANGE_PASSWORD: "/users/change-password",
