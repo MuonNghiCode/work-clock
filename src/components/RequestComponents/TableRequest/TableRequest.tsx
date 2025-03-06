@@ -19,7 +19,11 @@ interface TableRequestProps {
   totalItems: number;
   loading: boolean;
   pagination: { currentPage: number; pageSize: number; onPageChange: (page: number, pageSize?: number) => void };
-  actions: { onEdit: (record: ClaimRequest) => void; onDelete: (record: ClaimRequest) => void };
+  actions: { 
+    onEdit: (record: ClaimRequest) => void; 
+    onDelete: (record: ClaimRequest) => void; 
+    onRequestApproval: (record: ClaimRequest) => void; // Thêm action mới
+  };
 }
 
 const TableRequest: React.FC<TableRequestProps> = ({
@@ -53,7 +57,6 @@ const TableRequest: React.FC<TableRequestProps> = ({
 
   return (
     <div className="request-container">
-      {/* Use flex-col to stack elements vertically */}
       <div className="request-content flex flex-col">
         <div className="request-header mb-4">
           <table className="request-table min-w-full border-separate border-spacing-y-2.5">
@@ -103,7 +106,11 @@ const TableRequest: React.FC<TableRequestProps> = ({
                             <Button className="!border-none" onClick={e => { e.stopPropagation(); actions.onDelete(item); }} disabled={loading}>
                               <Trash size={24} color="red" strokeWidth={3} className="request-delete-icon hover:bg-red-200" />
                             </Button>
-                            <Button className="!border-none" onClick={e => e.stopPropagation()} disabled={loading}>
+                            <Button 
+                              className="!border-none" 
+                              onClick={e => { e.stopPropagation(); actions.onRequestApproval(item); }} 
+                              disabled={loading || item.status !== 'Draft'} // Chỉ cho phép khi status là Draft
+                            >
                               <UserCheck size={24} color="green" strokeWidth={3} className="request-user-icon hover:bg-green-200" />
                             </Button>
                           </>
@@ -118,7 +125,6 @@ const TableRequest: React.FC<TableRequestProps> = ({
             </tbody>
           </table>
 
-          {/* Pagination below the table, centered */}
           <div className="flex justify-center mt-4">
             <Pagination
               current={pagination.currentPage}
