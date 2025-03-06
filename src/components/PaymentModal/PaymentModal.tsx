@@ -15,6 +15,7 @@ interface PaymentModalProps {
   date: Date;
   email: string;
   accountantEmail: string;
+  claim_name: string;
 }
 
 const PaymentModal: React.FC<PaymentModalProps> = ({
@@ -26,6 +27,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   date,
   email,
   accountantEmail,
+  claim_name,
 }) => {
   const [form] = Form.useForm();
 
@@ -51,6 +53,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
       message: formData.message,
       transaction: formData.payment,
       claimer: claimer,
+      claim_name: claim_name,
       date: format(date, "dd-MM-yyyy"),
     };
 

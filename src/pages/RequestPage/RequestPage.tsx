@@ -4,7 +4,7 @@ import EditRequestModal from '../../components/RequestComponents/EditRequestModa
 import DeleteRequestModal from '../../components/RequestComponents/DeleteRequestModal/DeleteRequestModal';
 import TableRequest from '../../components/RequestComponents/TableRequest/TableRequest';
 import { getClaimerSearch } from '../../services/claimService';
-import { ClaimItem, SearchCondition, PageInfoRequest, PageInfo } from '../../types/ClaimType';
+import { ClaimItem, SearchCondition, PageInfoRequest } from '../../types/ClaimType';
 import { ResponseModel } from '../../models/ResponseModel';
 import { debounce } from 'lodash';
 import { GetProps } from 'antd/es/_util/type';
@@ -63,7 +63,7 @@ const RequestPage: React.FC = () => {
       };
       const pageInfo: PageInfoRequest = { pageNum: currentPage, pageSize };
 
-      const response: ResponseModel<{ pageData: ClaimItem[], pageInfo: PageInfo }> = await getClaimerSearch(searchCondition, pageInfo);
+      const response: ResponseModel<{ pageData: ClaimItem[], pageInfo: PageInfoRequest }> = await getClaimerSearch(searchCondition, pageInfo);
       if (response.success) {
         const claims = response.data.pageData.map(mapClaimToRequest);
         claims.sort((a, b) => {
@@ -72,7 +72,7 @@ const RequestPage: React.FC = () => {
           return new Date(a.end_date.split('/').reverse().join('-')).getTime() - new Date(b.end_date.split('/').reverse().join('-')).getTime();
         });
         setApiData(claims);
-        setTotalItems(response.data.pageInfo.totalItems);
+        setTotalItems(response.data.pageInfo.totalItems || 0);
       } else {
         console.warn('API returned no data for this search:', searchCondition);
       }
