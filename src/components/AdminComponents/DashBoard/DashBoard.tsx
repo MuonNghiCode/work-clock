@@ -144,7 +144,7 @@ const ChartCard = ({ title, children, bgColor }: ChartCardProps) => (
 );
 
 const Dashboard = () => (
-  <div className="p-10 min-h-screen flex flex-col gap-12">
+  <div className=" min-h-screen flex flex-col gap-12">
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
       <StatCard
         icon={<Icons.UserCount className="text-3xl text-blue-600" />}

@@ -26,6 +26,8 @@ export const API_CONSTANTS = {
     CLAIMS_SEARCH: "/claims/search",
     CLAIMERS_SEARCH: "/claims/claimer-search",
     CLAIM_DETAIL: "/claims",
+    GET_BY_ID: "/claims",
+    UPDATE_CLAIM: "/claims",
   },
   USERS: {
     CHANGE_PASSWORD: "/users/change-password",

@@ -1,52 +1,55 @@
 import { useState } from "react";
-// import { ClaimRequest } from '../../types/ClaimRequest'
-// import { generateFakeData } from '../../types/ClaimRequest'
 import { Button } from "antd";
 import ModalAddNewClaim from "../../components/UserComponents/ModalAddNewClaim";
+import { motion } from "framer-motion";
+
+const fadeInScaleUp = {
+  hidden: { opacity: 0, scale: 0.8 },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
+};
+
+interface StatCardProps {
+  label: string;
+  value: number;
+}
+
+const StatCard = ({ label, value }: StatCardProps) => (
+  <motion.div
+    variants={fadeInScaleUp}
+    initial="hidden"
+    animate="visible"
+    className="p-8 rounded-2xl flex flex-col items-center justify-center bg-white bg-opacity-50 shadow-lg w-full text-center hover:scale-105 transition duration-300"
+  >
+    <p className="text-xl font-medium text-gray-700">{label}</p>
+    <p className="text-4xl font-bold text-blue-600">{value}</p>
+  </motion.div>
+);
 
 const UserDashboardPage = () => {
-  // const data: ClaimRequest[] = generateFakeData();
   const [isOpenModalAddNewClaim, setIsOpenModalAddNewClaim] = useState(false);
 
-  const handleOpenModalAddNewClaim = () => {
-    setIsOpenModalAddNewClaim(true);
-  };
-  const handleCloseModalAddNewClaim = () => {
-    setIsOpenModalAddNewClaim(false);
-  };
+  const handleOpenModalAddNewClaim = () => setIsOpenModalAddNewClaim(true);
+  const handleCloseModalAddNewClaim = () => setIsOpenModalAddNewClaim(false);
 
   return (
     <>
       <div className="flex items-center justify-between w-full">
         <h1 className="text-[40px] mt-4 font-bold">User Dashboard</h1>
         <Button
-          className="w-50 !h-12 !p-4 !bg-[#ff914d] !text-lg !font-semibold !text-white hover:!bg-[#feb78a] "
+          className="w-50 !h-12 !p-4 !bg-[#ff914d] !text-lg !font-semibold !text-white hover:!bg-[#feb78a]"
           onClick={handleOpenModalAddNewClaim}
         >
           Add New Claim
         </Button>
       </div>
-      <div className="flex justify-between w-full mt-4">
-        <div className="bg-white p-4 rounded-lg shadow w-1/4 mr-5">
-          <div className="text-3xl text-blue-600 font-bold">0</div>
-          <div className="text-lg font-bold">Created Claims</div>
-        </div>
 
-        <div className="bg-white p-4 rounded-lg shadow w-1/4 mr-5">
-          <div className="text-3xl text-blue-600 font-bold">0</div>
-          <div className="text-lg font-bold">Draft Claims</div>
-        </div>
-
-        <div className="bg-white p-4 rounded-lg shadow w-1/4 mr-5">
-          <div className="text-3xl text-blue-600 font-bold">0</div>
-          <div className="text-lg font-bold">Pending Claims</div>
-        </div>
-
-        <div className="bg-white p-4 rounded-lg shadow w-1/4">
-          <div className="text-3xl text-blue-600 font-bold">0</div>
-          <div className="text-lg font-bold">Success Claims</div>
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mt-4">
+        <StatCard label="Created Claims" value={0} />
+        <StatCard label="Draft Claims" value={0} />
+        <StatCard label="Pending Claims" value={0} />
+        <StatCard label="Success Claims" value={0} />
       </div>
+
       <div className="col-span-4 p-4 rounded-lg">
         <h3 className="text-lg font-bold">History Transaction</h3>
         <table className="min-w-full border-separate border-spacing-y-2.5 border-0 text-black w-full">
@@ -67,7 +70,6 @@ const UserDashboardPage = () => {
         </table>
       </div>
 
-      {/* <TableUserDashboard data={data} /> */}
       <ModalAddNewClaim
         isOpen={isOpenModalAddNewClaim}
         onClose={handleCloseModalAddNewClaim}
