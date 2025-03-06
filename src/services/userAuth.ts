@@ -1,6 +1,7 @@
 // userAuth.ts
 import { API_CONTANTS } from "../constants/apiContants";
 import { ResponseModel } from "../models/ResponseModel";
+import { SearchCondition } from "../types/ProjectTypes";
 import { post, put, del } from "./apiService";
 
 // Interface cho user data
@@ -15,7 +16,7 @@ interface UserData {
 }
 
 // Lấy danh sách người dùng với phân trang và tìm kiếm
-export const getUsers = async (searchCondition: any, pageInfo: any): Promise<ResponseModel<any>> => {
+export const getUsers = async (searchCondition: SearchCondition, pageInfo: any): Promise<ResponseModel<any>> => {
   return post(API_CONTANTS.USERS.SEARCH_USER, {
     searchCondition,
     pageInfo,

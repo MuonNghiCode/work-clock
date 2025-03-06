@@ -36,7 +36,7 @@ const ApprovalDashBoardPage = () => {
             />
             <div className='lg:w-10/12 w-full mx-auto'>
                 <h1 className='font-bold text-xl my-4'>Overall</h1>
-                <ApprovalDashboard data={data} />
+                <ApprovalDashboard />
                 <h1 className='font-bold text-xl my-4'>Chart</h1>
                 <ApprovalChart data={data} />
             </div>
