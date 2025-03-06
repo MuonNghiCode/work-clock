@@ -1,4 +1,4 @@
-import { get, post } from "./apiService";
+import { get, post, put } from "./apiService";
 import { ResponseModel } from "../models/ResponseModel";
 import { API_CONSTANTS } from "../constants/apiConstants";
 import { ClaimItem, ClaimsRequest, ClaimsResponse, PageInfoRequest, SearchCondition } from "../types/ClaimType";
@@ -15,7 +15,6 @@ export const getUserClaimsData = async (request: ClaimsRequest): Promise<Respons
   return response;
 }
 
-
 export const getClaimerSearch = async (
   searchCondition: SearchCondition,
   pageInfo: PageInfoRequest
@@ -28,6 +27,11 @@ export const getClaimerSearch = async (
 };
 
 export const getClaimDetail = async (id: string): Promise<ResponseModel<ClaimItem>> => {
-  const response = await get<ClaimItem>(`${API_CONSTANTS.CLAIMS.CLAIM_DETAIL}/${id}`);
+  const response = await get<ClaimItem>(`${API_CONSTANTS.CLAIMS.GET_BY_ID}/${id}`); 
+  return response;
+};
+
+export const updateClaim = async (id: string, data: Partial<ClaimItem>): Promise<ResponseModel<ClaimItem>> => {
+  const response = await put<ClaimItem>(`${API_CONSTANTS.CLAIMS.UPDATE_CLAIM}/${id}`, data);
   return response;
 };
