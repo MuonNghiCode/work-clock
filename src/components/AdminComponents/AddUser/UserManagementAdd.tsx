@@ -35,8 +35,8 @@ const UserManagementAdd: React.FC<UserManagementAddProps> = React.memo(({ onClos
 
     if (!formData.email) {
       newErrors.email = "Email is required";
-    } else if (!formData.email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
-      newErrors.email = "Invalid email format";
+    } else if (!formData.email.match(/^[a-zA-Z0-9._%+-]+@gmail\.com$/)) {
+      newErrors.email = "Only @gmail.com email addresses are allowed";
     }
 
     if (!formData.password) {
@@ -69,7 +69,8 @@ const UserManagementAdd: React.FC<UserManagementAddProps> = React.memo(({ onClos
         try {
           // await triggerVerifyToken(formData.email);
           toast.success("Verification email sent successfully");
-        } catch (verifyError: any) {
+        } catch (error) {
+          console.error("Error sending verification email:", error);
           toast.warning("User created but failed to send verification email");
         }
         
@@ -79,9 +80,9 @@ const UserManagementAdd: React.FC<UserManagementAddProps> = React.memo(({ onClos
       } else {
         toast.error(response.message || "Failed to create user");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error creating user:", error);
-      toast.error(error.message || "Error creating user");
+      toast.error(error instanceof Error ? error.message : "Error creating user");
     } finally {
       setIsSubmitting(false);
     }
