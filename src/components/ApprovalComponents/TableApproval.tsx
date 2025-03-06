@@ -7,7 +7,7 @@ import ConfirmModal from "../ConfirmModal/ConfirmModal";
 import Icons from "../icon";
 import { searchApprovalClaims } from "../../services/approvalService";
 import { toast } from "react-toastify";
-import { debounce } from 'lodash';
+import debounce from "lodash/debounce";
 
 type SearchProps = GetProps<typeof Input.Search>;
 const { Search } = Input;
@@ -16,11 +16,12 @@ const TableApproval: React.FC = () => {
   const [approvalData, setApprovalData] = useState<ClaimRequest[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [statusFilter, setStatusFilter] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<string>("Pending Approval");
   const [showApprovalDetail, setShowApprovalDetail] = useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [totalItems, setTotalItems] = useState<number>(0);
 
   const prevPageRef = useRef(currentPage);
   const prevPageSizeRef = useRef(pageSize);
@@ -31,7 +32,7 @@ const TableApproval: React.FC = () => {
     const request = {
       searchCondition: {
         keyword: searchTerm,
-        claim_status: statusFilter || "",
+        claim_status: statusFilter,
         claim_start_date: "",
         claim_end_date: "",
         is_delete: false,
@@ -45,6 +46,7 @@ const TableApproval: React.FC = () => {
       const response = await searchApprovalClaims(request);
       if (response.success) {
         setApprovalData(response.data.pageData);
+        setTotalItems(response.data.pageInfo.totalItems || 0);
       } else {
         toast.error(response.message);
       }
@@ -80,27 +82,20 @@ const TableApproval: React.FC = () => {
   };
 
   const handleStatusChange = (status: string) => {
-    setStatusFilter(status === "All" ? "" : status);
+    setStatusFilter(status);
     setCurrentPage(1);
   };
 
-  const filteredData = statusFilter
-    ? approvalData.filter((item) => item.claim_status === statusFilter)
-    : approvalData;
-
-  const startIndex = (currentPage - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
-  const currentData = filteredData.slice(startIndex, endIndex);
-
-  const statusTags = ["All", "Pending Approval", "Approved", "Rejected", "Canceled"];
+  const statusTags = ["Pending Approval", "Approved", "Rejected", "Canceled"];
 
   const handleSearch = useCallback(
     debounce((value: string) => {
       setSearchTerm(value);
-    }, 3000),
+    }, 1000),
     []
   );
-  const onSearch: SearchProps['onSearch'] = (value) => {
+
+  const onSearch: SearchProps["onSearch"] = (value) => {
     handleSearch(value);
   };
 
@@ -135,10 +130,8 @@ const TableApproval: React.FC = () => {
 
   const handleStatusChangeHTML = (status: string) => {
     switch (status) {
-      case "Draft":
-        return <span className="text-gray-300">Draft</span>;
       case "Pending Approval":
-        return <span className="text-gray-600">Pending</span>;
+        return <span className="text-gray-300">Pending Approval</span>;
       case "Canceled":
         return <span className="text-blue-500">Canceled</span>;
       case "Approved":
@@ -164,7 +157,7 @@ const TableApproval: React.FC = () => {
               key={status}
               color={
                 statusFilter === status ||
-                  (status === "All" && statusFilter === "")
+                  (status === "Pending Approval" && statusFilter === "")
                   ? "#ff914d"
                   : "default"
               }
@@ -172,7 +165,7 @@ const TableApproval: React.FC = () => {
               className="cursor-pointer !px-2 !py-1 !font-squada !text-lg !rounded-lg"
             >
               {(statusFilter === status ||
-                (status === "All" && statusFilter === "")) && (
+                (status === "Pending Approval")) && (
                   <Icons.Check className="inline-flex" />
                 )}{" "}
               {status}
@@ -191,84 +184,92 @@ const TableApproval: React.FC = () => {
           />
         </div>
       </div>
-      <table className="min-w-full !border-separate border-spacing-y-2.5 text-black border-0">
-        <thead className="bg-brand-grandient  h-[70px] text-lg text-white !rounded-t-lg">
-          <tr className="bg-gradient from-[FEB78A] to-[FF914D]">
+      <table className="min-w-full !border-separate border-spacing-y-2.5 text-black border-0 ">
+        <thead className="bg-brand-grandient h-[70px] text-lg text-white !rounded-t-lg">
+          <tr className="bg-gradient from-[FEB78A] to-[FF914D] w-full">
             <th className="border-white px-4 py-2 !rounded-tl-2xl">Claim Name</th>
             <th className="border-l-2 border-white px-4 py-2">Claimer</th>
             <th className="border-l-2 border-white px-4 py-2">Time</th>
             <th className="border-l-2 border-white px-4 py-2">Status</th>
-            <th className="border-l-2 border-white px-4 py-2">Date Create</th>
-            <th className="border-l-2 border-white px-4 py-2 !rounded-tr-2xl">
-              Action
-            </th>
+            {statusFilter === "Pending Approval" ? (<>
+              <th className="border-l-2 border-white px-4 py-2">Date Create</th>
+              <th className="border-l-2 border-white px-4 py-2 !rounded-tr-2xl">Action</th>
+            </>
+            ) : (
+              <th className="border-l-2 border-white px-4 py-2 !rounded-tr-2xl">Date Create</th>
+            )}
           </tr>
         </thead>
         <tbody className="w-full">
-          {currentData.map((item) => (
+          {approvalData.map((item) => (
             <tr
               onClick={handleShowApprovalDetail}
               key={item._id}
-              className="h-[70px] bg-white overflow-hidden text-center border-collapse  hover:shadow-brand-orange !rounded-2xl "
+              className="h-[70px] bg-white overflow-hidden text-center border-collapse hover:shadow-brand-orange !rounded-2xl"
             >
-              <td className="px-4 py-2  rounded-l-2xl">{item.claim_name}</td>
+              <td className="px-4 py-2 rounded-l-2xl">{item.claim_name}</td>
               <td className="px-4 py-2">{item.staff_name}</td>
-              <td className="px-4 py-2 ">{formatDateTime(item.claim_start_date)}</td>
-              <td className="px-4 py-2 ">{handleStatusChangeHTML(item.claim_status)}</td>
-              <td className="px-4 py-2 ">{formatDateTime(item.created_at)}</td>
-              <td
-                className="action px-4 py-2 rounded-r-2xl"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="w-full flex justify-center gap-2 items-center space-x-2">
-                  <div className="flex justify-center items-center w-10 h-10 overflow-hidden ">
-                    <Button className="!bg-none !border-none">
-                      <span className="hover:scale-110">
-                        <Icons.Approve
-                          color="green"
-                          onClick={handleApprove}
-                          className="w-10 h-10"
-                        />
-                      </span>
-                    </Button>
+              <td className="px-4 py-2">{formatDateTime(item.claim_start_date)}</td>
+              <td className="px-4 py-2">{handleStatusChangeHTML(item.claim_status)}</td>
+              <td className="px-4 py-2">{formatDateTime(item.created_at)}</td>
+              {item.claim_status === "Pending Approval" ? (
+                <td
+                  className="action px-4 py-2 rounded-r-2xl"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="w-full flex justify-center gap-2 items-center space-x-2">
+                    <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
+                      <Button className="!bg-none !border-none">
+                        <span className="hover:scale-110">
+                          <Icons.Approve
+                            color="green"
+                            onClick={handleApprove}
+                            className="w-10 h-10"
+                          />
+                        </span>
+                      </Button>
+                    </div>
+                    <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
+                      <Button className="!bg-none !border-none">
+                        <span className="hover:scale-110">
+                          <Icons.Reject
+                            color="red"
+                            onClick={handleReject}
+                            className="w-10 h-10"
+                          />
+                        </span>
+                      </Button>
+                    </div>
+                    <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
+                      <Button className="!bg-none !border-none">
+                        <span className="hover:scale-110">
+                          <Icons.Return
+                            color="blue"
+                            onClick={handleReturn}
+                            className="w-10 h-10"
+                          />
+                        </span>
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex justify-center items-center w-10 h-10 overflow-hidden ">
-                    <Button className="!bg-none !border-none">
-                      <span className="hover:scale-110">
-                        <Icons.Reject
-                          color="red"
-                          onClick={handleReject}
-                          className="w-10 h-10"
-                        />
-                      </span>
-                    </Button>
-                  </div>
-                  <div className="flex justify-center items-center w-10 h-10 overflow-hidden ">
-                    <Button className="!bg-none !border-none">
-                      <span className="hover:scale-110">
-                        <Icons.Return
-                          color="blue"
-                          onClick={handleReturn}
-                          className="w-10 h-10"
-                        />
-                      </span>
-                    </Button>
-                  </div>
-                </div>
-              </td>
+                </td>
+              ) : (
+                null
+              )}
             </tr>
           ))}
         </tbody>
       </table>
       <div className="flex justify-end mt-4">
         <Pagination
-          className="!font-squada flex justify-end "
+          className="!font-squada flex justify-end"
           current={currentPage}
           pageSize={pageSize}
-          total={filteredData.length}
+          total={totalItems}
           onChange={handlePageChange}
           showSizeChanger
           onShowSizeChange={handlePageChange}
+          pageSizeOptions={["5", "10", "20", "50"]}
         />
       </div>
       <ClaimRequestDetail visible={showApprovalDetail} onClose={handleClose} />

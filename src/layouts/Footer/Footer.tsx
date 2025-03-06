@@ -21,27 +21,23 @@ const Footer: React.FC = () => {
         {/* Giới thiệu */}
         <div className="flex items-center justify-center h-full p-6 bg-gray-100 shadow-md rounded-4xl md:col-span-3">
           <p className="text-sm leading-6 text-center md:text-lg md:text-left">
-            WorkClock enables employees to effortlessly create and track
-            overtime (OT) requests with transparency and efficiency. With an
-            intelligent management system, WorkClock helps monitor overtime
-            hours, streamline the approval process, and optimize work
-            productivity.
+            WorkClock – Smart & Transparent Overtime Management WorkClock helps
+            employees track OT hours effortlessly, streamline approvals, and
+            enhance productivity with an intelligent system.
           </p>
         </div>
 
         {/* Nội dung thêm */}
         <div className="flex items-center justify-center h-full p-6 bg-gray-100 shadow-md rounded-4xl md:col-span-3">
           <p className="text-sm leading-6 text-center md:text-lg md:text-left">
-            WorkClock enables employees to effortlessly create and track
-            overtime (OT) requests with transparency and efficiency. With an
-            intelligent management system, WorkClock helps monitor overtime
-            hours, streamline the approval process, and optimize work
-            productivity.
+            WorkClock – Optimize Overtime Tracking Simplify OT requests, ensure
+            transparency, and improve efficiency for both employees and
+            managers.
           </p>
         </div>
 
         {/* Ô số 5 */}
-        <div className="flex items-center justify-center h-full p-6 bg-gray-100 shadow-md rounded-4xl ">
+        <div className="flex items-center justify-evenly h-full p-6 bg-gray-100 shadow-md rounded-4xl ">
           <Icons.Facebook className="w-6 h-6 text-neutral-900" />
           <Icons.Instagram className="w-6 h-6 text-neutral-900" />
           <Icons.Mail className="w-6 h-6 text-neutral-900" />

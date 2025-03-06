@@ -1,6 +1,6 @@
 import { get, post, put } from "./apiService";
 import { ResponseModel } from "../models/ResponseModel";
-import { API_CONTANTS } from "../constants/apiContants";
+import { API_CONSTANTS } from "../constants/apiConstants";
 
 interface AuthResponse {
   token: string;
@@ -18,7 +18,7 @@ interface Role {
 }
 
 export const login = async (email: string, password: string): Promise<ResponseModel<AuthResponse>> => {
-  const response = await post<AuthResponse>(API_CONTANTS.AUTH.LOGIN, { email, password });
+  const response = await post<AuthResponse>(API_CONSTANTS.AUTH.LOGIN, { email, password });
   if (response.success) {
     localStorage.setItem("token", response.data.token);
   }
@@ -27,7 +27,7 @@ export const login = async (email: string, password: string): Promise<ResponseMo
 };
 
 export const getUserInfobyToken = async (): Promise<ResponseModel<UserInfo>> => {
-  const response = await get<UserInfo>(API_CONTANTS.AUTH.USER_INFO);
+  const response = await get<UserInfo>(API_CONSTANTS.AUTH.USER_INFO);
   if (response.success) {
     localStorage.setItem("user", JSON.stringify(response.data));
   }
@@ -35,23 +35,28 @@ export const getUserInfobyToken = async (): Promise<ResponseModel<UserInfo>> => 
 };
 
 export const getAllRoles = async (keyword?: string): Promise<ResponseModel<Role[]>> => {
-  const response = await get<Role[]>(API_CONTANTS.ROLES.GET_ALL, { keyword });
+  const response = await get<Role[]>(API_CONSTANTS.ROLES.GET_ALL, { keyword });
   return response;
 };
 
 export const logoutApi = async (): Promise<void> => {
-  await post(API_CONTANTS.AUTH.LOGOUT, {});
+  await post(API_CONSTANTS.AUTH.LOGOUT, {});
 };
 
 export const forgotPassword = async (email: string): Promise<ResponseModel<null>> => {
-  return await put<null>(API_CONTANTS.AUTH.FORGOT_PASSWORD, { email });
+  return await put<null>(API_CONSTANTS.AUTH.FORGOT_PASSWORD, { email });
 };
 
 export const verifyToken = async (token: string): Promise<ResponseModel<null>> => {
-  return await post<null>(API_CONTANTS.AUTH.VERIFY_TOKEN, { token });
+  return await post<null>(API_CONSTANTS.AUTH.VERIFY_TOKEN, { token });
 };
 export const triggerVerifyToken = async (email: string): Promise<ResponseModel<any>> => {
-  return post(API_CONTANTS.AUTH.VERIFY_TOKEN, {
+  return post(API_CONSTANTS.AUTH.VERIFY_TOKEN, {
     email,
   });
 };
+export const resendToken = async (email: string): Promise<ResponseModel<any>> => {
+  return post(API_CONSTANTS.AUTH.RESEND_TOKEN, {
+    email,
+  });
+}

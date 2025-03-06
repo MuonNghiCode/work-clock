@@ -114,8 +114,9 @@ const Sidebar: React.FC = () => {
       <div
         ref={sidebarRef}
         className={`fixed lg:relative top-0 left-0 h-full transition-all duration-300 bg-white shadow-lg z-50
-        ${isSidebarOpen ? "translate-x-0 w-60" : "-translate-x-full lg:w-20"
-          } lg:translate-x-0`}
+        ${
+          isSidebarOpen ? "translate-x-0 w-60" : "-translate-x-full lg:w-20"
+        } lg:translate-x-0`}
       >
         <div className="flex flex-col gap-4 p-4 mt-4">
           {parseUser.role_code && menuItems[parseUser.role_code] && (
@@ -129,13 +130,15 @@ const Sidebar: React.FC = () => {
                   to={item.path}
                   className={({ isActive }) =>
                     `flex items-center gap-4 px-3 py-2 rounded-lg transition-all duration-300
-                    ${isActive
-                      ? "bg-brand-gradient text-white shadow-md"
-                      : "text-gray-700 hover:bg-gray-100"
+                    ${
+                      isActive
+                        ? "bg-brand-gradient text-white shadow-md"
+                        : "text-gray-700 hover:bg-gray-100"
                     }
-                    ${hoveredIndex !== null && hoveredIndex !== index
-                      ? "opacity-50"
-                      : "opacity-100"
+                    ${
+                      hoveredIndex !== null && hoveredIndex !== index
+                        ? "opacity-50"
+                        : "opacity-100"
                     }`
                   }
                   onMouseEnter={() => setHoveredIndex(index)}
@@ -149,7 +152,7 @@ const Sidebar: React.FC = () => {
               ))}
             </>
           )}
-          <div className="border-t border-gray-200 my-2"></div>
+          <div className="border-t border-gray-400 my-2"></div>
           <NavLink
             to="#"
             onClick={(e) => {
