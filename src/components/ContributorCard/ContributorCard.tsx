@@ -1,4 +1,4 @@
-import { motion, useMotionValue, useTransform } from "framer-motion";
+import { motion, useMotionValue } from "framer-motion";
 import { useState } from "react";
 import { Contributor } from "../../services/githubService";
 
@@ -10,7 +10,6 @@ const ContributorCard: React.FC<ContributorCardProps> = ({ contributor }) => {
   const [isHovered, setIsHovered] = useState(false);
   const rotateX = useMotionValue(0);
   const rotateY = useMotionValue(0);
-  const opacity = useTransform(rotateX, [-20, 20], [0, 1]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
     const { left, top, width, height } =
