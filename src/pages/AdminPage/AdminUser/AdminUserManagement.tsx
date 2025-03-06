@@ -23,13 +23,9 @@ export interface User<T> {
   is_deleted: boolean;
 }
 
-export interface NewUser {
-  user_name: string;
-  email: string;
-  password: string;
-  role_code: string;
-  is_blocked?: boolean;
-  is_verified?: boolean;
+export interface NewUser extends Omit<UserData, '_id' | 'is_deleted'> {
+  _id?: string;
+  is_deleted?: boolean;
 }
 
 interface Employee {

@@ -2,7 +2,6 @@
 import { API_CONTANTS } from "../constants/apiContants";
 import { ResponseModel } from "../models/ResponseModel";
 import { post, put, del } from "./apiService";
-
 // Interface cho user data
 export interface UserData {
   _id: string;
@@ -48,7 +47,7 @@ export const getUsers = async (
 
 // Tạo người dùng mới
 export const createUser = async (
-  userData: UserData
+  userData: Omit<UserData, '_id' | 'is_deleted'>
 ): Promise<ResponseModel<null>> => {
   return post(API_CONTANTS.USERS.CREATE_USER, {
     ...userData,
@@ -65,15 +64,10 @@ export const updateUser = async (
   if (!userId) throw new Error("User ID is required");
 
   try {
-    // Format dữ liệu đúng với yêu cầu của API
     const updateData = {
-      user_id: userId,  // Thêm user_id vào request
+      user_id: userId,
       user_name: userData.user_name,
-      email: userData.email,
-      role_code: userData.role_code,
-      is_blocked: Boolean(userData.is_blocked),  // Đảm bảo là boolean
-      is_verified: userData.is_verified ?? false,
-      is_deleted: false
+      email: userData.email
     };
 
     const response = await put<ResponseModel<UserData>>(
@@ -143,29 +137,30 @@ export const changeUserStatus = async (
 // };
 
 // Add change password function
-export const changePassword = async (
-  oldPassword: string,
-  newPassword: string
-): Promise<ResponseModel<null>> => {
+export const changePassword = async (oldPassword: string, newPassword: string): Promise<ResponseModel<null>> => {
   try {
+    const user = localStorage.getItem('user');
+    if (!user) {
+      throw new Error("User information not found");
+    }
+
+    const userData = JSON.parse(user);
+    const userId = userData._id;
+
     const response = await put<ResponseModel<null>>(
       API_CONTANTS.USERS.CHANGE_PASSWORD,
       {
+        user_id: userId,
         old_password: oldPassword,
         new_password: newPassword
       }
     );
 
-    // Kiểm tra response từ server
     if (!response.success) {
       throw new Error(response.message || "Failed to change password");
     }
 
-    return {
-      success: true,
-      message: "Password changed successfully",
-      data: null
-    };
+    return response.data;
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(error.message);
