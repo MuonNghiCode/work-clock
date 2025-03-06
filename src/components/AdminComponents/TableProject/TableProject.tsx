@@ -1,18 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { Button, Pagination, Input } from "antd";
+import React, { useCallback, useEffect, useState } from "react";
+import { Button, Pagination } from "antd";
 import { ProjectInfo } from "../../../types/Project";
-import { GetProps } from "antd/lib/_util/type";
 import ConfirmModal from "../../ConfirmModal/ConfirmModal";
 import Icons from "../../icon";
 import EditProject from "../EditProject/EditProject";
-import ProjectDetail from "../../ProjectDetail/ProjectDetail";
+import ProjectDetail from "../../ModalProjectDetail/ProjectDetail";
 import { getAllProject, PageInfo, SearchConditionProject } from "../../../services/projectService";
 import ModalAddProject from "../ModalAddProject/ModalAddProject";
 import { debounce } from "lodash";
-
-type SearchProps = GetProps<typeof Input.Search>;
-const { Search } = Input;
-
 
 
 const TableProject: React.FC = ({ }) => {
@@ -41,18 +36,13 @@ const TableProject: React.FC = ({ }) => {
     }
   };
 
+  const handleSearch = useCallback(
+    debounce((value: string) => {
+      setSearchValue(value);
+    }, 500),
+    []
+  );
 
-  const onSearch: SearchProps["onSearch"] = (value) => {
-    setSearchValue(value);
-    setCurrentPage(1);
-  }, 1000),
-  []);
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchValue(value);
-    setCurrentPage(1);
-  };
 
   const projectDetail = (data: ProjectInfo): ProjectInfo => ({
     _id: data._id,
@@ -183,7 +173,6 @@ const TableProject: React.FC = ({ }) => {
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
       />
-      {/* </Modal> */}
       <div className="flex justify-between items-center mb-4">
         <button
           onClick={handleAddProject}
@@ -192,38 +181,18 @@ const TableProject: React.FC = ({ }) => {
           <span className="text-xl">+</span>
           <span className="text-lg">Add Project</span>
         </button>
-        {/* <div>
-          {statusTags.map((status) => (
-            <Tag
-              key={status}
-              color={
-                statusFilter === status ||
-                  (status === "All" && statusFilter === null)
-                  ? "#ff914d"
-                  : "default"
-              }
-              onClick={() => handleStatusChange(status)}
-              className="cursor-pointer !px-2 !py-1 !font-squada !text-lg !rounded-lg"
-            >
-              {(statusFilter === status ||
-                (status === "All" && statusFilter === null)) && (
-                  <Icons.Check className="inline-flex" />
-                )}{" "}
-              {status}
-            </Tag>
-          ))}
-        </div> */}
-        <div className="w-[250px] height-[48px] overflow-hidden rounded-full border-[1px] border-gray-300 bg-white !font-squada">
-          <Search
-            placeholder="Search project..."
-            onSearch={onSearch}
-            onChange={(e) => handleSearch(e.target.value)}
-            style={{ width: 250 }}
-            size="large"
-            className="custom-search pl-1"
-            variant="borderless"
-          />
-        </div>
+        <div className="relative">
+              <input
+                type="text"
+                placeholder="Search by project name..."
+                className="w-[300px] px-4 py-2 border rounded-full pr-10"
+                onChange={(e) => handleSearch(e.target.value)}
+              />
+              <Icons.SearchIcon
+                className="absolute right-3 top-2.5 text-gray-400"
+                fontSize={20}
+              />
+            </div>
       </div>
 
       <table className="min-w-full !border-separate border-spacing-y-2.5 text-black border-0">
