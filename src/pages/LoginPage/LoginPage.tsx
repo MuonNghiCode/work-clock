@@ -53,7 +53,7 @@ const LoginPage: React.FC = () => {
         let user;
         if (token) {
           user = await getUserInfobyToken();
-          let role = user.data.role_code;
+          const role = user.data.role_code;
           if (user && user.data) {
             toast.success("Login successful!");
             setTimeout(() => {
@@ -79,6 +79,7 @@ const LoginPage: React.FC = () => {
           }
         }
       } catch (error) {
+        console.log(error);
         toast.error("Please fix the errors before submitting.");
       }
     }
@@ -93,6 +94,7 @@ const LoginPage: React.FC = () => {
       toast.success("Password reset link sent to your email!");
       setIsForgotPassword(false);
     } catch (error) {
+      console.log(error);
       toast.error("Error sending password reset link.");
     }
     setIsLoading(false);
@@ -218,17 +220,17 @@ const LoginPage: React.FC = () => {
               </div>
 
               {/* Submit Button */}
-              <div className="flex mt-15 flex-col items-center space-y-4">
+              <div className="flex mt-15 flex-col justify-center items-center space-y-4">
                 <button
                   type="submit"
-                  className="w-40 h-8 px-4 py-2 bg-brand-grandient text-white rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
+                  className="w-40 h-8 bg-brand-gradient text-white rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none flex items-center justify-center"
                 >
                   Login
                 </button>
                 <button
                   type="button"
                   onClick={() => setIsForgotPassword(true)}
-                  className="w-40 h-8 px-4 py-2 border-amber-500 border rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
+                  className="w-40 h-8 border-amber-500 border justify-center items-center rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
                 >
                   Forgot Password
                 </button>
@@ -293,14 +295,14 @@ const LoginPage: React.FC = () => {
             <div className="flex mt-15 flex-col items-center space-y-4">
               <button
                 type="submit"
-                className="w-40 h-8 px-4 py-2 bg-brand-grandient text-white rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
+                className="w-40 h-8 bg-brand-grandient text-white rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
               >
                 Send link
               </button>
               <button
                 type="button"
                 onClick={() => setIsForgotPassword(false)}
-                className="w-40 h-8 px-4 py-2 border-amber-500 border rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
+                className="w-40 h-8  border-amber-500 border rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
               >
                 Back
               </button>

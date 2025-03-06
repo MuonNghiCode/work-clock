@@ -1,7 +1,7 @@
 // userAuth.ts
-import { API_CONTANTS } from "../constants/apiContants";
 import { ResponseModel } from "../models/ResponseModel";
 import { post, put, del } from "./apiService";
+import { API_CONTANTS } from "../constants/apiContants";
 // Interface cho user data
 export interface UserData {
   _id: string;
@@ -18,9 +18,10 @@ export interface UserData {
 interface SearchCondition {
   keyword: string;
   role_code?: string;
+  user_id?: string;
   is_blocked?: boolean;
   is_verified?: boolean;
-  search_by: "username" | "email";
+  search_by?: "username" | "email";
 }
 
 interface PageInfo {
@@ -47,7 +48,7 @@ export const getUsers = async (
 
 // Tạo người dùng mới
 export const createUser = async (
-  userData: Omit<UserData, '_id' | 'is_deleted'>
+  userData: Omit<UserData, "_id" | "is_deleted">
 ): Promise<ResponseModel<null>> => {
   return post(API_CONTANTS.USERS.CREATE_USER, {
     ...userData,
@@ -67,7 +68,7 @@ export const updateUser = async (
     const updateData = {
       user_id: userId,
       user_name: userData.user_name,
-      email: userData.email
+      email: userData.email,
     };
 
     const response = await put<ResponseModel<UserData>>(
@@ -89,7 +90,9 @@ export const updateUser = async (
 };
 
 // Xóa người dùng
-export const deleteUser = async (userId: string): Promise<ResponseModel<null>> => {
+export const deleteUser = async (
+  userId: string
+): Promise<ResponseModel<null>> => {
   try {
     if (!userId) throw new Error("User ID is required");
 
@@ -104,7 +107,7 @@ export const deleteUser = async (userId: string): Promise<ResponseModel<null>> =
     return {
       success: true,
       message: "User deleted successfully",
-      data: null
+      data: null,
     };
   } catch (error) {
     if (error instanceof Error) {
@@ -130,16 +133,19 @@ export const changeUserStatus = async (
 // // Xác thực token từ email
 // export const verifyToken = async (token: string | undefined): Promise<ResponseModel<any>> => {
 //   // Gọi API verify token với flag unlock
-//   return post(API_CONTANTS.AUTH.VERIFY_TOKEN, {
+//   return post(API_CONSTANTS.AUTH.VERIFY_TOKEN, {
 //     verification_token: token,
 //     unlock: true, // BE sẽ tự động unlock user
 //   });
 // };
 
 // Add change password function
-export const changePassword = async (oldPassword: string, newPassword: string): Promise<ResponseModel<null>> => {
+export const changePassword = async (
+  oldPassword: string,
+  newPassword: string
+): Promise<ResponseModel<null>> => {
   try {
-    const user = localStorage.getItem('user');
+    const user = localStorage.getItem("user");
     if (!user) {
       throw new Error("User information not found");
     }
@@ -152,7 +158,7 @@ export const changePassword = async (oldPassword: string, newPassword: string): 
       {
         user_id: userId,
         old_password: oldPassword,
-        new_password: newPassword
+        new_password: newPassword,
       }
     );
 
@@ -181,7 +187,7 @@ export const updateUserRole = async (
       API_CONTANTS.USERS.CHANGE_ROLE,
       {
         user_id: userId,
-        role_code: roleCode
+        role_code: roleCode,
       }
     );
 

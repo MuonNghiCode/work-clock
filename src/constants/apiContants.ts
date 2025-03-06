@@ -37,5 +37,3 @@ export const API_CONTANTS = {
     CHANGE_ROLE: "/users/change-role",
   },
 };
-
-

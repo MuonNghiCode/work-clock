@@ -31,7 +31,7 @@ const stats = {
   totalClaims: 250,
   approvedClaims: 180,
   rejectedClaims: 40,
-  totalPaid: 5000000,
+  totalPaid: 4000000,
   totalProjects: 15,
   completedProjects: 10,
 };
@@ -115,10 +115,10 @@ const StatCard = ({
     variants={fadeInScaleUp}
     initial="hidden"
     animate="visible"
-    className={`p-6 rounded-xl flex flex-col items-center justify-center gap-3 ${bgColor} bg-opacity-50 shadow-lg w-full text-center hover:scale-105 transition duration-300`}
+    className={`p-6 rounded-xl flex flex-col items-center justify-center ${bgColor} bg-opacity-50 shadow-lg w-full text-center hover:scale-105 transition duration-300`}
   >
     <div className="p-3 rounded-full bg-white bg-opacity-30">{icon}</div>
-    <p className={`text-sm font-medium ${textColor}`}>{label}</p>
+    <p className={`text-lg font-medium ${textColor}`}>{label}</p>
     <p className={`text-3xl font-bold ${textColor}`}>{value}</p>
   </motion.div>
 );
@@ -134,7 +134,7 @@ const ChartCard = ({ title, children, bgColor }: ChartCardProps) => (
     variants={fadeInScaleUp}
     initial="hidden"
     animate="visible"
-    className={`p-6 rounded-xl shadow-lg hover:shadow-2xl transition duration-300 ${bgColor} bg-opacity-30`}
+    className={` rounded-xl shadow-lg hover:shadow-2xl transition duration-300 ${bgColor} bg-opacity-30`}
   >
     <h2 className="text-lg font-semibold text-center mb-4 text-gray-900">
       {title}
@@ -150,29 +150,29 @@ const Dashboard = () => (
         icon={<Icons.UserCount className="text-3xl text-blue-600" />}
         label="Total Users"
         value={stats.userCount}
-        bgColor="bg-blue-300"
-        textColor="text-blue-900"
+        bgColor="bg-white p-4 rounded-lg shadow"
+        textColor="text-black-900 font-bold"
       />
       <StatCard
         icon={<Icons.CircleCheck className="text-3xl text-green-600" />}
         label="Approved Claims"
         value={stats.approvedClaims}
-        bgColor="bg-green-300"
-        textColor="text-green-900"
+        bgColor="bg-white p-4 rounded-lg shadow"
+        textColor="text-black-900 font-bold"
       />
       <StatCard
         icon={<Icons.Money className="text-3xl text-orange-600" />}
         label="Total Paid"
         value={`${stats.totalPaid} VND`}
-        bgColor="bg-orange-300"
-        textColor="text-orange-900"
+        bgColor="bg-white p-4 rounded-lg shadow"
+        textColor="text-black-900 font-bold"
       />
       <StatCard
         icon={<Icons.Project className="text-3xl text-yellow-600" />}
         label="Completed Projects"
         value={stats.completedProjects}
-        bgColor="bg-yellow-300"
-        textColor="text-yellow-900"
+        bgColor="bg-white p-4 rounded-lg shadow"
+        textColor="text-black-900 font-bold"
       />
     </div>
 

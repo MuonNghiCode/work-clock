@@ -1,67 +1,114 @@
-import React, { useEffect, useState } from "react";
-import { Modal, Form, Input, Space, DatePicker, Select } from "antd";
+import React, { useEffect, useMemo, useState } from "react";
+import { Modal, Form, Input, Space, DatePicker, Select, Spin } from "antd";
+import { ClaimRequest } from "../../types/ClaimRequest";
+import { ProjectInfo } from "../../types/Project";
+import { getAllProject } from "../../services/projectService";
+import { getUsers } from "../../services/userAuth";
+import { debounce } from "lodash";
 
 interface ModalAddNewClaimProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const fetchUserProject = async (userId: string): Promise<Project | null> => {
-  try {
-    const response = await axiosInstance.get(``);
-    return response.data.data.length > 0 ? response.data.data[0] : null;
-  } catch (error) {
-    console.error("Error fetching project:", error);
-    return null;
-  }
-};
+interface ClaimRequestDataField {
+  project_id: string;
+  approval_id: string;
+  claim_name: string;
+  claim_start_date: string;
+  claim_end_date: string;
+  totalNoOfHours: number;
+  remark: string;
+}
 
 const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
   isOpen,
   onClose,
 }) => {
   const [form] = Form.useForm();
-  const [userId, setUserId] = useState<string>("");
-  const [project, setProject] = useState<Project | null>(null);
-  const [roles, setRoles] = useState<Role[]>([]);
-  const [claimRequestData, setClaimRequestData] = useState({
-    project_id: "",
-    approval_id: "",
-    claim_name: "",
-    claim_start_date: "",
-    claim_end_date: "",
-    totalNoOfHours: 0,
-    remark: "",
-  });
+  const [projects, setProjects] = useState<ProjectInfo[]>([]);
+  const [approvals, setApprovals] = useState<
+    { label: string; value: string }[]
+  >([]);
+  const [fetching, setFetching] = useState(false);
+  const userId = JSON.parse(localStorage.getItem("user") || "{}")._id;
+
+  const fetchProjects = async () => {
+    try {
+      const response = await getAllProject(
+        {
+          keyword: "",
+          project_start_date: "",
+          project_end_date: "",
+          user_id: userId,
+          is_delete: false,
+        },
+        {
+          pageNum: 1,
+          pageSize: 10,
+          totalItems: 0,
+          totalPages: 0,
+        }
+      );
+      setProjects(response.data.pageData);
+      return response.data.pageData;
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    const storedUserId = localStorage.getItem("user_id") || "";
-    console.log("User ID from localStorage:", storedUserId);
-
-    setUserId(storedUserId);
+    fetchProjects();
   }, []);
 
-  useEffect(() => {
-    if (isOpen && userId) {
-      fetchUserProject(userId).then((projectData) => {
-        setProject(projectData);
-        if (projectData) {
-          setClaimRequestData((prevData) => ({
-            ...prevData,
-            project_id: projectData._id,
-          }));
-        }
-      });
-      getRoles().then(setRoles);
-    }
-  }, [isOpen, userId]);
+  const fetchUserList = async (search: string) => {
+    if (!search) return;
+    setFetching(true);
+    const response = await getUsers(
+      {
+        keyword: search,
+        role_code: "A003",
+        user_id: userId,
+      },
+      { pageNum: 1, pageSize: 10 }
+    );
+    console.log(response.data.pageData);
+    setApprovals(
+      response.data.pageData.map((user: any) => ({
+        label: `${user.user_name} | (${user.email})`,
+        value: user._id,
+      }))
+    );
+    setFetching(false);
+  };
 
-  const handleClaimRequestDataChange = (key: string, value: any) => {
-    setClaimRequestData((prevData) => ({ ...prevData, [key]: value }));
+  const debounceFetcher = useMemo(() => debounce(fetchUserList, 300), []);
+
+  const [claimRequestData, setClaimRequestData] =
+    useState<ClaimRequestDataField>({
+      project_id: "",
+      approval_id: "",
+      claim_name: "",
+      claim_start_date: "",
+      claim_end_date: "",
+      totalNoOfHours: 0,
+      remark: "",
+    });
+
+  const handleClaimRequestDataChange = (
+    key: keyof ClaimRequest,
+    value: any
+  ) => {
+    setClaimRequestData((prevData) => ({
+      ...prevData,
+      [key]: value,
+      ...(key === "claim_start_date" && { from: value.toISOString() }),
+      ...(key === "claim_end_date" && { to: value.toISOString() }),
+    }));
   };
 
   const onFinish = () => {
-    console.log("Submitted Data:", claimRequestData);
+    console.log(claimRequestData);
   };
 
   return (
@@ -71,6 +118,7 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
       onOk={onFinish}
       okText="Submit Claim Request"
       onCancel={onClose}
+      className=" lg:!w-5/12 md:!w-full !font-squanda !w-full "
     >
       <Form
         form={form}
@@ -78,41 +126,30 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
         onFinish={onFinish}
         autoComplete="on"
         size="large"
+        initialValues={{ claimRequestData }}
       >
-        {/* Select Project (Không cho chỉnh sửa) */}
-        <Form.Item label={<strong>Project Name</strong>} name="project_id">
-          <Select
-            value={claimRequestData.project_id}
-            onChange={(value) =>
-              handleClaimRequestDataChange("project_id", value)
-            }
-            disabled
-          >
-            {project && (
-              <Select.Option key={project._id} value={project._id}>
-                {project.name}
-              </Select.Option>
-            )}
+        <Form.Item label={<strong>Project Name</strong>}>
+          <Select>
+            {projects &&
+              projects.map((project, index) => (
+                <Select.Option key={index} value={project._id}>
+                  {project.project_name}
+                </Select.Option>
+              ))}
           </Select>
         </Form.Item>
-
-        {/* Select Role as Approval Name */}
-        <Form.Item label={<strong>Approval Name</strong>} name="approval_id">
+        <Form.Item label={<strong>Approval Name</strong>}>
           <Select
-            value={claimRequestData.approval_id}
-            onChange={(value) =>
-              handleClaimRequestDataChange("approval_id", value)
-            }
-          >
-            {roles.map((role) => (
-              <Select.Option key={role._id} value={role._id}>
-                {role.name}
-              </Select.Option>
-            ))}
-          </Select>
+            showSearch
+            labelInValue
+            placeholder="Search and select members"
+            notFoundContent={fetching ? <Spin size="small" /> : null}
+            filterOption={false}
+            onSearch={debounceFetcher}
+            options={approvals}
+            style={{ width: "100%" }}
+          />
         </Form.Item>
-
-        {/* Time Range */}
         <Space
           direction="horizontal"
           size="large"
@@ -152,8 +189,6 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
             />
           </Form.Item>
         </Space>
-
-        {/* Remarks */}
         <Form.Item label={<strong>Remarks</strong>} name="remark">
           <Input.TextArea
             value={claimRequestData.remark}
