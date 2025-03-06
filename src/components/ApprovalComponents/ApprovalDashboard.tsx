@@ -40,7 +40,6 @@ const ApprovalDashboard: React.FC = () => {
     }, [claimData]);
 
     return (
-        <>
             <div className='inline-flex justify-between w-full flex-nowrap gap-4'>
                 {['Pending Approval', 'Approved', 'Rejected', 'Cancelled'].map((status) => (
                     <Card
@@ -68,8 +67,7 @@ const ApprovalDashboard: React.FC = () => {
                         </div>
                     </Card>
                 ))}
-            </div >
-        </>
+            </div>
     )
 }
 
