@@ -18,9 +18,10 @@ export interface UserData {
 interface SearchCondition {
   keyword: string;
   role_code?: string;
+  user_id?: string;
   is_blocked?: boolean;
   is_verified?: boolean;
-  search_by: "username" | "email";
+  search_by?: "username" | "email";
 }
 
 interface PageInfo {
