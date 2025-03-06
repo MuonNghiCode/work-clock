@@ -27,6 +27,7 @@ interface EditEmployeeModalProps {
   isOpen: boolean;
   onClose: () => void;
   employee: Employee | null;
+  isEmbedded?: boolean;
 }
 
 const formatDate = (dateString: string | null | undefined): string => {
@@ -38,6 +39,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
   isOpen,
   onClose,
   employee,
+  isEmbedded = false,
 }) => {
   const [formData, setFormData] = useState<Partial<Employee>>({
     full_name: "",
@@ -54,16 +56,16 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
 
   // Animation states
   const [isAnimating, setIsAnimating] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   // Handle modal open/close animations
   useEffect(() => {
     if (isOpen) {
-      setIsVisible(true);
+      setModalVisible(true);
       setTimeout(() => setIsAnimating(true), 10);
     } else {
       setIsAnimating(false);
-      const timer = setTimeout(() => setIsVisible(false), 300); // Match transition duration
+      const timer = setTimeout(() => setModalVisible(false), 300);
       return () => clearTimeout(timer);
     }
   }, [isOpen]);
@@ -128,9 +130,197 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
     }));
   };
 
-  // Don't render anything if not visible
-  if (!isVisible) return null;
+  // Update the render condition
+  if (!modalVisible && !isEmbedded) return null;
 
+  // Nếu là embedded thì không cần wrapper modal
+  if (isEmbedded) {
+    return (
+      <form onSubmit={handleSubmit} className="h-[600px] flex flex-col bg-white">
+        <div className="flex-1 overflow-y-auto p-6">
+          <div className="grid grid-cols-2 gap-6">
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                Personal Information
+              </h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-gray-700 text-sm font-medium mb-2">
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.full_name || ""}
+                    onChange={(e) =>
+                      handleInputChange("full_name", e.target.value)
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 text-sm font-medium mb-2">
+                    Phone
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.phone || ""}
+                    onChange={(e) =>
+                      handleInputChange("phone", e.target.value)
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 text-sm font-medium mb-2">
+                    Address
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.address || ""}
+                    onChange={(e) =>
+                      handleInputChange("address", e.target.value)
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 text-sm font-medium mb-2">
+                    Avatar URL
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.avatar_url || ""}
+                    onChange={(e) =>
+                      handleInputChange("avatar_url", e.target.value)
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                Employment Details
+              </h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-gray-700 text-sm font-medium mb-2">
+                    Job Rank
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.job_rank || ""}
+                    onChange={(e) =>
+                      handleInputChange("job_rank", e.target.value)
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 text-sm font-medium mb-2">
+                    Department
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.department_name || ""}
+                    onChange={(e) =>
+                      handleInputChange("department_name", e.target.value)
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 text-sm font-medium mb-2">
+                    Contract Type
+                  </label>
+                  <select
+                    value={formData.contract_type || ""}
+                    onChange={(e) =>
+                      handleInputChange("contract_type", e.target.value)
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                  >
+                    <option value="">Select Contract Type</option>
+                    <option value="ONE YEAR">One Year</option>
+                    <option value="TWO YEAR">Two Year</option>
+                    <option value="THREE YEAR">Three Year</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-gray-700 text-sm font-medium mb-2">
+                    Salary
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.salary || 0}
+                    onChange={(e) =>
+                      handleInputChange("salary", Number(e.target.value))
+                    }
+                    min="0"
+                    step="1000000"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="bg-gray-50 p-4 rounded-lg col-span-2">
+              <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                Contract Period
+              </h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-gray-700 text-sm font-medium mb-2">
+                    Start Date
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.start_date || ""}
+                    onChange={(e) =>
+                      handleInputChange("start_date", e.target.value)
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 text-sm font-medium mb-2">
+                    End Date
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.end_date || ""}
+                    onChange={(e) =>
+                      handleInputChange("end_date", e.target.value)
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="px-6 py-4 border-t bg-white">
+          <div className="flex justify-end gap-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 text-white bg-[#FF9447] rounded-md hover:bg-[#FF8347] transition-colors"
+            >
+              Save Changes
+            </button>
+          </div>
+        </div>
+      </form>
+    );
+  }
+
+  // Original modal render for standalone use
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto transition-opacity duration-300 ease-in-out"
       style={{ opacity: isAnimating ? 1 : 0 }}>

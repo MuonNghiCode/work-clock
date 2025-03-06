@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { FaSearch, FaDownload, FaCalendarAlt } from "react-icons/fa";
 import { DateRangePicker, Range } from "react-date-range";
-import { format, differenceInHours, parseISO } from "date-fns";
+import { format, parseISO } from "date-fns";
 import Icons from "../../components/icon";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
@@ -40,13 +40,8 @@ interface FinanceData {
   claim_end_date: string;
   claim_status: string;
   created_at: string;
+  total_work_time: number;
 }
-
-const calculateHours = (startDate: string, endDate: string): number => {
-  const start = parseISO(startDate);
-  const end = parseISO(endDate);
-  return differenceInHours(end, start);
-};
 
 const FinancePage: React.FC = () => {
   const [dataFinance, setDataFinance] = useState<FinanceData[]>([]);
@@ -68,6 +63,24 @@ const FinancePage: React.FC = () => {
   const [status, setStatus] = useState<"success" | "error" | null>(null);
   const [originalData, setOriginalData] = useState<FinanceData[]>([]);
   const [accountantEmail, setAccountantEmail] = useState<string>("");
+
+  const datePickerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        datePickerRef.current &&
+        !datePickerRef.current.contains(event.target as Node)
+      ) {
+        setIsDatePickerVisible(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     console.log("Using API Data:", useApiData);
@@ -128,6 +141,7 @@ const FinancePage: React.FC = () => {
             claim_end_date: "2023-01-15",
             claim_status: "Pending",
             created_at: "2023-01-05",
+            total_work_time: 5,
           },
         ];
         setDataFinance(staticData);
@@ -157,13 +171,14 @@ const FinancePage: React.FC = () => {
     setIsDatePickerVisible(!isDatePickerVisible);
   };
 
-  const defaultDateFormat = "dd/mm/yy";
+  const defaultDateMessage = "Select Date Range";
+
   const formattedStartDate = dateRange[0].startDate
     ? format(dateRange[0].startDate, "dd/MM/yy")
-    : defaultDateFormat;
+    : defaultDateMessage;
   const formattedEndDate = dateRange[0].endDate
     ? format(dateRange[0].endDate, "dd/MM/yy")
-    : defaultDateFormat;
+    : defaultDateMessage;
 
   const clearDateFilter = () => {
     setDateRange([
@@ -197,14 +212,14 @@ const FinancePage: React.FC = () => {
           Project: item.project_info.project_name,
           Claimer: item.staff_name,
           Approver: item.approval_info.user_name,
-          Time: calculateHours(item.claim_start_date, item.claim_end_date),
+          Time: item.total_work_time,
           DateCreate: item.created_at,
         }))
       : dataFinance.map((item) => ({
           Project: item.project_info.project_name,
           Claimer: item.staff_name,
           Approver: item.approval_info.user_name,
-          Time: calculateHours(item.claim_start_date, item.claim_end_date),
+          Time: item.total_work_time,
           DateCreate: item.created_at,
         }));
 
@@ -274,11 +289,16 @@ const FinancePage: React.FC = () => {
             >
               <span className="lg:hidden">Date</span>
               <span className="hidden lg:inline">
-                {formattedStartDate} - {formattedEndDate}
+                {dateRange[0].startDate && dateRange[0].endDate
+                  ? `${formattedStartDate} - ${formattedEndDate}`
+                  : defaultDateMessage}
               </span>
             </button>
             {isDatePickerVisible && (
-              <div className="absolute top-full mt-2 bg-white shadow-lg p-2 rounded-md z-50 right-0 sm:right-0 sm:left-auto">
+              <div
+                ref={datePickerRef}
+                className="absolute top-full mt-2 bg-white shadow-lg p-2 rounded-md z-50 right-0 sm:right-0 sm:left-auto"
+              >
                 <DateRangePicker
                   ranges={dateRange}
                   onChange={(ranges) => {
@@ -347,9 +367,7 @@ const FinancePage: React.FC = () => {
               <td className="px-4 py-2">{item.claim_name}</td>
               <td className="px-4 py-2">{item.staff_name}</td>
               <td className="px-4 py-2">{item.approval_info.user_name}</td>
-              <td className="px-4 py-2">
-                {calculateHours(item.claim_start_date, item.claim_end_date)}h
-              </td>
+              <td className="px-4 py-2">{item.total_work_time}h</td>
               <td className="px-4 py-2">
                 {format(new Date(item.created_at), "dd/MM/yyyy")}
               </td>
@@ -394,6 +412,7 @@ const FinancePage: React.FC = () => {
           email={selectedItem.staff_email}
           accountantEmail={accountantEmail}
           date={new Date(selectedItem.created_at)}
+          claim_name={selectedItem.claim_name}
         />
       )}
       {status && (
