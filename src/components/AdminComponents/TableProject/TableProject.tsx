@@ -80,8 +80,8 @@ const TableProject: React.FC = ({ }) => {
       project_role: member.project_role
     })),
     project_department: data.project_department,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
+    // created_at: new Date().toISOString(),
+    // updated_at: new Date().toISOString(),
     updated_by: "",
     is_deleted: false,
     project_description: data.project_description || "",
@@ -125,10 +125,8 @@ const TableProject: React.FC = ({ }) => {
   }, [currentPage, pageSize, searchValue]); // Add searchValue to dependencies
 
   const handleEditProject = (editedProject: ProjectInfo) => {
-    const newProjects = projects.map((project) =>
-      project._id === editedProject._id ? editedProject : project
-    );
-    setProjects(newProjects);
+    setSelectedProject(editedProject);
+    setIsEditModalOpen(true);
   };
 
   const handleDeleteProject = (projectId: string | number) => {

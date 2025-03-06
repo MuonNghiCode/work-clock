@@ -3,6 +3,7 @@ import { ProjectInfo } from "../../../types/Project";
 import { Modal } from "antd";
 import { getEditProject } from "../../../services/projectService";
 import { ResponseModel } from "../../../models/ResponseModel";
+import { toast } from "react-toastify";
 
 interface EditProjectProps {
   onClose: () => void;
@@ -90,10 +91,10 @@ const EditProject: React.FC<EditProjectProps> = ({
           project_role: "Project Manager",
         },
       ],
-      created_at: project.created_at
-        ? new Date(project.created_at).toISOString()
-        : new Date().toISOString(),
-      updated_at: new Date().toISOString(),
+      // created_at: project.created_at
+      //   ? new Date(project.created_at).toISOString()
+      //   : new Date().toISOString(),
+      // updated_at: new Date().toISOString(),
       updated_by: "",
       is_deleted: false,
       _id: formattedData.id,
@@ -113,7 +114,7 @@ const EditProject: React.FC<EditProjectProps> = ({
         throw new Error(response.message || "Failed to save project");
       }
 
-      console.log("Project saved successfully:", response);
+      toast.success("Project saved successfully:", response);
       onClose();
     } catch (error) {
       console.error(
