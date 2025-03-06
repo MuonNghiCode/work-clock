@@ -11,7 +11,6 @@ import {
   forgotPassword,
 } from "../../services/authService";
 // import { Spin } from "antd";
-import LoadingScreen from "../../components/LoadingScreen/LoadingScreen";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -24,7 +23,7 @@ const LoginPage: React.FC = () => {
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
     {}
   );
-  const [isLoading, setIsLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const validate = () => {
@@ -45,7 +44,6 @@ const LoginPage: React.FC = () => {
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     if (validate()) {
       try {
         await login(email, password);
@@ -82,12 +80,10 @@ const LoginPage: React.FC = () => {
         toast.error("Please fix the errors before submitting.");
       }
     }
-    setIsLoading(false);
   };
 
   const handleForgotPasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     try {
       await forgotPassword(forgotPasswordEmail);
       toast.success("Password reset link sent to your email!");
@@ -95,7 +91,6 @@ const LoginPage: React.FC = () => {
     } catch (error) {
       toast.error("Error sending password reset link.");
     }
-    setIsLoading(false);
   };
 
   return (
