@@ -140,7 +140,7 @@ const TableApproval: React.FC = () => {
 
   return (
     <>
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-4 flex-wrap gap-4">
         <div>
           {statusTags.map((status) => (
             <Tag
@@ -177,76 +177,78 @@ const TableApproval: React.FC = () => {
           />
         </div>
       </div>
-      <table className="min-w-full !border-separate border-spacing-y-2.5 text-black border-0 ">
-        <thead className="bg-brand-grandient h-[70px] text-lg text-white !rounded-t-lg">
-          <tr className="bg-gradient from-[FEB78A] to-[FF914D] w-full">
-            <th className="border-white px-4 py-2 !rounded-tl-2xl">Claim Name</th>
-            <th className="border-l-2 border-white px-4 py-2">Claimer</th>
-            <th className="border-l-2 border-white px-4 py-2">Time</th>
-            <th className="border-l-2 border-white px-4 py-2">Status</th>
-            {statusFilter === "Pending Approval" ? (<>
-              <th className="border-l-2 border-white px-4 py-2">Date Create</th>
-              <th className="border-l-2 border-white px-4 py-2 !rounded-tr-2xl">Action</th>
-            </>
-            ) : (
-              <th className="border-l-2 border-white px-4 py-2 !rounded-tr-2xl">Date Create</th>
-            )}
-          </tr>
-        </thead>
-        <tbody className="w-full">
-          {approvalData.map((item) => (
-            <tr
-              onClick={() => handleShowApprovalDetail(item)}
-              key={item._id}
-              className="h-[70px] bg-white overflow-hidden text-center border-collapse hover:shadow-brand-orange !rounded-2xl"
-            >
-              <td className="px-4 py-2 rounded-l-2xl">{item.claim_name}</td>
-              <td className="px-4 py-2">{item.staff_name}</td>
-              <td className="px-4 py-2">{formatDateTime(item.claim_start_date)}</td>
-              <td className="px-4 py-2">{handleStatusChangeHTML(item.claim_status)}</td>
-              {item.claim_status === "Pending Approval" ? (
-                <td className="px-4 py-2">{formatDateTime(item.created_at)}</td>
+      <div className="overflow-x-auto max-w-screen">
+        <table className="min-w-full !border-separate border-spacing-y-2.5 text-black border-0 p-2">
+          <thead className="bg-brand-grandient h-[70px] text-lg text-white !rounded-t-lg">
+            <tr className="bg-gradient from-[FEB78A] to-[FF914D] w-full">
+              <th className="border-white px-4 py-2 !rounded-tl-2xl">Claim Name</th>
+              <th className="border-l-2 border-white px-4 py-2">Claimer</th>
+              <th className="border-l-2 border-white px-4 py-2">Time</th>
+              <th className="border-l-2 border-white px-4 py-2">Status</th>
+              {statusFilter === "Pending Approval" ? (<>
+                <th className="border-l-2 border-white px-4 py-2">Date Create</th>
+                <th className="border-l-2 border-white px-4 py-2 !rounded-tr-2xl">Action</th>
+              </>
               ) : (
-                <td className="px-4 py-2 rounded-r-2xl">{formatDateTime(item.created_at)}</td>
-              )}
-              {item.claim_status === "Pending Approval" ? (
-                <td
-                  className="action px-4 py-2 rounded-r-2xl"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <div className="w-full flex justify-center gap-2 items-center space-x-2">
-                    <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
-                      <Button className="!bg-none !border-none">
-                        <span className="hover:scale-110">
-                          <Icons.Approve
-                            color="green"
-                            onClick={() => handleApprove(item._id)}
-                            className="w-10 h-10"
-                          />
-                        </span>
-                      </Button>
-                    </div>
-                    <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
-                      <Button className="!bg-none !border-none">
-                        <span className="hover:scale-110">
-                          <Icons.Reject
-                            color="red"
-                            onClick={() => handleReject(item._id)}
-                            className="w-10 h-10"
-                          />
-                        </span>
-                      </Button>
-                    </div>
-                  </div>
-                </td>
-              ) : (
-                null
+                <th className="border-l-2 border-white px-4 py-2 !rounded-tr-2xl">Date Create</th>
               )}
             </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="flex justify-end mt-4">
+          </thead>
+          <tbody className="w-full">
+            {approvalData.map((item) => (
+              <tr
+                onClick={() => handleShowApprovalDetail(item)}
+                key={item._id}
+                className="h-[70px] bg-white overflow-hidden text-center border-collapse hover:shadow-brand-orange !rounded-2xl"
+              >
+                <td className="px-4 py-2 rounded-l-2xl">{item.claim_name}</td>
+                <td className="px-4 py-2">{item.staff_name}</td>
+                <td className="px-4 py-2">{formatDateTime(item.claim_start_date)}</td>
+                <td className="px-4 py-2">{handleStatusChangeHTML(item.claim_status)}</td>
+                {item.claim_status === "Pending Approval" ? (
+                  <td className="px-4 py-2">{formatDateTime(item.created_at)}</td>
+                ) : (
+                  <td className="px-4 py-2 rounded-r-2xl">{formatDateTime(item.created_at)}</td>
+                )}
+                {item.claim_status === "Pending Approval" ? (
+                  <td
+                    className="action px-4 py-2 rounded-r-2xl"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="w-full flex justify-center gap-2 items-center space-x-2">
+                      <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
+                        <Button className="!bg-transparent !border-none">
+                          <span className="hover:scale-110">
+                            <Icons.Approve
+                              color="green"
+                              onClick={() => handleApprove(item._id)}
+                              className="w-10 h-10"
+                            />
+                          </span>
+                        </Button>
+                      </div>
+                      <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
+                        <Button className="!bg-transparent !border-none">
+                          <span className="hover:scale-110">
+                            <Icons.Reject
+                              color="red"
+                              onClick={() => handleReject(item._id)}
+                              className="w-10 h-10"
+                            />
+                          </span>
+                        </Button>
+                      </div>
+                    </div>
+                  </td>
+                ) : (
+                  null
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="flex justify-end mt-4 w-full">
         <Pagination
           className="!font-squada flex justify-end"
           current={currentPage}
