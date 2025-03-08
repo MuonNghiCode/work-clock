@@ -39,28 +39,38 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({ isOpen, onClose }) =>
   const debounceFetcher = useMemo(() => debounce(fetchUserList, 300), []);
 
   const handleSubmit = async () => {
-    const values = await form.validateFields();
-    const projectData: ProjectInfo = {
-      project_name: values.project_name,
-      project_code: values.project_code,
-      project_start_date: values.project_start_date ? values.project_start_date.toISOString() : "",
-      project_end_date: values.project_end_date ? values.project_end_date.toISOString() : "",
-      project_status: '',
-      project_department: values.project_department,
-      project_description: values.project_description,
-      project_members: values.members.map((member: any) => ({
-        user_id: member.user_id.value,
-        project_role: member.role,
-      })),
-      updated_by: "",
-      is_deleted: false,
-    };
-    const response = await createProject(projectData);
-    if (response.success) {
-      toast.success("Project created successfully");
+    try {
+      const values = await form.validateFields();
+      const projectData: ProjectInfo = {
+        project_name: values.project_name,
+        project_code: values.project_code,
+        project_start_date: values.project_start_date ? values.project_start_date.toISOString() : "",
+        project_end_date: values.project_end_date ? values.project_end_date.toISOString() : "",
+        project_status: '',
+        project_department: values.project_department,
+        project_description: values.project_description,
+        project_members: values.members.map((member: any) => ({
+          user_id: member.user_id.value,
+          project_role: member.role,
+        })),
+        updated_by: "",
+        is_deleted: false,
+      };
+
+      console.log("Submitting project data:", projectData); // Log the project data
+
+      const response = await createProject(projectData);
+      if (response.success) {
+        toast.success("Project created successfully");
+        form.resetFields();
+        onClose();
+      } else {
+        throw new Error(response.message || "Failed to create project");
+      }
+    } catch (error) {
+      console.error("Error creating project:", error); // Log the error
+      toast.error("An error occurred while creating the project.");
     }
-    form.resetFields();
-    onClose();
   };
 
   return (
@@ -75,10 +85,10 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({ isOpen, onClose }) =>
         <Form.Item name="project_department" label="Department" rules={[{ required: true, message: "Enter department" }]}>
           <Input placeholder="Enter department" />
         </Form.Item>
-        <Form.Item name="project_start_date" label="Start Date" >
+        <Form.Item name="project_start_date" label="Start Date">
           <DatePicker style={{ width: "100%" }} />
         </Form.Item>
-        <Form.Item name="project_end_date" label="End Date" >
+        <Form.Item name="project_end_date" label="End Date">
           <DatePicker />
         </Form.Item>
         <Form.Item name="project_description" label="Description">
