@@ -3,9 +3,11 @@ import { EmployeeInfo } from "../types/Employee";
 import { ProjectInfo } from "../types/Project";
 export interface ClaimItem {
   _id: string;
+  approval_id?: string;
   project_info: {
     project_name: string;
   };
+  created_at?: string;
   claim_name: string;
   claim_start_date: string;
   claim_end_date: string;
@@ -42,6 +44,7 @@ export interface ClaimInfo {
   claim_start_date: string;
   claim_end_date: string;
   claim_status: string;
+  total_work_time: number;
   is_deleted: boolean;
   created_at: string;
   updated_at: string;

@@ -20,13 +20,13 @@ import {
   Trash2,
   Eye,
   DollarSign,
-  // CircleCheck
-  Phone ,
+  Phone,
   Mail,
   MapPin,
   Menu,
   Facebook,
   Instagram,
+  Search
   Search
 } from "lucide-react";
 import {
@@ -95,7 +95,7 @@ const Icons: IconType = {
   Menu2: Menu,
   Facebook: Facebook,
   Instagram: Instagram,
-  SearchIcon: Search
+  SearchIcon: Search,
 };
 
 export default Icons;

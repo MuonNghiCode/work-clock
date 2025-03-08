@@ -295,10 +295,12 @@ const TableProject: React.FC = ({ }) => {
         users={users}
       />
       <ConfirmModal
-        visible={showConfirmModal}
-        onClose={handleClose}
-        message={message}
-        onConfirm={handleConfirmDelete}
+        modalProps={{
+          visible: showConfirmModal,
+          onClose: handleClose,
+          onConfirm: handleConfirmDelete
+        }}
+        messageProps={{ message }}
       />
       {selectedProject && (
         <EditProject

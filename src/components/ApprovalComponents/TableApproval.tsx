@@ -1,27 +1,25 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Button, Pagination, Tag, Input } from "antd";
-import { ClaimRequest } from "../../types/ClaimRequest";
-import { GetProps } from "antd/lib/_util/type";
+import { Button, Pagination, Tag } from "antd";
 import ClaimRequestDetail from "./ClaimRequestDetail";
 import ConfirmModal from "../ConfirmModal/ConfirmModal";
 import Icons from "../icon";
 import { searchApprovalClaims } from "../../services/approvalService";
 import { toast } from "react-toastify";
 import debounce from "lodash/debounce";
-
-type SearchProps = GetProps<typeof Input.Search>;
-const { Search } = Input;
+import { ClaimInfo } from "../../types/ClaimType";
 
 const TableApproval: React.FC = () => {
-  const [approvalData, setApprovalData] = useState<ClaimRequest[]>([]);
+  const [approvalData, setApprovalData] = useState<ClaimInfo[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(5);
   const [statusFilter, setStatusFilter] = useState<string>("Pending Approval");
   const [showApprovalDetail, setShowApprovalDetail] = useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [totalItems, setTotalItems] = useState<number>(0);
+  const [selectedApproval, setSelectedApproval] = useState<ClaimInfo | null>(null);
+  const [claimId, setClaimId] = useState<string>("");
 
   const prevPageRef = useRef(currentPage);
   const prevPageSizeRef = useRef(pageSize);
@@ -95,38 +93,38 @@ const TableApproval: React.FC = () => {
     []
   );
 
-  const onSearch: SearchProps["onSearch"] = (value) => {
-    handleSearch(value);
-  };
-
-  const handleShowApprovalDetail = () => {
+  const handleShowApprovalDetail = (claim: ClaimInfo) => {
+    setSelectedApproval(claim);
     setShowApprovalDetail(true);
-    console.log("Show Approval Detail");
   };
 
-  const handleApprove = () => {
-    setMessage("Confirm Approve this request?");
+  const handleApprove = (id: string) => {
+    setClaimId(id);
+    setMessage("Approved");
     setShowConfirmModal(true);
-    console.log("Approve");
   };
 
-  const handleReject = () => {
-    setMessage("Confirm Reject this request?");
+  const handleReject = (id: string) => {
+    setClaimId(id);
+    setMessage("Rejected");
     setShowConfirmModal(true);
-    console.log("Reject");
   };
 
-  const handleReturn = () => {
-    setMessage("Return reason?");
+  const handleReturn = (id: string) => {
+    setClaimId(id);
+    setMessage("Canceled");
     setShowConfirmModal(true);
-    console.log("Return");
   };
 
   const handleClose = () => {
     setShowApprovalDetail(false);
     setShowConfirmModal(false);
-    console.log("Close Approval Detail");
   };
+
+  const handleConfirm = () => {
+    fetchApprovalData();
+    setShowConfirmModal(false);
+  }
 
   const handleStatusChangeHTML = (status: string) => {
     switch (status) {
@@ -172,15 +170,18 @@ const TableApproval: React.FC = () => {
             </Tag>
           ))}
         </div>
-        <div className="w-[250px] height-[48px] overflow-hidden rounded-full border-[1px] border-gray-300 bg-white !font-squada">
-          <Search
-            placeholder="input search text"
-            onSearch={onSearch}
+
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Search by claim name..."
+            className="w-[300px] px-4 py-2 border rounded-full pr-10"
+            defaultValue={searchTerm}
             onChange={(e) => handleSearch(e.target.value)}
-            style={{ width: 250 }}
-            size="large"
-            className="custom-search pl-1"
-            variant="borderless"
+          />
+          <Icons.SearchIcon
+            className="absolute right-3 top-2.5 text-gray-400"
+            fontSize={20}
           />
         </div>
       </div>
@@ -203,7 +204,7 @@ const TableApproval: React.FC = () => {
         <tbody className="w-full">
           {approvalData.map((item) => (
             <tr
-              onClick={handleShowApprovalDetail}
+              onClick={() => handleShowApprovalDetail(item)}
               key={item._id}
               className="h-[70px] bg-white overflow-hidden text-center border-collapse hover:shadow-brand-orange !rounded-2xl"
             >
@@ -211,7 +212,11 @@ const TableApproval: React.FC = () => {
               <td className="px-4 py-2">{item.staff_name}</td>
               <td className="px-4 py-2">{formatDateTime(item.claim_start_date)}</td>
               <td className="px-4 py-2">{handleStatusChangeHTML(item.claim_status)}</td>
-              <td className="px-4 py-2">{formatDateTime(item.created_at)}</td>
+              {item.claim_status === "Pending Approval" ? (
+                <td className="px-4 py-2">{formatDateTime(item.created_at)}</td>
+              ) : (
+                <td className="px-4 py-2 rounded-r-2xl">{formatDateTime(item.created_at)}</td>
+              )}
               {item.claim_status === "Pending Approval" ? (
                 <td
                   className="action px-4 py-2 rounded-r-2xl"
@@ -223,7 +228,7 @@ const TableApproval: React.FC = () => {
                         <span className="hover:scale-110">
                           <Icons.Approve
                             color="green"
-                            onClick={handleApprove}
+                            onClick={() => handleApprove(item._id)}
                             className="w-10 h-10"
                           />
                         </span>
@@ -234,7 +239,7 @@ const TableApproval: React.FC = () => {
                         <span className="hover:scale-110">
                           <Icons.Reject
                             color="red"
-                            onClick={handleReject}
+                            onClick={() => handleReject(item._id)}
                             className="w-10 h-10"
                           />
                         </span>
@@ -243,9 +248,9 @@ const TableApproval: React.FC = () => {
                     <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
                       <Button className="!bg-none !border-none">
                         <span className="hover:scale-110">
-                          <Icons.Return
+                          <Icons.Cancel
                             color="blue"
-                            onClick={handleReturn}
+                            onClick={() => handleReturn(item._id)}
                             className="w-10 h-10"
                           />
                         </span>
@@ -272,13 +277,22 @@ const TableApproval: React.FC = () => {
           pageSizeOptions={["5", "10", "20", "50"]}
         />
       </div>
-      <ClaimRequestDetail visible={showApprovalDetail} onClose={handleClose} />
+      {selectedApproval && (
+        <ClaimRequestDetail
+          visible={showApprovalDetail}
+          onClose={handleClose}
+          id={selectedApproval} // Pass the selectedApprovalId here
+        />
+      )}
       <ConfirmModal
-        visible={showConfirmModal}
-        onClose={handleClose}
-        message={message}
-        onConfirm={() => {
-          console.log("Confirm");
+        modalProps={{
+          visible: showConfirmModal,
+          onClose: handleClose,
+          onConfirm: handleConfirm
+        }}
+        messageProps={{
+          message: message,
+          id: claimId
         }}
       />
     </>
