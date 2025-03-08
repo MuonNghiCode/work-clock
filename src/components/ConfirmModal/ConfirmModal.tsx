@@ -1,6 +1,6 @@
 import { Input, Modal } from "antd";
 import Icons from "../icon";
-import { changeClaimStatus } from "../../services/claimService";
+import { updateClaimStatus } from "../../services/claimService";
 import { toast } from "react-toastify";
 import { useState } from "react";
 
@@ -29,7 +29,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   const MESSAGE = `Confirm ${message} this claim request?`;
   const [comment, setComment] = useState<string>("");
   const handleStatusChange = async () => {
-    const response = await changeClaimStatus(id, message, comment);
+    const response = await updateClaimStatus({ _id: id, claim_status: message, comment: comment });
     if (response.success) {
       toast.success(`Claim request has been ${message.toLowerCase()} successfully!`);
     }
