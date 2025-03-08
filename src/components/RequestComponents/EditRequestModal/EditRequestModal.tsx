@@ -20,7 +20,7 @@ interface ClaimRequest {
 interface EditRequestModalProps {
   isOpen: boolean;
   onCancel: () => void;
-  onOk: () => Promise<void>; // Sửa lại để không cần updatedClaim
+  onOk: () => Promise<void>;
   editingRecord: ClaimRequest | null;
   claimId: string;
   refreshData: () => void;
@@ -29,7 +29,6 @@ interface EditRequestModalProps {
 const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, onOk, claimId, editingRecord, refreshData }) => {
   const [formData, setFormData] = useState({
     claimname: '',
-    status: '',
     startDate: '', // "YYYY-MM-DD"
     startTime: '',
     endDate: '',   // "YYYY-MM-DD"
@@ -58,10 +57,9 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
       if (isOpen && editingRecord) {
         setFormData({
           claimname: editingRecord.claimname || '',
-          status: editingRecord.status || '',
-          startDate: formatDateForInput(editingRecord.start_date || ''), // Chuyển "DD/MM/YYYY" về "YYYY-MM-DD"
+          startDate: formatDateForInput(editingRecord.start_date || ''),
           startTime: editingRecord.timeFrom || '',
-          endDate: formatDateForInput(editingRecord.end_date || ''),     // Chuyển "DD/MM/YYYY" về "YYYY-MM-DD"
+          endDate: formatDateForInput(editingRecord.end_date || ''),
           endTime: editingRecord.timeTo || '',
           totalHours: editingRecord.totalHours || '0',
         });
@@ -136,13 +134,6 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
         updatedClaim.claim_name = originalData.claim_name;
       }
 
-      // Status
-      if (formData.status?.trim()) {
-        updatedClaim.claim_status = formData.status;
-      } else if (originalData?.claim_status) {
-        updatedClaim.claim_status = originalData.claim_status;
-      }
-
       // Start Date and Time
       const startDateTime = combineDateTime(formData.startDate, formData.startTime);
       if (startDateTime) {
@@ -186,7 +177,7 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
 
       const response = await updateClaim(claimId, updatedClaim);
       if (response.success) {
-        await onOk(); // Gọi onOk không cần truyền updatedClaim
+        await onOk();
         toast.success('Claim request updated successfully');
         refreshData();
         handleClose();
@@ -252,21 +243,14 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-700 text-sm font-medium mb-2">Status</label>
-                    <select
-                      value={formData.status || ""}
-                      onChange={(e) => handleInputChange("status", e.target.value)}
+                    <label className="block text-gray-700 text-sm font-medium mb-2">Total Hours</label>
+                    <input
+                      type="text"
+                      value={formData.totalHours || ""}
+                      onChange={(e) => handleInputChange("totalHours", e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
                       disabled={loading}
-                    >
-                      <option value="">Select Status</option>
-                      <option value="Draft">Draft</option>
-                      <option value="Pending Approval">Pending Approval</option>
-                      <option value="Approved">Approved</option>
-                      <option value="Rejected">Rejected</option>
-                      <option value="Canceled">Canceled</option>
-                      <option value="Paid">Paid</option>
-                    </select>
+                    />
                   </div>
                 </div>
               </div>
@@ -309,21 +293,6 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
                       type="time"
                       value={formData.endTime || ""}
                       onChange={(e) => handleInputChange("endTime", e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                      disabled={loading}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="bg-gray-50 p-4 rounded-lg col-span-2">
-                <h3 className="text-lg font-semibold text-gray-700 mb-4">Additional Details</h3>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-gray-700 text-sm font-medium mb-2">Total Hours</label>
-                    <input
-                      type="text"
-                      value={formData.totalHours || ""}
-                      onChange={(e) => handleInputChange("totalHours", e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
                       disabled={loading}
                     />

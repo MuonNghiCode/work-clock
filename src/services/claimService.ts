@@ -4,6 +4,12 @@ import { API_CONSTANTS } from "../constants/apiConstants";
 import { ClaimItem, ClaimsRequest, ClaimsResponse, PageInfoRequest, SearchCondition } from "../types/ClaimType";
 
 
+interface UpdateClaimStatusPayload {
+  _id: string;
+  claim_status: string;
+  comment: string;
+}
+
 // Hàm để gọi API lấy dữ liệu yêu cầu
 export const getClaimsData = async (request: ClaimsRequest): Promise<ResponseModel<ClaimsResponse>> => {
   const response = await post<ClaimsResponse>(API_CONSTANTS.CLAIMS.CLAIMS_SEARCH, request);
@@ -33,5 +39,10 @@ export const getClaimDetail = async (id: string): Promise<ResponseModel<ClaimIte
 
 export const updateClaim = async (id: string, data: Partial<ClaimItem>): Promise<ResponseModel<ClaimItem>> => {
   const response = await put<ClaimItem>(`${API_CONSTANTS.CLAIMS.UPDATE_CLAIM}/${id}`, data);
+  return response;
+};
+
+export const updateClaimStatus = async (payload: UpdateClaimStatusPayload): Promise<ResponseModel<null>> => {
+  const response = await put<null>(API_CONSTANTS.CLAIMS.UPDATE_STATUS, payload);
   return response;
 };
