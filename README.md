@@ -68,7 +68,7 @@ npm run dev
 
 Dự án được xây dựng bởi nhóm **9 thành viên** từ **FPT University**, hiện đang thực tập tại **FPT Software**:
 
-1. **[Tên Thành Viên 1]** – *Vai trò*  
+1. **[Phạm Minh Quân]** – *Vai trò*  
 2. **[Tên Thành Viên 2]** – *Vai trò*  
 3. **[Tên Thành Viên 3]** – *Vai trò*  
 4. **[Tên Thành Viên 4]** – *Vai trò*  
