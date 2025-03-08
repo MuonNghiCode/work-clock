@@ -36,13 +36,12 @@ const EditProject: React.FC<EditProjectProps> = ({
     user: project?.project_members[0]?.user_id || "",
     department: project?.project_department || "",
     descriptions: project?.project_description || "",
+    role: project?.project_members[0]?.project_role || ""
   });
 
   const [projectData, setProjectData] = useState(originalProjectData);
 
   const handleSave = async () => {
-    console.log("🔥 project data received:", project);
-
     const formattedData = {
       id: projectData.id,
       name: projectData.name?.trim() || "",
@@ -53,18 +52,11 @@ const EditProject: React.FC<EditProjectProps> = ({
       enddate: projectData.enddate || "",
       status: projectData.status || "New",
       user: projectData.user || "",
+      role: projectData.role || ""
     };
 
-    if (!formattedData.name) {
-      console.error("Project name is required.");
-      return;
-    }
-    if (!formattedData.code) {
-      console.error("Project code is required.");
-      return;
-    }
-    if (!formattedData.department) {
-      console.error("Project department is required.");
+    if (!formattedData.name || !formattedData.code || !formattedData.department) {
+      console.error("All fields are required.");
       return;
     }
 
@@ -88,19 +80,13 @@ const EditProject: React.FC<EditProjectProps> = ({
       project_members: [
         {
           user_id: formattedData.user,
-          project_role: "Project Manager",
+          project_role: formattedData.role,
         },
       ],
-      // created_at: project.created_at
-      //   ? new Date(project.created_at).toISOString()
-      //   : new Date().toISOString(),
-      // updated_at: new Date().toISOString(),
       updated_by: "",
       is_deleted: false,
       _id: formattedData.id,
     };
-
-    console.log("📌 Dữ liệu trước khi gửi API:", data);
 
     try {
       const response: ResponseModel<any> = await getEditProject(
@@ -108,19 +94,14 @@ const EditProject: React.FC<EditProjectProps> = ({
         formattedData.id
       );
 
-      console.log("API Response:", response);
-
       if (!response.success) {
         throw new Error(response.message || "Failed to save project");
       }
 
-      toast.success("Project saved successfully:", response);
+      toast.success("Project saved successfully");
       onClose();
     } catch (error) {
-      console.error(
-        "Error saving project:",
-        error instanceof Error ? error.message : error
-      );
+      console.error("Error saving project:", error instanceof Error ? error.message : error);
     }
   };
 
@@ -130,12 +111,13 @@ const EditProject: React.FC<EditProjectProps> = ({
       onCancel={onClose}
       onOk={handleSave}
       okText="Save"
+      width={800}
     >
-      <div className="w-[1000px] max-w-full px-4">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">
-          Edit project
+      <div className="w-full px-6 py-4">
+        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+          Edit Project
         </h2>
-        <div className="flex flex-col items-center gap-y-4">
+        <div className="flex flex-col items-center gap-y-6">
           <div className="flex flex-row justify-between w-full space-x-4">
             <div className="flex-1 space-y-2">
               <label className="block text-gray-700 font-medium text-lg">
@@ -147,7 +129,7 @@ const EditProject: React.FC<EditProjectProps> = ({
                 onChange={(e) =>
                   setProjectData({ ...projectData, name: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-base"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-xl"
                 placeholder="Enter project name"
               />
             </div>
@@ -162,7 +144,7 @@ const EditProject: React.FC<EditProjectProps> = ({
                 onChange={(e) =>
                   setProjectData({ ...projectData, code: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-base"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-xl"
               />
             </div>
           </div>
@@ -178,7 +160,7 @@ const EditProject: React.FC<EditProjectProps> = ({
                 onChange={(e) =>
                   setProjectData({ ...projectData, date: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-base"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-xl"
               />
             </div>
 
@@ -192,7 +174,7 @@ const EditProject: React.FC<EditProjectProps> = ({
                 onChange={(e) =>
                   setProjectData({ ...projectData, enddate: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-base"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-xl"
               />
             </div>
           </div>
@@ -207,7 +189,7 @@ const EditProject: React.FC<EditProjectProps> = ({
                 onChange={(e) =>
                   setProjectData({ ...projectData, user: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 bg-white text-base"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 bg-white text-xl"
               >
                 <option value="">Select a user</option>
                 {users.map((user, index) => (
@@ -220,56 +202,72 @@ const EditProject: React.FC<EditProjectProps> = ({
 
             <div className="flex-1 space-y-2">
               <label className="block text-gray-700 font-medium text-lg">
-                Department
+                Role
               </label>
               <input
                 type="text"
-                value={projectData.department}
+                value={projectData.role}
                 onChange={(e) =>
-                  setProjectData({ ...projectData, department: e.target.value })
+                  setProjectData({ ...projectData, role: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-base"
-                placeholder="Enter department"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-xl"
+                placeholder="Enter role"
               />
             </div>
           </div>
 
-          <div className="flex flex-row justify-between w-full space-x-4">
-            <div className="flex-1 space-y-2 w-full">
-              <label className="block text-gray-700 font-medium text-lg">
-                Description
-              </label>
-              <input
-                type="text"
-                value={projectData.descriptions}
-                onChange={(e) =>
-                  setProjectData({
-                    ...projectData,
-                    descriptions: e.target.value,
-                  })
-                }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-base"
-                placeholder="Enter description"
-              />
-            </div>
+          <div className="flex-1 space-y-2 w-full">
+            <label className="block text-gray-700 font-medium text-lg">
+              Department
+            </label>
+            <input
+              type="text"
+              value={projectData.department}
+              onChange={(e) =>
+                setProjectData({
+                  ...projectData,
+                  department: e.target.value,
+                })
+              }
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-xl"
+              placeholder="Enter department"
+            />
+          </div>
 
-            <div className="flex-1 space-y-2 w-full">
-              <label className="block text-gray-700 font-medium text-lg">
-                Status
-              </label>
-              <select
-                value={projectData.status}
-                onChange={(e) =>
-                  setProjectData({ ...projectData, status: e.target.value })
-                }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 bg-white text-base"
-              >
-                <option value="New">New</option>
-                <option value="Processing">Processing</option>
-                <option value="Pending">Pending</option>
-                <option value="Complete">Complete</option>
-              </select>
-            </div>
+          <div className="flex-1 space-y-2 w-full">
+            <label className="block text-gray-700 font-medium text-lg">
+              Status
+            </label>
+            <select
+              value={projectData.status}
+              onChange={(e) =>
+                setProjectData({ ...projectData, status: e.target.value })
+              }
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 bg-white text-xl"
+            >
+              <option value="New">New</option>
+              <option value="Processing">Processing</option>
+              <option value="Pending">Pending</option>
+              <option value="Complete">Complete</option>
+            </select>
+          </div>
+
+          <div className="flex-1 space-y-2 w-full">
+            <label className="block text-gray-700 font-medium text-lg">
+              Descriptions
+            </label>
+            <textarea
+              rows={3}
+              value={projectData.descriptions}
+              onChange={(e) =>
+                setProjectData({
+                  ...projectData,
+                  descriptions: e.target.value,
+                })
+              }
+              className="w-full px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 text-xl"
+              placeholder="Enter description"
+            />
           </div>
         </div>
       </div>
