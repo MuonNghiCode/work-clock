@@ -182,17 +182,17 @@ const TableProject: React.FC = ({ }) => {
           <span className="text-lg">Add Project</span>
         </button>
         <div className="relative">
-              <input
-                type="text"
-                placeholder="Search by project name..."
-                className="w-[300px] px-4 py-2 border rounded-full pr-10"
-                onChange={(e) => handleSearch(e.target.value)}
-              />
-              <Icons.SearchIcon
-                className="absolute right-3 top-2.5 text-gray-400"
-                fontSize={20}
-              />
-            </div>
+          <input
+            type="text"
+            placeholder="Search by project name..."
+            className="w-[300px] px-4 py-2 border rounded-full pr-10"
+            onChange={(e) => handleSearch(e.target.value)}
+          />
+          <Icons.SearchIcon
+            className="absolute right-3 top-2.5 text-gray-400"
+            fontSize={20}
+          />
+        </div>
       </div>
 
       <table className="min-w-full !border-separate border-spacing-y-2.5 text-black border-0">
@@ -300,7 +300,7 @@ const TableProject: React.FC = ({ }) => {
           onClose: handleClose,
           onConfirm: handleConfirmDelete
         }}
-        messageProps={{ message }}
+        messageProps={{ message, id: selectedProject?._id || "" }}
       />
       {selectedProject && (
         <EditProject

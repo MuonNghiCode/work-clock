@@ -3,7 +3,6 @@ import { EmployeeInfo } from "../types/Employee";
 import { ProjectInfo } from "../types/Project";
 export interface ClaimItem {
   _id: string;
-  approval_id?: string;
   project_info: {
     project_name: string;
   };

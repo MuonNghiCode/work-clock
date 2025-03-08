@@ -27,7 +27,7 @@ export const getClaimerSearch = async (
 };
 
 export const getClaimDetail = async (id: string): Promise<ResponseModel<ClaimItem>> => {
-  const response = await get<ClaimItem>(`${API_CONSTANTS.CLAIMS.GET_BY_ID}/${id}`); 
+  const response = await get<ClaimItem>(`${API_CONSTANTS.CLAIMS.GET_BY_ID}/${id}`);
   return response;
 };
 
@@ -35,3 +35,13 @@ export const updateClaim = async (id: string, data: Partial<ClaimItem>): Promise
   const response = await put<ClaimItem>(`${API_CONSTANTS.CLAIMS.UPDATE_CLAIM}/${id}`, data);
   return response;
 };
+
+export const changeClaimStatus = async (id: string, status: string, comment?: string): Promise<ResponseModel<ClaimItem>> => {
+  const response = await put<ClaimItem>(`${API_CONSTANTS.CLAIMS.CHANGE_STATUS}`,
+    {
+      _id: id,
+      claim_status: status,
+      comment: comment
+    });
+  return response;
+}

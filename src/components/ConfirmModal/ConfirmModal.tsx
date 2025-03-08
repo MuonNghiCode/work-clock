@@ -1,5 +1,8 @@
-import { Modal } from "antd";
+import { Input, Modal } from "antd";
 import Icons from "../icon";
+import { changeClaimStatus } from "../../services/claimService";
+import { toast } from "react-toastify";
+import { useState } from "react";
 
 export interface ModalProps {
   visible: boolean;
@@ -9,7 +12,7 @@ export interface ModalProps {
 
 interface MessageProps {
   message: string;
-  id?: string;
+  id: string;
 }
 
 interface ConfirmModalProps {
@@ -24,8 +27,12 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   const { visible, onClose, onConfirm } = modalProps;
   const { message, id } = messageProps;
   const MESSAGE = `Confirm ${message} this claim request?`;
-  const handleStatusChange = () => {
-    console.log('id', id);
+  const [comment, setComment] = useState<string>("");
+  const handleStatusChange = async () => {
+    const response = await changeClaimStatus(id, message, comment);
+    if (response.success) {
+      toast.success(`Claim request has been ${message.toLowerCase()} successfully!`);
+    }
     onConfirm();
   }
 
@@ -40,10 +47,26 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
         {message} Claim Request</h4>}
       className="flex items-center justify-center rounded-2xl" >
       <div className="p-4 inline-flex items-center">
-        {message === "Approved" ? <Icons.Approve className="w-20 h-20 mx-auto text-green-600" />
-          : message === "Rejected" ? <Icons.Reject className="w-20 h-20 mx-auto text-red-600" />
-            : <Icons.Cancel className="w-20 h-20 mx-auto text-blue-600" />}
-        <p className="my-2 font-semibold text-lg">{MESSAGE}</p>
+        {message === "Approved" ?
+          <>
+            <Icons.Approve className="w-20 h-20 mx-auto text-green-600" />
+            <p className="my-2 font-semibold text-lg">{MESSAGE}</p>
+          </>
+          : message === "Rejected" ?
+            <div className="flex flex-col items-center">
+              <div className="inline-flex items-center">
+                <Icons.Reject className="w-20 h-20 mx-auto text-red-600" />
+                <p className="my-2 font-semibold text-lg">{MESSAGE}</p>
+              </div>
+              <Input.TextArea
+                rows={3}
+                className="w-full mt-2"
+                placeholder="Enter your rejected reason here"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+              />
+            </div>
+            : null}
       </div>
     </Modal>
   );

@@ -84,7 +84,7 @@ const TableApproval: React.FC = () => {
     setCurrentPage(1);
   };
 
-  const statusTags = ["Pending Approval", "Approved", "Rejected", "Canceled"];
+  const statusTags = ["Pending Approval", "Approved", "Rejected"];
 
   const handleSearch = useCallback(
     debounce((value: string) => {
@@ -110,12 +110,6 @@ const TableApproval: React.FC = () => {
     setShowConfirmModal(true);
   };
 
-  const handleReturn = (id: string) => {
-    setClaimId(id);
-    setMessage("Canceled");
-    setShowConfirmModal(true);
-  };
-
   const handleClose = () => {
     setShowApprovalDetail(false);
     setShowConfirmModal(false);
@@ -130,8 +124,6 @@ const TableApproval: React.FC = () => {
     switch (status) {
       case "Pending Approval":
         return <span className="text-gray-300">Pending Approval</span>;
-      case "Canceled":
-        return <span className="text-blue-500">Canceled</span>;
       case "Approved":
         return <span className="text-green-500">Approved</span>;
       case "Rejected":
@@ -240,17 +232,6 @@ const TableApproval: React.FC = () => {
                           <Icons.Reject
                             color="red"
                             onClick={() => handleReject(item._id)}
-                            className="w-10 h-10"
-                          />
-                        </span>
-                      </Button>
-                    </div>
-                    <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
-                      <Button className="!bg-none !border-none">
-                        <span className="hover:scale-110">
-                          <Icons.Cancel
-                            color="blue"
-                            onClick={() => handleReturn(item._id)}
                             className="w-10 h-10"
                           />
                         </span>

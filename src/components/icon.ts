@@ -27,7 +27,6 @@ import {
   Facebook,
   Instagram,
   Search
-  Search
 } from "lucide-react";
 import {
   FaUsers,
