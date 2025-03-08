@@ -2,13 +2,15 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Form, Input, Tag } from 'antd';
 import EditRequestModal from '../../components/RequestComponents/EditRequestModal/EditRequestModal';
 import DeleteRequestModal from '../../components/RequestComponents/DeleteRequestModal/DeleteRequestModal';
+import RequestApprovalModal from '../../components/RequestComponents/RequestApprovalModal/RequestApprovalModal'; // New import
 import TableRequest from '../../components/RequestComponents/TableRequest/TableRequest';
-import { getClaimerSearch } from '../../services/claimService';
+import { getClaimerSearch, updateClaimStatus } from '../../services/claimService';
 import { ClaimItem, SearchCondition, PageInfoRequest } from '../../types/ClaimType';
 import { ResponseModel } from '../../models/ResponseModel';
 import { debounce } from 'lodash';
 import { GetProps } from 'antd/es/_util/type';
 import { CheckOutlined } from "@ant-design/icons";
+import { toast } from 'react-toastify';
 
 type SearchProps = GetProps<typeof Input.Search>;
 const { Search } = Input;
@@ -34,6 +36,8 @@ const RequestPage: React.FC = () => {
   const [editingRecord, setEditingRecord] = useState<ClaimRequest | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deletingRecord, setDeletingRecord] = useState<ClaimRequest | null>(null);
+  const [isApprovalModalOpen, setIsApprovalModalOpen] = useState(false); // New state
+  const [approvingRecord, setApprovingRecord] = useState<ClaimRequest | null>(null); // New state
   const [form] = Form.useForm();
   const [apiData, setApiData] = useState<ClaimRequest[]>([]);
   const [totalItems, setTotalItems] = useState(0);
@@ -151,6 +155,47 @@ const RequestPage: React.FC = () => {
     setCurrentPage(1);
   };
 
+  const handleRequestApproval = (record: ClaimRequest) => {
+    setApprovingRecord(record);
+    setIsApprovalModalOpen(true);
+  };
+
+  const handleApprovalConfirm = async (comment: string) => {
+    if (!approvingRecord) return;
+    setLoading(true);
+    try {
+      const payload = {
+        _id: approvingRecord.key,
+        claim_status: "Pending Approval",
+        comment: comment || '',
+      };
+      console.log('Sending request approval with payload:', payload);
+
+      const response = await updateClaimStatus(payload);
+      if (response.success) {
+        toast.success('Request approval sent successfully');
+        fetchClaims(); // Refresh the table data
+      } else {
+        throw new Error(response.message || 'Failed to update status');
+      }
+    } catch (error: any) {
+      console.error('Failed to send request approval:', error);
+      const errorMessage = error.response?.status === 404
+        ? 'API endpoint not found. Please verify the URL in API_CONSTANTS.CLAIMS.UPDATE_STATUS.'
+        : error.message || 'Failed to send request approval';
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
+      setIsApprovalModalOpen(false);
+      setApprovingRecord(null);
+    }
+  };
+
+  const handleApprovalCancel = () => {
+    setIsApprovalModalOpen(false);
+    setApprovingRecord(null);
+  };
+
   return (
     <div className="p-6 bg-orange-100 shadow-md rounded-lg">
       <h1 className="text-3xl font-bold text-gray-800 mb-4">Claim Request Management</h1>
@@ -184,7 +229,7 @@ const RequestPage: React.FC = () => {
         totalItems={totalItems}
         loading={loading}
         pagination={{ currentPage, pageSize, onPageChange: handlePageChange }}
-        actions={{ onEdit: handleEdit, onDelete: handleDelete }}
+        actions={{ onEdit: handleEdit, onDelete: handleDelete, onRequestApproval: handleRequestApproval }}
       />
       <EditRequestModal
         isOpen={isEditModalOpen}
@@ -198,6 +243,13 @@ const RequestPage: React.FC = () => {
         isOpen={isDeleteModalOpen}
         onOk={handleDeleteModalOk}
         onCancel={handleDeleteModalCancel}
+      />
+      <RequestApprovalModal
+        isOpen={isApprovalModalOpen}
+        onCancel={handleApprovalCancel}
+        onConfirm={handleApprovalConfirm}
+        approvingRecord={approvingRecord}
+        loading={loading}
       />
     </div>
   );
