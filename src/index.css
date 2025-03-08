@@ -75,6 +75,9 @@ html {
 }
 
 @layer theme {
+  .font-squada{
+    font-family: "Squada One", sans-serif;
+  }
   .bg-brand-orange {
     background-color: #ff914d;
   }
@@ -189,7 +192,4 @@ html {
     border: 2px solid rgba(255, 255, 255, 0.7);
     /* filter: blur(0.5px); */
   }
-}
-
-@layer utilities {
 }

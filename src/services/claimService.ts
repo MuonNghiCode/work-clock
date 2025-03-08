@@ -33,7 +33,7 @@ export const getClaimerSearch = async (
 };
 
 export const getClaimDetail = async (id: string): Promise<ResponseModel<ClaimItem>> => {
-  const response = await get<ClaimItem>(`${API_CONSTANTS.CLAIMS.GET_BY_ID}/${id}`); 
+  const response = await get<ClaimItem>(`${API_CONSTANTS.CLAIMS.GET_BY_ID}/${id}`);
   return response;
 };
 
