@@ -60,7 +60,7 @@ const AnimatedBackground: React.FC = () => {
           className="absolute -bottom-10 right-20 w-96 h-96 bg-[#ff853a] rounded-full mix-blend-multiply filter blur-[128px] opacity-20 md:opacity-10 hidden sm:block"
         ></div>
       </div>
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ff914d10_2px,transparent_2px),linear-gradient(to_bottom,#ff914d10_2px,transparent_2px)] bg-[size:24px_24px]"></div>
+      {/* <div className="absolute inset-0 bg-[linear-gradient(to_right,#ff914d10_2px,transparent_2px),linear-gradient(to_bottom,#ff914d10_2px,transparent_2px)] bg-[size:24px_24px]"></div>a */}
     </div>
   );
 };
