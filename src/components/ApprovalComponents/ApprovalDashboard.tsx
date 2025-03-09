@@ -17,7 +17,7 @@ const ApprovalDashboard: React.FC<DataProps> = ({ claimData }) => {
     }, [claimData]);
 
     return (
-        <div className='inline-flex justify-between w-full flex-nowrap gap-4'>
+        <div className='flex flex-wrap justify-between w-full gap-4'>
             {['Pending Approval', 'Approved', 'Rejected'].map((status) => (
                 <Card
                     key={status}
