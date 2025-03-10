@@ -27,6 +27,7 @@ import {
   Menu,
   Facebook,
   Instagram,
+  Search
 } from "lucide-react";
 import {
   FaUsers,
@@ -93,7 +94,8 @@ const Icons: IconType = {
   MapPin: MapPin,
   Menu2: Menu,
   Facebook: Facebook,
-  Instagram: Instagram
+  Instagram: Instagram,
+  SearchIcon: Search
 };
 
 export default Icons;

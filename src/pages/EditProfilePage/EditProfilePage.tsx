@@ -1,25 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, forwardRef } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import DatePicker from "react-datepicker";
+import filestack from 'filestack-js';
+import { FaCalendarAlt } from "react-icons/fa";
 // Sử dụng icon cho password (bạn có thể cài react-icons nếu chưa có: npm install react-icons)
 import { FaEye, FaEyeSlash, FaCamera } from "react-icons/fa"; // Thêm icon camera
 // Import ảnh mặc định
 import userDefaultImage from "../../assets/images/user-image.png";
 //import { UserContext } from "../../context/UserContext"; // Import UserContext
-import { changePassword } from "../../services/userService";
-interface FormData {
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
-    email: string;
-    district: string;
-    city: string;
-    postcode: string;
-    country: string;
-    job_rank: string;
+import { changePassword, getEmployeeByUserId, updateEmployee } from "../../services/userService";
+import { getAllDepartments } from "../../services/userService";
+import { getAllContracts } from "../../services/userService";
+
+interface ProfileImageUploadProps {
+    userId: string;
+    formData: any;
+    setFormData: React.Dispatch<React.SetStateAction<any>>;
+}
+
+interface Department {
+    _id: string;
+    department_code: string;
+    description: string;
+}
+
+interface Contract {
+    _id: string;
     contract_type: string;
-    department_name: string;
-    salary: string;
+    description: string;
 }
 
 interface PasswordData extends Record<string, string> {
@@ -27,62 +36,209 @@ interface PasswordData extends Record<string, string> {
     newPassword: string;
     confirmPassword: string;
 }
+interface FormData {
+    job_rank: string;
+    contract_type: string;
+    account: string;
+    address: string;
+    phone: string;
+    full_name: string;
+    avatar_url: string;
+    department_code: string;
+    salary: number;
 
+    start_date: Date | null;
+    end_date: Date | null;
+}
+interface EditProfilePageProps {
+    userData: FormData;
+    departments: Department[];
+    contracts: Contract[];
+    onUpdate: (data: FormData) => void;
+}
 const EditProfilePage: React.FC = () => {
-    // Khởi tạo state cho active tab: "account" hoặc "password"
-    const [activeTab, setActiveTab] = useState<"account" | "password">("account");
-
-    // Lấy dữ liệu từ localStorage (nếu có), hoặc dùng dữ liệu mặc định
-    const defaultAccountData: FormData = {
-        firstName: "David",
-        lastName: "Thompson",
-        phoneNumber: "0362740921",
-        email: "haitrilehu@gmail.com",
-        district: "Thu Duc",
-        city: "Ho Chi Minh",
-        postcode: "12000",
-        country: "Viet Nam",
-        job_rank: "DEV1",
-        contract_type: "THREE YEAR",
-        department_name: "CMS",
-        salary: "5000000",
-    };
-
-    const [formData, setFormData] = useState<FormData>(() => {
-        const storedData = localStorage.getItem("accountData");
-        return storedData ? JSON.parse(storedData) : defaultAccountData;
+    const convertFormDataToPayload = (data: FormData) => ({
+        ...data,
+        start_date: data.start_date ? data.start_date.toISOString().split("T")[0] : undefined, // [UPDATED]
+        end_date: data.end_date ? data.end_date.toISOString().split("T")[0] : undefined,       // [UPDATED]
     });
 
-    // State cho dữ liệu đổi mật khẩu
+    // [UPDATED] Inline CustomDateInput component với icon lịch
+    const CustomDateInput = forwardRef<
+        HTMLInputElement,
+        { value?: string; onClick?: () => void; placeholder?: string }
+    >(({ value, onClick, placeholder }, ref) => (
+        <div className="relative">
+            <input
+                className="w-full p-2 border rounded pr-10 cursor-pointer"
+                onClick={onClick}
+                ref={ref}
+                value={value || ""}
+                placeholder={placeholder}
+                readOnly
+            />
+            <FaCalendarAlt
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
+                onClick={onClick}
+            />
+        </div>
+    ));
+    const fetchedData = {
+        start_date: "2025-03-10",
+        end_date: "2025-03-20",
+    };
+
+    const [formData, setFormData] = useState<FormData>({
+        job_rank: "",
+        contract_type: "",
+        account: "",
+        address: "",
+        phone: "",
+        full_name: "",
+        avatar_url: "",
+        department_code: "",
+        salary: 0,
+        start_date: null,
+        end_date: null,
+    });
+
+    const [activeTab, setActiveTab] = useState<"account" | "password">("account");
+
     const [passwordData, setPasswordData] = useState<PasswordData>({
         oldPassword: "",
         newPassword: "",
         confirmPassword: "",
     });
+    const [userId, setUserId] = useState<string | null>(null);
+    const [departments, setDepartments] = useState<Department[]>([]);
+    const [contracts, setContracts] = useState<Contract[]>([]);
 
+    useEffect(() => {
+        const storedUserId = localStorage.getItem("userId");
+        if (storedUserId) {
+            setUserId(storedUserId);
+        }
+    }, []);
+    // Lấy userId từ localStorage sau khi đăng nhập
+    useEffect(() => {
+        const storedUserId = localStorage.getItem("userId");
+        if (storedUserId) {
+            setUserId(storedUserId);
+        }
+    }, []);
+
+    // Gọi API lấy thông tin nhân viên khi có userId
+    useEffect(() => {
+        if (userId) {
+            getEmployeeByUserId(userId)
+                .then((data) => {
+                    setFormData({
+                        job_rank: data.job_rank,
+                        contract_type: data.contract_type,
+                        account: data.account,
+                        address: data.address,
+                        phone: data.phone,
+                        full_name: data.full_name,
+                        avatar_url: data.avatar_url || "",
+                        department_code: data.department_code,
+                        salary: data.salary,
+                        start_date: data.start_date ? new Date(data.start_date) : null,
+                        end_date: data.end_date ? new Date(data.end_date) : null,
+                    });
+                })
+                .catch((error) => console.error("Error fetching employee data:", error));
+        }
+    }, [userId]);
     // State cho ảnh đại diện
+    // Lấy dropdown data cho Department và Contract
+    useEffect(() => {
+        const fetchDropdownData = async () => {
+            try {
+                const deptData = await getAllDepartments();
+                const contractData = await getAllContracts();
+                setDepartments(deptData);
+                setContracts(contractData);
+            } catch (error) {
+                console.error("Error fetching dropdown data:", error);
+            }
+        };
+        fetchDropdownData();
+    }, []);
+    // Xử lý thay đổi ngày cho Start Date
+    const handleStartDateChange = (date: Date | null) => {
+        if (date) {
+            setFormData((prev) => ({ ...prev, start_date: date })); // Lưu luôn đối tượng Date
+        }
+    };
+    const handleEndDateChange = (date: Date | null) => {
+        if (date) {
+            setFormData((prev) => ({ ...prev, end_date: date })); // Lưu luôn đối tượng Date
+        }
+    };
 
 
-    // State toggle hiển thị mật khẩu (cho từng field)
+    const handleInputChange = (
+        e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>
+    ) => {
+        const { name, value } = e.target as HTMLInputElement | HTMLSelectElement;
+        setFormData((prevFormData) => {
+            const updatedFormData = { ...prevFormData, [name]: value };
+            // Gọi API cập nhật ngay khi người dùng thay đổi thông tin
+            updateEmployeeData(updatedFormData);
+            return updatedFormData;
+        });
+    };
+    const updateEmployeeData = async (updatedData: FormData) => {
+        const storedUserId = localStorage.getItem("userId");
+        if (!storedUserId) {
+            toast.error("User ID is missing");
+            return;
+        }
+        try {
+            // [UPDATED] Chuyển đổi Date sang chuỗi định dạng "YYYY-MM-DD"
+            const payload = {
+                ...updatedData,
+                start_date: updatedData.start_date ? updatedData.start_date.toISOString().split("T")[0] : undefined,
+                end_date: updatedData.end_date ? updatedData.end_date.toISOString().split("T")[0] : undefined,
+            };
+            await updateEmployee(storedUserId, payload);
+            localStorage.setItem("accountData", JSON.stringify(payload));
+            toast.success("Updated successfully!");
+        } catch (error) {
+            console.error("Error updating employee:", error);
+            toast.error("Error updating employee");
+        }
+    };
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const storedUserId = localStorage.getItem("userId");
+        if (!storedUserId) {
+            toast.error("User ID is missing");
+            return;
+        }
+        try {
+            // [UPDATED] Chuyển đổi Date sang chuỗi định dạng "YYYY-MM-DD"
+            const payload = {
+                ...formData,
+                start_date: formData.start_date ? formData.start_date.toISOString().split("T")[0] : undefined,
+                end_date: formData.end_date ? formData.end_date.toISOString().split("T")[0] : undefined,
+            };
+            await updateEmployee(storedUserId, payload);
+            localStorage.setItem("accountData", JSON.stringify(payload));
+            toast.success("Employee updated successfully!");
+        } catch (error) {
+            console.error("Error updating employee:", error);
+            toast.error("Error updating employee");
+        }
+    };
+
 
     const [showPassword, setShowPassword] = useState<Record<keyof PasswordData, boolean>>({
         oldPassword: false,
         newPassword: false,
         confirmPassword: false,
     });
-
-    // Lưu dữ liệu Account Settings vào localStorage khi formData thay đổi (sau khi update)
-    useEffect(() => {
-        localStorage.setItem("accountData", JSON.stringify(defaultAccountData));
-    }, [formData]);
-
-    // Xử lý thay đổi input Account Settings
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-    };
-
-    // Xử lý thay đổi input Password
     const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setPasswordData((prev) => ({ ...prev, [name]: value }));
@@ -112,37 +268,6 @@ const EditProfilePage: React.FC = () => {
             localStorage.setItem("userImage", userImage);
         }
     }, [userImage]);
-
-
-
-    // Kiểm tra nếu có trường nào rỗng trong đối tượng (trừ các trường không bắt buộc)
-    const hasEmptyField = (data: Record<string, string>): boolean =>
-        Object.values(data).some(value => value.trim() === "");
-    const formDataStrings: Record<string, string> = {
-        firstName: formData.firstName || "",
-        lastName: formData.lastName || "",
-        phoneNumber: formData.phoneNumber || "",
-        email: formData.email || "",
-        district: formData.district || "",
-        city: formData.city || "",
-        postcode: formData.postcode || "",
-        country: formData.country || "",
-    };
-    // Submit cho Account Settings
-    const handleSubmitAccount = (e: React.FormEvent) => {
-        e.preventDefault();
-
-        // Kiểm tra xem có trường nào bị bỏ trống không
-        if (hasEmptyField(formDataStrings)) {
-            toast.error("Empty field, try again");
-            return;
-        }
-
-        // Cập nhật dữ liệu vào localStorage (đã có useEffect lo lưu)
-        toast.success("Update successfully");
-    };
-
-
     // Submit cho Change Password
     const handleSubmitPassword = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -198,29 +323,6 @@ const EditProfilePage: React.FC = () => {
                             <FaCamera />
                         </div>
                     </div>
-                    <h3 className="mt-4 text-xl font-bold">
-                        {formData.firstName} {formData.lastName}
-                    </h3>
-                    <p className="text-gray-500">FPT Corp.</p>
-                    <div className="space-y-1">
-                        <div className="flex justify-between items-center">
-                            <p className="font-semibold text-orange-500">Job rank:</p>
-                            <p className="text-orange-500 pl-10 pr-1">{formData.job_rank}</p>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <p className="font-semibold text-gray-500">Contract:</p>
-                            <p className="text-gray-500 pl-10 pr-1">{formData.contract_type}</p>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <p className="font-semibold text-gray-500">Department:</p>
-                            <p className="text-gray-500 pl-10 pr-1">{formData.department_name}</p>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <p className="font-semibold text-green-500">Salary:</p>
-                            <p className="text-green-500 pl-10 pr-1">{formData.salary} VND</p>
-                        </div>
-                    </div>
-
 
                 </div>
 
@@ -252,100 +354,130 @@ const EditProfilePage: React.FC = () => {
 
                     {/* Nội dung Form */}
                     {activeTab === "account" && (
-                        <form onSubmit={handleSubmitAccount} className="grid grid-cols-2 gap-4">
+                        //handleSubmitAccount}
+                        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-gray-700">First Name</label>
+                                <label className="block text-gray-700">Account</label>
                                 <input
                                     type="text"
-                                    name="firstName"
-                                    value={formData.firstName}
+                                    name="account"
+                                    value={formData.account}
                                     onChange={handleInputChange}
                                     className="w-full p-2 border rounded"
-                                    placeholder="First Name"
+                                    placeholder="Account"
                                 />
                             </div>
                             <div>
-                                <label className="block text-gray-700">Last Name</label>
+                                <label className="block text-gray-700">Full Name</label>
                                 <input
                                     type="text"
-                                    name="lastName"
-                                    value={formData.lastName}
+                                    name="full_name"
+                                    value={formData.full_name}
                                     onChange={handleInputChange}
                                     className="w-full p-2 border rounded"
-                                    placeholder="Last Name"
+                                    placeholder="Full Name"
                                 />
                             </div>
                             <div>
                                 <label className="block text-gray-700">Phone Number</label>
                                 <input
                                     type="text"
-                                    name="phoneNumber"
-                                    value={formData.phoneNumber}
+                                    name="phone"
+                                    value={formData.phone}
                                     onChange={handleInputChange}
                                     className="w-full p-2 border rounded"
                                     placeholder="Phone Number"
                                 />
                             </div>
                             <div>
-                                <label className="block text-gray-700">Email Address</label>
+                                <label className="block text-gray-700">Address</label>
                                 <input
-                                    type="email"
-                                    name="email"
-                                    value={formData.email}
+                                    type="text"
+                                    name="address"
+                                    value={formData.address}
                                     onChange={handleInputChange}
                                     className="w-full p-2 border rounded"
-                                    placeholder="Email Address"
+                                    placeholder="Address"
                                 />
                             </div>
                             <div>
-                                <label className="block text-gray-700">District</label>
+                                <label className="block text-gray-700">Job Rank</label>
                                 <input
                                     type="text"
-                                    name="district"
-                                    value={formData.district}
+                                    name="job_rank"
+                                    value={formData.job_rank}
                                     onChange={handleInputChange}
                                     className="w-full p-2 border rounded"
-                                    placeholder="district"
+                                    placeholder="Job Rank"
                                 />
                             </div>
                             <div>
-                                <label className="block text-gray-700">City</label>
-                                <input
-                                    type="text"
-                                    name="city"
-                                    value={formData.city}
+                                <label className="block text-gray-700">Department Code</label>
+                                <select
+                                    name="department_code"
+                                    value={formData.department_code}
                                     onChange={handleInputChange}
                                     className="w-full p-2 border rounded"
-                                    placeholder="City"
-                                />
+                                >
+                                    <option value="">Select Department</option>
+                                    {departments.map((dept) => (
+                                        <option key={dept._id} value={dept.department_code}>
+                                            {dept.description}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
                             <div>
-                                <label className="block text-gray-700">Postcode</label>
-                                <input
-                                    type="text"
-                                    name="postcode"
-                                    value={formData.postcode}
+                                <label className="block text-gray-700">Contract Type</label>
+                                <select
+                                    name="contract_type"
+                                    value={formData.contract_type}
                                     onChange={handleInputChange}
                                     className="w-full p-2 border rounded"
-                                    placeholder="Postcode"
-                                />
+                                >
+                                    <option value="">Select Contract</option>
+                                    {contracts.map((contract) => (
+                                        <option key={contract._id} value={contract.contract_type}>
+                                            {contract.description}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
                             <div>
-                                <label className="block text-gray-700">Country</label>
+                                <label className="block text-gray-700">Salary</label>
                                 <input
                                     type="text"
-                                    name="country"
-                                    value={formData.country}
+                                    name="salary"
+                                    value={formData.salary}
                                     onChange={handleInputChange}
                                     className="w-full p-2 border rounded"
-                                    placeholder="Country"
+                                    placeholder="Salary"
+                                />
+                            </div>
+                            <div className="flex flex-col gap-2">
+                                <label className="block text-gray-700">Start Date</label>
+                                <DatePicker
+                                    selected={formData.start_date ? formData.start_date : null}
+                                    onChange={handleStartDateChange}
+                                    dateFormat="yyyy/MM/dd"
+                                    customInput={<CustomDateInput placeholder="Select Start Date" />}
+                                    placeholderText="Select Start Date"
+                                    className="w-full p-2 border rounded"
+                                />
+                            </div>
+                            <div className="flex flex-col gap-2">
+                                <label className="block text-gray-700">End Date</label>
+                                <DatePicker
+                                    selected={formData.end_date ? formData.end_date : null}
+                                    onChange={handleEndDateChange}
+                                    dateFormat="yyyy/MM/dd"
+                                    customInput={<CustomDateInput placeholder="Select End Date" />}
+                                    placeholderText="Select End Date"
+                                    className="w-full p-2 border rounded"
                                 />
                             </div>
                             <div className="col-span-2 flex justify-start mt-4">
-                                <button
-                                    type="submit"
-                                    className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600"
-                                >
+                                <button type="submit" className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">
                                     Update
                                 </button>
                             </div>

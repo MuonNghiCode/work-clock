@@ -3,7 +3,7 @@ import { put } from "./apiService";
 import { ResponseModel } from "../models/ResponseModel";
 import { API_CONSTANTS } from "../constants/apiConstants";
 import axiosInstance from "../config/axiosUser";
-
+import axios from "axios";
 interface ChangePassword {
     old_password: string;
     new_password: string;
@@ -109,12 +109,13 @@ interface Department {
     is_deleted: boolean;
     created_at: string;
     updated_at: string;
-}export const getDepartments = async (): Promise<Department[]> => {
+}
+export const getAllDepartments = async (): Promise<Department[]> => {
     try {
         const response = await axiosInstance.get(API_CONSTANTS.DEPARTMENTS.LIST);
 
         if (response.data.success) {
-            return response.data.data; // return departments list
+            return response.data.data; // Trả về danh sách Department
         } else {
             console.error("Error while getting list departments:", response.data);
             return [];
@@ -135,12 +136,12 @@ interface Contract {
 }
 
 // Fetch all contracts
-export const fetchContracts = async (): Promise<Contract[]> => {
+export const getAllContracts = async (): Promise<Contract[]> => {
     try {
         const response = await axiosInstance.get(API_CONSTANTS.CONTRACTS.LIST);
 
         if (response.data.success) {
-            return response.data.data; // Return contract list
+            return response.data.data; // Trả về danh sách Contract
         } else {
             console.error("Error fetching contracts:", response.data);
             return [];
@@ -148,5 +149,40 @@ export const fetchContracts = async (): Promise<Contract[]> => {
     } catch (error) {
         console.error("API call failed:", error);
         throw error;
+    }
+};
+// Interface for UserInfor
+export interface UserInfo {
+    _id: string;
+    email: string;
+    user_name: string;
+    role_code: string;
+    is_verified: boolean;
+    is_blocked: boolean;
+    is_deleted: boolean;
+    created_at: string;
+    updated_at: string;
+    token_version: number;
+}
+export const getUserData = async (token: string): Promise<UserInfo | null> => {
+    try {
+        const response = await axiosInstance.get<{ success: boolean; data: UserInfo }>(
+            API_CONSTANTS.AUTH.USER_INFO,
+            {
+                headers: {
+                    "accept": "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+            }
+        );
+
+        if (response.data.success) {
+            return response.data.data;
+        } else {
+            throw new Error("Failed to fetch user info");
+        }
+    } catch (error) {
+        console.error("Error fetching user info:", error);
+        return null;
     }
 };

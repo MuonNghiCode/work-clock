@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
-import {Search, Edit2, Trash2, Eye, X, User, Mail, Shield,  CheckCircle,  AlertCircle,  Phone,  MapPin,  Briefcase, Calendar, Building, Award, ArrowRight, ArrowLeft, UserCog} from "lucide-react";
+import { Search, Edit2, Trash2, Eye, X, User, Mail, Shield, CheckCircle, AlertCircle, Phone, MapPin, Briefcase, Calendar, Building, Award, ArrowRight, ArrowLeft, UserCog } from "lucide-react";
 import { toast } from "react-toastify";
 import { Pagination } from "antd";
 import UserManagementAdd from "../../../components/AdminComponents/AddUser/UserManagementAdd";
 import UserManagementEdit from "../../../components/AdminComponents/EditUser/UserManagementEdit";
-import { getUsers,deleteUser, changeUserStatus, updateUserRole } from "../../../services/userAuth";
+import { getUsers, deleteUser, changeUserStatus, updateUserRole } from "../../../services/userAuth";
 import type { UserData } from "../../../services/userAuth";
 import { getEmployeeByUserId } from "../../../services/userService";
 import EditEmployeeModal from "../../../components/AdminComponents/EditEmployee/EditEmployeeModal";
@@ -38,7 +38,7 @@ interface Employee {
   phone: string;
   full_name: string;
   avatar_url: string;
-  department_name: string;
+  department_code: string;
   salary: number;
   start_date: string;
   end_date: string | null;
@@ -189,15 +189,15 @@ const AdminUserManagement: React.FC = () => {
             statusFilter === "locked"
               ? true
               : statusFilter === "unlocked"
-              ? false
-              : undefined,
+                ? false
+                : undefined,
           // is_deleted: statusFilter === "deleted" ? true : false,
           is_verified:
             statusFilter === "verified"
               ? true
               : statusFilter === "unverified"
-              ? false
-              : undefined,
+                ? false
+                : undefined,
           search_by: "username" as const,
         };
         const pageInfo = {
@@ -235,8 +235,8 @@ const AdminUserManagement: React.FC = () => {
 
   const handleUpdateUser = async (updatedUser: User<string>) => {
     try {
-      setUsers(prev => 
-        prev.map(user => 
+      setUsers(prev =>
+        prev.map(user =>
           user.id === updatedUser.id ? updatedUser : user
         )
       );
@@ -261,7 +261,7 @@ const AdminUserManagement: React.FC = () => {
 
     try {
       const response = await deleteUser(userToDelete.id);
-      
+
       if (response.success) {
         setUsers(users.filter(user => user.id !== userToDelete.id));
         toast.success("User deleted successfully");
@@ -315,7 +315,7 @@ const AdminUserManagement: React.FC = () => {
     try {
       // Kiểm tra quyền thay đổi status
       const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
-      
+
       // Không cho phép:
       // 1. Thay đổi status của chính mình
       // 2. Thay đổi status của admin khác
@@ -331,7 +331,7 @@ const AdminUserManagement: React.FC = () => {
 
       const response = await changeUserStatus(user.id, !user.is_blocked);
       if (response.success) {
-        setUsers(users.map(u => 
+        setUsers(users.map(u =>
           u.id === user.id ? { ...u, is_blocked: !u.is_blocked } : u
         ));
         toast.success(`User ${user.is_blocked ? 'unlocked' : 'locked'} successfully`);
@@ -364,7 +364,7 @@ const AdminUserManagement: React.FC = () => {
       await updateUserRole(userToChangeRole.id, newRole);
 
       // Cập nhật UI nếu thành công
-      setUsers(users.map(u => 
+      setUsers(users.map(u =>
         u.id === userToChangeRole.id ? { ...u, role_code: newRole } : u
       ));
       toast.success("User role updated successfully");
@@ -491,11 +491,10 @@ const AdminUserManagement: React.FC = () => {
                             }
                           }}
                           disabled={user.id === currentAdmin._id}
-                          className={`px-3 py-1 rounded-full font-medium transition-all duration-200 ease-in-out ${
-                            user.id === currentAdmin._id
-                              ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                              : "bg-orange-50 text-orange-700 hover:bg-orange-100"
-                          }`}
+                          className={`px-3 py-1 rounded-full font-medium transition-all duration-200 ease-in-out ${user.id === currentAdmin._id
+                            ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                            : "bg-orange-50 text-orange-700 hover:bg-orange-100"
+                            }`}
                         >
                           {getRoleName(user.role_code)}
                         </button>
@@ -510,13 +509,12 @@ const AdminUserManagement: React.FC = () => {
                         user.role_code === "A001" ||    // Không thể thay đổi status của admin khác
                         currentAdmin.role_code !== "A001" // Chỉ admin mới có quyền thay đổi status
                       }
-                      className={`px-3 py-1 rounded-full font-medium ${
-                        user.id === currentAdmin._id || user.role_code === "A001" || currentAdmin.role_code !== "A001"
-                          ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                          : user.is_blocked
+                      className={`px-3 py-1 rounded-full font-medium ${user.id === currentAdmin._id || user.role_code === "A001" || currentAdmin.role_code !== "A001"
+                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                        : user.is_blocked
                           ? "bg-red-50 text-red-500 hover:bg-red-100"
                           : "bg-green-50 text-green-500 hover:bg-green-100"
-                      }`}
+                        }`}
                     >
                       {getUserStatus(user)}
                     </button>
@@ -541,7 +539,7 @@ const AdminUserManagement: React.FC = () => {
                             style={{
                               display:
                                 user.email === "admin@gmail.com" ||
-                                user.id === currentAdmin._id
+                                  user.id === currentAdmin._id
                                   ? "none"
                                   : "inline",
                             }}
@@ -633,7 +631,7 @@ const AdminUserManagement: React.FC = () => {
                       <p className="text-gray-500 flex items-center">
                         <Building size={16} className="mr-2 flex-shrink-0" />
                         <span className="truncate max-w-[180px]">
-                          {selectedEmployee?.department_name || "No department"}
+                          {selectedEmployee?.department_code || "No department"}
                         </span>
                       </p>
                     </div>
@@ -702,11 +700,10 @@ const AdminUserManagement: React.FC = () => {
                         </span>
                         <span className="w-2/3">
                           <span
-                            className={`px-3 py-1 rounded-full text-sm ${
-                              selectedUser.is_verified
-                                ? "bg-green-50 text-green-600"
-                                : "bg-yellow-50 text-yellow-600"
-                            }`}
+                            className={`px-3 py-1 rounded-full text-sm ${selectedUser.is_verified
+                              ? "bg-green-50 text-green-600"
+                              : "bg-yellow-50 text-yellow-600"
+                              }`}
                           >
                             {selectedUser.is_verified
                               ? "Verified"
@@ -724,11 +721,10 @@ const AdminUserManagement: React.FC = () => {
                         </span>
                         <span className="w-2/3">
                           <span
-                            className={`px-3 py-1 rounded-full text-sm ${
-                              selectedUser.is_blocked
-                                ? "bg-red-50 text-red-600"
-                                : "bg-green-50 text-green-600"
-                            }`}
+                            className={`px-3 py-1 rounded-full text-sm ${selectedUser.is_blocked
+                              ? "bg-red-50 text-red-600"
+                              : "bg-green-50 text-green-600"
+                              }`}
                           >
                             {selectedUser.is_blocked ? "Blocked" : "Unlocked"}
                           </span>
@@ -804,8 +800,8 @@ const AdminUserManagement: React.FC = () => {
                         <span className="w-2/3 text-gray-800">
                           {selectedEmployee?.start_date
                             ? new Date(
-                                selectedEmployee.start_date
-                              ).toLocaleDateString()
+                              selectedEmployee.start_date
+                            ).toLocaleDateString()
                             : "N/A"}
                         </span>
                       </div>
@@ -820,8 +816,8 @@ const AdminUserManagement: React.FC = () => {
                         <span className="w-2/3 text-gray-800">
                           {selectedEmployee?.end_date
                             ? new Date(
-                                selectedEmployee.end_date
-                              ).toLocaleDateString()
+                              selectedEmployee.end_date
+                            ).toLocaleDateString()
                             : "N/A"}
                         </span>
                       </div>
@@ -834,7 +830,7 @@ const AdminUserManagement: React.FC = () => {
                           Department:
                         </span>
                         <span className="w-2/3 text-gray-800 truncate">
-                          {selectedEmployee?.department_name || "N/A"}
+                          {selectedEmployee?.department_code || "N/A"}
                         </span>
                       </div>
                       <div className="flex items-center">
@@ -882,11 +878,10 @@ const AdminUserManagement: React.FC = () => {
                     {activeEditTab === 'account' ? 'Edit Account' : 'Edit Information'}
                   </h2>
                   <button
-                    className={`p-2 rounded-full transition-all duration-300 transform hover:scale-110 ${
-                      activeEditTab === 'account'
-                        ? 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                        : 'bg-[#FF9447] text-white hover:bg-[#FF8347]'
-                    }`}
+                    className={`p-2 rounded-full transition-all duration-300 transform hover:scale-110 ${activeEditTab === 'account'
+                      ? 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      : 'bg-[#FF9447] text-white hover:bg-[#FF8347]'
+                      }`}
                     onClick={() => setActiveEditTab(activeEditTab === 'account' ? 'information' : 'account')}
                   >
                     {activeEditTab === 'account' ? <ArrowRight size={20} /> : <ArrowLeft size={20} />}
@@ -906,11 +901,10 @@ const AdminUserManagement: React.FC = () => {
               {/* Content based on active tab */}
               <div className="relative">
                 <div
-                  className={`transition-all duration-300 transform ${
-                    activeEditTab === 'account' 
-                      ? 'translate-x-0 opacity-100' 
-                      : '-translate-x-full opacity-0 absolute inset-0'
-                  }`}
+                  className={`transition-all duration-300 transform ${activeEditTab === 'account'
+                    ? 'translate-x-0 opacity-100'
+                    : '-translate-x-full opacity-0 absolute inset-0'
+                    }`}
                 >
                   {activeEditTab === 'account' && (
                     <UserManagementEdit
@@ -924,11 +918,10 @@ const AdminUserManagement: React.FC = () => {
                   )}
                 </div>
                 <div
-                  className={`transition-all duration-300 transform ${
-                    activeEditTab === 'information' 
-                      ? 'translate-x-0 opacity-100' 
-                      : 'translate-x-full opacity-0 absolute inset-0'
-                  }`}
+                  className={`transition-all duration-300 transform ${activeEditTab === 'information'
+                    ? 'translate-x-0 opacity-100'
+                    : 'translate-x-full opacity-0 absolute inset-0'
+                    }`}
                 >
                   {activeEditTab === 'information' && (
                     <EditEmployeeModal

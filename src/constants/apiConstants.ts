@@ -6,6 +6,7 @@ export const API_CONSTANTS = {
     FORGOT_PASSWORD: "/auth/forgot-password",
     VERIFY_TOKEN: "/auth/verify-token",
     RESEND_TOKEN: "/auth/resend-token",
+
   },
   ROLES: {
     GET_ALL: "/roles/get-all",
@@ -43,8 +44,11 @@ export const API_CONSTANTS = {
     LIST: "/departments/get-all",
   },
   CONTRACTS: {
-    LIST: "/contracts",
+    LIST: "/contracts/get-all",
   },
+  EMPLOYEES: {
+    UPDATE: "/employees/${id}",
+  }
 };
 
 
