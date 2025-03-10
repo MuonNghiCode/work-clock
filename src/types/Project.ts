@@ -13,6 +13,8 @@ export interface Project {
 export interface project_members {
   user_id: string;
   project_role: string;
+  full_name?: string;
+  user_name?: string;
 };
 export interface ProjectInfo {
   created_at?: string;
@@ -27,5 +29,5 @@ export interface ProjectInfo {
   project_status: string;//
   updated_at?: string;
   updated_by: string;
-  _id?: string;
+  _id: string;
 }

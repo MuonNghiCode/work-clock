@@ -15,6 +15,7 @@ export const API_CONSTANTS = {
     GET_ALLPROJECT: "/projects/search",
     UPDATE_PROJECT: "/projects/${id}",
     GET_ALLROLEPROJECT: "/projects/roles",
+    GET_PROJECT_BY_ID: "/projects/${id}",
   },
   APPROVAL: {
     GET_CLAIM_APPROVAL: "/claims/approval-search",
@@ -28,6 +29,7 @@ export const API_CONSTANTS = {
     CLAIM_DETAIL: "/claims",
     GET_BY_ID: "/claims",
     UPDATE_CLAIM: "/claims",
+    UPDATE_STATUS: "/claims/change-status",
   },
   USERS: {
     CHANGE_PASSWORD: "/users/change-password",

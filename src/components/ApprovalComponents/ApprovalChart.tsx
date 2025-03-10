@@ -17,27 +17,24 @@ const ApprovalChart: React.FC<DataProps> = ({ data }) => {
     }, {} as Record<string, number>);
 
     const chartData = {
-        labels: ['Approved', 'Rejected', 'Canceled', 'Pending'],
+        labels: ['Pending Approval', 'Approved', 'Rejected'],
         datasets: [
             {
                 label: 'Claim Request',
                 data: [
-                    statusCounts['Approve'] || 0,
-                    statusCounts['Reject'] || 0,
-                    statusCounts['Return'] || 0,
-                    statusCounts['Pending'] || 0,
+                    statusCounts['Pending Approval'] || 0,
+                    statusCounts['Approved'] || 0,
+                    statusCounts['Rejected'] || 0,
                 ],
                 backgroundColor: [
+                    'rgba(192, 192, 192, 0.2)', // gray
                     'rgba(75, 192, 75, 0.2)', // green
                     'rgba(192, 75, 75, 0.2)', // red
-                    'rgba(75, 75, 192, 0.2)', // blue
-                    'rgba(192, 192, 192, 0.2)', // gray
                 ],
                 borderColor: [
+                    'rgba(192, 192, 192, 1)', // gray
                     'rgba(75, 192, 75, 1)', // green
                     'rgba(192, 75, 75, 1)', // red
-                    'rgba(75, 75, 192, 1)', // blue
-                    'rgba(192, 192, 192, 1)', // gray
                 ],
                 borderWidth: 1,
             },
