@@ -14,7 +14,7 @@ const ApprovalLayout: React.FC = () => {
           <aside className="relative bg-white text-black shadow-[10px_0_10px_rgba(255,145,77,0.2)] z-99">
             <Sidebar />
           </aside>
-          <main className="flex-1 p-6">
+          <main className="flex-1 p-6 bg-brand-orange-light">
             <Outlet />
           </main>
         </div>

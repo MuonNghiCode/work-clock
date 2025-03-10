@@ -42,10 +42,11 @@ const AnimatedBackground: React.FC = () => {
 
   return (
     <div className="fixed inset-0 pointer-events-none z-0">
-      <div className="absolute inset-0  ">
+      <div className="absolute inset-0">
+        {/* Blob cam */}
         <div
           ref={(ref) => (blobRefs.current[0] = ref)}
-          className="absolute top-0 -left-4 md:w-96 md:h-96 w-72 h-72 bg-[#ff914d] rounded-full mix-blend-multiply filter blur-[128px] opacity-40 md:opacity-20 "
+          className="absolute top-0 -left-4 md:w-96 md:h-96 w-72 h-72 bg-[#ff914d] rounded-full mix-blend-multiply filter blur-[128px] opacity-40 md:opacity-20"
         ></div>
         <div
           ref={(ref) => (blobRefs.current[1] = ref)}
@@ -53,11 +54,29 @@ const AnimatedBackground: React.FC = () => {
         ></div>
         <div
           ref={(ref) => (blobRefs.current[2] = ref)}
-          className="absolute -bottom-8 left-[-40%] md:left-20 w-96 h-96 bg-[#ff914d] rounded-full mix-blend-multiply filter blur-[128px] opacity-40 md:opacity-20 "
+          className="absolute -bottom-8 left-[-40%] md:left-20 w-96 h-96 bg-[#ff914d] rounded-full mix-blend-multiply filter blur-[128px] opacity-40 md:opacity-20"
         ></div>
         <div
           ref={(ref) => (blobRefs.current[3] = ref)}
           className="absolute -bottom-10 right-20 w-96 h-96 bg-[#ff853a] rounded-full mix-blend-multiply filter blur-[128px] opacity-20 md:opacity-10 hidden sm:block"
+        ></div>
+
+        {/* Blob trắng xen kẽ */}
+        <div
+          ref={(ref) => (blobRefs.current[4] = ref)}
+          className="absolute top-10 left-[30%] w-80 h-80 bg-white rounded-full mix-blend-multiply filter blur-[128px] opacity-30 md:opacity-15"
+        ></div>
+        <div
+          ref={(ref) => (blobRefs.current[5] = ref)}
+          className="absolute top-20 right-[20%] w-80 h-80 bg-white rounded-full mix-blend-multiply filter blur-[128px] opacity-30 md:opacity-15 hidden sm:block"
+        ></div>
+        <div
+          ref={(ref) => (blobRefs.current[6] = ref)}
+          className="absolute bottom-10 left-[10%] w-80 h-80 bg-white rounded-full mix-blend-multiply filter blur-[128px] opacity-30 md:opacity-15"
+        ></div>
+        <div
+          ref={(ref) => (blobRefs.current[7] = ref)}
+          className="absolute bottom-5 right-[5%] w-80 h-80 bg-white rounded-full mix-blend-multiply filter blur-[128px] opacity-30 md:opacity-15 hidden sm:block"
         ></div>
       </div>
       {/* <div className="absolute inset-0 bg-[linear-gradient(to_right,#ff914d10_2px,transparent_2px),linear-gradient(to_bottom,#ff914d10_2px,transparent_2px)] bg-[size:24px_24px]"></div>a */}
