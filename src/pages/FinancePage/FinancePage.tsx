@@ -14,6 +14,7 @@ import { getFinanceData } from "../../services/financeService";
 import { getUserInfobyToken } from "../../services/authService";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import debounce from "lodash/debounce";
 
 // Define the expected type for the API response items
 interface FinanceData {
@@ -68,6 +69,10 @@ const FinancePage: React.FC = () => {
 
   const datePickerRef = useRef<HTMLDivElement>(null);
 
+  const debouncedSearch = debounce((query) => {
+    setSearchQuery(query);
+  }, 500);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -84,72 +89,71 @@ const FinancePage: React.FC = () => {
     };
   }, []);
 
-  useEffect(() => {
-    console.log("Using API Data:", useApiData);
-    const fetchData = async () => {
-      if (useApiData) {
-        const request = {
-          searchCondition: {
-            keyword: searchQuery,
-            claim_status: "",
-            claim_start_date: "",
-            claim_end_date: "",
-            is_delete: false,
-          },
-          pageInfo: {
-            pageNum: currentPage,
-            pageSize: pageSize,
-          },
-        };
+  const fetchData = async () => {
+    if (useApiData) {
+      const request = {
+        searchCondition: {
+          keyword: searchQuery,
+          claim_status: "",
+          claim_start_date: "",
+          claim_end_date: "",
+          is_delete: false,
+        },
+        pageInfo: {
+          pageNum: currentPage,
+          pageSize: pageSize,
+        },
+      };
 
-        try {
-          const response = await getFinanceData(request);
-          console.log("API Response:", response);
-          if (response.success && response.data?.pageData) {
-            console.log("Page Data:", response.data.pageData);
-            setDataFinance(response.data.pageData);
-            setOriginalData(response.data.pageData);
-          } else {
-            console.error("Invalid data or response:", response);
-          }
-        } catch (error) {
-          console.error("Error fetching finance data:", error);
+      try {
+        const response = await getFinanceData(request);
+        console.log("API Response:", response);
+        if (response.success && response.data?.pageData) {
+          console.log("Page Data:", response.data.pageData);
+          setDataFinance(response.data.pageData);
+          setOriginalData(response.data.pageData);
+        } else {
+          console.error("Invalid data or response:", response);
         }
-      } else {
-        const staticData: FinanceData[] = [
-          {
-            _id: "1",
-            staff_name: "John Doe",
-            staff_email: "john@example.com",
-            employee_info: {
-              account: "123",
-              full_name: "John Doe",
-              department_name: "Finance",
-              salary: 50000,
-              start_date: "2023-01-01",
-            },
-            approval_info: {
-              user_name: "Jane Smith",
-              email: "jane@example.com",
-              role_code: "manager",
-            },
-            project_info: {
-              project_name: "Project X",
-              project_code: "PX123",
-              project_department: "Development",
-            },
-            claim_name: "Travel",
-            claim_start_date: "2023-01-10",
-            claim_end_date: "2023-01-15",
-            claim_status: "Pending",
-            created_at: "2023-01-05",
-            total_work_time: 5,
-          },
-        ];
-        setDataFinance(staticData);
+      } catch (error) {
+        console.error("Error fetching finance data:", error);
       }
-    };
+    } else {
+      const staticData: FinanceData[] = [
+        {
+          _id: "1",
+          staff_name: "John Doe",
+          staff_email: "john@example.com",
+          employee_info: {
+            account: "123",
+            full_name: "John Doe",
+            department_name: "Finance",
+            salary: 50000,
+            start_date: "2023-01-01",
+          },
+          approval_info: {
+            user_name: "Jane Smith",
+            email: "jane@example.com",
+            role_code: "manager",
+          },
+          project_info: {
+            project_name: "Project X",
+            project_code: "PX123",
+            project_department: "Development",
+          },
+          claim_name: "Travel",
+          claim_start_date: "2023-01-10",
+          claim_end_date: "2023-01-15",
+          claim_status: "Pending",
+          created_at: "2023-01-05",
+          total_work_time: 5,
+        },
+      ];
+      setDataFinance(staticData);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
   }, [currentPage, pageSize, searchQuery, useApiData]);
 
@@ -211,6 +215,7 @@ const FinancePage: React.FC = () => {
       setIsModalVisible(false);
       setIsStatusModalVisible(true);
       setSelectedItem(null);
+      fetchData(); // Refetch data after confirming payment
     }
   };
 
@@ -274,18 +279,7 @@ const FinancePage: React.FC = () => {
       <button onClick={toggleDataSource}>
         {useApiData ? "Use Static Data" : "Use API Data"}
       </button>
-      <div d className="flex flex-row justify-between items-center py-2">
-        <div className="flex items-center space-x-2 bg-white w-70 sm:w-1/3 md:w-70 mb-3 md:mb-0 h-10 rounded-xl px-2 transition-all">
-          <FaSearch className="text-gray-400 ml-2" />
-          <input
-            type="text"
-            name="search"
-            placeholder="Type to search..."
-            className="w-full border-transparent text-gray-400 outline-none p-2"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
+      <div className="flex flex-row justify-between items-center py-2">
         <div className="flex gap-4">
           <div className="flex items-center space-x-2 bg-[#ff8a65] rounded-full w-20px h-10 p-2 px-4 relative">
             <span className="p-2">
@@ -305,7 +299,7 @@ const FinancePage: React.FC = () => {
             {isDatePickerVisible && (
               <div
                 ref={datePickerRef}
-                className="absolute top-full mt-2 bg-white shadow-lg p-2 rounded-md z-50 right-0 sm:right-0 sm:left-auto"
+                className="absolute top-full mt-2 bg-white shadow-lg p-2 rounded-md z-50 left-0 sm:right-0 sm:right-auto"
               >
                 <DateRangePicker
                   ranges={dateRange}
@@ -347,6 +341,21 @@ const FinancePage: React.FC = () => {
               <FaDownload className="!mx-auto !p-0.5" />
             </span>
           </button>
+        </div>
+        <div
+          className="flex items-center space-x-2 bg-white w-70 sm:w-1/3 md:w-70 mb-3 md:mb-0 h-10 rounded-xl px-2 transition-all"
+          data-aos="fade-out"
+          data-aos-duration="1000"
+        >
+          <FaSearch className="text-gray-400 ml-2" />
+          <input
+            type="text"
+            name="search"
+            placeholder="Type to search..."
+            className="w-full border-transparent text-gray-400 outline-none p-2"
+            defaultValue={searchQuery}
+            onChange={(e) => debouncedSearch(e.target.value)}
+          />
         </div>
       </div>
       <table
@@ -425,6 +434,7 @@ const FinancePage: React.FC = () => {
           accountantEmail={accountantEmail}
           date={new Date(selectedItem.created_at)}
           claim_name={selectedItem.claim_name}
+          claimId={selectedItem._id}
         />
       )}
       {status && (
