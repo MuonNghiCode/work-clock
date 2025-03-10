@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { getClaimsData } from "../../services/claimService";
 import Icons from "../../components/icon";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 // Định nghĩa interface cho dữ liệu
 interface ClaimData {
@@ -20,7 +22,6 @@ interface ClaimData {
   claim_end_date: string;
   status: string;
 }
-
 const FinanceDashboard: React.FC = () => {
   const [data, setData] = useState<ClaimData[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -42,6 +43,12 @@ const FinanceDashboard: React.FC = () => {
       },
     ],
   });
+
+  useEffect(() => {
+    AOS.init({
+      once: false,
+    });
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -191,7 +198,11 @@ const FinanceDashboard: React.FC = () => {
         <div className="text-center">Loading...</div>
       ) : (
         <div className="grid grid-cols-4 gap-4">
-          <div className="bg-gradient-to-b from-blue-300 to-blue-100 p-6 rounded-xl shadow-lg relative hover:shadow-xl hover:bg-blue-400 hover:border-blue-500 border-transparent border-2 transition-all duration-200">
+          <div
+            className="bg-gradient-to-b from-blue-300 to-blue-100 p-6 rounded-xl shadow-lg relative hover:shadow-xl hover:bg-blue-400 hover:border-blue-500 border-transparent border-2 transition-all duration-200"
+            data-aos="fade-down"
+            data-aos-duration="1000"
+          >
             <h3 className="text-lg font-bold">Total Revenue</h3>
             <p className="text-3xl text-blue-600">${totalRevenue.toFixed(2)}</p>
             <p className="text-sm text-gray-500">+12.5% from last month</p>
@@ -199,7 +210,11 @@ const FinanceDashboard: React.FC = () => {
               <Icons.Dollar className="lg:w-16 w-12 h-auto text-blue-500" />
             </span>
           </div>
-          <div className="bg-gradient-to-b from-yellow-300 to-yellow-100 p-6 rounded-xl shadow-lg relative hover:shadow-xl hover:bg-yellow-400 hover:border-yellow-500 border-transparent border-2 transition-all duration-200">
+          <div
+            className="bg-gradient-to-b from-yellow-300 to-yellow-100 p-6 rounded-xl shadow-lg relative hover:shadow-xl hover:bg-yellow-400 hover:border-yellow-500 border-transparent border-2 transition-all duration-200"
+            data-aos="fade-down"
+            data-aos-duration="1000"
+          >
             <h3 className="text-lg font-bold">Pending Claims</h3>
             <p className="text-3xl text-blue-600">{pendingClaims}</p>
             <p className="text-sm text-gray-500">
@@ -209,7 +224,11 @@ const FinanceDashboard: React.FC = () => {
               <Icons.Pending className="lg:w-16 w-12 h-auto text-yellow-500" />
             </span>
           </div>
-          <div className="bg-gradient-to-b from-green-300 to-green-100 p-6 rounded-xl shadow-lg relative hover:shadow-xl hover:bg-green-400 hover:border-green-500 border-transparent border-2 transition-all duration-200">
+          <div
+            className="bg-gradient-to-b from-green-300 to-green-100 p-6 rounded-xl shadow-lg relative hover:shadow-xl hover:bg-green-400 hover:border-green-500 border-transparent border-2 transition-all duration-200"
+            data-aos="fade-down"
+            data-aos-duration="1000"
+          >
             <h3 className="text-lg font-bold">Processed Claims</h3>
             <p className="text-3xl text-blue-600">{processedClaims}</p>
             <p className="text-sm text-gray-500">This month</p>
@@ -217,7 +236,11 @@ const FinanceDashboard: React.FC = () => {
               <Icons.Check className="lg:w-16 w-12 h-auto text-green-500" />
             </span>
           </div>
-          <div className="bg-gradient-to-b from-orange-300 to-orange-100 p-6 rounded-xl shadow-lg relative hover:shadow-xl hover:bg-orange-400 hover:border-orange-500 border-transparent border-2 transition-all duration-200">
+          <div
+            className="bg-gradient-to-b from-orange-300 to-orange-100 p-6 rounded-xl shadow-lg relative hover:shadow-xl hover:bg-orange-400 hover:border-orange-500 border-transparent border-2 transition-all duration-200"
+            data-aos="fade-down"
+            data-aos-duration="1000"
+          >
             <h3 className="text-lg font-bold">Average Processing Time</h3>
             <p className="text-3xl text-blue-600">
               {averageProcessingTime ? averageProcessingTime.toFixed(2) : "N/A"}{" "}
@@ -228,17 +251,35 @@ const FinanceDashboard: React.FC = () => {
               <Icons.Clock className="lg:w-16 w-12 h-auto text-orange-500" />
             </span>
           </div>
-          <div className="col-span-2 bg-gray-100 p-4 rounded-lg">
+          <div
+            data-aos="fade-down"
+            data-aos-duration="1000"
+            className="col-span-2 bg-gray-100 p-4 rounded-lg"
+          >
             <h3 className="text-lg font-bold">Money Flow</h3>
             <Bar data={moneyFlowData} />
           </div>
-          <div className="col-span-2 bg-gray-100 p-4 rounded-lg">
+          <div
+            data-aos="fade-down"
+            data-aos-duration="1000"
+            className="col-span-2 bg-gray-100 p-4 rounded-lg"
+          >
             <h3 className="text-lg font-bold">Claims Order</h3>
             <Bar data={claimsOrderData} />
           </div>
           <div className="col-span-4 p-4 rounded-lg">
-            <h3 className="text-lg font-bold">History Transaction</h3>
-            <table className="min-w-full border-separate border-spacing-y-2.5 border-0 text-black w-full">
+            <h3
+              data-aos="fade-down"
+              data-aos-duration="1000"
+              className="text-lg font-bold"
+            >
+              History Transaction
+            </h3>
+            <table
+              data-aos="fade-down"
+              data-aos-duration="1000"
+              className="min-w-full border-separate border-spacing-y-2.5 border-0 text-black w-full"
+            >
               <thead className="bg-brand-gradient h-[70px] text-lg text-white !rounded-t-lg">
                 <tr className="bg-[linear-gradient(45deg,#FEB78A,#FF914D)]">
                   <th className="border-white px-4 py-2 !rounded-tl-2xl">

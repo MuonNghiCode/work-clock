@@ -12,6 +12,8 @@ import { Pagination } from "antd";
 import StatusModal from "../../components/PaymentModal/StatusModal";
 import { getFinanceData } from "../../services/financeService";
 import { getUserInfobyToken } from "../../services/authService";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 // Define the expected type for the API response items
 interface FinanceData {
@@ -162,6 +164,12 @@ const FinancePage: React.FC = () => {
     fetchUserInfo();
   }, []);
 
+  useEffect(() => {
+    AOS.init({
+      once: false,
+    });
+  }, []);
+
   const toggleDataSource = () => {
     setUseApiData((prev) => !prev);
     console.log("Toggled useApiData to:", !useApiData);
@@ -266,7 +274,7 @@ const FinancePage: React.FC = () => {
       <button onClick={toggleDataSource}>
         {useApiData ? "Use Static Data" : "Use API Data"}
       </button>
-      <div className="flex flex-row justify-between items-center py-2">
+      <div d className="flex flex-row justify-between items-center py-2">
         <div className="flex items-center space-x-2 bg-white w-70 sm:w-1/3 md:w-70 mb-3 md:mb-0 h-10 rounded-xl px-2 transition-all">
           <FaSearch className="text-gray-400 ml-2" />
           <input
@@ -341,7 +349,11 @@ const FinancePage: React.FC = () => {
           </button>
         </div>
       </div>
-      <table className="min-w-full border-separate border-spacing-y-2.5 border-0 text-black">
+      <table
+        data-aos="fade-down"
+        data-aos-duration="1000"
+        className="min-w-full border-separate border-spacing-y-2.5 border-0 text-black"
+      >
         <thead className="bg-brand-gradient h-[70px] text-lg text-white !rounded-t-lg">
           <tr className="bg-[linear-gradient(45deg,#FEB78A,#FF914D)]">
             <th className="border-white px-4 py-2 !rounded-tl-2xl">Project</th>
