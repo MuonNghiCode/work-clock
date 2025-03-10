@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import { Pagination, Tag } from "antd";
 import { CheckOutlined } from "@ant-design/icons";
-import { ClaimRequest } from "../../types/ClaimRequest";
 import ClaimRequestDetail from "../ApprovalComponents/ClaimRequestDetail";
+import { ClaimInfo } from "../../types/ClaimType";
 
 interface DataProps {
-  data: ClaimRequest[];
+  data: ClaimInfo[];
 }
 
 const TableUserDashboard: React.FC<DataProps> = ({ data }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(3);
+  const [selectClaim, setSelectClaim] = useState<ClaimInfo>();
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [showApprovalDetail, setShowApprovalDetail] = useState<boolean>(false);
 
@@ -35,7 +36,8 @@ const TableUserDashboard: React.FC<DataProps> = ({ data }) => {
   const currentData = filteredData.slice(startIndex, endIndex);
   const statusTags = ["All", "Pending", "Approval", "Reject", "Return", "Paid"];
 
-  const handleShowApprovalDetail = () => {
+  const handleShowApprovalDetail = (item: ClaimInfo) => {
+    setSelectClaim(item);
     setShowApprovalDetail(true);
   };
 
@@ -88,7 +90,7 @@ const TableUserDashboard: React.FC<DataProps> = ({ data }) => {
             <tbody className="w-full text-[20px]">
               {currentData.map((item, index) => (
                 <tr
-                  onClick={handleShowApprovalDetail}
+                  onClick={() => handleShowApprovalDetail(item)}
                   key={index}
                   className="h-[100px] bg-white border-black !border-2 !rounded-lg text-center border-collapse shadow-lg hover:shadow-2xl"
                 >
@@ -158,7 +160,9 @@ const TableUserDashboard: React.FC<DataProps> = ({ data }) => {
           </div>
         </div> */}
       </div>
-      <ClaimRequestDetail visible={showApprovalDetail} onClose={handleClose} />
+      {selectClaim && (
+        <ClaimRequestDetail visible={showApprovalDetail} onClose={handleClose} id={selectClaim} />
+      )}
     </>
   );
 };

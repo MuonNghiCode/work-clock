@@ -20,8 +20,7 @@ import {
   Trash2,
   Eye,
   DollarSign,
-  // CircleCheck
-  Phone ,
+  Phone,
   Mail,
   MapPin,
   Menu,
@@ -95,7 +94,7 @@ const Icons: IconType = {
   Menu2: Menu,
   Facebook: Facebook,
   Instagram: Instagram,
-  SearchIcon: Search
+  SearchIcon: Search,
 };
 
 export default Icons;
