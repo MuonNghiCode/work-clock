@@ -7,6 +7,7 @@ interface ProjectDetailProps {
   visible: boolean;
   onClose: () => void;
   project: ProjectInfo | null; // Ensure this matches your project type
+  users: string[]; // Add this line to include users
 }
 
 const ProjectDetail: React.FC<ProjectDetailProps> = ({ visible, onClose, project }) => {
