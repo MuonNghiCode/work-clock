@@ -87,7 +87,7 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({ isOpen, onClose, proj
   };
 
   return (
-    <Modal title={projectData ? "Edit Project" : "Create New Project"} open={isOpen} onOk={handleSubmit} onCancel={onClose}>
+    <Modal title={projectData ? "Add Project" : "Create New Project"} open={isOpen} onOk={handleSubmit} onCancel={onClose}>
       <Form form={form} layout="vertical">
         <Form.Item name="project_name" label="Project Name" rules={[{ required: true, message: "Enter project name" }]}>
           <Input placeholder="Enter project name" />
