@@ -59,7 +59,6 @@ npm run dev
 - ✅ **Quản lý trạng thái đơn OT**  
 - ✅ **Xem lịch sử OT**  
 - ✅ **Hệ thống phê duyệt đơn của quản lý**  
-- ✅ **Hỗ trợ chế độ sáng/tối**  
 - ✅ **Giao diện trực quan, dễ sử dụng**  
 
 ---
