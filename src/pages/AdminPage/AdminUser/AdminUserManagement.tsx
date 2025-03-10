@@ -437,7 +437,7 @@ const AdminUserManagement: React.FC = () => {
 
         {/* Table */}
         <div className="w-full overflow-x-auto">
-          <table className="w-full border-separate border-spacing-y-2.5 text-black border-0">
+          <table className="w-full border-separate border-spacing-y-2.5 text-black border-0 p-2">
             <thead className="bg-brand-grandient h-[70px] text-lg text-white !rounded-t-lg">
               <tr className="bg-[#FFB17A]">
                 <th className="border-white px-4 py-2 !rounded-tl-2xl">
@@ -578,7 +578,6 @@ const AdminUserManagement: React.FC = () => {
               setCurrentPage(1);
             }}
             className="custom-pagination"
-            size="small"
             showTotal={() => ""}
           />
         </div>
