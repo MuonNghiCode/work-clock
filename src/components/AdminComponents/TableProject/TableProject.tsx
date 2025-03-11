@@ -18,13 +18,12 @@ const TableProject: React.FC = ({ }) => {
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [selectedProject, setSelectedProject] = useState<ProjectInfo | null>(
-    null
   );
   // const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [searchValue, setSearchValue] = useState<string>("");
   const [totalItems, setTotalItems] = useState<number>(1);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-
+  const [formStatus, setFormStatus] = useState<"add" | "edit" | undefined>(undefined)
 
   const handlePageChange = (page: number, pageSize?: number) => {
     setCurrentPage(page);
@@ -98,6 +97,7 @@ const TableProject: React.FC = ({ }) => {
 
   const handleEditProject = (editedProject: ProjectInfo) => {
     setSelectedProject(editedProject);
+    setFormStatus('edit')
     setIsAddModalOpen(true);
   };
 
@@ -139,10 +139,10 @@ const TableProject: React.FC = ({ }) => {
   };
 
   const handleClose = () => {
-    // setIsEditModalOpen(false);
     setShowProjectDetail(false);
     setShowConfirmModal(false);
-    setSelectedProject(null);
+    selectedProject ?
+    setSelectedProject(null) : null;
   };
 
   const handleStatusChangeHTML = (status: string) => {
@@ -167,7 +167,8 @@ const TableProject: React.FC = ({ }) => {
       <ModalAddProject
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
-        projectData={selectedProject}
+        project={selectedProject}
+        formStatus={formStatus}
       />
       <div className="flex justify-between items-center mb-4">
         <button
