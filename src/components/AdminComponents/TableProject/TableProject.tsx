@@ -22,8 +22,7 @@ const TableProject: React.FC = ({ }) => {
   // const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [searchValue, setSearchValue] = useState<string>("");
   const [totalItems, setTotalItems] = useState<number>(1);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [formStatus, setFormStatus] = useState<"add" | "edit" | undefined>(undefined)
+  const [isAddModalOpen, setIsAddModalOpen] = useState<{ isOpen: boolean; formStatus: 'add' | 'edit' | undefined }>({ isOpen: false, formStatus: undefined });
 
   const handlePageChange = (page: number, pageSize?: number) => {
     setCurrentPage(page);
@@ -97,8 +96,11 @@ const TableProject: React.FC = ({ }) => {
 
   const handleEditProject = (editedProject: ProjectInfo) => {
     setSelectedProject(editedProject);
-    setFormStatus('edit')
-    setIsAddModalOpen(true);
+    setIsAddModalOpen({
+      isOpen: true,
+      formStatus: "edit"
+    }
+    );
   };
 
   const handleDeleteProject = (projectId: string | number) => {
@@ -141,8 +143,12 @@ const TableProject: React.FC = ({ }) => {
   const handleClose = () => {
     setShowProjectDetail(false);
     setShowConfirmModal(false);
-    selectedProject ?
-    setSelectedProject(null) : null;
+    setIsAddModalOpen({
+      isOpen: false,
+      formStatus: undefined
+    })
+    selectedProject !== null ? 
+    setSelectedProject(null) : null
   };
 
   const handleStatusChangeHTML = (status: string) => {
@@ -158,7 +164,12 @@ const TableProject: React.FC = ({ }) => {
     }
   };
   const handleAddProject = () => {
-    setIsAddModalOpen(true);
+    setIsAddModalOpen(
+      {
+        isOpen: true,
+        formStatus: 'add'
+      }
+    );
   };
 
   const users = ["dngoc", "haaus", "ntdn"];
@@ -166,13 +177,12 @@ const TableProject: React.FC = ({ }) => {
     <>
       <ModalAddProject
         isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
+        onClose={handleClose}
         project={selectedProject}
-        formStatus={formStatus}
       />
       <div className="flex justify-between items-center mb-4">
         <button
-          onClick={handleAddProject}
+          onClick={() => handleAddProject}
           className="bg-orange-400 text-white px-6 py-3 rounded-full hover:bg-orange-500 transition-colors flex items-center gap-2"
         >
           <span className="text-xl">+</span>

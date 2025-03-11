@@ -8,19 +8,21 @@ import { toast } from "react-toastify";
 import dayjs from "dayjs";
 
 interface ModalAddProjectProps {
-  isOpen: boolean;
+  isOpen: {
+    isOpen: boolean
+    formStatus: "add" | "edit" | undefined;
+  };
   onClose: () => void;
   project?: ProjectInfo | null;
-  formStatus: "add" | "edit" | undefined;
 }
 
-const ModalAddProject: React.FC<ModalAddProjectProps> = ({ isOpen, onClose, project, formStatus }) => {
+const ModalAddProject: React.FC<ModalAddProjectProps> = ({ isOpen, onClose, project }) => {
   const [form] = Form.useForm();
   const [roleList, setRoleList] = useState<{ label: string; value: string }[]>([]);
   const [userOptions, setUserOptions] = useState<{ label: string; value: string }[]>([]);
   const [fetching, setFetching] = useState<boolean>(false);
-  const [formCheck, setFormCheck] = useState<"add" | "edit" | undefined>(formStatus);
-  
+  const [formCheck, setFormCheck] = useState<"add" | "edit" | undefined>(isOpen.formStatus);
+
   const fetchRoles = async () => {
     const response = await getAllRoleProject();
     setRoleList(response.map((item) => ({ label: item.name, value: item.value })));
@@ -51,8 +53,8 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({ isOpen, onClose, proj
       form.resetFields();
     }
   }
-  
-  
+
+
   useEffect(() => {
     loadEditProject();
     console.log('form', formCheck)
@@ -100,12 +102,14 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({ isOpen, onClose, proj
 
   const handleClose = () => {
     form.resetFields();
+    if(formCheck === 'edit')
+    setFormCheck(undefined)
     onClose();
   }
   const optionStatus = ['New', 'Processing', 'Pending', 'Complete']
 
   return (
-    <Modal title={formCheck === 'add' ? "Create New Project" : "Edit Project"} open={isOpen} onOk={handleSubmit} onCancel={handleClose}>
+    <Modal title={formCheck === 'add' ? "Create New Project" : "Edit Project"} open={isOpen.isOpen} onOk={handleSubmit} onCancel={handleClose}>
       <Form form={form} layout="vertical">
         <Form.Item name="project_name" label="Project Name" rules={[{ required: true, message: "Enter project name" }]}>
           <Input placeholder="Enter project name" />
@@ -115,11 +119,11 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({ isOpen, onClose, proj
         </Form.Item>
         <Form.Item name="project_department" label="Department" rules={[{ required: true, message: "Enter department" }]}>
           <Input placeholder="Enter department" />
-          </Form.Item>
-          {formCheck ===  'edit' ? (
-      <Form.Item name="project_status" label="Status">
-          <Select options={optionStatus.map(status => ({ label: status, value: status }))} placeholder="Select Status" />
         </Form.Item>
+        {formCheck === 'edit' ? (
+          <Form.Item name="project_status" label="Status">
+            <Select options={optionStatus.map(status => ({ label: status, value: status }))} placeholder="Select Status" />
+          </Form.Item>
         ) : null}
         <Form.Item name="project_start_date" label="Start Date">
           <DatePicker style={{ width: "100%" }} />
