@@ -67,7 +67,6 @@ const FinanceDashboard: React.FC = () => {
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [pendingClaims, setPendingClaims] = useState(0);
   const [processedClaims, setProcessedClaims] = useState(0);
-  const [newApprovedClaimsCount, setNewApprovedClaimsCount] = useState(0);
   const [averageProcessingTime, setAverageProcessingTime] = useState<
     number | null
   >(null);
@@ -175,14 +174,6 @@ const FinanceDashboard: React.FC = () => {
             (item) => item.status === "Paid"
           ).length;
 
-          const newApprovedClaims = currentMonthData.filter((item) => {
-            const claimDate = moment(item.claim_start_date).utcOffset(7);
-            return (
-              item.status === "Approved" &&
-              claimDate.month() + 1 === currentMonth
-            );
-          }).length;
-
           // Calculate average processing time
           const processingTimes = currentMonthData
             .filter((item) => item.status === "Paid" && item.claim_end_date)
@@ -202,7 +193,6 @@ const FinanceDashboard: React.FC = () => {
           setTotalRevenue(totalRevenue);
           setPendingClaims(pendingClaims);
           setProcessedClaims(processedClaims);
-          setNewApprovedClaimsCount(newApprovedClaims);
           setAverageProcessingTime(averageTime);
         } else {
           console.error("Invalid data or response:", response);
