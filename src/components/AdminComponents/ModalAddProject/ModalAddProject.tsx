@@ -31,7 +31,7 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({ isOpen, onClose, proj
 
   const loadEditProject = async () => {
     fetchRoles();
-    if (project) {
+    if (project?._id) {
       setFormCheck('edit')
       const response = await getProjectById(project._id);
       await form.setFieldsValue({
@@ -80,18 +80,18 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({ isOpen, onClose, proj
       project_code: values.project_code,
       project_start_date: values.project_start_date ? values.project_start_date.toISOString() : "",
       project_end_date: values.project_end_date ? values.project_end_date.toISOString() : "",
-      project_status: '',
+      project_status: values.project_status ? values.project_status : '',
       project_department: values.project_department,
       project_description: values.project_description,
-      project_members: values.members.map((member: any) => ({
+      project_members: (values.project_members || []).map((member: any) => ({
         user_id: member.user_id.value,
         project_role: member.role,
       })),
-      updated_by: "",
+      updated_by: "", // Assuming this should be a string, but consider fetching the actual user ID if available
       is_deleted: false,
-      _id: project ? project._id : "", // Use existing project ID if editing
+      _id: project?._id || undefined, // Use optional chaining and provide undefined instead of null
     };
-
+    console.log('check submit', newProjectData);
     const response = newProjectData._id ? await getEditProject(newProjectData, newProjectData._id) : await createProject(newProjectData);
     if (response.success) {
       toast.success(`Project ${newProjectData._id ? "updated" : "created"} successfully`);

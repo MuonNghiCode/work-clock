@@ -149,6 +149,7 @@ const TableProject: React.FC = ({ }) => {
     })
     selectedProject !== null ? 
     setSelectedProject(null) : null
+    fetchProjects()
   };
 
   const handleStatusChangeHTML = (status: string) => {
@@ -182,7 +183,7 @@ const TableProject: React.FC = ({ }) => {
       />
       <div className="flex justify-between items-center mb-4">
         <button
-          onClick={() => handleAddProject}
+          onClick={() => handleAddProject()}
           className="bg-orange-400 text-white px-6 py-3 rounded-full hover:bg-orange-500 transition-colors flex items-center gap-2"
         >
           <span className="text-xl">+</span>
