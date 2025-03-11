@@ -4,6 +4,8 @@ import Icons from "../../icon";
 
 const News: React.FC = () => {
   const [isPrimary, setIsPrimary] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSecondModalOpen, setIsSecondModalOpen] = useState(false);
 
   const toggleImages = () => {
     setIsPrimary(!isPrimary);
@@ -28,38 +30,55 @@ const News: React.FC = () => {
             </button>
 
             {/* Ảnh chính */}
-            <div className="mr-[25px] relative transition-all duration-500 hover:scale-105">
-              <img
-                className={`rounded-[20px] box-shadow-brand-orange transition-all duration-500 object-cover ${
-                  isPrimary
-                    ? "w-[800px] h-[450px] opacity-100"
-                    : "w-[500px] h-[450px] opacity-50"
-                }`}
-                src={Images.Work1}
-                alt=""
-              />
-              <div className="absolute bottom-5 left-5 bg-white/50 text-zinc-900 p-4 rounded-lg w-[90%]">
-                <h3 className="text-lg font-bold">Title of the News</h3>
-                <p className="text-sm">Short description about the news...</p>
+            <button
+              onClick={() => isPrimary && setIsModalOpen(true)}
+              disabled={!isPrimary}
+            >
+              <div className="mr-[25px] relative transition-all duration-500 hover:scale-105">
+                <img
+                  className={`rounded-[20px] box-shadow-brand-orange transition-all duration-500 object-cover ${
+                    isPrimary
+                      ? "w-[800px] h-[450px] opacity-100"
+                      : "w-[500px] h-[450px] opacity-50"
+                  }`}
+                  src={Images.News1}
+                  alt=""
+                />
+                <div className="absolute bottom-5 left-5 bg-white/50 text-zinc-900 p-4 rounded-lg w-[90%]">
+                  <h3 className="text-xl font-bold font-sans text-gray-800">
+                    Change Log
+                  </h3>
+
+                  <p className="text-sm font-sans">
+                    Webs now have a new features, check it out!
+                  </p>
+                </div>
               </div>
-            </div>
+            </button>
 
             {/* Ảnh phụ */}
-            <div className="relative transition-all duration-500 hover:scale-105">
-              <img
-                className={`rounded-[20px] box-shadow-brand-orange transition-all duration-500 object-cover ${
-                  isPrimary
-                    ? "w-[500px] h-[450px] opacity-50"
-                    : "w-[800px] h-[450px] opacity-100"
-                }`}
-                src={Images.News1}
-                alt=""
-              />
-              <div className="absolute bottom-5 left-5 bg-white/50 text-zinc-900 p-4 rounded-lg w-[90%]">
-                <h3 className="text-lg font-bold">Another News</h3>
-                <p className="text-sm">Some other news description...</p>
+            <button
+              onClick={() => !isPrimary && setIsSecondModalOpen(true)}
+              disabled={isPrimary}
+            >
+              <div className="relative transition-all duration-500 hover:scale-105">
+                <img
+                  className={`rounded-[20px] box-shadow-brand-orange transition-all duration-500 object-cover ${
+                    isPrimary
+                      ? "w-[500px] h-[450px] opacity-50"
+                      : "w-[800px] h-[450px] opacity-100"
+                  }`}
+                  src={Images.news2}
+                  alt=""
+                />
+                <div className="absolute bottom-5 left-5 bg-white/50 text-zinc-900 p-4 rounded-lg w-[90%]">
+                  <h3 className="text-lg font-bold font-sans">Happy March 8</h3>
+                  <p className="text-sm font-sans">
+                    Today, the atmosphere in class...
+                  </p>
+                </div>
               </div>
-            </div>
+            </button>
 
             {/* Nút Next */}
             <button
@@ -69,6 +88,135 @@ const News: React.FC = () => {
               <Icons.ChevronRight />
             </button>
           </div>
+          {isModalOpen && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+              <div className="bg-white max-w-3xl w-full p-6 rounded-xl shadow-2xl relative">
+                {/* Nút đóng */}
+                <button
+                  className="absolute top-2 right-2 text-gray-600 hover:text-red-500 text-2xl font-bold"
+                  onClick={() => setIsModalOpen(false)}
+                >
+                  ✖
+                </button>
+
+                {/* Ảnh tiêu đề */}
+                <img
+                  src={Images.Logo}
+                  alt="News Banner"
+                  className="rounded-lg w-full h-56 object-cover mb-4"
+                />
+
+                {/* Tiêu đề */}
+                <h2 className="text-2xl font-bold text-gray-900 mb-4 font-sans">
+                  WorkClock New Features
+                </h2>
+
+                {/* Nội dung bài báo */}
+                <p className="text-gray-700 leading-relaxed font-sans">
+                  The new features of{" "}
+                  <span className="font-bold text-amber-600">WorkClock</span>{" "}
+                  are now live, enhancing user experience with greater
+                  convenience and efficiency.
+                </p>
+
+                <p className="mt-4 text-gray-700 leading-relaxed font-sans">
+                  Key updates include{" "}
+                  <span className="font-bold text-blue-600">
+                    Admin Management CRUD
+                  </span>
+                  ,{" "}
+                  <span className="font-bold text-green-600">
+                    Project Management CRUD
+                  </span>
+                  , and{" "}
+                  <span className="font-bold text-purple-600">
+                    Finance Status Control
+                  </span>
+                  . These features simplify user management, streamline
+                  projects, and optimize finances.
+                </p>
+
+                <p className="mt-4 text-gray-700 leading-relaxed font-sans">
+                  <span className="font-bold text-amber-600">WorkClock</span>{" "}
+                  continues to enhance productivity and business operations.
+                </p>
+
+                {/* Footer - Tác giả */}
+                <div className="mt-6 flex items-center border-t pt-4">
+                  <img
+                    src={Images.auth}
+                    alt="Author"
+                    className="w-12 h-12 rounded-full"
+                  />
+                  <div className="ml-3">
+                    <p className="text-sm text-gray-900 font-medium">
+                      Wrote by <span className="font-bold">Admin</span>
+                    </p>
+                    <p className="text-xs text-gray-500">March 10, 2025</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          {isSecondModalOpen && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+              <div className="bg-white max-w-3xl w-full p-6 rounded-xl shadow-2xl relative">
+                {/* Nút đóng */}
+                <button
+                  className="absolute top-2 right-2 text-gray-600 hover:text-red-500 text-2xl font-bold"
+                  onClick={() => setIsSecondModalOpen(false)}
+                >
+                  ✖
+                </button>
+
+                {/* Ảnh tiêu đề */}
+                <img
+                  src={Images.group} // Cập nhật ảnh tiêu đề nếu cần
+                  alt="News Banner"
+                  className="rounded-lg w-full h-56 object-cover mb-4"
+                />
+
+                {/* Tiêu đề */}
+                <h2 className="text-2xl font-bold text-gray-900 mb-4 font-sans">
+                  Happy March 8
+                </h2>
+
+                {/* Nội dung bài báo */}
+                <p className="text-gray-700 leading-relaxed font-sans">
+                  Today, the atmosphere in the
+                  <span className="font-bold"> [HCM25_CPL_REACT_03]</span> class
+                  is filled with joy as the male students come together to
+                  organize a special celebration for the teacher and female
+                  classmates on {""}
+                  <span className="text-red-400">
+                    International Women's Day (March 8)
+                  </span>
+                  .
+                </p>
+
+                <p className="mt-4 text-gray-700 leading-relaxed font-sans">
+                  Heartfelt wishes and small but loving gifts have made this day
+                  warmer than ever. Wishing all teachers and female students
+                  always radiant, happy, and successful!
+                </p>
+
+                {/* Footer - Tác giả */}
+                <div className="mt-6 flex items-center border-t pt-4">
+                  <img
+                    src={Images.auth} // Cập nhật ảnh tác giả nếu cần
+                    alt="Author"
+                    className="w-12 h-12 rounded-full"
+                  />
+                  <div className="ml-3">
+                    <p className="text-sm text-gray-900 font-medium">
+                      Wrote by <span className="font-bold">Admin</span>
+                    </p>
+                    <p className="text-xs text-gray-500">March 8, 2025</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Mobile */}
           <div className="relative block w-full mt-5 overflow-hidden md:hidden">
