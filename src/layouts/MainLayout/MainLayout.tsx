@@ -39,9 +39,9 @@ const MainLayout: React.FC = () => {
             <Outlet />
           </ClickSpark>
         </main>
-        <footer className="z-10 bg-white text-black text-center p-4 ">
+        {/* <footer className="z-10 bg-white text-black text-center p-4 ">
           <Footer />
-        </footer>
+        </footer> */}
       </div>
     </>
   );
