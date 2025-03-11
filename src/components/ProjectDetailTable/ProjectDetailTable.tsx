@@ -1,14 +1,17 @@
-import React from "react";
-import { Input } from "antd";
+import React, { useEffect, useState } from "react";
 import { ProjectInfo } from "../../types/Project";
+import { Typography } from "antd";
+import { getProjectById } from "../../services/projectService";
+
+const { Text } = Typography;
 
 interface ProjectDetailTableProps {
-    project: ProjectInfo | null;
+    projectDetail: ProjectInfo;
     users: string[];
 }
 
-const ProjectDetailTable: React.FC<ProjectDetailTableProps> = ({ project }) => {
-    if (!project) return null; // Return null if no project is selected
+const ProjectDetailTable: React.FC<ProjectDetailTableProps> = ({ projectDetail }) => {
+    const [project, setProject] = useState<ProjectInfo | null>(null);
 
     const formatDate = (dateString: string) => {
         if (!dateString) return ""; // Handle empty date string
@@ -16,96 +19,89 @@ const ProjectDetailTable: React.FC<ProjectDetailTableProps> = ({ project }) => {
         return date.toISOString().split("T")[0]; // Returns date in YYYY-MM-DD format
     };
 
+    const fetchProjectDetail = async () => {
+        const response = await getProjectById(projectDetail._id);
+        setProject(response.data);
+        console.log(response.data);
+    }
+    useEffect(() => {
+        fetchProjectDetail();
+    }
+        , [projectDetail._id]);
+
     return (
-        <div className="w-full max-w-[1000px] px-4">
-            <div className="flex flex-col items-start gap-y-4">
-                <div className="flex flex-row justify-between w-full space-x-4">
-                    <div className="flex-1 space-y-2">
-                        <label className="block text-gray-700 font-medium text-lg">Project Name</label>
-                        <Input
-                            value={project.project_name || ""}
-                            className="w-full"
-                            readOnly
-                        />
+        <>
+
+            {
+                project && (
+                    <div className="flex flex-col items-start gap-y-4">
+                        <div className="flex flex-row justify-between w-full space-x-4">
+                            <div className="flex-1 space-y-2">
+                                <Text strong>Project Name: </Text>
+                                <Text>{project.project_name || ""}</Text>
+                            </div>
+
+                            <div className="flex-1 space-y-2">
+                                <Text strong>Project Code: </Text>
+                                <Text>{project.project_code || ""}</Text>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-row justify-between w-full space-x-4">
+                            <div className="flex-1 space-y-2">
+                                <Text strong>Start Date: </Text>
+                                <Text>{formatDate(project.project_start_date) || ""}</Text>
+                            </div>
+
+                            <div className="flex-1 space-y-2">
+                                <Text strong>End Date: </Text>
+                                <Text>{formatDate(project.project_end_date) || ""}</Text>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-row justify-between w-full space-x-4">
+                            <div className="flex-1 space-y-2">
+                                <Text strong>Status: </Text>
+                                <Text>{project.project_status || ""}</Text>
+                            </div>
+
+                            <div className="flex-1 space-y-2">
+                                <Text strong>Department: </Text>
+                                <Text>{project.project_department || ""}</Text>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-row justify-between w-full space-x-4">
+                            <div className="flex-1 space-y-2">
+                                <Text strong>User:
+                                </Text>
+                                {project.project_members &&
+                                    project.project_members.map((item) => (
+                                        <Text key={item.user_id}>{item.user_name ? item.user_name : item.full_name}
+                                            <br />
+                                        </Text>
+                                    ))}
+                            </div>
+
+                            <div className="flex-1 space-y-2">
+                                <Text strong>Role:
+                                </Text>
+                                {project.project_members && project.project_members.map((item) => (
+                                    <Text key={item.project_role}>{item.project_role}<br /></Text>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="flex-1 space-y-2">
+                            <Text strong>Description: </Text>
+                            <Text>{project.project_description || ""}</Text>
+                        </div>
                     </div>
+                )
+            }
+        </>
 
-                    <div className="flex-1 space-y-2">
-                        <label className="block text-gray-700 font-medium text-lg">Project Code</label>
-                        <Input
-                            value={project.project_code || ""}
-                            className="w-full"
-                            readOnly
-                        />
-                    </div>
-                </div>
-
-                <div className="flex flex-row justify-between w-full space-x-4">
-                    <div className="flex-1 space-y-2">
-                        <label className="block text-gray-700 font-medium text-lg">Start Date</label>
-                        <Input
-                            type="date"
-                            value={formatDate(project.project_start_date) || ""}
-                            className="w-full"
-                            readOnly
-                        />
-                    </div>
-
-                    <div className="flex-1 space-y-2">
-                        <label className="block text-gray-700 font-medium text-lg">End Date</label>
-                        <Input
-                            type="date"
-                            value={formatDate(project.project_end_date) || ""}
-                            className="w-full"
-                            readOnly
-                        />
-                    </div>
-                </div>
-
-                <div className="flex flex-row justify-between w-full space-x-4">
-                    <div className="flex-1 space-y-2">
-                        <label className="block text-gray-700 font-medium text-lg">Status</label>
-                        <Input
-                            value={project.project_status || ""}
-                            className="w-full"
-                            readOnly
-                        />
-                    </div>
-
-                    <div className="flex-1 space-y-2">
-                        <label className="block text-gray-700 font-medium text-lg">Department</label>
-                        <Input
-                            value={project.project_department || ""}
-                            className="w-full"
-                            readOnly
-                        />
-                    </div>
-                </div>
-
-                <div className="flex flex-row justify-between w-full space-x-4">
-                <div className="flex-1 space-y-2">
-                    <label className="block text-gray-700 font-medium text-lg">User</label>
-                    <Input
-                        value={project.project_members.join(", ") || ""}
-                        className="w-full"
-                        readOnly
-                    />
-                </div>
-                <div className="flex-1 space-y-2 w-full">
-                    <label className="block text-gray-700 font-medium text-lg">Description</label>
-                    <Input
-                        value={project.project_description || ""}
-                        className="w-full"
-                        readOnly
-                    />
-                </div>
-
-                </div>
-                
-
-                
-            </div>
-        </div>
     );
 };
 
-export default ProjectDetailTable; 
+export default ProjectDetailTable;
