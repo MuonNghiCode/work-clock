@@ -1,4 +1,4 @@
-import { get, put, post } from "./apiService";
+import { get, put, post, del } from "./apiService";
 import { API_CONSTANTS } from "../constants/apiConstants";
 import { ProjectInfo } from "../types/Project";
 import { ResponseModel } from "../models/ResponseModel";
@@ -82,3 +82,16 @@ export const getProjectById = async (
   );
   return response as ResponseModel<ProjectInfo>;
 };
+
+export const deleteProject = async (
+  id: string
+): Promise<ResponseModel<null>> => {
+    await del<ResponseModel<null>>(
+      API_CONSTANTS.PROJECT.DELETE_PROJECT.replace("${id}", id)
+    );
+    return {
+      success: true,
+      message: "Project deleted successfully",
+      data: null,
+    }
+  }
