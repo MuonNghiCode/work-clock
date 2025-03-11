@@ -59,30 +59,6 @@ const MainHeader: React.FC = () => {
     setMenuOpen(false);
   };
 
-  // useEffect(() => {
-  //   const sections = document.querySelectorAll("section[id]");
-  //   const observer = new IntersectionObserver(
-  //     (entries) => {
-  //       entries.forEach((entry) => {
-  //         if (entry.isIntersecting) {
-  //           setActiveSection(entry.target.id);
-  //         }
-  //       });
-  //     },
-  //     { threshold: 0.5 }
-  //   );
-
-  //   sections.forEach((section) => {
-  //     observer.observe(section);
-  //   });
-
-  //   return () => {
-  //     sections.forEach((section) => {
-  //       observer.unobserve(section);
-  //     });
-  //   };
-  // }, []);
-
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -131,7 +107,11 @@ const MainHeader: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex bg-transparent justify-between items-center p-4 md:p-6">
+    <div
+      className={`flex justify-between items-center p-4 md:p-6 transition-all duration-300 ${
+        scrolled ? "bg-neutral-100 shadow-lg" : "bg-transparent"
+      }`}
+    >
       <div className="flex items-center">
         {!isHomePage && (
           <div className="h-18 flex items-center">

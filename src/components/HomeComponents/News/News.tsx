@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Images from "../../images";
 import Icons from "../../icon";
-import CircularGallery from "../../CircularGallery/CircularGallery"; // Import CircularGallery
+// import CircularGallery from "../../CircularGallery/CircularGallery"; // Import CircularGallery
 
 const News: React.FC = () => {
   // Tạo mảng chứa thông tin các ảnh cho Featured News
