@@ -177,30 +177,42 @@ export const changePassword = async (
 };
 
 // Cập nhật role cho user
-export const updateUserRole = async (
-  userId: string,
-  roleCode: string
-): Promise<ResponseModel<UserData>> => {
+export const updateUserRole = async (userId: string, roleCode: string): Promise<ResponseModel<any>> => {
   try {
-    if (!userId) throw new Error("User ID is required");
-
-    const response = await put<ResponseModel<UserData>>(
+    if (!userId) {
+      throw new Error("User ID is required");
+    }
+    
+    const response = await put<any>(
       API_CONSTANTS.USERS.CHANGE_ROLE,
-      {
+      { 
         user_id: userId,
         role_code: roleCode,
       }
     );
-
-    if (!response.success) {
-      throw new Error(response.message || "Failed to update user role");
-    }
-
-    return response.data;
+    return response;
   } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(error.message);
+    console.error("Error updating user role:", error);
+    throw error;
+  }
+};
+
+export const updateUserStatus = async (userId: string, isBlocked: boolean): Promise<ResponseModel<any>> => {
+  try {
+    if (!userId) {
+      throw new Error("User ID is required");
     }
-    throw new Error("Failed to update user role");
+    
+    const response = await put<any>(
+      API_CONSTANTS.USERS.CHANGE_STATUS,
+      { 
+        user_id: userId,
+        is_blocked: isBlocked 
+      }
+    );
+    return response;
+  } catch (error) {
+    console.error("Error updating user status:", error);
+    throw error;
   }
 };
