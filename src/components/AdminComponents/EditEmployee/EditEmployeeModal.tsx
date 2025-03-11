@@ -4,26 +4,27 @@ import { updateEmployee } from "../../../services/userService";
 import { toast } from "react-toastify";
 import axiosInstance from "../../../config/axiosUser";
 import ImageUploader from "../../ImageUploader/ImageUploader";
+import { EmployeeInfo } from "../../../types/Employee";
 
-export interface Employee {
-  _id: string;
-  user_id: string;
-  job_rank: string;
-  contract_type: string;
-  account: string;
-  address: string;
-  phone: string;
-  full_name: string;
-  avatar_url: string;
-  department_code: string;
-  salary: number;
-  start_date: string | null;
-  end_date: string | null;
-  updated_by: string;
-  created_at: string;
-  updated_at: string;
-  is_deleted: boolean;
-}
+// export interface Employee {
+//   _id: string;
+//   user_id: string;
+//   job_rank: string;
+//   contract_type: string;
+//   account: string;
+//   address: string;
+//   phone: string;
+//   full_name: string;
+//   avatar_url: string;
+//   department_code: string;
+//   salary: number;
+//   start_date: string | null;
+//   end_date: string | null;
+//   updated_by: string;
+//   created_at: string;
+//   updated_at: string;
+//   is_deleted: boolean;
+// }
 
 interface Job {
   _id: string;
@@ -50,8 +51,9 @@ interface Contract {
 interface EditEmployeeModalProps {
   isOpen: boolean;
   onClose: () => void;
-  employee: Employee | null;
+  employee: EmployeeInfo | null;
   isEmbedded?: boolean;
+  onUpdateSuccess?: (updatedEmployee: EmployeeInfo) => void;
 }
 
 const formatDate = (dateString: string | null | undefined): string => {
@@ -64,8 +66,9 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
   onClose,
   employee,
   isEmbedded = false,
+  onUpdateSuccess,
 }) => {
-  const [formData, setFormData] = useState<Partial<Employee>>({});
+  const [formData, setFormData] = useState<Partial<EmployeeInfo>>({});
   const [previewAvatar, setPreviewAvatar] = useState("");
   const [jobs, setJobs] = useState<Job[]>([]);
   const [departments, setDepartments] = useState<Department[]>([]);
@@ -73,6 +76,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  console.log(formData)
   
   // Animation states
   const [isAnimating, setIsAnimating] = useState(false);
@@ -137,10 +141,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
         setIsLoading(false);
       }
     };
-
-    if (isOpen) {
       fetchData();
-    }
   }, [isOpen]);
 
   // Handle modal close with animation
@@ -161,13 +162,30 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
     setIsSubmitting(true);
 
     try {
-      const updateData = {
+      const updateData: EmployeeInfo = {
         ...formData,
+        user_id: formData.user_id || "",
+        job_rank: formData.job_rank || "",
+        contract_type: formData.contract_type || "",
+        account: formData.account || "",
+        address: formData.address || "",
+        phone: formData.phone || "",
+        full_name: formData.full_name || "",
+        avatar_url: formData.avatar_url || "",
+        department_code: formData.department_code || "",
+        department_name: formData.department_name || "",
         salary: Number(formData.salary) || 0,
+        start_date: formData.start_date || "",
+        end_date: formData.end_date || null,
+        updated_by: employee?.updated_by || "",
+        // created_at: employee?.created_at || "",
+        // updated_at: new Date(Date.now()),
+        is_deleted: employee?.is_deleted || false,
       };
 
       await updateEmployee(employee.user_id, updateData);
           toast.success("Employee updated successfully");
+          onUpdateSuccess?.(updateData);
       onClose();
     } catch (error) {
       console.error("Failed to update employee:", error);
@@ -179,7 +197,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
     }
   };
 
-  const handleInputChange = (field: keyof Employee, value: unknown) => {
+  const handleInputChange = (field: keyof EmployeeInfo, value: unknown) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
