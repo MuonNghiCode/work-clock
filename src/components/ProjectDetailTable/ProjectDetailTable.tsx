@@ -21,8 +21,10 @@ const ProjectDetailTable: React.FC<ProjectDetailTableProps> = ({ projectDetail }
 
     useEffect(() => {
         const fetchProjectDetail = async () => {
-            const response = await getProjectById(projectDetail._id);
-            setProject(response.data);
+            if(projectDetail._id){    
+                const response = await getProjectById(projectDetail._id);
+                setProject(response.data);
+            }
         };
         fetchProjectDetail();
     }, [projectDetail._id]);
