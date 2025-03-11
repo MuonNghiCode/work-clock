@@ -5,6 +5,43 @@ import Icons from "../../components/icon";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import moment from "moment";
+import { motion } from "framer-motion";
+
+const fadeInScaleUp = {
+  hidden: { opacity: 0, scale: 0.8 },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
+};
+
+interface StatCardProps {
+  icon: React.ReactNode;
+  label: string;
+  value: number;
+  bgColor: string;
+  textColor: string;
+}
+
+const StatCard = ({
+  icon,
+  label,
+  value,
+  bgColor,
+  textColor,
+}: StatCardProps) => (
+  <motion.div
+    variants={fadeInScaleUp}
+    initial="hidden"
+    animate="visible"
+    className={`rounded-2xl flex flex-col items-center justify-center ${bgColor} bg-opacity-50 shadow-lg w-full text-center hover:scale-105 transition duration-300 p-5`}
+    data-aos="fade-down"
+    data-aos-duration="1000"
+  >
+    {icon && (
+      <div className="p-3 mb-4 rounded-full bg-white bg-opacity-30">{icon}</div>
+    )}
+    <p className={`text-xl font-medium ${textColor}`}>{label}</p>
+    <p className={`text-4xl font-bold ${textColor}`}>{value}</p>
+  </motion.div>
+);
 
 // Định nghĩa interface cho dữ liệu
 interface ClaimData {
@@ -199,59 +236,38 @@ const FinanceDashboard: React.FC = () => {
         <div className="text-center">Loading...</div>
       ) : (
         <div className="grid grid-cols-4 gap-4">
-          <div
-            className="bg-gradient-to-b from-blue-300 to-blue-100 p-6 rounded-xl shadow-lg relative hover:shadow-xl hover:bg-blue-400 hover:border-blue-500 border-transparent border-2 transition-all duration-200"
-            data-aos="fade-down"
-            data-aos-duration="1000"
-          >
-            <h3 className="text-lg font-bold">Total Revenue</h3>
-            <p className="text-3xl text-blue-600">${totalRevenue.toFixed(2)}</p>
-            <p className="text-sm text-gray-500">+12.5% from last month</p>
-            <span className="absolute bottom-2 right-4">
-              <Icons.Dollar className="lg:w-16 w-12 h-auto text-blue-500" />
-            </span>
-          </div>
-          <div
-            className="bg-gradient-to-b from-yellow-300 to-yellow-100 p-6 rounded-xl shadow-lg relative hover:shadow-xl hover:bg-yellow-400 hover:border-yellow-500 border-transparent border-2 transition-all duration-200"
-            data-aos="fade-down"
-            data-aos-duration="1000"
-          >
-            <h3 className="text-lg font-bold">Pending Claims</h3>
-            <p className="text-3xl text-blue-600">{pendingClaims}</p>
-            <p className="text-sm text-gray-500">
-              {newApprovedClaimsCount} new approved this month
-            </p>
-            <span className="absolute bottom-2 right-4">
-              <Icons.Pending className="lg:w-16 w-12 h-auto text-yellow-500" />
-            </span>
-          </div>
-          <div
-            className="bg-gradient-to-b from-green-300 to-green-100 p-6 rounded-xl shadow-lg relative hover:shadow-xl hover:bg-green-400 hover:border-green-500 border-transparent border-2 transition-all duration-200"
-            data-aos="fade-down"
-            data-aos-duration="1000"
-          >
-            <h3 className="text-lg font-bold">Processed Claims</h3>
-            <p className="text-3xl text-blue-600">{processedClaims}</p>
-            <p className="text-sm text-gray-500">This month</p>
-            <span className="absolute bottom-2 right-4">
-              <Icons.Check className="lg:w-16 w-12 h-auto text-green-500" />
-            </span>
-          </div>
-          <div
-            className="bg-gradient-to-b from-orange-300 to-orange-100 p-6 rounded-xl shadow-lg relative hover:shadow-xl hover:bg-orange-400 hover:border-orange-500 border-transparent border-2 transition-all duration-200"
-            data-aos="fade-down"
-            data-aos-duration="1000"
-          >
-            <h3 className="text-lg font-bold">Average Processing Time</h3>
-            <p className="text-3xl text-blue-600">
-              {averageProcessingTime ? averageProcessingTime.toFixed(2) : "N/A"}{" "}
-              days
-            </p>
-            <p className="text-sm text-gray-500">This week</p>
-            <span className="absolute bottom-2 right-4">
-              <Icons.Clock className="lg:w-16 w-12 h-auto text-orange-500" />
-            </span>
-          </div>
+          <StatCard
+            icon={<Icons.Dollar className="text-3xl text-blue-600" />}
+            label="Total Revenue"
+            value={parseFloat(totalRevenue.toFixed(2))}
+            bgColor="bg-gradient-to-b from-blue-300 to-blue-100"
+            textColor="text-black-900 font-bold"
+          />
+          <StatCard
+            icon={<Icons.Pending className="text-3xl text-yellow-500" />}
+            label="Pending Claims"
+            value={pendingClaims}
+            bgColor="bg-gradient-to-b from-yellow-300 to-yellow-100"
+            textColor="text-black-900 font-bold"
+          />
+          <StatCard
+            icon={<Icons.Check className="text-3xl text-green-600" />}
+            label="Processed Claims"
+            value={processedClaims}
+            bgColor="bg-gradient-to-b from-green-300 to-green-100"
+            textColor="text-black-900 font-bold"
+          />
+          <StatCard
+            icon={<Icons.Clock className="text-3xl text-orange-500" />}
+            label="Average Processing Time"
+            value={
+              averageProcessingTime !== null
+                ? parseFloat(averageProcessingTime.toFixed(2))
+                : 0
+            }
+            bgColor="bg-gradient-to-b from-orange-300 to-orange-100"
+            textColor="text-black-900 font-bold"
+          />
           <div
             data-aos="fade-down"
             data-aos-duration="1000"
