@@ -51,7 +51,7 @@ const MainHeader: React.FC = () => {
   const isHomePage = location.pathname === "/";
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string | null>(null);
-
+  const [scrolled, setScrolled] = useState(false);
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
@@ -59,28 +59,75 @@ const MainHeader: React.FC = () => {
     setMenuOpen(false);
   };
 
+  // useEffect(() => {
+  //   const sections = document.querySelectorAll("section[id]");
+  //   const observer = new IntersectionObserver(
+  //     (entries) => {
+  //       entries.forEach((entry) => {
+  //         if (entry.isIntersecting) {
+  //           setActiveSection(entry.target.id);
+  //         }
+  //       });
+  //     },
+  //     { threshold: 0.5 }
+  //   );
+
+  //   sections.forEach((section) => {
+  //     observer.observe(section);
+  //   });
+
+  //   return () => {
+  //     sections.forEach((section) => {
+  //       observer.unobserve(section);
+  //     });
+  //   };
+  // }, []);
+
   useEffect(() => {
-    const sections = document.querySelectorAll("section[id]");
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+
+      // Lấy thông tin của các section
+      const sections = navItems
+        .map((item) => {
+          const section = document.querySelector(item.href);
+          if (section) {
+            return {
+              id: item.href.replace("#", ""),
+              offset: (section as HTMLElement).offsetTop - 200,
+              height: (section as HTMLElement).offsetHeight,
+            };
           }
-        });
-      },
-      { threshold: 0.5 }
-    );
+          return null;
+        })
+        .filter(Boolean);
 
-    sections.forEach((section) => {
-      observer.observe(section);
-    });
+      const currentPosition = window.scrollY;
 
-    return () => {
-      sections.forEach((section) => {
-        observer.unobserve(section);
-      });
+      // Xử lý đặc biệt cho home section khi ở đầu trang
+      if (currentPosition < 200) {
+        // Nếu gần đầu trang
+        setActiveSection("home-section");
+        return;
+      }
+
+      // Tìm section active dựa trên vị trí cuộn
+      const active = sections.find(
+        (section) =>
+          section &&
+          currentPosition >= section.offset &&
+          currentPosition < section.offset + section.height
+      );
+
+      if (active) {
+        setActiveSection(active.id);
+      }
     };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
