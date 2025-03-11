@@ -42,5 +42,3 @@ export const API_CONSTANTS = {
     CHANGE_ROLE: "/users/change-role",
   },
 };
-
-
