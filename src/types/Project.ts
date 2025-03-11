@@ -29,5 +29,5 @@ export interface ProjectInfo {
   project_status: string; //
   updated_at?: string;
   updated_by: string;
-  _id: string;
+  _id?: string;
 }

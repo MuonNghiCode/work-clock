@@ -6,6 +6,7 @@ export const API_CONSTANTS = {
     FORGOT_PASSWORD: "/auth/forgot-password",
     VERIFY_TOKEN: "/auth/verify-token",
     RESEND_TOKEN: "/auth/resend-token",
+
   },
   ROLES: {
     GET_ALL: "/roles/get-all",
@@ -40,5 +41,13 @@ export const API_CONSTANTS = {
     CHANGE_STATUS: "/users/change-status",
     SEARCH_USER: "/users/search",
     CHANGE_ROLE: "/users/change-role",
+  },
+  EMPLOYEE: {
+    GET_EMPLOYEE_BY_USER_ID: "/employees/${id}",
+    UPDATE_EMPLOYEE: "/employees/${id}",
+    CREATE_EMPLOYEE: "/employees",
+    GET_ALL_JOB: "/jobs/get-all",
+    GET_ALL_DEPARTMENT: "/departments/get-all",
+    GET_ALL_CONTRACT: "/contracts/get-all",
   },
 };

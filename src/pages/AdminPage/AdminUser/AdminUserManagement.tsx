@@ -1,16 +1,46 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Search, Edit2, Trash2, Eye, X, User, Mail, Shield, CheckCircle, AlertCircle, Phone, MapPin, Briefcase, Calendar, Building, Award, ArrowRight, ArrowLeft, UserCog } from "lucide-react";
+import {
+  Search,
+  Edit2,
+  Trash2,
+  Eye,
+  X,
+  User,
+  Mail,
+  Shield,
+  CheckCircle,
+  AlertCircle,
+  Phone,
+  MapPin,
+  Briefcase,
+  Calendar,
+  Building,
+  Award,
+  ArrowRight,
+  ArrowLeft,
+  Lock,
+  Unlock,
+} from "lucide-react";
 import { toast } from "react-toastify";
 import { Pagination } from "antd";
 import UserManagementAdd from "../../../components/AdminComponents/AddUser/UserManagementAdd";
 import UserManagementEdit from "../../../components/AdminComponents/EditUser/UserManagementEdit";
-import { getUsers, deleteUser, changeUserStatus, updateUserRole } from "../../../services/userAuth";
+import {
+  deleteUser,
+  getUsers,
+  updateUserRole,
+  updateUserStatus,
+} from "../../../services/userAuth";
 import type { UserData } from "../../../services/userAuth";
 import { getEmployeeByUserId } from "../../../services/userService";
 import EditEmployeeModal from "../../../components/AdminComponents/EditEmployee/EditEmployeeModal";
 import { debounce } from "lodash";
+import { EmployeeInfo } from "../../../types/Employee";
 
-// Định nghĩa interface User dựa trên dữ liệu từ API
+
+// ### Interfaces
+
+// User interface
 export interface User<T> {
   id: string;
   user_id: string;
@@ -22,33 +52,33 @@ export interface User<T> {
   is_verified: boolean;
   is_deleted: boolean;
 }
-
 export interface NewUser extends Omit<UserData, '_id' | 'is_deleted'> {
   _id?: string;
   is_deleted?: boolean;
 }
 
-interface Employee {
-  _id: string;
-  user_id: string;
-  job_rank: string;
-  contract_type: string;
-  account: string;
-  address: string;
-  phone: string;
-  full_name: string;
-  avatar_url: string;
-  department_name: string;
-  salary: number;
-  start_date: string;
-  end_date: string | null;
-  updated_by: string;
-  created_at: string;
-  updated_at: string;
-  is_deleted: boolean;
-}
+// Employee interface
+// interface Employee {
+//   _id: string;
+//   user_id: string;
+//   job_rank: string;
+//   contract_type: string;
+//   account: string;
+//   address: string;
+//   phone: string;
+//   full_name: string;
+//   avatar_url: string;
+//   department_code: string;
+//   salary: number;
+//   start_date: string | null;
+//   end_date: string | null;
+//   updated_by: string;
+//   created_at: string;
+//   updated_at: string;
+//   is_deleted: boolean;
+// }
 
-// Define an interface for the API user response
+// API User response interface
 interface ApiUser {
   _id: string;
   user_name: string;
@@ -59,6 +89,8 @@ interface ApiUser {
   is_verified: boolean;
   is_deleted: boolean;
 }
+
+// ### Utility Functions
 
 const mapApiUserToUser = (apiUser: ApiUser): User<string> => ({
   id: apiUser._id,
@@ -72,6 +104,8 @@ const mapApiUserToUser = (apiUser: ApiUser): User<string> => ({
   is_deleted: apiUser.is_deleted,
 });
 
+// ### Animated Modal Component
+
 const AnimatedModal: React.FC<{
   isOpen: boolean;
   onClose: () => void;
@@ -80,7 +114,6 @@ const AnimatedModal: React.FC<{
   const [isAnimating, setIsAnimating] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
-  // Handle modal open/close animations
   useEffect(() => {
     if (isOpen) {
       setIsVisible(true);
@@ -92,7 +125,6 @@ const AnimatedModal: React.FC<{
     }
   }, [isOpen]);
 
-  // Don't render anything if not visible
   if (!isVisible) return null;
 
   return (
@@ -120,6 +152,8 @@ const AnimatedModal: React.FC<{
   );
 };
 
+// ### Role Name Mapping
+
 const getRoleName = (roleCode: string): string => {
   switch (roleCode) {
     case "A001":
@@ -127,7 +161,7 @@ const getRoleName = (roleCode: string): string => {
     case "A002":
       return "Finance";
     case "A003":
-      return "Appoval";
+      return "Approval";
     case "A004":
       return "Claimer";
     default:
@@ -135,7 +169,42 @@ const getRoleName = (roleCode: string): string => {
   }
 };
 
+// ### Status Badge Component
+
+const StatusBadge: React.FC<{ type: "role" | "status"; value: string }> = ({
+  type,
+  value,
+}) => {
+  if (type === "role") {
+    const roleColors: Record<string, string> = {
+      A001: "bg-purple-100 text-purple-700",
+      A002: "bg-orange-100 text-orange-700",
+      A003: "bg-blue-100 text-blue-700",
+      A004: "bg-green-100 text-green-700",
+      default: "bg-gray-100 text-gray-700",
+    };
+
+    return (
+      <span
+        className={`px-3 py-1 rounded-full font-medium ${roleColors[value] || roleColors.default
+          }`}
+      >
+        {getRoleName(value)}
+      </span>
+    );
+  }
+
+  return (
+    <span className="px-3 py-1 rounded-full bg-gray-100 text-gray-700">
+      {value}
+    </span>
+  );
+};
+
+// ### Main Component: AdminUserManagement
+
 const AdminUserManagement: React.FC = () => {
+  // ### State Declarations
   const [users, setUsers] = useState<User<string>[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -151,28 +220,29 @@ const AdminUserManagement: React.FC = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [userToDelete, setUserToDelete] = useState<User<string> | null>(null);
   const [isEmployeeModalOpen, setIsEmployeeModalOpen] = useState(false);
-  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
-    null
-  );
-  const [activeEditTab, setActiveEditTab] = useState<'account' | 'information'>('account');
-  const [showRoleChangeConfirm, setShowRoleChangeConfirm] = useState(false);
-  const [userToChangeRole, setUserToChangeRole] = useState<User<string> | null>(null);
-  const [newRole, setNewRole] = useState("");
-  const [editingRoleId, setEditingRoleId] = useState<string | null>(null);
+  const [selectedEmployee, setSelectedEmployee] = useState<EmployeeInfo
+    | null>(null);
+  const [activeEditTab, setActiveEditTab] = useState<"account" | "information">("account");
+  const [editingEmployee, setEditingEmployee] = useState<EmployeeInfo | null>(null);
+  const [employeeCache, setEmployeeCache] = useState<Record<string, EmployeeInfo>>({});
+  const [openRoleDropdowns, setOpenRoleDropdowns] = useState<Record<string, boolean>>({});
+  const [showUserId, setShowUserId] = useState(false);
+  const [showRoleConfirm, setShowRoleConfirm] = useState(false);
+  const [pendingRoleChange, setPendingRoleChange] = useState<{ userId: string, newRole: string } | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Lấy thông tin admin đang đăng nhập từ localStorage
   const currentAdmin = JSON.parse(localStorage.getItem("user") || "{}");
 
-  // Add debounced search handler
+  // ### Handlers and Fetch Functions
+
   const handleSearch = useCallback(
     debounce((value: string) => {
       setSearchTerm(value.trim());
-      setCurrentPage(1); // Reset to first page when searching
+      setCurrentPage(1);
     }, 500),
     []
   );
 
-  // Di chuyển fetchUsers vào bên trong component
   const fetchUsers = useCallback(
     async (
       searchTerm: string,
@@ -182,6 +252,7 @@ const AdminUserManagement: React.FC = () => {
       usersPerPage: number
     ) => {
       try {
+        setIsLoading(true);
         const searchCondition = {
           keyword: searchTerm,
           role_code: roleFilter !== "all" ? roleFilter : "",
@@ -191,7 +262,6 @@ const AdminUserManagement: React.FC = () => {
               : statusFilter === "unlocked"
                 ? false
                 : undefined,
-          // is_deleted: statusFilter === "deleted" ? true : false,
           is_verified:
             statusFilter === "verified"
               ? true
@@ -205,8 +275,10 @@ const AdminUserManagement: React.FC = () => {
           pageSize: usersPerPage,
         };
         const response = await getUsers(searchCondition, pageInfo);
-        if (response.success) {
-          const mappedUsers = response.data.pageData.map((user: UserData) => mapApiUserToUser(user as ApiUser));
+        if (response.success && response.data) {
+          const mappedUsers = response.data.pageData.map((user: UserData) =>
+            mapApiUserToUser(user as ApiUser)
+          );
           setUsers(mappedUsers);
           setTotalItems(response.data.pageInfo.totalItems ?? 0);
         }
@@ -217,6 +289,8 @@ const AdminUserManagement: React.FC = () => {
         } else {
           toast.error("Failed to fetch users.");
         }
+      } finally {
+        setIsLoading(false);
       }
     },
     []
@@ -224,27 +298,23 @@ const AdminUserManagement: React.FC = () => {
 
   useEffect(() => {
     fetchUsers(searchTerm, roleFilter, statusFilter, currentPage, usersPerPage);
-  }, [
-    searchTerm,
-    roleFilter,
-    statusFilter,
-    currentPage,
-    usersPerPage,
-    fetchUsers,
-  ]);
+  }, [searchTerm, roleFilter, statusFilter, currentPage, usersPerPage, fetchUsers]);
 
   const handleUpdateUser = async (updatedUser: User<string>) => {
     try {
-      setUsers(prev =>
-        prev.map(user =>
-          user.id === updatedUser.id ? updatedUser : user
-        )
+      setIsLoading(true);
+      setUsers((prev) =>
+        prev.map((user) => (user.id === updatedUser.id ? updatedUser : user))
       );
-      setIsEditModalOpen(false); // Đóng form
-      setEditingUser(null);
+      setEditingUser(updatedUser);
+      toast.success("User updated successfully");
     } catch (error) {
       console.error("Error updating user:", error);
-      toast.error(error instanceof Error ? error.message : "Failed to update user");
+      toast.error(
+        error instanceof Error ? error.message : "Failed to update user"
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -260,22 +330,27 @@ const AdminUserManagement: React.FC = () => {
     }
 
     try {
+      setIsLoading(true);
       const response = await deleteUser(userToDelete.id);
-
       if (response.success) {
-        setUsers(users.filter(user => user.id !== userToDelete.id));
+        setUsers(users.filter((user) => user.id !== userToDelete.id));
         toast.success("User deleted successfully");
         setShowDeleteConfirm(false);
         setUserToDelete(null);
       }
     } catch (error) {
       console.error("Error deleting user:", error);
-      toast.error(error instanceof Error ? error.message : "Failed to delete user");
+      toast.error(
+        error instanceof Error ? error.message : "Failed to delete user"
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleAddSuccess = async () => {
     try {
+      setIsLoading(true);
       await fetchUsers(
         searchTerm,
         roleFilter,
@@ -288,95 +363,215 @@ const AdminUserManagement: React.FC = () => {
     } catch (error: unknown) {
       console.error("Error refreshing user list:", error);
       toast.error("Created user but failed to refresh list");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // Hàm helper để hiển thị trạng thái
-  const getUserStatus = (user: User<string>) => {
-    if (user.is_deleted) return "Deleted";
-    if (!user.is_verified) return "Unverified";
-    return user.is_blocked ? "Locked" : "Unlocked";
+  const fetchEmployeeData = async (userId: string): Promise<EmployeeInfo | null> => {
+    try {
+      if (employeeCache[userId]) {
+        return employeeCache[userId];
+      }
+      const response = await getEmployeeByUserId(userId);
+      if (response && response.success && response.data) {
+        setEmployeeCache((prev) => ({
+          ...prev,
+          [userId]: response.data,
+        }));
+        return response.data;
+      }
+      return null;
+    } catch (error) {
+      console.error("Error fetching employee:", error);
+      toast.error("Failed to fetch employee data");
+      return null;
+    }
   };
 
-  // Add this function to fetch employee details when viewing user details
   const handleViewUserDetails = async (user: User<string>) => {
     setSelectedUser(user);
     try {
-      const employeeData = await getEmployeeByUserId(user.id);
+      const employeeData = await fetchEmployeeData(user.id);
       setSelectedEmployee(employeeData);
-    } catch (error: unknown) {
+    } catch (error) {
       console.error("Error fetching employee details:", error);
       setSelectedEmployee(null);
     }
     setIsDetailModalOpen(true);
   };
 
-  const handleChangeStatus = async (user: User<string>) => {
-    try {
-      // Kiểm tra quyền thay đổi status
-      const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  const handleEdit = async (user: User<string>) => {
+    setEditingUser(user);
 
-      // Không cho phép:
-      // 1. Thay đổi status của chính mình
-      // 2. Thay đổi status của admin khác
-      // 3. User không phải admin không được thay đổi status
-      if (
-        user.id === currentUser._id || // Không thể thay đổi status của chính mình
-        user.role_code === "A001" ||   // Không thể thay đổi status của admin khác
-        currentUser.role_code !== "A001" // Chỉ admin mới có quyền thay đổi status
-      ) {
-        toast.error("You don't have permission to change this user's status");
-        return;
+    try {
+      setIsLoading(true);
+
+      // Tạo employee mặc định
+      const defaultEmployee = {
+        _id: "",
+        user_id: user.id,
+        job_rank: "",
+        contract_type: "",
+        account: user.user_name,
+        address: "",
+        phone: "",
+        full_name: user.user_name,
+        avatar_url: "",
+        department_code: "",
+        salary: 0,
+        start_date: "",
+        end_date: "",
+        updated_by: "",
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        is_deleted: false,
+        department_name: ""
+      };
+
+      // Gọi API để lấy thông tin employee
+      const response = await getEmployeeByUserId(user.id);
+
+      if (response.success && response.data) {
+        // Lưu vào cache và state - Chỉ lấy phần data từ response
+        setEmployeeCache(prev => ({ ...prev, [user.id]: response.data }));
+        setEditingEmployee(response.data);
+      } else {
+        // Sử dụng employee mặc định nếu không có dữ liệu
+        console.log("Using default employee object for user:", user);
+        setEditingEmployee(defaultEmployee);
       }
 
-      const response = await changeUserStatus(user.id, !user.is_blocked);
+      // Mở modal
+      setIsEditModalOpen(true);
+      setActiveEditTab("account"); // Mặc định hiển thị tab account
+    } catch (error) {
+      console.error("Error fetching employee data:", error);
+      toast.error("Failed to load employee data");
+
+      // Tạo employee mặc định nếu có lỗi
+      const defaultEmployee = {
+        _id: "",
+        user_id: user.id,
+        job_rank: "",
+        contract_type: "",
+        account: user.user_name,
+        address: "",
+        phone: "",
+        full_name: user.user_name,
+        avatar_url: "",
+        department_code: "",
+        salary: 0,
+        start_date: "",
+        end_date: "",
+        updated_by: "",
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        is_deleted: false,
+        department_name: ""
+      };
+
+      setEditingEmployee(defaultEmployee);
+      setIsEditModalOpen(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleEmployeeUpdateSuccess = (updatedEmployee: EmployeeInfo) => {
+    setEmployeeCache((prev) => ({
+      ...prev,
+      [updatedEmployee.user_id]: updatedEmployee,
+    }));
+    if (editingEmployee && editingEmployee.user_id === updatedEmployee.user_id) {
+      setEditingEmployee(updatedEmployee);
+    }
+    if (selectedEmployee && selectedEmployee.user_id === updatedEmployee.user_id) {
+      setSelectedEmployee(updatedEmployee);
+    }
+    toast.success("Employee updated successfully");
+  };
+
+  const handleToggleStatus = async (user: User<string>) => {
+    try {
+      if (user.email === "admin@gmail.com" || user.id === currentAdmin._id) {
+        toast.warning("Cannot change status of this account");
+        return;
+      }
+      const newStatus = !user.is_blocked;
+      const response = await updateUserStatus(user.id, newStatus);
       if (response.success) {
-        setUsers(users.map(u =>
-          u.id === user.id ? { ...u, is_blocked: !u.is_blocked } : u
-        ));
-        toast.success(`User ${user.is_blocked ? 'unlocked' : 'locked'} successfully`);
+        setUsers((prev) =>
+          prev.map((u) =>
+            u.id === user.id ? { ...u, is_blocked: newStatus } : u
+          )
+        );
+        if (statusFilter === "all") {
+          setStatusFilter(newStatus ? "locked" : "unlocked");
+        } else if (
+          (newStatus && statusFilter === "unlocked") ||
+          (!newStatus && statusFilter === "locked")
+        ) {
+          fetchUsers(
+            searchTerm,
+            roleFilter,
+            statusFilter,
+            currentPage,
+            usersPerPage
+          );
+        }
+        toast.success(`User ${newStatus ? "blocked" : "unblocked"} successfully`);
       }
     } catch (error) {
-      console.error("Error changing user status:", error);
-      toast.error("Failed to change user status");
+      console.error("Error updating user status:", error);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Failed to update user status");
+      }
     }
   };
 
-  const handleChangeRole = async (user: User<string>, roleCode: string) => {
-    setUserToChangeRole(user);
-    setNewRole(roleCode);
-    setShowRoleChangeConfirm(true);
+  const handleRoleChange = (userId: string, newRole: string) => {
+    setPendingRoleChange({ userId, newRole });
+    setShowRoleConfirm(true);
   };
 
-  const confirmChangeRole = async () => {
-    if (!userToChangeRole || !newRole) return;
+  const confirmRoleChange = async () => {
+    if (!pendingRoleChange) return;
 
     try {
-      // Kiểm tra quyền thay đổi role
-      if (
-        userToChangeRole.id === currentAdmin._id || // Không thể thay đổi role của chính mình
-        (userToChangeRole.role_code === "A001" && currentAdmin.role_code !== "A001") // Chỉ admin mới có thể thay đổi role của admin khác
-      ) {
-        toast.error("You don't have permission to change this user's role");
-        return;
+      setIsLoading(true);
+      const response = await updateUserRole(
+        pendingRoleChange.userId,
+        pendingRoleChange.newRole
+      );
+
+      if (response.success) {
+        toast.success("User role updated successfully");
+        fetchUsers(searchTerm, roleFilter, statusFilter, currentPage, usersPerPage);
       }
-
-      await updateUserRole(userToChangeRole.id, newRole);
-
-      // Cập nhật UI nếu thành công
-      setUsers(users.map(u =>
-        u.id === userToChangeRole.id ? { ...u, role_code: newRole } : u
-      ));
-      toast.success("User role updated successfully");
-      setShowRoleChangeConfirm(false);
-      setUserToChangeRole(null);
-      setNewRole("");
-
     } catch (error) {
-      console.error("Error changing role:", error);
-      toast.error("Failed to change user role");
+      console.error("Error updating role:", error);
+      toast.error("Failed to update user role");
+    } finally {
+      setShowRoleConfirm(false);
+      setPendingRoleChange(null);
+      setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    const handleClickOutside = () => {
+      setOpenRoleDropdowns({});
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
+  // ### JSX Render
 
   return (
     <div className="w-full flex justify-center">
@@ -406,7 +601,6 @@ const AdminUserManagement: React.FC = () => {
               <option value="all">All Status</option>
               <option value="unlocked">Unlocked</option>
               <option value="locked">Locked</option>
-              {/* <option value="deleted">Deleted</option> */}
             </select>
           </div>
 
@@ -437,7 +631,7 @@ const AdminUserManagement: React.FC = () => {
 
         {/* Table */}
         <div className="w-full overflow-x-auto">
-          <table className="w-full border-separate border-spacing-y-2.5 text-black border-0 p-2">
+          <table className="w-full border-separate border-spacing-y-2.5 text-black border-0">
             <thead className="bg-brand-grandient h-[70px] text-lg text-white !rounded-t-lg">
               <tr className="bg-[#FFB17A]">
                 <th className="border-white px-4 py-2 !rounded-tl-2xl">
@@ -465,59 +659,100 @@ const AdminUserManagement: React.FC = () => {
                   <td className="px-4 py-2">{user.email}</td>
                   <td className="px-4 py-2">
                     <div className="relative">
-                      {editingRoleId === user.id ? (
-                        <div className="relative inline-block animate-fadeIn">
-                          <select
-                            value={user.role_code}
-                            onChange={(e) => {
-                              handleChangeRole(user, e.target.value);
-                              setEditingRoleId(null);
-                            }}
-                            onBlur={() => setEditingRoleId(null)}
-                            autoFocus
-                            className="px-3 py-1 rounded-full bg-orange-50 text-orange-700 font-medium appearance-none cursor-pointer pr-8 transition-all duration-200 ease-in-out"
-                          >
-                            <option value="A001">Admin</option>
-                            <option value="A002">Finance</option>
-                            <option value="A003">Approval</option>
-                            <option value="A004">Member other</option>
-                          </select>
-                        </div>
-                      ) : (
-                        <button
-                          onClick={() => {
-                            if (user.id !== currentAdmin._id) {
-                              setEditingRoleId(user.id);
-                            }
-                          }}
-                          disabled={user.id === currentAdmin._id}
-                          className={`px-3 py-1 rounded-full font-medium transition-all duration-200 ease-in-out ${user.id === currentAdmin._id
-                            ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                            : "bg-orange-50 text-orange-700 hover:bg-orange-100"
-                            }`}
+                      <div
+                        className="flex items-center justify-center cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const newOpenDropdowns = { ...openRoleDropdowns };
+                          newOpenDropdowns[user.id] =
+                            !openRoleDropdowns[user.id];
+                          setOpenRoleDropdowns(newOpenDropdowns);
+                        }}
+                      >
+                        <StatusBadge type="role" value={user.role_code} />
+                        <Shield size={16} className="ml-1 text-gray-400" />
+                      </div>
+
+                      {openRoleDropdowns[user.id] && (
+                        <div
+                          className="absolute z-10 bg-white shadow-lg rounded-md p-2 mt-1 left-1/2 transform -translate-x-1/2"
+                          style={{ minWidth: "120px" }}
                         >
-                          {getRoleName(user.role_code)}
-                        </button>
+                          <div className="flex flex-col space-y-2">
+                            <button
+                              onClick={() => {
+                                handleRoleChange(user.id, "A001");
+                                const newOpenDropdowns = {
+                                  ...openRoleDropdowns,
+                                };
+                                newOpenDropdowns[user.id] = false;
+                                setOpenRoleDropdowns(newOpenDropdowns);
+                              }}
+                              className="px-3 py-1 text-left hover:bg-gray-100 rounded text-sm"
+                            >
+                              Admin
+                            </button>
+                            <button
+                              onClick={() => {
+                                handleRoleChange(user.id, "A002");
+                                const newOpenDropdowns = {
+                                  ...openRoleDropdowns,
+                                };
+                                newOpenDropdowns[user.id] = false;
+                                setOpenRoleDropdowns(newOpenDropdowns);
+                              }}
+                              className="px-3 py-1 text-left hover:bg-gray-100 rounded text-sm"
+                            >
+                              Finance
+                            </button>
+                            <button
+                              onClick={() => {
+                                handleRoleChange(user.id, "A003");
+                                const newOpenDropdowns = {
+                                  ...openRoleDropdowns,
+                                };
+                                newOpenDropdowns[user.id] = false;
+                                setOpenRoleDropdowns(newOpenDropdowns);
+                              }}
+                              className="px-3 py-1 text-left hover:bg-gray-100 rounded text-sm"
+                            >
+                              Approval
+                            </button>
+                            <button
+                              onClick={() => {
+                                handleRoleChange(user.id, "A004");
+                                const newOpenDropdowns = {
+                                  ...openRoleDropdowns,
+                                };
+                                newOpenDropdowns[user.id] = false;
+                                setOpenRoleDropdowns(newOpenDropdowns);
+                              }}
+                              className="px-3 py-1 text-left hover:bg-gray-100 rounded text-sm"
+                            >
+                              Claimer
+                            </button>
+                          </div>
+                        </div>
                       )}
                     </div>
                   </td>
                   <td className="px-4 py-2">
-                    <button
-                      onClick={() => handleChangeStatus(user)}
-                      disabled={
-                        user.id === currentAdmin._id || // Không thể thay đổi status của chính mình
-                        user.role_code === "A001" ||    // Không thể thay đổi status của admin khác
-                        currentAdmin.role_code !== "A001" // Chỉ admin mới có quyền thay đổi status
-                      }
-                      className={`px-3 py-1 rounded-full font-medium ${user.id === currentAdmin._id || user.role_code === "A001" || currentAdmin.role_code !== "A001"
-                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                        : user.is_blocked
-                          ? "bg-red-50 text-red-500 hover:bg-red-100"
-                          : "bg-green-50 text-green-500 hover:bg-green-100"
-                        }`}
+                    <div
+                      className="cursor-pointer"
+                      onClick={() => handleToggleStatus(user)}
                     >
-                      {getUserStatus(user)}
-                    </button>
+                      {user.is_blocked ? (
+                        <div className="flex items-center text-red-500 hover:text-red-600">
+                          <Lock size={16} className="mr-1" />
+                          <span>Locked</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center text-green-500 hover:text-green-600">
+                          <Unlock size={16} className="mr-1" />
+                          <span>Unlocked</span>
+                        </div>
+                      )}
+                    </div>
                   </td>
                   <td className="px-4 py-2 rounded-r-2xl">
                     <div className="flex justify-center gap-4">
@@ -526,9 +761,7 @@ const AdminUserManagement: React.FC = () => {
                           <button
                             className="text-blue-500 hover:text-blue-600"
                             onClick={() => {
-                              setEditingUser(user);
-                              setActiveEditTab('account');
-                              setIsEditModalOpen(true);
+                              handleEdit(user);
                             }}
                           >
                             <Edit2 size={18} />
@@ -578,6 +811,7 @@ const AdminUserManagement: React.FC = () => {
               setCurrentPage(1);
             }}
             className="custom-pagination"
+            size="small"
             showTotal={() => ""}
           />
         </div>
@@ -605,10 +839,10 @@ const AdminUserManagement: React.FC = () => {
                 {/* Left Column - Employee Avatar and Account Info */}
                 <div className="flex flex-col">
                   <div className="flex items-start mb-6">
-                    {selectedEmployee && selectedEmployee.avatar_url ? (
+                    {selectedEmployee?.avatar_url ? (
                       <img
                         src={selectedEmployee.avatar_url}
-                        alt={selectedEmployee.full_name}
+                        alt={selectedEmployee.full_name || selectedUser.user_name}
                         className="w-28 h-28 rounded-lg object-cover mr-6 shadow-md"
                       />
                     ) : (
@@ -630,7 +864,7 @@ const AdminUserManagement: React.FC = () => {
                       <p className="text-gray-500 flex items-center">
                         <Building size={16} className="mr-2 flex-shrink-0" />
                         <span className="truncate max-w-[180px]">
-                          {selectedEmployee?.department_name || "No department"}
+                          {selectedEmployee?.department_code || "No department"}
                         </span>
                       </p>
                     </div>
@@ -649,9 +883,21 @@ const AdminUserManagement: React.FC = () => {
                         <span className="w-1/3 font-medium text-gray-600">
                           User ID:
                         </span>
-                        <span className="w-2/3 text-gray-800 truncate font-mono text-sm">
-                          {selectedUser.id}
-                        </span>
+                        <div className="w-2/3 flex items-center gap-2">
+                          <span className="text-gray-800 truncate">
+                            {showUserId ? selectedUser.id : '••••••••••••••••'}
+                          </span>
+                          <button
+                            onClick={() => setShowUserId(!showUserId)}
+                            className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                          >
+                            {showUserId ? (
+                              <Unlock className="h-4 w-4 text-green-500" />
+                            ) : (
+                              <Lock className="h-4 w-4 text-red-500" />
+                            )}
+                          </button>
+                        </div>
                       </div>
                       <div className="flex items-center">
                         <User
@@ -700,8 +946,8 @@ const AdminUserManagement: React.FC = () => {
                         <span className="w-2/3">
                           <span
                             className={`px-3 py-1 rounded-full text-sm ${selectedUser.is_verified
-                              ? "bg-green-50 text-green-600"
-                              : "bg-yellow-50 text-yellow-600"
+                                ? "bg-green-50 text-green-600"
+                                : "bg-yellow-50 text-yellow-600"
                               }`}
                           >
                             {selectedUser.is_verified
@@ -721,8 +967,8 @@ const AdminUserManagement: React.FC = () => {
                         <span className="w-2/3">
                           <span
                             className={`px-3 py-1 rounded-full text-sm ${selectedUser.is_blocked
-                              ? "bg-red-50 text-red-600"
-                              : "bg-green-50 text-green-600"
+                                ? "bg-red-50 text-red-600"
+                                : "bg-green-50 text-green-600"
                               }`}
                           >
                             {selectedUser.is_blocked ? "Blocked" : "Unlocked"}
@@ -749,7 +995,7 @@ const AdminUserManagement: React.FC = () => {
                           Full Name:
                         </span>
                         <span className="w-2/3 text-gray-800 truncate">
-                          {selectedEmployee?.full_name || "N/A"}
+                          {selectedEmployee?.full_name || ""}
                         </span>
                       </div>
                       <div className="flex items-center">
@@ -761,7 +1007,7 @@ const AdminUserManagement: React.FC = () => {
                           Phone:
                         </span>
                         <span className="w-2/3 text-gray-800 truncate">
-                          {selectedEmployee?.phone || "N/A"}
+                          {selectedEmployee?.phone || ""}
                         </span>
                       </div>
                       <div className="flex items-center">
@@ -773,7 +1019,7 @@ const AdminUserManagement: React.FC = () => {
                           Address:
                         </span>
                         <span className="w-2/3 text-gray-800 truncate">
-                          {selectedEmployee?.address || "N/A"}
+                          {selectedEmployee?.address || ""}
                         </span>
                       </div>
                       <div className="flex items-center">
@@ -785,7 +1031,7 @@ const AdminUserManagement: React.FC = () => {
                           Contract:
                         </span>
                         <span className="w-2/3 text-gray-800 truncate">
-                          {selectedEmployee?.contract_type || "N/A"}
+                          {selectedEmployee?.contract_type || ""}
                         </span>
                       </div>
                       <div className="flex items-center">
@@ -801,7 +1047,7 @@ const AdminUserManagement: React.FC = () => {
                             ? new Date(
                               selectedEmployee.start_date
                             ).toLocaleDateString()
-                            : "N/A"}
+                            : ""}
                         </span>
                       </div>
                       <div className="flex items-center">
@@ -817,7 +1063,7 @@ const AdminUserManagement: React.FC = () => {
                             ? new Date(
                               selectedEmployee.end_date
                             ).toLocaleDateString()
-                            : "N/A"}
+                            : ""}
                         </span>
                       </div>
                       <div className="flex items-center">
@@ -829,7 +1075,7 @@ const AdminUserManagement: React.FC = () => {
                           Department:
                         </span>
                         <span className="w-2/3 text-gray-800 truncate">
-                          {selectedEmployee?.department_name || "N/A"}
+                          {selectedEmployee?.department_code || ""}
                         </span>
                       </div>
                       <div className="flex items-center">
@@ -841,7 +1087,7 @@ const AdminUserManagement: React.FC = () => {
                           Job Rank:
                         </span>
                         <span className="w-2/3 text-gray-800 truncate">
-                          {selectedEmployee?.job_rank || "N/A"}
+                          {selectedEmployee?.job_rank || ""}
                         </span>
                       </div>
                     </div>
@@ -874,16 +1120,26 @@ const AdminUserManagement: React.FC = () => {
               <div className="flex justify-between items-center mb-6">
                 <div className="flex items-center gap-4">
                   <h2 className="text-2xl font-bold text-[#FF9447]">
-                    {activeEditTab === 'account' ? 'Edit Account' : 'Edit Information'}
+                    {activeEditTab === "account"
+                      ? "Edit Account"
+                      : "Edit Information"}
                   </h2>
                   <button
-                    className={`p-2 rounded-full transition-all duration-300 transform hover:scale-110 ${activeEditTab === 'account'
-                      ? 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                      : 'bg-[#FF9447] text-white hover:bg-[#FF8347]'
+                    className={`p-2 rounded-full transition-all duration-300 transform hover:scale-110 ${activeEditTab === "account"
+                        ? "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                        : "bg-[#FF9447] text-white hover:bg-[#FF8347]"
                       }`}
-                    onClick={() => setActiveEditTab(activeEditTab === 'account' ? 'information' : 'account')}
+                    onClick={() =>
+                      setActiveEditTab(
+                        activeEditTab === "account" ? "information" : "account"
+                      )
+                    }
                   >
-                    {activeEditTab === 'account' ? <ArrowRight size={20} /> : <ArrowLeft size={20} />}
+                    {activeEditTab === "account" ? (
+                      <ArrowRight size={20} />
+                    ) : (
+                      <ArrowLeft size={20} />
+                    )}
                   </button>
                 </div>
                 <button
@@ -897,15 +1153,14 @@ const AdminUserManagement: React.FC = () => {
                 </button>
               </div>
 
-              {/* Content based on active tab */}
               <div className="relative">
                 <div
-                  className={`transition-all duration-300 transform ${activeEditTab === 'account'
-                    ? 'translate-x-0 opacity-100'
-                    : '-translate-x-full opacity-0 absolute inset-0'
+                  className={`transition-all duration-300 transform ${activeEditTab === "account"
+                      ? "translate-x-0 opacity-100"
+                      : "-translate-x-full opacity-0 absolute inset-0"
                     }`}
                 >
-                  {activeEditTab === 'account' && (
+                  {activeEditTab === "account" && (
                     <UserManagementEdit
                       user={editingUser}
                       onClose={() => {
@@ -917,20 +1172,20 @@ const AdminUserManagement: React.FC = () => {
                   )}
                 </div>
                 <div
-                  className={`transition-all duration-300 transform ${activeEditTab === 'information'
-                    ? 'translate-x-0 opacity-100'
-                    : 'translate-x-full opacity-0 absolute inset-0'
+                  className={`transition-all duration-300 transform ${activeEditTab === "information"
+                      ? "translate-x-0 opacity-100"
+                      : "translate-x-full opacity-0 absolute inset-0"
                     }`}
                 >
-                  {activeEditTab === 'information' && (
+                  {activeEditTab === "information" && (
                     <EditEmployeeModal
                       isOpen={true}
                       onClose={() => {
-                        setIsEditModalOpen(false);
-                        setEditingUser(null);
+                        setActiveEditTab("account");
                       }}
-                      employee={selectedEmployee}
+                      employee={editingEmployee}
                       isEmbedded={true}
+                      onUpdateSuccess={handleEmployeeUpdateSuccess}
                     />
                   )}
                 </div>
@@ -987,36 +1242,47 @@ const AdminUserManagement: React.FC = () => {
           employee={selectedEmployee}
         />
 
-        {/* Role Change Confirmation Modal */}
+        {/* Role Confirmation Modal */}
         <AnimatedModal
-          isOpen={showRoleChangeConfirm}
-          onClose={() => setShowRoleChangeConfirm(false)}
+          isOpen={showRoleConfirm}
+          onClose={() => setShowRoleConfirm(false)}
         >
           <div className="p-6">
             <div className="flex flex-col items-center gap-4">
               <div className="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center">
-                <UserCog className="w-6 h-6 text-orange-500" />
+                <Shield className="w-6 h-6 text-orange-500" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900">
-                Confirm change role to {getRoleName(newRole)}
+                Confirm Role Change
               </h3>
+              <p className="text-gray-500 text-center">
+                Are you sure you want to change this user's role?
+              </p>
               <div className="flex gap-3">
                 <button
-                  onClick={() => setShowRoleChangeConfirm(false)}
-                  className="px-6 py-2 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200 transition-colors"
+                  onClick={() => setShowRoleConfirm(false)}
+                  className="px-4 py-2 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
-                  onClick={confirmChangeRole}
-                  className="px-6 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 transition-colors"
+                  onClick={confirmRoleChange}
+                  disabled={isLoading}
+                  className="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 transition-colors disabled:opacity-50"
                 >
-                  Accept
+                  {isLoading ? "Processing..." : "Confirm"}
                 </button>
               </div>
             </div>
           </div>
         </AnimatedModal>
+
+        {/* Loading Overlay */}
+        {isLoading && (
+          <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
+            <div className="animate-spin rounded-full h-8 w-8 border-4 border-orange-500 border-t-transparent"></div>
+          </div>
+        )}
       </div>
     </div>
   );
