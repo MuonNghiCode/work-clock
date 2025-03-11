@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Pagination, Modal } from 'antd';
 import { Trash, Edit, UserCheck, X, User, Briefcase, Calendar, Clock, CheckCircle } from 'lucide-react'; 
+import CancelRequestModal from '../CancelRequestModal/CancelRequestModal'; // Import modal mới
 
 interface ClaimRequest {
   key: string;
@@ -22,7 +23,8 @@ interface TableRequestProps {
   actions: { 
     onEdit: (record: ClaimRequest) => void; 
     onDelete: (record: ClaimRequest) => void; 
-    onRequestApproval: (record: ClaimRequest) => void; // Thêm action mới
+    onRequestApproval: (record: ClaimRequest) => void;
+    onCancel: (record: ClaimRequest) => void;
   };
 }
 
@@ -35,6 +37,8 @@ const TableRequest: React.FC<TableRequestProps> = ({
 }) => {
   const [selectedClaim, setSelectedClaim] = useState<ClaimRequest | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false); // State cho modal Cancel
+  const [cancelingRecord, setCancelingRecord] = useState<ClaimRequest | null>(null); // Record đang hủy
 
   const handleRowClick = (record: ClaimRequest) => {
     setSelectedClaim(apiData.find(item => item.key === record.key) || null);
@@ -44,6 +48,24 @@ const TableRequest: React.FC<TableRequestProps> = ({
   const handleModalClose = () => {
     setIsModalVisible(false);
     setSelectedClaim(null);
+  };
+
+  const handleCancelClick = (record: ClaimRequest) => {
+    setCancelingRecord(record);
+    setIsCancelModalOpen(true);
+  };
+
+  const handleCancelConfirm = () => {
+    if (cancelingRecord) {
+      actions.onCancel(cancelingRecord); // Gọi hàm onCancel từ props
+    }
+    setIsCancelModalOpen(false);
+    setCancelingRecord(null);
+  };
+
+  const handleCancelModalClose = () => {
+    setIsCancelModalOpen(false);
+    setCancelingRecord(null);
   };
 
   const getStatusColor = (status: string) => ({
@@ -95,21 +117,37 @@ const TableRequest: React.FC<TableRequestProps> = ({
                     <td className="request-table-cell px-4 py-2 rounded-r-2xl">
                       <div className="request-table-actions flex justify-center gap-2">
                         {item.status === 'Pending Approval' ? (
-                          <Button className="!border-none" onClick={e => { e.stopPropagation(); actions.onDelete(item); }} disabled={loading}>
+                          <Button 
+                            className="!border-none" 
+                            onClick={e => { e.stopPropagation(); handleCancelClick(item); }} 
+                            disabled={loading}
+                            title="Cancel Request"
+                          >
                             <Trash size={24} color="red" strokeWidth={3} className="hover:bg-red-200" />
                           </Button>
                         ) : item.status !== 'Approved' && item.status !== 'Rejected' && item.status !== 'Canceled' && item.status !== 'Paid' && (
                           <>
-                            <Button className="!border-none" onClick={e => { e.stopPropagation(); actions.onEdit(item); }} disabled={loading}>
+                            <Button 
+                              className="!border-none" 
+                              onClick={e => { e.stopPropagation(); actions.onEdit(item); }} 
+                              disabled={loading}
+                              title="Edit Request"
+                            >
                               <Edit size={24} color="#FF914D" strokeWidth={3} className="request-edit-icon hover:bg-orange-200" />
                             </Button>
-                            <Button className="!border-none" onClick={e => { e.stopPropagation(); actions.onDelete(item); }} disabled={loading}>
+                            <Button 
+                              className="!border-none" 
+                              onClick={e => { e.stopPropagation(); handleCancelClick(item); }} 
+                              disabled={loading}
+                              title="Cancel Request"
+                            >
                               <Trash size={24} color="red" strokeWidth={3} className="request-delete-icon hover:bg-red-200" />
                             </Button>
                             <Button 
                               className="!border-none" 
                               onClick={e => { e.stopPropagation(); actions.onRequestApproval(item); }} 
-                              disabled={loading || item.status !== 'Draft'} // Chỉ cho phép khi status là Draft
+                              disabled={loading || item.status !== 'Draft'} 
+                              title="Request Approval"
                             >
                               <UserCheck size={24} color="green" strokeWidth={3} className="request-user-icon hover:bg-green-200" />
                             </Button>
@@ -149,6 +187,7 @@ const TableRequest: React.FC<TableRequestProps> = ({
         >
           {selectedClaim ? (
             <div className="p-8 bg-gray-50 rounded-xl">
+              {/* Giữ nguyên phần hiển thị chi tiết claim */}
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-3xl font-bold text-[#FF9447]">
                   Claim Details
@@ -160,7 +199,6 @@ const TableRequest: React.FC<TableRequestProps> = ({
                   <X className="w-6 h-6" />
                 </button>
               </div>
-
               <div className="grid grid-cols-2 gap-10">
                 <div className="flex flex-col">
                   <div className="bg-white rounded-lg p-6 shadow-sm h-full">
@@ -169,45 +207,23 @@ const TableRequest: React.FC<TableRequestProps> = ({
                     </h4>
                     <div className="space-y-4">                     
                       <div className="flex items-center">
-                        <User
-                          size={18}
-                          className="text-[#FF9447] mr-3 flex-shrink-0"
-                        />
-                        <span className="w-1/3 font-medium text-gray-600">
-                          Claim Name: 
-                        </span>
-                        <span className="w-2/3 text-gray-800 font-semibold truncate">
-                          {selectedClaim.claimname}
-                        </span>
+                        <User size={18} className="text-[#FF9447] mr-3 flex-shrink-0" />
+                        <span className="w-1/3 font-medium text-gray-600">Claim Name:</span>
+                        <span className="w-2/3 text-gray-800 font-semibold truncate">{selectedClaim.claimname}</span>
                       </div>
                       <div className="flex items-center">
-                        <Briefcase
-                          size={18}
-                          className="text-[#FF9447] mr-3 flex-shrink-0"
-                        />
-                        <span className="w-1/3 font-medium text-gray-600">
-                          Project:
-                        </span>
-                        <span className="w-2/3 text-gray-800 font-semibold truncate">
-                          {selectedClaim.project}
-                        </span>
+                        <Briefcase size={18} className="text-[#FF9447] mr-3 flex-shrink-0" />
+                        <span className="w-1/3 font-medium text-gray-600">Project:</span>
+                        <span className="w-2/3 text-gray-800 font-semibold truncate">{selectedClaim.project}</span>
                       </div>
                       <div className="flex items-center">
-                        <Calendar
-                          size={18}
-                          className="text-[#FF9447] mr-3 flex-shrink-0"
-                        />
-                        <span className="w-1/3 font-medium text-gray-600">
-                          Start Date:
-                        </span>
-                        <span className="w-2/3 text-gray-800 font-semibold">
-                          {selectedClaim.start_date}
-                        </span>
+                        <Calendar size={18} className="text-[#FF9447] mr-3 flex-shrink-0" />
+                        <span className="w-1/3 font-medium text-gray-600">Start Date:</span>
+                        <span className="w-2/3 text-gray-800 font-semibold">{selectedClaim.start_date}</span>
                       </div>
                     </div>
                   </div>
                 </div>
-
                 <div>
                   <div className="bg-white rounded-lg p-6 shadow-sm h-full">
                     <h4 className="text-lg font-bold text-[#FF9447] mb-4 border-b pb-2">
@@ -215,75 +231,37 @@ const TableRequest: React.FC<TableRequestProps> = ({
                     </h4>
                     <div className="space-y-4">
                       <div className="flex items-center">
-                        <Calendar
-                          size={18}
-                          className="text-[#FF9447] mr-3 flex-shrink-0"
-                        />
-                        <span className="w-1/3 font-medium text-gray-600">
-                          End Date:
-                        </span>
-                        <span className="w-2/3 text-gray-800 font-semibold">
-                          {selectedClaim.end_date}
-                        </span>
+                        <Calendar size={18} className="text-[#FF9447] mr-3 flex-shrink-0" />
+                        <span className="w-1/3 font-medium text-gray-600">End Date:</span>
+                        <span className="w-2/3 text-gray-800 font-semibold">{selectedClaim.end_date}</span>
                       </div>
                       <div className="flex items-center">
-                        <Clock
-                          size={18}
-                          className="text-[#FF9447] mr-3 flex-shrink-0"
-                        />
-                        <span className="w-1/3 font-medium text-gray-600">
-                          Time From:
-                        </span>
-                        <span className="w-2/3 text-gray-800 font-semibold">
-                          {selectedClaim.timeFrom}
-                        </span>
+                        <Clock size={18} className="text-[#FF9447] mr-3 flex-shrink-0" />
+                        <span className="w-1/3 font-medium text-gray-600">Time From:</span>
+                        <span className="w-2/3 text-gray-800 font-semibold">{selectedClaim.timeFrom}</span>
                       </div>
                       <div className="flex items-center">
-                        <Clock
-                          size={18}
-                          className="text-[#FF9447] mr-3 flex-shrink-0"
-                        />
-                        <span className="w-1/3 font-medium text-gray-600">
-                          Time To:
-                        </span>
-                        <span className="w-2/3 text-gray-800 font-semibold">
-                          {selectedClaim.timeTo}
-                        </span>
+                        <Clock size={18} className="text-[#FF9447] mr-3 flex-shrink-0" />
+                        <span className="w-1/3 font-medium text-gray-600">Time To:</span>
+                        <span className="w-2/3 text-gray-800 font-semibold">{selectedClaim.timeTo}</span>
                       </div>
                       <div className="flex items-center">
-                        <Clock
-                          size={18}
-                          className="text-[#FF9447] mr-3 flex-shrink-0"
-                        />
-                        <span className="w-1/3 font-medium text-gray-600">
-                          Total Hours:
-                        </span>
-                        <span className="w-2/3 text-gray-800 font-semibold">
-                          {selectedClaim.totalHours} hours
-                        </span>
+                        <Clock size={18} className="text-[#FF9447] mr-3 flex-shrink-0" />
+                        <span className="w-1/3 font-medium text-gray-600">Total Hours:</span>
+                        <span className="w-2/3 text-gray-800 font-semibold">{selectedClaim.totalHours} hours</span>
                       </div>
                       <div className="flex items-center">
-                        <CheckCircle
-                          size={18}
-                          className="text-[#FF9447] mr-3 flex-shrink-0"
-                        />
-                        <span className="w-1/3 font-medium text-gray-600">
-                          Status:
-                        </span>
+                        <CheckCircle size={18} className="text-[#FF9447] mr-3 flex-shrink-0" />
+                        <span className="w-1/3 font-medium text-gray-600">Status:</span>
                         <span className="w-2/3">
                           <span
                             className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                              selectedClaim.status === 'Approved'
-                                ? 'bg-green-50 text-green-600'
-                                : selectedClaim.status === 'Rejected'
-                                ? 'bg-red-50 text-red-600'
-                                : selectedClaim.status === 'Pending Approval'
-                                ? 'bg-yellow-50 text-yellow-600'
-                                : selectedClaim.status === 'Canceled'
-                                ? 'bg-purple-50 text-purple-600'
-                                : selectedClaim.status === 'Paid'
-                                ? 'bg-blue-50 text-blue-600'
-                                : 'bg-gray-50 text-gray-600'
+                              selectedClaim.status === 'Approved' ? 'bg-green-50 text-green-600' :
+                              selectedClaim.status === 'Rejected' ? 'bg-red-50 text-red-600' :
+                              selectedClaim.status === 'Pending Approval' ? 'bg-yellow-50 text-yellow-600' :
+                              selectedClaim.status === 'Canceled' ? 'bg-purple-50 text-purple-600' :
+                              selectedClaim.status === 'Paid' ? 'bg-blue-50 text-blue-600' :
+                              'bg-gray-50 text-gray-600'
                             }`}
                           >
                             {selectedClaim.status}
@@ -294,7 +272,6 @@ const TableRequest: React.FC<TableRequestProps> = ({
                   </div>
                 </div>
               </div>
-
               <div className="mt-8 flex justify-end">
                 <button
                   onClick={handleModalClose}
@@ -308,6 +285,13 @@ const TableRequest: React.FC<TableRequestProps> = ({
             <p className="request-modal-no-data">No data available</p>
           )}
         </Modal>
+
+        <CancelRequestModal
+          isOpen={isCancelModalOpen}
+          onOk={handleCancelConfirm}
+          onCancel={handleCancelModalClose}
+          cancelingRecord={cancelingRecord}
+        />
       </div>
     </div>
   );
