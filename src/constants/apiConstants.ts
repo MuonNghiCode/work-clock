@@ -42,15 +42,12 @@ export const API_CONSTANTS = {
     SEARCH_USER: "/users/search",
     CHANGE_ROLE: "/users/change-role",
   },
-  DEPARTMENTS: {
-    LIST: "/departments/get-all",
+  EMPLOYEE: {
+    GET_EMPLOYEE_BY_USER_ID: "/employees/${id}",
+    UPDATE_EMPLOYEE: "/employees/${id}",
+    CREATE_EMPLOYEE: "/employees",
+    GET_ALL_JOB: "/jobs/get-all",
+    GET_ALL_DEPARTMENT: "/departments/get-all",
+    GET_ALL_CONTRACT: "/contracts/get-all",
   },
-  CONTRACTS: {
-    LIST: "/contracts/get-all",
-  },
-  EMPLOYEES: {
-    UPDATE: "/employees/${id}",
-  }
 };
-
-

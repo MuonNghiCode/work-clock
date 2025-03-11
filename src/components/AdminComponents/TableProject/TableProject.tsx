@@ -18,13 +18,11 @@ const TableProject: React.FC = ({ }) => {
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [selectedProject, setSelectedProject] = useState<ProjectInfo | null>(
-    null
   );
   // const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [searchValue, setSearchValue] = useState<string>("");
   const [totalItems, setTotalItems] = useState<number>(1);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-
+  const [isAddModalOpen, setIsAddModalOpen] = useState<{ isOpen: boolean; formStatus: 'add' | 'edit' | undefined }>({ isOpen: false, formStatus: undefined });
 
   const handlePageChange = (page: number, pageSize?: number) => {
     setCurrentPage(page);
@@ -98,7 +96,11 @@ const TableProject: React.FC = ({ }) => {
 
   const handleEditProject = (editedProject: ProjectInfo) => {
     setSelectedProject(editedProject);
-    setIsAddModalOpen(true);
+    setIsAddModalOpen({
+      isOpen: true,
+      formStatus: "edit"
+    }
+    );
   };
 
   const handleDeleteProject = (projectId: string | number) => {
@@ -139,10 +141,15 @@ const TableProject: React.FC = ({ }) => {
   };
 
   const handleClose = () => {
-    // setIsEditModalOpen(false);
     setShowProjectDetail(false);
     setShowConfirmModal(false);
-    setSelectedProject(null);
+    setIsAddModalOpen({
+      isOpen: false,
+      formStatus: undefined
+    })
+    selectedProject !== null ? 
+    setSelectedProject(null) : null
+    fetchProjects()
   };
 
   const handleStatusChangeHTML = (status: string) => {
@@ -158,7 +165,12 @@ const TableProject: React.FC = ({ }) => {
     }
   };
   const handleAddProject = () => {
-    setIsAddModalOpen(true);
+    setIsAddModalOpen(
+      {
+        isOpen: true,
+        formStatus: 'add'
+      }
+    );
   };
 
   const users = ["dngoc", "haaus", "ntdn"];
@@ -166,12 +178,12 @@ const TableProject: React.FC = ({ }) => {
     <>
       <ModalAddProject
         isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-        projectData={selectedProject}
+        onClose={handleClose}
+        project={selectedProject}
       />
       <div className="flex justify-between items-center mb-4">
         <button
-          onClick={handleAddProject}
+          onClick={() => handleAddProject()}
           className="bg-orange-400 text-white px-6 py-3 rounded-full hover:bg-orange-500 transition-colors flex items-center gap-2"
         >
           <span className="text-xl">+</span>

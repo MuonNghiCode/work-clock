@@ -2,7 +2,11 @@ import { useState } from "react";
 import { uploadToCloudinary } from "../../utils/uploadToCloudinary";
 import { Camera } from "lucide-react";
 
-const ImageUploader = () => {
+interface ImageUploaderProps {
+  onImageUploaded?: (imageUrl: string) => void;
+}
+
+const ImageUploader = ({ onImageUploaded = () => {} }: ImageUploaderProps) => {
   const [image, setImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -13,9 +17,17 @@ const ImageUploader = () => {
     if (!file) return;
 
     setLoading(true);
-    const imageUrl = await uploadToCloudinary(file);
-    setImage(imageUrl);
-    setLoading(false);
+    try {
+      const imageUrl = await uploadToCloudinary(file);
+      if (imageUrl) {
+        setImage(imageUrl);
+        onImageUploaded(imageUrl);
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

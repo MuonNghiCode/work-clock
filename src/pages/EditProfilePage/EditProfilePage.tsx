@@ -1,30 +1,28 @@
-import React, { useEffect, useState, forwardRef } from "react";
+import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Calendar } from "antd";
-import { FaCalendarAlt } from "react-icons/fa";
 // Sử dụng icon cho password (bạn có thể cài react-icons nếu chưa có: npm install react-icons)
-import { FaEye, FaEyeSlash, FaCamera } from "react-icons/fa"; // Thêm icon camera
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // Thêm icon camera
 // Import ảnh mặc định
-import userDefaultImage from "../../assets/images/user-image.png";
 //import { UserContext } from "../../context/UserContext"; // Import UserContext
-import { changePassword, getEmployeeByUserId, updateEmployee } from "../../services/userService";
+import { changePassword, getAllJobs, getEmployeeByUserId, updateEmployee } from "../../services/userService";
 import { getAllDepartments } from "../../services/userService";
 import { getAllContracts } from "../../services/userService";
 import dayjs, { Dayjs } from "dayjs";
-interface ProfileImageUploadProps {
-    userId: string;
-    formData: any;
-    setFormData: React.Dispatch<React.SetStateAction<any>>;
-}
+import { EmployeeInfo, JobRank } from "../../types/Employee";
+import { User } from "lucide-react";
+import ImageUploader from "../../components/ImageUploader/ImageUploader";
 
-interface Department {
+
+
+export interface Department {
     _id: string;
     department_code: string;
     description: string;
 }
 
-interface Contract {
+export interface Contract {
     _id: string;
     contract_type: string;
     description: string;
@@ -41,52 +39,20 @@ interface FormData {
     account: string;
     address: string;
     phone: string;
+    department_name: string;
     full_name: string;
     avatar_url: string;
     department_code: string;
     salary: number;
     user_id: string;
+    is_deleted: boolean;
     start_date: Date | null;
     end_date: Date | null;
+    updated_by: string;
 }
-interface EditProfilePageProps {
-    userData: FormData;
-    departments: Department[];
-    contracts: Contract[];
-    onUpdate: (data: FormData) => void;
-}
+
 
 const EditProfilePage: React.FC = () => {
-    const convertFormDataToPayload = (data: FormData) => ({
-        ...data,
-        start_date: data.start_date ? data.start_date.toISOString().split("T")[0] : undefined, // [UPDATED]
-        end_date: data.end_date ? data.end_date.toISOString().split("T")[0] : undefined,       // [UPDATED]
-    });
-
-    // [UPDATED] Inline CustomDateInput component với icon lịch
-    const CustomDateInput = forwardRef<
-        HTMLInputElement,
-        { value?: string; onClick?: () => void; placeholder?: string }
-    >(({ value, onClick, placeholder }, ref) => (
-        <div className="relative">
-            <input
-                className="w-full p-2 border rounded pr-10 cursor-pointer"
-                onClick={onClick}
-                ref={ref}
-                value={value || ""}
-                placeholder={placeholder}
-                readOnly
-            />
-            <FaCalendarAlt
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
-                onClick={onClick}
-            />
-        </div>
-    ));
-    const fetchedData = {
-        start_date: "2025-03-10",
-        end_date: "2025-03-20",
-    };
 
     const [formData, setFormData] = useState<FormData>({
         job_rank: "",
@@ -95,12 +61,15 @@ const EditProfilePage: React.FC = () => {
         account: "",
         address: "",
         phone: "",
+        department_name: "",
         full_name: "",
         avatar_url: "",
         department_code: "",
         salary: 0,
         start_date: null,
         end_date: null,
+        is_deleted: false,
+        updated_by: "",
     });
 
     const [activeTab, setActiveTab] = useState<"account" | "password">("account");
@@ -113,13 +82,8 @@ const EditProfilePage: React.FC = () => {
     const [userId, setUserId] = useState<string | null>(null);
     const [departments, setDepartments] = useState<Department[]>([]);
     const [contracts, setContracts] = useState<Contract[]>([]);
-
-    useEffect(() => {
-        const storedUserId = localStorage.getItem("userId");
-        if (storedUserId) {
-            setUserId(storedUserId);
-        }
-    }, []);
+    const [jobrank, setJobRank] = useState<JobRank[]>([]);
+    const [previewAvatar, setPreviewAvatar] = useState("");
     // Lấy userId từ localStorage sau khi đăng nhập
     useEffect(() => {
         const storedUserId = localStorage.getItem("userId");
@@ -132,21 +96,29 @@ const EditProfilePage: React.FC = () => {
     useEffect(() => {
         if (userId) {
             getEmployeeByUserId(userId)
-                .then((data) => {
-                    setFormData({
-                        job_rank: data.job_rank,
-                        user_id: data.user_id,
-                        contract_type: data.contract_type,
-                        account: data.account,
-                        address: data.address,
-                        phone: data.phone,
-                        full_name: data.full_name,
-                        avatar_url: data.avatar_url || "",
-                        department_code: data.department_code,
-                        salary: data.salary,
-                        start_date: data.start_date ? new Date(data.start_date) : null,
-                        end_date: data.end_date ? new Date(data.end_date) : null,
-                    });
+                .then((response) => {
+                    if (response.success) {
+                        const data = response.data;
+                        setFormData({
+                            job_rank: data.job_rank,
+                            user_id: userId,
+                            contract_type: data.contract_type,
+                            account: data.account,
+                            address: data.address,
+                            phone: data.phone,
+                            full_name: data.full_name,
+                            avatar_url: data.avatar_url || "",
+                            is_deleted: data.is_deleted,
+                            updated_by: data.updated_by,
+                            department_name: data.department_name,
+                            department_code: data.department_code,
+                            salary: data.salary,
+                            start_date: data.start_date ? new Date(data.start_date) : null,
+                            end_date: data.end_date ? new Date(data.end_date) : null,
+                        });
+                    } else {
+                        console.error("Error fetching employee data:", response.message);
+                    }
                 })
                 .catch((error) => console.error("Error fetching employee data:", error));
         }
@@ -158,8 +130,10 @@ const EditProfilePage: React.FC = () => {
             try {
                 const deptData = await getAllDepartments();
                 const contractData = await getAllContracts();
-                setDepartments(deptData);
-                setContracts(contractData);
+                const jobRankData = await getAllJobs();
+                setJobRank(jobRankData.data);
+                setDepartments(deptData.data);
+                setContracts(contractData.data);
             } catch (error) {
                 console.error("Error fetching dropdown data:", error);
             }
@@ -173,45 +147,18 @@ const EditProfilePage: React.FC = () => {
             start_date: date.toDate(), // Chuyển từ Dayjs sang Date
         }));
     };
-    const handleEndDateChange = (date: Date | null) => {
-        if (date) {
-            setFormData((prev) => ({ ...prev, end_date: date })); // Lưu luôn đối tượng Date
-        }
-    };
-
 
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>
     ) => {
         const { name, value } = e.target as HTMLInputElement | HTMLSelectElement;
-        setFormData((prevFormData) => {
-            const updatedFormData = { ...prevFormData, [name]: value };
-            // Gọi API cập nhật ngay khi người dùng thay đổi thông tin
-            updateEmployeeData(updatedFormData);
-            return updatedFormData;
-        });
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            [name]: value
+        }));
     };
-    const updateEmployeeData = async (updatedData: FormData) => {
-        const storedUserId = localStorage.getItem("userId");
-        if (!storedUserId) {
-            toast.error("User ID is missing");
-            return;
-        }
-        try {
-            // [UPDATED] Chuyển đổi Date sang chuỗi định dạng "YYYY-MM-DD"
-            const payload = {
-                ...updatedData,
-                start_date: updatedData.start_date ? updatedData.start_date.toISOString().split("T")[0] : undefined,
-                end_date: updatedData.end_date ? updatedData.end_date.toISOString().split("T")[0] : undefined,
-            };
-            await updateEmployee(storedUserId, payload);
-            localStorage.setItem("accountData", JSON.stringify(payload));
-            toast.success("Updated successfully!");
-        } catch (error) {
-            console.error("Error updating employee:", error);
-            toast.error("Error updating employee");
-        }
-    };
+
+
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -222,16 +169,36 @@ const EditProfilePage: React.FC = () => {
             return;
         }
 
-        const formattedData = {
+        const formattedData: EmployeeInfo = {
             ...formData,
-            start_date: formData.start_date ? formData.start_date.toISOString() : undefined,
-            end_date: formData.end_date ? formData.end_date.toISOString() : undefined,
+            start_date: formData.start_date ? formData.start_date.toISOString() : "",
+            end_date: formData.end_date ? formData.end_date.toISOString() : null,
         };
 
         try {
             await updateEmployee(storedUserId, formattedData);
             localStorage.setItem("accountData", JSON.stringify(formattedData));
             toast.success("Employee updated successfully!");
+
+            // Refresh the employee data
+            const updatedEmployeeData = await getEmployeeByUserId(storedUserId);
+            setFormData({
+                job_rank: updatedEmployeeData.data.job_rank,
+                user_id: storedUserId,
+                contract_type: updatedEmployeeData.data.contract_type,
+                account: updatedEmployeeData.data.account,
+                address: updatedEmployeeData.data.address,
+                phone: updatedEmployeeData.data.phone,
+                full_name: updatedEmployeeData.data.full_name,
+                avatar_url: updatedEmployeeData.data.avatar_url || "",
+                is_deleted: updatedEmployeeData.data.is_deleted,
+                updated_by: updatedEmployeeData.data.updated_by,
+                department_name: updatedEmployeeData.data.department_name,
+                department_code: updatedEmployeeData.data.department_code,
+                salary: updatedEmployeeData.data.salary,
+                start_date: updatedEmployeeData.data.start_date ? new Date(updatedEmployeeData.data.start_date) : null,
+                end_date: updatedEmployeeData.data.end_date ? new Date(updatedEmployeeData.data.end_date) : null,
+            });
         } catch (error) {
             console.error("Error updating employee:", error);
             toast.error("Error updating employee");
@@ -249,30 +216,29 @@ const EditProfilePage: React.FC = () => {
         setPasswordData((prev) => ({ ...prev, [name]: value }));
     };
 
-    // Xử lý thay đổi ảnh đại diện
-    const [userImage, setUserImage] = useState<string | null>(() => {
-        return localStorage.getItem("userImage") || null;
-    });
-
-    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files && event.target.files[0]) {
-            const file = event.target.files[0];
-            const reader = new FileReader();
-
-            reader.onloadend = () => {
-                const imageData = reader.result as string;
-                setUserImage(imageData); // Hiển thị ngay ảnh mới
+    const validateImageUrl = async (url: string) => {
+        try {
+            const img = new Image();
+            img.onload = () => {
+                setPreviewAvatar(url);
+                setFormData((prev) => ({ ...prev, avatar_url: url }));
             };
-
-            reader.readAsDataURL(file);
+            img.onerror = () => {
+                setPreviewAvatar("");
+                toast.error("Invalid image URL");
+            };
+            img.src = url;
+        } catch {
+            setPreviewAvatar("");
+            toast.error("Invalid image URL");
         }
     };
 
-    useEffect(() => {
-        if (userImage) {
-            localStorage.setItem("userImage", userImage);
-        }
-    }, [userImage]);
+    const handleImageUpload = (imageUrl: string) => {
+        setPreviewAvatar(imageUrl);
+        setFormData(prev => ({ ...prev, avatar_url: imageUrl }));
+    };
+
     // Submit cho Change Password
     const handleSubmitPassword = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -319,16 +285,54 @@ const EditProfilePage: React.FC = () => {
             <div className="flex gap-6 bg-white shadow rounded-lg p-6">
                 {/* Sidebar: User Profile */}
 
-                <div className="w-1/4 flex flex-col items-center bg-white p-4 shadow rounded-lg">
-                    <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
-                    <div className="relative w-24 h-24 rounded-full overflow-hidden border border-gray-300 cursor-pointer" onClick={() => document.getElementById('fileInput')?.click()}>
-                        <img src={userImage || userDefaultImage} alt="User" className="w-full h-full object-cover" />
-                        <input id="fileInput" type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
-                        <div className="absolute bottom-1 right-1 bg-gray-700 p-1 rounded-full text-white text-xs cursor-pointer hover:bg-gray-600">
-                            <FaCamera />
+                <div className="mb-8">
+                    <h3 className="text-lg font-semibold text-gray-700 mb-4">Profile Image</h3>
+                    <div className="flex flex-col items-center gap-4">
+                        {/* Avatar Preview với Upload Overlay */}
+                        <div className="relative group">
+                            <div className="w-40 h-40 rounded-full border-4 border-gray-200 overflow-hidden">
+                                {previewAvatar ? (
+                                    <img
+                                        src={previewAvatar}
+                                        alt="Avatar preview"
+                                        className="w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <div className="w-full h-full bg-gray-50 flex items-center justify-center">
+                                        <User className="w-16 h-16 text-gray-400" />
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Upload Overlay */}
+                            <div className="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <ImageUploader onImageUploaded={handleImageUpload} />
+                            </div>
+                        </div>
+
+                        {/* URL Input và Preview Button */}
+                        <div className="w-full max-w-md">
+                            <label className="block text-sm font-medium text-gray-600 mb-2">
+                                Image URL
+                            </label>
+                            <div className="flex gap-2">
+                                <input
+                                    type="text"
+                                    value={formData.avatar_url || ""}
+                                    onChange={(e) => validateImageUrl(e.target.value)}
+                                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                                    placeholder="https://example.com/image.jpg"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => validateImageUrl(formData.avatar_url || "")}
+                                    className="px-4 py-2 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200"
+                                >
+                                    Preview
+                                </button>
+                            </div>
                         </div>
                     </div>
-
                 </div>
 
                 {/* Form Section */}
@@ -407,14 +411,19 @@ const EditProfilePage: React.FC = () => {
                             </div>
                             <div>
                                 <label className="block text-gray-700">Job Rank</label>
-                                <input
-                                    type="text"
+                                <select
                                     name="job_rank"
                                     value={formData.job_rank}
                                     onChange={handleInputChange}
                                     className="w-full p-2 border rounded"
-                                    placeholder="Job Rank"
-                                />
+                                >
+                                    <option value="">Select Job Rank</option>
+                                    {jobrank.map((job) => (
+                                        <option key={job.id} value={job.job_rank}>
+                                            {job.job_rank}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
                             <div>
                                 <label className="block text-gray-700">Department Code</label>
