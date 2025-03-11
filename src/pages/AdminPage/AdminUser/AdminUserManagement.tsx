@@ -1,10 +1,35 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Search, Edit2, Trash2, Eye, X, User, Mail, Shield, CheckCircle, AlertCircle, Phone, MapPin, Briefcase, Calendar, Building, Award, ArrowRight, ArrowLeft, UserCog } from "lucide-react";
+import {
+  Search,
+  Edit2,
+  Trash2,
+  Eye,
+  X,
+  User,
+  Mail,
+  Shield,
+  CheckCircle,
+  AlertCircle,
+  Phone,
+  MapPin,
+  Briefcase,
+  Calendar,
+  Building,
+  Award,
+  ArrowRight,
+  ArrowLeft,
+  UserCog,
+} from "lucide-react";
 import { toast } from "react-toastify";
 import { Pagination } from "antd";
 import UserManagementAdd from "../../../components/AdminComponents/AddUser/UserManagementAdd";
 import UserManagementEdit from "../../../components/AdminComponents/EditUser/UserManagementEdit";
-import { getUsers, deleteUser, changeUserStatus, updateUserRole } from "../../../services/userAuth";
+import {
+  getUsers,
+  deleteUser,
+  changeUserStatus,
+  updateUserRole,
+} from "../../../services/userAuth";
 import type { UserData } from "../../../services/userAuth";
 import { getEmployeeByUserId } from "../../../services/userService";
 import EditEmployeeModal from "../../../components/AdminComponents/EditEmployee/EditEmployeeModal";
@@ -23,7 +48,7 @@ export interface User<T> {
   is_deleted: boolean;
 }
 
-export interface NewUser extends Omit<UserData, '_id' | 'is_deleted'> {
+export interface NewUser extends Omit<UserData, "_id" | "is_deleted"> {
   _id?: string;
   is_deleted?: boolean;
 }
@@ -154,9 +179,13 @@ const AdminUserManagement: React.FC = () => {
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
     null
   );
-  const [activeEditTab, setActiveEditTab] = useState<'account' | 'information'>('account');
+  const [activeEditTab, setActiveEditTab] = useState<"account" | "information">(
+    "account"
+  );
   const [showRoleChangeConfirm, setShowRoleChangeConfirm] = useState(false);
-  const [userToChangeRole, setUserToChangeRole] = useState<User<string> | null>(null);
+  const [userToChangeRole, setUserToChangeRole] = useState<User<string> | null>(
+    null
+  );
   const [newRole, setNewRole] = useState("");
   const [editingRoleId, setEditingRoleId] = useState<string | null>(null);
 
@@ -189,15 +218,15 @@ const AdminUserManagement: React.FC = () => {
             statusFilter === "locked"
               ? true
               : statusFilter === "unlocked"
-                ? false
-                : undefined,
+              ? false
+              : undefined,
           // is_deleted: statusFilter === "deleted" ? true : false,
           is_verified:
             statusFilter === "verified"
               ? true
               : statusFilter === "unverified"
-                ? false
-                : undefined,
+              ? false
+              : undefined,
           search_by: "username" as const,
         };
         const pageInfo = {
@@ -206,7 +235,9 @@ const AdminUserManagement: React.FC = () => {
         };
         const response = await getUsers(searchCondition, pageInfo);
         if (response.success) {
-          const mappedUsers = response.data.pageData.map((user: UserData) => mapApiUserToUser(user as ApiUser));
+          const mappedUsers = response.data.pageData.map((user: UserData) =>
+            mapApiUserToUser(user as ApiUser)
+          );
           setUsers(mappedUsers);
           setTotalItems(response.data.pageInfo.totalItems ?? 0);
         }
@@ -235,16 +266,16 @@ const AdminUserManagement: React.FC = () => {
 
   const handleUpdateUser = async (updatedUser: User<string>) => {
     try {
-      setUsers(prev =>
-        prev.map(user =>
-          user.id === updatedUser.id ? updatedUser : user
-        )
+      setUsers((prev) =>
+        prev.map((user) => (user.id === updatedUser.id ? updatedUser : user))
       );
       setIsEditModalOpen(false); // Đóng form
       setEditingUser(null);
     } catch (error) {
       console.error("Error updating user:", error);
-      toast.error(error instanceof Error ? error.message : "Failed to update user");
+      toast.error(
+        error instanceof Error ? error.message : "Failed to update user"
+      );
     }
   };
 
@@ -263,14 +294,16 @@ const AdminUserManagement: React.FC = () => {
       const response = await deleteUser(userToDelete.id);
 
       if (response.success) {
-        setUsers(users.filter(user => user.id !== userToDelete.id));
+        setUsers(users.filter((user) => user.id !== userToDelete.id));
         toast.success("User deleted successfully");
         setShowDeleteConfirm(false);
         setUserToDelete(null);
       }
     } catch (error) {
       console.error("Error deleting user:", error);
-      toast.error(error instanceof Error ? error.message : "Failed to delete user");
+      toast.error(
+        error instanceof Error ? error.message : "Failed to delete user"
+      );
     }
   };
 
@@ -322,7 +355,7 @@ const AdminUserManagement: React.FC = () => {
       // 3. User không phải admin không được thay đổi status
       if (
         user.id === currentUser._id || // Không thể thay đổi status của chính mình
-        user.role_code === "A001" ||   // Không thể thay đổi status của admin khác
+        user.role_code === "A001" || // Không thể thay đổi status của admin khác
         currentUser.role_code !== "A001" // Chỉ admin mới có quyền thay đổi status
       ) {
         toast.error("You don't have permission to change this user's status");
@@ -331,10 +364,14 @@ const AdminUserManagement: React.FC = () => {
 
       const response = await changeUserStatus(user.id, !user.is_blocked);
       if (response.success) {
-        setUsers(users.map(u =>
-          u.id === user.id ? { ...u, is_blocked: !u.is_blocked } : u
-        ));
-        toast.success(`User ${user.is_blocked ? 'unlocked' : 'locked'} successfully`);
+        setUsers(
+          users.map((u) =>
+            u.id === user.id ? { ...u, is_blocked: !u.is_blocked } : u
+          )
+        );
+        toast.success(
+          `User ${user.is_blocked ? "unlocked" : "locked"} successfully`
+        );
       }
     } catch (error) {
       console.error("Error changing user status:", error);
@@ -355,7 +392,8 @@ const AdminUserManagement: React.FC = () => {
       // Kiểm tra quyền thay đổi role
       if (
         userToChangeRole.id === currentAdmin._id || // Không thể thay đổi role của chính mình
-        (userToChangeRole.role_code === "A001" && currentAdmin.role_code !== "A001") // Chỉ admin mới có thể thay đổi role của admin khác
+        (userToChangeRole.role_code === "A001" &&
+          currentAdmin.role_code !== "A001") // Chỉ admin mới có thể thay đổi role của admin khác
       ) {
         toast.error("You don't have permission to change this user's role");
         return;
@@ -364,14 +402,15 @@ const AdminUserManagement: React.FC = () => {
       await updateUserRole(userToChangeRole.id, newRole);
 
       // Cập nhật UI nếu thành công
-      setUsers(users.map(u =>
-        u.id === userToChangeRole.id ? { ...u, role_code: newRole } : u
-      ));
+      setUsers(
+        users.map((u) =>
+          u.id === userToChangeRole.id ? { ...u, role_code: newRole } : u
+        )
+      );
       toast.success("User role updated successfully");
       setShowRoleChangeConfirm(false);
       setUserToChangeRole(null);
       setNewRole("");
-
     } catch (error) {
       console.error("Error changing role:", error);
       toast.error("Failed to change user role");
@@ -491,10 +530,11 @@ const AdminUserManagement: React.FC = () => {
                             }
                           }}
                           disabled={user.id === currentAdmin._id}
-                          className={`px-3 py-1 rounded-full font-medium transition-all duration-200 ease-in-out ${user.id === currentAdmin._id
-                            ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                            : "bg-orange-50 text-orange-700 hover:bg-orange-100"
-                            }`}
+                          className={`px-3 py-1 rounded-full font-medium transition-all duration-200 ease-in-out ${
+                            user.id === currentAdmin._id
+                              ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                              : "bg-orange-50 text-orange-700 hover:bg-orange-100"
+                          }`}
                         >
                           {getRoleName(user.role_code)}
                         </button>
@@ -506,15 +546,18 @@ const AdminUserManagement: React.FC = () => {
                       onClick={() => handleChangeStatus(user)}
                       disabled={
                         user.id === currentAdmin._id || // Không thể thay đổi status của chính mình
-                        user.role_code === "A001" ||    // Không thể thay đổi status của admin khác
+                        user.role_code === "A001" || // Không thể thay đổi status của admin khác
                         currentAdmin.role_code !== "A001" // Chỉ admin mới có quyền thay đổi status
                       }
-                      className={`px-3 py-1 rounded-full font-medium ${user.id === currentAdmin._id || user.role_code === "A001" || currentAdmin.role_code !== "A001"
-                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                        : user.is_blocked
+                      className={`px-3 py-1 rounded-full font-medium ${
+                        user.id === currentAdmin._id ||
+                        user.role_code === "A001" ||
+                        currentAdmin.role_code !== "A001"
+                          ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                          : user.is_blocked
                           ? "bg-red-50 text-red-500 hover:bg-red-100"
                           : "bg-green-50 text-green-500 hover:bg-green-100"
-                        }`}
+                      }`}
                     >
                       {getUserStatus(user)}
                     </button>
@@ -527,7 +570,7 @@ const AdminUserManagement: React.FC = () => {
                             className="text-blue-500 hover:text-blue-600"
                             onClick={() => {
                               setEditingUser(user);
-                              setActiveEditTab('account');
+                              setActiveEditTab("account");
                               setIsEditModalOpen(true);
                             }}
                           >
@@ -539,7 +582,7 @@ const AdminUserManagement: React.FC = () => {
                             style={{
                               display:
                                 user.email === "admin@gmail.com" ||
-                                  user.id === currentAdmin._id
+                                user.id === currentAdmin._id
                                   ? "none"
                                   : "inline",
                             }}
@@ -699,10 +742,11 @@ const AdminUserManagement: React.FC = () => {
                         </span>
                         <span className="w-2/3">
                           <span
-                            className={`px-3 py-1 rounded-full text-sm ${selectedUser.is_verified
-                              ? "bg-green-50 text-green-600"
-                              : "bg-yellow-50 text-yellow-600"
-                              }`}
+                            className={`px-3 py-1 rounded-full text-sm ${
+                              selectedUser.is_verified
+                                ? "bg-green-50 text-green-600"
+                                : "bg-yellow-50 text-yellow-600"
+                            }`}
                           >
                             {selectedUser.is_verified
                               ? "Verified"
@@ -720,10 +764,11 @@ const AdminUserManagement: React.FC = () => {
                         </span>
                         <span className="w-2/3">
                           <span
-                            className={`px-3 py-1 rounded-full text-sm ${selectedUser.is_blocked
-                              ? "bg-red-50 text-red-600"
-                              : "bg-green-50 text-green-600"
-                              }`}
+                            className={`px-3 py-1 rounded-full text-sm ${
+                              selectedUser.is_blocked
+                                ? "bg-red-50 text-red-600"
+                                : "bg-green-50 text-green-600"
+                            }`}
                           >
                             {selectedUser.is_blocked ? "Blocked" : "Unlocked"}
                           </span>
@@ -799,8 +844,8 @@ const AdminUserManagement: React.FC = () => {
                         <span className="w-2/3 text-gray-800">
                           {selectedEmployee?.start_date
                             ? new Date(
-                              selectedEmployee.start_date
-                            ).toLocaleDateString()
+                                selectedEmployee.start_date
+                              ).toLocaleDateString()
                             : "N/A"}
                         </span>
                       </div>
@@ -815,8 +860,8 @@ const AdminUserManagement: React.FC = () => {
                         <span className="w-2/3 text-gray-800">
                           {selectedEmployee?.end_date
                             ? new Date(
-                              selectedEmployee.end_date
-                            ).toLocaleDateString()
+                                selectedEmployee.end_date
+                              ).toLocaleDateString()
                             : "N/A"}
                         </span>
                       </div>
@@ -874,16 +919,27 @@ const AdminUserManagement: React.FC = () => {
               <div className="flex justify-between items-center mb-6">
                 <div className="flex items-center gap-4">
                   <h2 className="text-2xl font-bold text-[#FF9447]">
-                    {activeEditTab === 'account' ? 'Edit Account' : 'Edit Information'}
+                    {activeEditTab === "account"
+                      ? "Edit Account"
+                      : "Edit Information"}
                   </h2>
                   <button
-                    className={`p-2 rounded-full transition-all duration-300 transform hover:scale-110 ${activeEditTab === 'account'
-                      ? 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                      : 'bg-[#FF9447] text-white hover:bg-[#FF8347]'
-                      }`}
-                    onClick={() => setActiveEditTab(activeEditTab === 'account' ? 'information' : 'account')}
+                    className={`p-2 rounded-full transition-all duration-300 transform hover:scale-110 ${
+                      activeEditTab === "account"
+                        ? "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                        : "bg-[#FF9447] text-white hover:bg-[#FF8347]"
+                    }`}
+                    onClick={() =>
+                      setActiveEditTab(
+                        activeEditTab === "account" ? "information" : "account"
+                      )
+                    }
                   >
-                    {activeEditTab === 'account' ? <ArrowRight size={20} /> : <ArrowLeft size={20} />}
+                    {activeEditTab === "account" ? (
+                      <ArrowRight size={20} />
+                    ) : (
+                      <ArrowLeft size={20} />
+                    )}
                   </button>
                 </div>
                 <button
@@ -900,12 +956,13 @@ const AdminUserManagement: React.FC = () => {
               {/* Content based on active tab */}
               <div className="relative">
                 <div
-                  className={`transition-all duration-300 transform ${activeEditTab === 'account'
-                    ? 'translate-x-0 opacity-100'
-                    : '-translate-x-full opacity-0 absolute inset-0'
-                    }`}
+                  className={`transition-all duration-300 transform ${
+                    activeEditTab === "account"
+                      ? "translate-x-0 opacity-100"
+                      : "-translate-x-full opacity-0 absolute inset-0"
+                  }`}
                 >
-                  {activeEditTab === 'account' && (
+                  {activeEditTab === "account" && (
                     <UserManagementEdit
                       user={editingUser}
                       onClose={() => {
@@ -917,12 +974,13 @@ const AdminUserManagement: React.FC = () => {
                   )}
                 </div>
                 <div
-                  className={`transition-all duration-300 transform ${activeEditTab === 'information'
-                    ? 'translate-x-0 opacity-100'
-                    : 'translate-x-full opacity-0 absolute inset-0'
-                    }`}
+                  className={`transition-all duration-300 transform ${
+                    activeEditTab === "information"
+                      ? "translate-x-0 opacity-100"
+                      : "translate-x-full opacity-0 absolute inset-0"
+                  }`}
                 >
-                  {activeEditTab === 'information' && (
+                  {activeEditTab === "information" && (
                     <EditEmployeeModal
                       isOpen={true}
                       onClose={() => {
