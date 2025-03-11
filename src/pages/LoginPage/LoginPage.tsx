@@ -11,7 +11,6 @@ import {
   forgotPassword,
 } from "../../services/authService";
 // import { Spin } from "antd";
-import LoadingScreen from "../../components/LoadingScreen/LoadingScreen";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -24,7 +23,7 @@ const LoginPage: React.FC = () => {
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
     {}
   );
-  const [isLoading, setIsLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const validate = () => {
@@ -45,49 +44,40 @@ const LoginPage: React.FC = () => {
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     if (validate()) {
-      try {
-        await login(email, password);
-        const token = localStorage.getItem("token");
-        let user;
-        if (token) {
-          user = await getUserInfobyToken();
-          let role = user.data.role_code;
-          if (user && user.data) {
-            toast.success("Login successful!");
-            setTimeout(() => {
-              switch (role) {
-                case "A001":
-                  navigate("/admin");
-                  break;
-                case "A004":
-                  navigate("/user");
-                  break;
-                case "A003":
-                  navigate("/approval");
-                  break;
-                case "A002":
-                  navigate("/finance");
-                  break;
-                default:
-                  navigate("/");
-              }
-            }, 1000);
-          } else {
-            toast.error("Invalid email or password!");
-          }
+      await login(email, password);
+      const token = localStorage.getItem("token");
+      let user;
+      if (token) {
+        user = await getUserInfobyToken();
+        let role = user.data.role_code;
+        if (user && user.data) {
+          toast.success("Login successful!");
+          setTimeout(() => {
+            switch (role) {
+              case "A001":
+                navigate("/admin");
+                break;
+              case "A004":
+                navigate("/user");
+                break;
+              case "A003":
+                navigate("/approval");
+                break;
+              case "A002":
+                navigate("/finance");
+                break;
+              default:
+                navigate("/");
+            }
+          }, 1000);
         }
-      } catch (error) {
-        toast.error("Please fix the errors before submitting.");
       }
     }
-    setIsLoading(false);
   };
 
   const handleForgotPasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     try {
       await forgotPassword(forgotPasswordEmail);
       toast.success("Password reset link sent to your email!");
@@ -95,16 +85,10 @@ const LoginPage: React.FC = () => {
     } catch (error) {
       toast.error("Error sending password reset link.");
     }
-    setIsLoading(false);
   };
 
   return (
-    <div className="relative flex justify-center items-center h-screen">
-      {isLoading && (
-        <div className="!w-screen !h-screen !bg-black !opacity-50 !absolute !top-0 !left-0 !z-9999">
-          <LoadingScreen />
-        </div>
-      )}
+    <div className="relative flex justify-center items-center h-screen bg-gray-200">
       <img
         src={Images.Background2}
         alt="Background"
@@ -113,9 +97,8 @@ const LoginPage: React.FC = () => {
 
       {/* Login Form */}
       <div
-        className={`lg:w-230 lg:h-140 w-full h-5/6 flex border border-black rounded-[30px] bg-white z-10 ${
-          isForgotPassword ? "hidden" : ""
-        }`}
+        className={`lg:w-230 lg:h-140 w-full h-5/6 flex border border-black rounded-[30px] bg-white z-10 ${isForgotPassword ? "hidden" : ""
+          }`}
       >
         <motion.div
           initial={{ x: 0, opacity: 0 }}
@@ -123,7 +106,7 @@ const LoginPage: React.FC = () => {
             x: isForgotPassword ? "70%" : "0%",
             opacity: isForgotPassword ? 1 : 1,
           }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 1 }}
           className="w-full lg:flex hidden items-center justify-center"
         >
           <img
@@ -157,11 +140,10 @@ const LoginPage: React.FC = () => {
               {/* Email Field */}
               <div className="relative py-10">
                 <span
-                  className={`absolute left-2 top-12 text-gray-500 transition-all pointer-events-none ${
-                    email || isEmailFocused
+                  className={`absolute left-2 top-12 text-gray-500 transition-all pointer-events-none ${email || isEmailFocused
                       ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
                       : "text-base"
-                  }`}
+                    }`}
                 >
                   Email
                 </span>
@@ -187,11 +169,10 @@ const LoginPage: React.FC = () => {
               {/* Password Field */}
               <div className="relative">
                 <span
-                  className={`absolute left-2 top-2 text-gray-500 transition-all pointer-events-none ${
-                    password || isPasswordFocused
+                  className={`absolute left-2 top-2 text-gray-500 transition-all pointer-events-none ${password || isPasswordFocused
                       ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
                       : "text-base"
-                  }`}
+                    }`}
                 >
                   Password
                 </span>
@@ -240,9 +221,8 @@ const LoginPage: React.FC = () => {
 
       {/* Forgot Password Form */}
       <div
-        className={`lg:w-230 lg:h-140 w-full h-5/6 flex border border-black rounded-[30px] bg-white z-20 ${
-          !isForgotPassword ? "hidden" : ""
-        }`}
+        className={`lg:w-230 lg:h-140 w-full h-5/6 flex border border-black rounded-[30px] bg-white z-20 ${!isForgotPassword ? "hidden" : ""
+          }`}
       >
         <motion.div
           initial={{ x: 0, opacity: 0 }}
@@ -268,11 +248,10 @@ const LoginPage: React.FC = () => {
             </h1>
             <div className="lg:mt-10 relative py-4">
               <span
-                className={`  absolute  left-2 top-6 text-gray-500 transition-all pointer-events-none ${
-                  forgotPasswordEmail || isEmailFocused
+                className={`  absolute  left-2 top-6 text-gray-500 transition-all pointer-events-none ${forgotPasswordEmail || isEmailFocused
                     ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
                     : "text-base"
-                }`}
+                  }`}
               >
                 Email
               </span>
@@ -313,7 +292,7 @@ const LoginPage: React.FC = () => {
             x: isForgotPassword ? "0%" : "-70%",
             opacity: 1,
           }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
+          transition={{ duration: 1, ease: "easeOut" }}
           className="w-full  items-center justify-center  lg:flex hidden"
         >
           <img

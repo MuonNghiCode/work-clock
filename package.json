@@ -23,6 +23,7 @@
     "dayjs": "^1.11.13",
     "exceljs": "^4.4.0",
     "file-saver": "^2.0.5",
+    "firebase": "^11.4.0",
     "framer-motion": "^12.4.3",
     "install": "^0.13.0",
     "lodash.debounce": "^4.0.8",

@@ -3,6 +3,7 @@ import { Outlet, useLocation } from "react-router";
 import { useInView } from "react-intersection-observer";
 import MainHeader from "../Header/MainHeader/MainHeader";
 import Footer from "../Footer/Footer";
+import ClickSpark from "../../components/ClickSpark/ClickSpark";
 
 const MainLayout: React.FC = () => {
   const location = useLocation();
@@ -28,7 +29,15 @@ const MainLayout: React.FC = () => {
           }`}
         >
           {isHomePage && <div ref={homeSectionRef} id="home-section" />}
-          <Outlet />
+          <ClickSpark
+            sparkColor="#ff914d"
+            sparkSize={15}
+            sparkRadius={30}
+            sparkCount={8}
+            duration={400}
+          >
+            <Outlet />
+          </ClickSpark>
         </main>
         <footer className="z-10 bg-white text-black text-center p-4 ">
           <Footer />

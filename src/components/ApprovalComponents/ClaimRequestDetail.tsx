@@ -1,93 +1,82 @@
 import React from "react";
-import { Modal, Table, Row, Col } from "antd";
+import { Modal } from "antd";
+import { ClaimInfo } from "../../types/ClaimType";
 
 interface ClaimRequestModalProps {
   visible: boolean;
   onClose: () => void;
+  id: ClaimInfo;
 }
 
 const ClaimRequestDetail: React.FC<ClaimRequestModalProps> = ({
   visible,
   onClose,
+  id,
 }) => {
-  const columns = [
-    { title: "Date", dataIndex: "date", key: "date" },
-    { title: "Day", dataIndex: "day", key: "day" },
-    { title: "From", dataIndex: "from", key: "from" },
-    { title: "To", dataIndex: "to", key: "to" },
-    { title: "Total Hours", dataIndex: "totalHours", key: "totalHours" },
-  ];
-
-  const data = Array(1).fill({
-    key: Math.random().toString(),
-    date: "12/12/2024",
-    day: "Thursday",
-    from: "5 pm",
-    to: "8 pm",
-    totalHours: "3 hours",
-  });
+  const [ClaimRequestDetail] = React.useState<ClaimInfo>(id);
 
   return (
     <Modal
-      title={<span className="text-xl lg:text-3xl font-bold">Claim Request Detail</span>}
+      title={<h4 className="text-2xl font-semibold text-[#FF9447] mb-4 border-b pb-2">
+        Claim Request Detail : {ClaimRequestDetail.claim_name}</h4>}
       open={visible}
+      cancelButtonProps={{ hidden: true }}
+      onOk={onClose}
       onCancel={onClose}
-      footer={null}
-      style={{ minWidth: "70%", maxWidth: "100%" }}
+      className="flex items-center justify-center"
+      style={{ minWidth: "40%", maxWidth: "80%", fontFamily: "Squada One" }}
+      styles={{ content: { backgroundColor: '#FAFAFA' }, footer: { backgroundColor: '#FAFAFA' }, header: { backgroundColor: '#FAFAFA' } }}
     >
-      <Row gutter={16}>
-        <Col span={12}>
-          <strong className="text-xl">Date Created: </strong>
-          <span className="text-lg">12/02/2025</span>
-        </Col>
-        <Col span={12}>
-          <strong className="text-xl">Phone</strong>
-          <span className="text-lg"> (+84) 123456789 </span>
-        </Col>
-      </Row>
-      <Row gutter={16} style={{ marginTop: 8 }}>
-        <Col span={12}>
-          <strong className="text-xl">Name: </strong>
-          <span className="text-lg">Nguyen Van A </span>
-        </Col>
-        <Col span={12}>
-          <strong className="text-xl">Email: </strong>
-          <span className="text-lg">nguyenvana@gmail.com </span>
-        </Col>
-      </Row >
-      <Row gutter={16} style={{ marginTop: 8 }}>
-        <Col span={12}>
-          <strong className="text-xl">Project: </strong>
-          <span className="text-lg">Project Mock project </span>
-        </Col>
-        <Col span={12}>
-          <strong className="text-xl">Role: </strong>
-          <span className="text-lg">Front-end Dev </span>
-        </Col>
-      </Row>
-      <Row gutter={16} style={{ marginTop: 8 }}>
-        <Col span={12}>
-          <strong className="text-xl">Duration: </strong>
-          <span className="text-lg">3 months </span>
-        </Col>
-      </Row>
-      <Table
-        className="!font-squada"
-        columns={columns}
-        dataSource={data}
-        pagination={false}
-        style={{ marginTop: 16 }}
-      />
-      <div
-        className="mt-4 text-right font-bold text-xl"
-      >
-        Total working hours: {" "}
-        <span
-          className="bg-[#ff7f50] p-2 rounded-lg text-white"
-        >
-          15 hours
-        </span>
-      </div >
+      <div className=" font-squada flex-col bg-white p-8 -m-2 my-2 rounded-2xl shadow-md" >
+        <div className="flex-col space-y-4">
+          <div className="flex items-center">
+            <span className="w-1/2 font-medium text-gray-600 text-lg">Create at: </span>
+            <span className="w-1/2 text-gray-800 truncate text-lg">{ClaimRequestDetail?.created_at}</span>
+          </div>
+          <div className="flex items-center">
+            <span className="w-1/2 font-medium text-gray-600 text-lg">Claimer Name:</span>
+            <span className="w-1/2 text-gray-800 truncate text-lg"> {ClaimRequestDetail?.staff_name}</span>
+          </div>
+          <div className="flex items-center">
+            <span className="w-1/2 font-medium text-gray-600 text-lg">Email:</span>
+            <span className="w-1/2 text-gray-800 truncate text-lg"> {ClaimRequestDetail?.staff_email}</span>
+          </div>
+          <div className="flex items-center">
+            {/* icon */}
+            <span className="w-1/2 font-medium text-gray-600 text-lg">Approval Name: </span>
+            <span className="w-1/2 text-gray-800 truncate text-lg">{ClaimRequestDetail?.approval_info.user_name}</span>
+          </div>
+          <div className="flex items-center">
+            <span className="w-1/2 font-medium text-gray-600 text-lg">Project: </span>
+            <span className="w-1/2 text-gray-800 truncate text-lg">
+              {ClaimRequestDetail?.project_info.project_name}</span>
+          </div>
+          <div className="flex items-center pb-2">
+            <span className="w-1/2 font-medium text-gray-600 text-lg">Role in Project: </span>
+            <span className="w-1/2 text-gray-800 truncate text-lg">
+              {ClaimRequestDetail?.role_in_project}</span>
+          </div>
+          <div className="flex-col mt-4 w-full">
+            <h4 className="font-semibold text-xl !text-gradient-color mb-4 border-t pt-4 text-[#FF9447] ">Claim Time: </h4>
+            <table className="min-w-full divide-y divide-[#FF9447] border border-[#FF9447] w-fit">
+              <thead className="bg-gray-50 rounded-t-lg">
+                <tr>
+                  <th className="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Start date</th>
+                  <th className="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">End Date</th>
+                  <th className="px-6 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">Total Working Time</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                <tr>
+                  <td className="px-6 py-4 whitespace-nowrap text-gray-900">{ClaimRequestDetail?.claim_start_date}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-gray-900">{ClaimRequestDetail?.claim_end_date}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-gray-900">{ClaimRequestDetail?.total_work_time} hours</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </Modal >
   );
 };

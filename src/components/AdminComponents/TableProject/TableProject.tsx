@@ -1,36 +1,30 @@
-import React, { useState } from "react";
-import { Button, Pagination, Tag, Input } from "antd";
-import { Project } from "../../../types/Project";
-import { GetProps } from "antd/lib/_util/type";
+import React, { useCallback, useEffect, useState } from "react";
+import { Button, Pagination } from "antd";
+import { ProjectInfo } from "../../../types/Project";
 import ConfirmModal from "../../ConfirmModal/ConfirmModal";
 import Icons from "../../icon";
-import EditProject from "../EditProject/EditProject";
-import Modal from "../../Modal/Modal";
-import ProjectDetail from "../../ProjectDetail/ProjectDetail";
+// import EditProject from "../EditProject/EditProject";
+import ProjectDetail from "../../ModalProjectDetail/ProjectDetail";
+import { getAllProject, PageInfo, SearchConditionProject } from "../../../services/projectService";
+import ModalAddProject from "../ModalAddProject/ModalAddProject";
+import { debounce } from "lodash";
 
-type SearchProps = GetProps<typeof Input.Search>;
-const { Search } = Input;
 
-interface DataProps {
-  data: Project[];
-  onEditProject: (editedProject: Project) => void;
-  onDeleteProject: (projectId: string | number) => void;
-}
-
-const TableProject: React.FC<DataProps> = ({
-  data,
-  onEditProject,
-  onDeleteProject,
-}) => {
+const TableProject: React.FC = ({ }) => {
+  const [projects, setProjects] = useState<ProjectInfo[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
-  const [statusFilter, setStatusFilter] = useState<string | null>(null);
-  const [searchValue, setSearchValue] = useState<string>("");
   const [showProjectDetail, setShowProjectDetail] = useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<ProjectInfo | null>(
+    null
+  );
+  // const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState<string>("");
+  const [totalItems, setTotalItems] = useState<number>(1);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
 
   const handlePageChange = (page: number, pageSize?: number) => {
     setCurrentPage(page);
@@ -39,83 +33,115 @@ const TableProject: React.FC<DataProps> = ({
     }
   };
 
-  const handleStatusChange = (status: string) => {
-    setStatusFilter(status === "All" ? null : status);
-    setCurrentPage(1);
-  };
+  const handleSearch = useCallback(
+    debounce((value: string) => {
+      setSearchValue(value);
+    }, 500),
+    []
+  );
 
-  const onSearch: SearchProps["onSearch"] = (value) => {
-    setSearchValue(value);
-    setCurrentPage(1);
-  };
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchValue(value);
-    setCurrentPage(1);
-  };
-
-  const filteredData = data.filter((item) => {
-    const matchesStatus = statusFilter ? item.status === statusFilter : true;
-
-    const matchesSearch = searchValue
-      ? searchValue
-          .toLowerCase()
-          .split("")
-          .every((char) => {
-            const charCount = searchValue.toLowerCase().split(char).length - 1;
-            const nameCharCount =
-              item.name.toLowerCase().split(char).length - 1;
-            return nameCharCount >= charCount;
-          })
-      : true;
-
-    return matchesStatus && matchesSearch;
+  const projectDetail = (data: ProjectInfo): ProjectInfo => ({
+    _id: data._id,
+    project_name: data.project_name,
+    project_code: data.project_code,
+    project_start_date: data.project_start_date,
+    project_end_date: data.project_end_date,
+    project_status: data.project_status,
+    project_members: data.project_members.map(member => ({
+      user_id: member.user_id,
+      project_role: member.project_role
+    })),
+    project_department: data.project_department,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    updated_by: "",
+    is_deleted: false,
+    project_description: data.project_description || "",
   });
 
-  const startIndex = (currentPage - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
-  const currentData = filteredData.slice(startIndex, endIndex);
+  const fetchProjects = async () => {
+    try {
+      const searchCondition: SearchConditionProject = {
+        keyword: searchValue,
+        project_start_date: "",
+        project_end_date: "",
+        is_delete: false,
+        user_id: "",
+      };
 
-  const statusTags = ["All", "Processing", "Pending", "Complete"];
+      const pageInfo: PageInfo = {
+        pageNum: currentPage,
+        pageSize: pageSize,
+        totalItems: 0,
+        totalPages: 0,
+      };
 
-  const handleShowProjectDetail = (project: Project) => {
+      const response = await getAllProject({ searchCondition, pageInfo });
+      console.log("Response:", response.data.pageData);
+      if (response.success) {
+        const projects = response.data.pageData.map(projectDetail);
+        setProjects(projects);
+        setTotalItems(response.data.pageInfo.totalItems || 1);
+      } else {
+        console.error(response.message);
+      }
+    } catch (error) {
+      console.error("Error fetching projects:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProjects();
+    console.log(projects[0])
+  }, [currentPage, pageSize, searchValue]); // Add searchValue to dependencies
+
+  const handleEditProject = (editedProject: ProjectInfo) => {
+    setSelectedProject(editedProject);
+    setIsAddModalOpen(true);
+  };
+
+  const handleDeleteProject = (projectId: string | number) => {
+    console.log("Deleting project with id:", projectId);
+    // Sử dụng callback để đảm bảo có state mới nhất
+    setProjects((prevProjects) => {
+      console.log("Previous projects:", prevProjects);
+      const newProjects = prevProjects.filter(
+        (project) => project._id !== projectId
+      );
+      console.log("New projects:", newProjects);
+      return newProjects;
+    });
+  };
+
+  const handleShowProjectDetail = (project: ProjectInfo) => {
     setSelectedProject(project);
     setShowProjectDetail(true);
   };
 
-  const handleEdit = (project: Project) => {
-    console.log("Opening edit modal for project:", project);
-    setSelectedProject(project);
-    setIsEditModalOpen(true);
-  };
 
-  const handleSaveEdit = (editedProject: Project) => {
-    onEditProject(editedProject);
-    setIsEditModalOpen(false);
-    setSelectedProject(null);
-  };
-
-  const handleDelete = (project: Project) => {
+  const handleDelete = (project: ProjectInfo) => {
     console.log("Deleting project:", project);
     setSelectedProject(project);
-    setMessage(`Are you sure you want to delete project "${project.name}"?`);
+    setMessage(
+      `Are you sure you want to delete project "${project.project_name}"?`
+    );
     setShowConfirmModal(true);
   };
 
   const handleConfirmDelete = () => {
     console.log("Confirming delete for project:", selectedProject);
-    if (selectedProject?.id) {
-      onDeleteProject(selectedProject.id);
+    if (selectedProject?._id) {
+      handleDeleteProject(selectedProject._id);
       setShowConfirmModal(false);
       setSelectedProject(null);
     }
   };
 
   const handleClose = () => {
+    // setIsEditModalOpen(false);
     setShowProjectDetail(false);
     setShowConfirmModal(false);
-    setIsEditModalOpen(false);
     setSelectedProject(null);
   };
 
@@ -131,43 +157,36 @@ const TableProject: React.FC<DataProps> = ({
         return <span>{status}</span>;
     }
   };
+  const handleAddProject = () => {
+    setIsAddModalOpen(true);
+  };
 
-
-  const users = ["dngoc", "haaus", "ntdn"]; 
+  const users = ["dngoc", "haaus", "ntdn"];
   return (
     <>
+      <ModalAddProject
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        projectData={selectedProject}
+      />
       <div className="flex justify-between items-center mb-4">
-        <div>
-          {statusTags.map((status) => (
-            <Tag
-              key={status}
-              color={
-                statusFilter === status ||
-                (status === "All" && statusFilter === null)
-                  ? "#ff914d"
-                  : "default"
-              }
-              onClick={() => handleStatusChange(status)}
-              className="cursor-pointer !px-2 !py-1 !font-squada !text-lg !rounded-lg"
-            >
-              {(statusFilter === status ||
-                (status === "All" && statusFilter === null)) && (
-                <Icons.Check className="inline-flex" />
-              )}{" "}
-              {status}
-            </Tag>
-          ))}
-        </div>
-        <div className="w-[250px] height-[48px] overflow-hidden rounded-full border-[1px] border-gray-300 bg-white !font-squada">
-          <Search
-            placeholder="Search project..."
-            onSearch={onSearch}
-            onChange={handleSearchChange}
-            value={searchValue}
-            style={{ width: 250 }}
-            size="large"
-            className="custom-search pl-1"
-            variant="borderless"
+        <button
+          onClick={handleAddProject}
+          className="bg-orange-400 text-white px-6 py-3 rounded-full hover:bg-orange-500 transition-colors flex items-center gap-2"
+        >
+          <span className="text-xl">+</span>
+          <span className="text-lg">Add Project</span>
+        </button>
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Search by project name..."
+            className="w-[300px] px-4 py-2 border rounded-full pr-10"
+            onChange={(e) => handleSearch(e.target.value)}
+          />
+          <Icons.SearchIcon
+            className="absolute right-3 top-2.5 text-gray-400"
+            fontSize={20}
           />
         </div>
       </div>
@@ -180,6 +199,7 @@ const TableProject: React.FC<DataProps> = ({
             </th>
             <th className="border-l-2 border-white px-4 py-2">Start Date</th>
             <th className="border-l-2 border-white px-4 py-2">End Date</th>
+            <th className="border-l-2 border-white px-4 py-2">Department</th>
             <th className="border-l-2 border-white px-4 py-2">Status</th>
             <th className="border-l-2 border-white px-4 py-2 !rounded-tr-2xl">
               Action
@@ -187,17 +207,18 @@ const TableProject: React.FC<DataProps> = ({
           </tr>
         </thead>
         <tbody className="w-full">
-          {currentData.map((item, index) => (
+          {projects.map((item) => (
             <tr
               onClick={() => handleShowProjectDetail(item)}
-              key={index}
+              key={item._id}
               className="h-[70px] bg-white overflow-hidden text-center border-collapse hover:shadow-brand-orange !rounded-2xl cursor-pointer"
             >
-              <td className="px-4 py-2 rounded-l-2xl">{item.name}</td>
-              <td className="px-4 py-2">{item.date}</td>
-              <td className="px-4 py-2">{item.enddate}</td>
+              <td className="px-4 py-2 rounded-l-2xl">{item.project_name}</td>
+              <td className="px-4 py-2">{item.created_at}</td>
+              <td className="px-4 py-2">{item.project_end_date}</td>
+              <td className="px-4 py-2">{item.project_department}</td>
               <td className="px-4 py-2">
-                {handleStatusChangeHTML(item.status)}
+                {handleStatusChangeHTML(item.project_status)}
               </td>
               <td
                 className="action px-4 py-2 rounded-r-2xl"
@@ -211,7 +232,7 @@ const TableProject: React.FC<DataProps> = ({
                           color="blue"
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleEdit(item);
+                            handleEditProject(item);
                           }}
                           className="w-5 h-5"
                         />
@@ -255,35 +276,38 @@ const TableProject: React.FC<DataProps> = ({
           className="!font-squada flex justify-end"
           current={currentPage}
           pageSize={pageSize}
-          total={filteredData.length}
+          total={totalItems}
           onChange={handlePageChange}
           showSizeChanger
           onShowSizeChange={handlePageChange}
+          pageSizeOptions={["5", "10", "20", "50"]}
         />
       </div>
 
-      <ProjectDetail
-        visible={showProjectDetail}
-        onClose={handleClose}
-        Project={selectedProject}
-        users={users}
-      />
+      {selectedProject && (
+        <ProjectDetail
+          visible={showProjectDetail}
+          onClose={handleClose}
+          project={selectedProject}
+          users={users}
+        />
+      )}
       <ConfirmModal
-        visible={showConfirmModal}
-        onClose={handleClose}
-        message={message}
-        onConfirm={handleConfirmDelete}
+        modalProps={{
+          visible: showConfirmModal,
+          onClose: handleClose,
+          onConfirm: handleConfirmDelete
+        }}
+        messageProps={{ message, id: selectedProject?._id || "" }}
       />
-      <Modal isOpen={isEditModalOpen} onClose={handleClose}>
-        {selectedProject && (
-          <EditProject
-            project={selectedProject}
-            onClose={handleClose}
-            onSave={handleSaveEdit}
-            users={users}
-          />
-        )}
-      </Modal>
+      {/* {selectedProject && (
+        <EditProject
+          project={selectedProject}
+          onClose={handleClose}
+          users={users}
+          isEditModalOpen={isEditModalOpen}
+        />
+      )} */}
     </>
   );
 };

@@ -1,7 +1,7 @@
 import { post } from "./apiService";
-import { API_CONTANTS } from "../constants/apiContants";
+import { API_CONSTANTS } from "../constants/apiConstants";
 import { ResponseModel } from "../models/ResponseModel";
-import { ClaimRequest } from "../types/ClaimRequest";
+import { ClaimInfo } from "../types/ClaimType";
 interface SearchCondition {
     keyword: string;
     claim_status: string;
@@ -13,6 +13,8 @@ interface SearchCondition {
 interface PageInfo {
     pageNum: number;
     pageSize: number;
+    totalPage?: number;
+    totalItems?: number;
 }
 
 interface ApprovalSearchRequest {
@@ -21,7 +23,7 @@ interface ApprovalSearchRequest {
 }
 
 interface ApprovalSearchResponse {
-    pageData: ClaimRequest[];
+    pageData: ClaimInfo[];
     pageInfo: PageInfo;
 }
 
@@ -29,10 +31,6 @@ export const searchApprovalClaims = async (request: ApprovalSearchRequest): Prom
     // const { setLoading } = useLoadingStore.getState();
     // setLoading(true);
     // try {
-    const response = await post<ApprovalSearchResponse>(API_CONTANTS.APPROVAL.GET_CLAIM_APPROVAL, request);
+    const response = await post<ApprovalSearchResponse>(API_CONSTANTS.APPROVAL.GET_CLAIM_APPROVAL, request);
     return response;
-    // }
-    // finally {
-    //     setLoading(false);
-    // }
 };
