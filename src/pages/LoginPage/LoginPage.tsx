@@ -83,6 +83,7 @@ const LoginPage: React.FC = () => {
       toast.success("Password reset link sent to your email!");
       setIsForgotPassword(false);
     } catch (error) {
+      console.log(error);
       toast.error("Error sending password reset link.");
     }
   };
@@ -97,8 +98,9 @@ const LoginPage: React.FC = () => {
 
       {/* Login Form */}
       <div
-        className={`lg:w-230 lg:h-140 w-full h-5/6 flex border border-black rounded-[30px] bg-white z-10 ${isForgotPassword ? "hidden" : ""
-          }`}
+        className={`lg:w-230 lg:h-140 w-full h-5/6 flex border border-black rounded-[30px] bg-white z-10 ${
+          isForgotPassword ? "hidden" : ""
+        }`}
       >
         <motion.div
           initial={{ x: 0, opacity: 0 }}
@@ -140,10 +142,11 @@ const LoginPage: React.FC = () => {
               {/* Email Field */}
               <div className="relative py-10">
                 <span
-                  className={`absolute left-2 top-12 text-gray-500 transition-all pointer-events-none ${email || isEmailFocused
+                  className={`absolute left-2 top-12 text-gray-500 transition-all pointer-events-none ${
+                    email || isEmailFocused
                       ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
                       : "text-base"
-                    }`}
+                  }`}
                 >
                   Email
                 </span>
@@ -169,10 +172,11 @@ const LoginPage: React.FC = () => {
               {/* Password Field */}
               <div className="relative">
                 <span
-                  className={`absolute left-2 top-2 text-gray-500 transition-all pointer-events-none ${password || isPasswordFocused
+                  className={`absolute left-2 top-2 text-gray-500 transition-all pointer-events-none ${
+                    password || isPasswordFocused
                       ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
                       : "text-base"
-                    }`}
+                  }`}
                 >
                   Password
                 </span>
@@ -199,17 +203,17 @@ const LoginPage: React.FC = () => {
               </div>
 
               {/* Submit Button */}
-              <div className="flex mt-15 flex-col items-center space-y-4">
+              <div className="flex mt-15 flex-col justify-center items-center space-y-4">
                 <button
                   type="submit"
-                  className="w-40 h-8 px-4 py-2 bg-brand-grandient text-white rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
+                  className="w-40 h-8 bg-brand-gradient text-white rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none flex items-center justify-center"
                 >
                   Login
                 </button>
                 <button
                   type="button"
                   onClick={() => setIsForgotPassword(true)}
-                  className="w-40 h-8 px-4 py-2 border-amber-500 border rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
+                  className="w-40 h-8 border-amber-500 border justify-center items-center rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
                 >
                   Forgot Password
                 </button>
@@ -221,8 +225,9 @@ const LoginPage: React.FC = () => {
 
       {/* Forgot Password Form */}
       <div
-        className={`lg:w-230 lg:h-140 w-full h-5/6 flex border border-black rounded-[30px] bg-white z-20 ${!isForgotPassword ? "hidden" : ""
-          }`}
+        className={`lg:w-230 lg:h-140 w-full h-5/6 flex border border-black rounded-[30px] bg-white z-20 ${
+          !isForgotPassword ? "hidden" : ""
+        }`}
       >
         <motion.div
           initial={{ x: 0, opacity: 0 }}
@@ -248,10 +253,11 @@ const LoginPage: React.FC = () => {
             </h1>
             <div className="lg:mt-10 relative py-4">
               <span
-                className={`  absolute  left-2 top-6 text-gray-500 transition-all pointer-events-none ${forgotPasswordEmail || isEmailFocused
+                className={`  absolute  left-2 top-6 text-gray-500 transition-all pointer-events-none ${
+                  forgotPasswordEmail || isEmailFocused
                     ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
                     : "text-base"
-                  }`}
+                }`}
               >
                 Email
               </span>
@@ -272,14 +278,14 @@ const LoginPage: React.FC = () => {
             <div className="flex mt-15 flex-col items-center space-y-4">
               <button
                 type="submit"
-                className="w-40 h-8 px-4 py-2 bg-brand-grandient text-white rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
+                className="w-40 h-8 bg-brand-grandient text-white rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
               >
                 Send link
               </button>
               <button
                 type="button"
                 onClick={() => setIsForgotPassword(false)}
-                className="w-40 h-8 px-4 py-2 border-amber-500 border rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
+                className="w-40 h-8  border-amber-500 border rounded-lg cursor-pointer transition-all hover:scale-105 focus:outline-none"
               >
                 Back
               </button>

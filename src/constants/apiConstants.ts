@@ -50,5 +50,3 @@ export const API_CONSTANTS = {
     GET_ALL_CONTRACT: "/contracts/get-all",
   },
 };
-
-

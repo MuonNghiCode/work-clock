@@ -2,6 +2,7 @@ import React from "react";
 import { Modal, Button, Input, Select, Form } from "antd";
 import { format } from "date-fns";
 import emailjs from "@emailjs/browser";
+import { updateClaimStatus } from "../../services/claimService";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -16,6 +17,7 @@ interface PaymentModalProps {
   email: string;
   accountantEmail: string;
   claim_name: string;
+  claimId: string;
 }
 
 const PaymentModal: React.FC<PaymentModalProps> = ({
@@ -28,6 +30,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   email,
   accountantEmail,
   claim_name,
+  claimId,
 }) => {
   const [form] = Form.useForm();
 
@@ -36,6 +39,17 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
       .validateFields()
       .then((values) => {
         sendEmail(values);
+        updateClaimStatus({
+          _id: claimId,
+          claim_status: "Paid",
+          comment: "Payment confirmed",
+        })
+          .then(() => {
+            console.log("Claim status updated successfully");
+          })
+          .catch((error) => {
+            console.error("Failed to update claim status:", error);
+          });
         if (onConfirm) onConfirm(values);
       })
       .catch((info) => {
