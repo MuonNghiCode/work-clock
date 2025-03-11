@@ -77,7 +77,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   console.log(formData)
-  
+
   // Animation states
   const [isAnimating, setIsAnimating] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -141,7 +141,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
         setIsLoading(false);
       }
     };
-      fetchData();
+    fetchData();
   }, [isOpen]);
 
   // Handle modal close with animation
@@ -184,8 +184,8 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
       };
 
       await updateEmployee(employee.user_id, updateData);
-          toast.success("Employee updated successfully");
-          onUpdateSuccess?.(updateData);
+      toast.success("Employee updated successfully");
+      onUpdateSuccess?.(updateData);
       onClose();
     } catch (error) {
       console.error("Failed to update employee:", error);
@@ -229,7 +229,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
         uniqueJobTitles.set(job.job_title, job);
       }
     });
-    return Array.from(uniqueJobTitles.values()).sort((a, b) => 
+    return Array.from(uniqueJobTitles.values()).sort((a, b) =>
       a.job_title.localeCompare(b.job_title)
     );
   };
@@ -242,7 +242,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
   if (!modalVisible && !isEmbedded) return null;
 
   if (isEmbedded) {
-  return (
+    return (
       <form onSubmit={handleSubmit} className="h-[600px] flex flex-col bg-white">
         <div className="flex-1 overflow-y-auto p-6">
           {error ? (
@@ -268,7 +268,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                         </div>
                       )}
                     </div>
-                    
+
                     {/* Upload Overlay */}
                     <div className="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                       <ImageUploader onImageUploaded={handleImageUpload} />
@@ -541,7 +541,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                             </div>
                           )}
                         </div>
-                        
+
                         {/* Upload Overlay */}
                         <div className="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                           <ImageUploader onImageUploaded={handleImageUpload} />
