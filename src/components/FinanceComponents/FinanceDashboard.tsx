@@ -2,6 +2,46 @@ import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { getClaimsData } from "../../services/claimService";
 import Icons from "../../components/icon";
+import AOS from "aos";
+import "aos/dist/aos.css";
+import moment from "moment";
+import { motion } from "framer-motion";
+
+const fadeInScaleUp = {
+  hidden: { opacity: 0, scale: 0.8 },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
+};
+
+interface StatCardProps {
+  icon: React.ReactNode;
+  label: string;
+  value: number;
+  bgColor: string;
+  textColor: string;
+}
+
+const StatCard = ({
+  icon,
+  label,
+  value,
+  bgColor,
+  textColor,
+}: StatCardProps) => (
+  <motion.div
+    variants={fadeInScaleUp}
+    initial="hidden"
+    animate="visible"
+    className={`rounded-2xl flex flex-col items-center justify-center ${bgColor} bg-opacity-50 shadow-lg w-full text-center hover:scale-105 transition duration-300 p-5`}
+    data-aos="fade-down"
+    data-aos-duration="1000"
+  >
+    {icon && (
+      <div className="p-3 mb-4 rounded-full bg-white bg-opacity-30">{icon}</div>
+    )}
+    <p className={`text-xl font-medium ${textColor}`}>{label}</p>
+    <p className={`text-4xl font-bold ${textColor}`}>{value}</p>
+  </motion.div>
+);
 
 // Định nghĩa interface cho dữ liệu
 interface ClaimData {
@@ -20,7 +60,6 @@ interface ClaimData {
   claim_end_date: string;
   status: string;
 }
-
 const FinanceDashboard: React.FC = () => {
   const [data, setData] = useState<ClaimData[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -28,7 +67,6 @@ const FinanceDashboard: React.FC = () => {
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [pendingClaims, setPendingClaims] = useState(0);
   const [processedClaims, setProcessedClaims] = useState(0);
-  const [newApprovedClaimsCount, setNewApprovedClaimsCount] = useState(0);
   const [averageProcessingTime, setAverageProcessingTime] = useState<
     number | null
   >(null);
@@ -44,8 +82,22 @@ const FinanceDashboard: React.FC = () => {
   });
 
   useEffect(() => {
+    AOS.init({
+      once: false,
+    });
+  }, []);
+
+  useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
+
+      // Get the current date and time, then adjust for Vietnam's time zone (UTC+7)
+      const currentDate = moment().utcOffset(7);
+      const currentMonth = currentDate.month() + 1; // moment's month is zero-based
+
+      // Log the current month
+      console.log("Current month (Vietnam time zone):", currentMonth);
+
       const request = {
         searchCondition: {
           keyword: "",
@@ -56,7 +108,7 @@ const FinanceDashboard: React.FC = () => {
         },
         pageInfo: {
           pageNum: 1,
-          pageSize: 10,
+          pageSize: 1000000,
         },
       };
 
@@ -82,19 +134,21 @@ const FinanceDashboard: React.FC = () => {
             })
           );
 
-          const claimsPerWeek = [0, 0, 0, 0]; // Khởi tạo mảng cho 4 tuần
-          const currentDate = new Date();
-          const currentMonth = currentDate.getMonth();
+          // Filter data for the current month
+          const currentMonthData = formattedData.filter((item) => {
+            const claimDate = moment(item.claim_start_date).utcOffset(7);
+            return claimDate.month() + 1 === currentMonth;
+          });
 
-          // Tính claims trong 4 tuẩn của tháng hiện tại (chart claims order)
-          formattedData.forEach((item) => {
+          const claimsPerWeek = [0, 0, 0, 0]; // Initialize array for 4 weeks
+
+          // Calculate claims in the 4 weeks of the current month (chart claims order)
+          currentMonthData.forEach((item) => {
             if (item.status === "Approved" || item.status === "Paid") {
-              const claimDate = new Date(item.claim_start_date);
-              if (claimDate.getMonth() === currentMonth) {
-                const weekIndex = Math.floor(claimDate.getDate() / 7);
-                if (weekIndex < 4) {
-                  claimsPerWeek[weekIndex] += 1;
-                }
+              const claimDate = moment(item.claim_start_date).utcOffset(7);
+              const weekIndex = Math.floor(claimDate.date() / 7);
+              if (weekIndex < 4) {
+                claimsPerWeek[weekIndex] += 1;
               }
             }
           });
@@ -109,42 +163,24 @@ const FinanceDashboard: React.FC = () => {
             ],
           }));
 
-          const totalRevenue = formattedData.reduce(
+          const totalRevenue = currentMonthData.reduce(
             (sum, item) => sum + item.employee_info.salary,
             0
           );
-          const pendingClaims = formattedData.filter(
+          const pendingClaims = currentMonthData.filter(
             (item) => item.status === "Approved"
           ).length;
-          const processedClaims = formattedData.filter(
+          const processedClaims = currentMonthData.filter(
             (item) => item.status === "Paid"
           ).length;
 
-          // Tính số lượng claims Approved trong tuần của tháng hiện tại
-          const startOfWeek = new Date(
-            currentDate.setDate(currentDate.getDate() - currentDate.getDay())
-          );
-          const endOfWeek = new Date(startOfWeek);
-          endOfWeek.setDate(endOfWeek.getDate() + 6);
-
-          const newApprovedClaims = formattedData.filter((item) => {
-            const claimDate = new Date(item.claim_start_date);
-            return (
-              item.status === "Approved" &&
-              claimDate.getMonth() === currentMonth
-            );
-          }).length;
-
-          // Tính thời gian xử lý trung bình
-          const processingTimes = formattedData
+          // Calculate average processing time
+          const processingTimes = currentMonthData
             .filter((item) => item.status === "Paid" && item.claim_end_date)
             .map((item) => {
-              const startDate = new Date(item.claim_start_date);
-              const endDate = new Date(item.claim_end_date);
-              return (
-                (endDate.getTime() - startDate.getTime()) /
-                (1000 * 60 * 60 * 24)
-              ); // Tính số ngày
+              const startDate = moment(item.claim_start_date).utcOffset(7);
+              const endDate = moment(item.claim_end_date).utcOffset(7);
+              return endDate.diff(startDate, "days");
             });
 
           const averageTime =
@@ -157,7 +193,6 @@ const FinanceDashboard: React.FC = () => {
           setTotalRevenue(totalRevenue);
           setPendingClaims(pendingClaims);
           setProcessedClaims(processedClaims);
-          setNewApprovedClaimsCount(newApprovedClaims);
           setAverageProcessingTime(averageTime);
         } else {
           console.error("Invalid data or response:", response);
@@ -191,58 +226,71 @@ const FinanceDashboard: React.FC = () => {
         <div className="text-center">Loading...</div>
       ) : (
         <div className="grid grid-cols-4 gap-4">
-          <div className="bg-gradient-to-b from-blue-300 to-blue-100 p-6 rounded-xl shadow-lg relative hover:shadow-xl hover:bg-blue-400 hover:border-blue-500 border-transparent border-2 transition-all duration-200">
-            <h3 className="text-lg font-bold">Total Revenue</h3>
-            <p className="text-3xl text-blue-600">${totalRevenue.toFixed(2)}</p>
-            <p className="text-sm text-gray-500">+12.5% from last month</p>
-            <span className="absolute bottom-2 right-4">
-              <Icons.Dollar className="lg:w-16 w-12 h-auto text-blue-500" />
-            </span>
-          </div>
-          <div className="bg-gradient-to-b from-yellow-300 to-yellow-100 p-6 rounded-xl shadow-lg relative hover:shadow-xl hover:bg-yellow-400 hover:border-yellow-500 border-transparent border-2 transition-all duration-200">
-            <h3 className="text-lg font-bold">Pending Claims</h3>
-            <p className="text-3xl text-blue-600">{pendingClaims}</p>
-            <p className="text-sm text-gray-500">
-              {newApprovedClaimsCount} new approved this month
-            </p>
-            <span className="absolute bottom-2 right-4">
-              <Icons.Pending className="lg:w-16 w-12 h-auto text-yellow-500" />
-            </span>
-          </div>
-          <div className="bg-gradient-to-b from-green-300 to-green-100 p-6 rounded-xl shadow-lg relative hover:shadow-xl hover:bg-green-400 hover:border-green-500 border-transparent border-2 transition-all duration-200">
-            <h3 className="text-lg font-bold">Processed Claims</h3>
-            <p className="text-3xl text-blue-600">{processedClaims}</p>
-            <p className="text-sm text-gray-500">This month</p>
-            <span className="absolute bottom-2 right-4">
-              <Icons.Check className="lg:w-16 w-12 h-auto text-green-500" />
-            </span>
-          </div>
-          <div className="bg-gradient-to-b from-orange-300 to-orange-100 p-6 rounded-xl shadow-lg relative hover:shadow-xl hover:bg-orange-400 hover:border-orange-500 border-transparent border-2 transition-all duration-200">
-            <h3 className="text-lg font-bold">Average Processing Time</h3>
-            <p className="text-3xl text-blue-600">
-              {averageProcessingTime ? averageProcessingTime.toFixed(2) : "N/A"}{" "}
-              days
-            </p>
-            <p className="text-sm text-gray-500">This week</p>
-            <span className="absolute bottom-2 right-4">
-              <Icons.Clock className="lg:w-16 w-12 h-auto text-orange-500" />
-            </span>
-          </div>
-          <div className="col-span-2 bg-gray-100 p-4 rounded-lg">
+          <StatCard
+            icon={<Icons.Dollar className="text-3xl text-blue-600" />}
+            label="Total Revenue"
+            value={parseFloat(totalRevenue.toFixed(2))}
+            bgColor="bg-gradient-to-b from-blue-300 to-blue-100"
+            textColor="text-black-900 font-bold"
+          />
+          <StatCard
+            icon={<Icons.Pending className="text-3xl text-yellow-500" />}
+            label="Pending Claims"
+            value={pendingClaims}
+            bgColor="bg-gradient-to-b from-yellow-300 to-yellow-100"
+            textColor="text-black-900 font-bold"
+          />
+          <StatCard
+            icon={<Icons.Check className="text-3xl text-green-600" />}
+            label="Processed Claims"
+            value={processedClaims}
+            bgColor="bg-gradient-to-b from-green-300 to-green-100"
+            textColor="text-black-900 font-bold"
+          />
+          <StatCard
+            icon={<Icons.Clock className="text-3xl text-orange-500" />}
+            label="Average Processing Time"
+            value={
+              averageProcessingTime !== null
+                ? parseFloat(averageProcessingTime.toFixed(2))
+                : 0
+            }
+            bgColor="bg-gradient-to-b from-orange-300 to-orange-100"
+            textColor="text-black-900 font-bold"
+          />
+          <div
+            data-aos="fade-down"
+            data-aos-duration="1000"
+            className="col-span-2 bg-gray-100 p-4 rounded-lg"
+          >
             <h3 className="text-lg font-bold">Money Flow</h3>
             <Bar data={moneyFlowData} />
           </div>
-          <div className="col-span-2 bg-gray-100 p-4 rounded-lg">
+          <div
+            data-aos="fade-down"
+            data-aos-duration="1000"
+            className="col-span-2 bg-gray-100 p-4 rounded-lg"
+          >
             <h3 className="text-lg font-bold">Claims Order</h3>
             <Bar data={claimsOrderData} />
           </div>
           <div className="col-span-4 p-4 rounded-lg">
-            <h3 className="text-lg font-bold">History Transaction</h3>
-            <table className="min-w-full border-separate border-spacing-y-2.5 border-0 text-black w-full">
+            <h3
+              data-aos="fade-down"
+              data-aos-duration="1000"
+              className="text-lg font-bold"
+            >
+              History Transaction
+            </h3>
+            <table
+              data-aos="fade-down"
+              data-aos-duration="1000"
+              className="min-w-full border-separate border-spacing-y-2.5 border-0 text-black w-full"
+            >
               <thead className="bg-brand-gradient h-[70px] text-lg text-white !rounded-t-lg">
                 <tr className="bg-[linear-gradient(45deg,#FEB78A,#FF914D)]">
                   <th className="border-white px-4 py-2 !rounded-tl-2xl">
-                    Claims ID
+                    Transaction ID
                   </th>
                   <th className="border-l-2 border-white px-4 py-2">Claimer</th>
                   <th className="border-l-2 border-white px-4 py-2">Salary</th>
@@ -255,6 +303,11 @@ const FinanceDashboard: React.FC = () => {
               <tbody className="w-full">
                 {data
                   .filter((item) => item.status === "Paid")
+                  .sort(
+                    (a, b) =>
+                      new Date(b.claim_start_date).getTime() -
+                      new Date(a.claim_start_date).getTime()
+                  )
                   .map((item) => (
                     <tr
                       key={item._id}
