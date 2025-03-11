@@ -45,40 +45,33 @@ const LoginPage: React.FC = () => {
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validate()) {
-      try {
-        await login(email, password);
-        const token = localStorage.getItem("token");
-        let user;
-        if (token) {
-          user = await getUserInfobyToken();
-          const role = user.data.role_code;
-          if (user && user.data) {
-            toast.success("Login successful!");
-            setTimeout(() => {
-              switch (role) {
-                case "A001":
-                  navigate("/admin");
-                  break;
-                case "A004":
-                  navigate("/user");
-                  break;
-                case "A003":
-                  navigate("/approval");
-                  break;
-                case "A002":
-                  navigate("/finance");
-                  break;
-                default:
-                  navigate("/");
-              }
-            }, 1000);
-          } else {
-            toast.error("Invalid email or password!");
-          }
+      await login(email, password);
+      const token = localStorage.getItem("token");
+      let user;
+      if (token) {
+        user = await getUserInfobyToken();
+        let role = user.data.role_code;
+        if (user && user.data) {
+          toast.success("Login successful!");
+          setTimeout(() => {
+            switch (role) {
+              case "A001":
+                navigate("/admin");
+                break;
+              case "A004":
+                navigate("/user");
+                break;
+              case "A003":
+                navigate("/approval");
+                break;
+              case "A002":
+                navigate("/finance");
+                break;
+              default:
+                navigate("/");
+            }
+          }, 1000);
         }
-      } catch (error) {
-        console.log(error);
-        toast.error("Please fix the errors before submitting.");
       }
     }
   };

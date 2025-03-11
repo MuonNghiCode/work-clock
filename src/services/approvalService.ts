@@ -1,7 +1,7 @@
 import { post } from "./apiService";
 import { API_CONSTANTS } from "../constants/apiConstants";
 import { ResponseModel } from "../models/ResponseModel";
-import { ClaimRequest } from "../types/ClaimRequest";
+import { ClaimInfo } from "../types/ClaimType";
 interface SearchCondition {
     keyword: string;
     claim_status: string;
@@ -23,7 +23,7 @@ interface ApprovalSearchRequest {
 }
 
 interface ApprovalSearchResponse {
-    pageData: ClaimRequest[];
+    pageData: ClaimInfo[];
     pageInfo: PageInfo;
 }
 
@@ -33,8 +33,4 @@ export const searchApprovalClaims = async (request: ApprovalSearchRequest): Prom
     // try {
     const response = await post<ApprovalSearchResponse>(API_CONSTANTS.APPROVAL.GET_CLAIM_APPROVAL, request);
     return response;
-    // }
-    // finally {
-    //     setLoading(false);
-    // }
 };

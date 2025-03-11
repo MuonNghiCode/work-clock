@@ -1,17 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { Button, Pagination, Input } from "antd";
+import React, { useCallback, useEffect, useState } from "react";
+import { Button, Pagination } from "antd";
 import { ProjectInfo } from "../../../types/Project";
-import { GetProps } from "antd/lib/_util/type";
 import ConfirmModal from "../../ConfirmModal/ConfirmModal";
 import Icons from "../../icon";
-import EditProject from "../EditProject/EditProject";
-import ProjectDetail from "../../ProjectDetail/ProjectDetail";
+// import EditProject from "../EditProject/EditProject";
+import ProjectDetail from "../../ModalProjectDetail/ProjectDetail";
 import { getAllProject, PageInfo, SearchConditionProject } from "../../../services/projectService";
 import ModalAddProject from "../ModalAddProject/ModalAddProject";
-
-type SearchProps = GetProps<typeof Input.Search>;
-const { Search } = Input;
-
+import { debounce } from "lodash";
 
 
 const TableProject: React.FC = ({ }) => {
@@ -24,13 +20,10 @@ const TableProject: React.FC = ({ }) => {
   const [selectedProject, setSelectedProject] = useState<ProjectInfo | null>(
     null
   );
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  // const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [searchValue, setSearchValue] = useState<string>("");
   const [totalItems, setTotalItems] = useState<number>(1);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-
-  // const [project, setProject] = useState<ProjectInfo[]>([]);
-
 
 
   const handlePageChange = (page: number, pageSize?: number) => {
@@ -40,17 +33,13 @@ const TableProject: React.FC = ({ }) => {
     }
   };
 
+  const handleSearch = useCallback(
+    debounce((value: string) => {
+      setSearchValue(value);
+    }, 500),
+    []
+  );
 
-  const onSearch: SearchProps["onSearch"] = (value) => {
-    setSearchValue(value);
-    setCurrentPage(1);
-  };
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchValue(value);
-    setCurrentPage(1);
-  };
 
   const projectDetail = (data: ProjectInfo): ProjectInfo => ({
     _id: data._id,
@@ -104,11 +93,12 @@ const TableProject: React.FC = ({ }) => {
 
   useEffect(() => {
     fetchProjects();
+    console.log(projects[0])
   }, [currentPage, pageSize, searchValue]); // Add searchValue to dependencies
 
   const handleEditProject = (editedProject: ProjectInfo) => {
     setSelectedProject(editedProject);
-    setIsEditModalOpen(true);
+    setIsAddModalOpen(true);
   };
 
   const handleDeleteProject = (projectId: string | number) => {
@@ -149,10 +139,9 @@ const TableProject: React.FC = ({ }) => {
   };
 
   const handleClose = () => {
-    setIsEditModalOpen(false);
+    // setIsEditModalOpen(false);
     setShowProjectDetail(false);
     setShowConfirmModal(false);
-    setIsEditModalOpen(false);
     setSelectedProject(null);
   };
 
@@ -175,12 +164,11 @@ const TableProject: React.FC = ({ }) => {
   const users = ["dngoc", "haaus", "ntdn"];
   return (
     <>
-
       <ModalAddProject
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
+        projectData={selectedProject}
       />
-      {/* </Modal> */}
       <div className="flex justify-between items-center mb-4">
         <button
           onClick={handleAddProject}
@@ -189,37 +177,16 @@ const TableProject: React.FC = ({ }) => {
           <span className="text-xl">+</span>
           <span className="text-lg">Add Project</span>
         </button>
-        {/* <div>
-          {statusTags.map((status) => (
-            <Tag
-              key={status}
-              color={
-                statusFilter === status ||
-                  (status === "All" && statusFilter === null)
-                  ? "#ff914d"
-                  : "default"
-              }
-              onClick={() => handleStatusChange(status)}
-              className="cursor-pointer !px-2 !py-1 !font-squada !text-lg !rounded-lg"
-            >
-              {(statusFilter === status ||
-                (status === "All" && statusFilter === null)) && (
-                  <Icons.Check className="inline-flex" />
-                )}{" "}
-              {status}
-            </Tag>
-          ))}
-        </div> */}
-        <div className="w-[250px] height-[48px] overflow-hidden rounded-full border-[1px] border-gray-300 bg-white !font-squada">
-          <Search
-            placeholder="Search project..."
-            onSearch={onSearch}
-            onChange={handleSearchChange}
-            value={searchValue}
-            style={{ width: 250 }}
-            size="large"
-            className="custom-search pl-1"
-            variant="borderless"
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Search by project name..."
+            className="w-[300px] px-4 py-2 border rounded-full pr-10"
+            onChange={(e) => handleSearch(e.target.value)}
+          />
+          <Icons.SearchIcon
+            className="absolute right-3 top-2.5 text-gray-400"
+            fontSize={20}
           />
         </div>
       </div>
@@ -317,26 +284,30 @@ const TableProject: React.FC = ({ }) => {
         />
       </div>
 
-      <ProjectDetail
-        visible={showProjectDetail}
-        onClose={handleClose}
-        project={selectedProject}
-        users={users}
-      />
-      <ConfirmModal
-        visible={showConfirmModal}
-        onClose={handleClose}
-        message={message}
-        onConfirm={handleConfirmDelete}
-      />
       {selectedProject && (
+        <ProjectDetail
+          visible={showProjectDetail}
+          onClose={handleClose}
+          project={selectedProject}
+          users={users}
+        />
+      )}
+      <ConfirmModal
+        modalProps={{
+          visible: showConfirmModal,
+          onClose: handleClose,
+          onConfirm: handleConfirmDelete
+        }}
+        messageProps={{ message, id: selectedProject?._id || "" }}
+      />
+      {/* {selectedProject && (
         <EditProject
           project={selectedProject}
           onClose={handleClose}
           users={users}
           isEditModalOpen={isEditModalOpen}
         />
-      )}
+      )} */}
     </>
   );
 };

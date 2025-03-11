@@ -1,48 +1,75 @@
-interface ConfirmModalProps {
+import { Input, Modal } from "antd";
+import Icons from "../icon";
+import { updateClaimStatus } from "../../services/claimService";
+import { toast } from "react-toastify";
+import { useState } from "react";
+
+export interface ModalProps {
   visible: boolean;
   onClose: () => void;
-  message: string;
   onConfirm: () => void;
 }
 
+interface MessageProps {
+  message: string;
+  id: string;
+}
+
+interface ConfirmModalProps {
+  modalProps: ModalProps;
+  messageProps: MessageProps;
+}
+
 const ConfirmModal: React.FC<ConfirmModalProps> = ({
-  visible,
-  onClose,
-  message,
-  onConfirm
+  modalProps,
+  messageProps
 }) => {
-  if (!visible) return null;
+  const { visible, onClose, onConfirm } = modalProps;
+  const { message, id } = messageProps;
+  const MESSAGE = `Confirm ${message} this claim request?`;
+  const [comment, setComment] = useState<string>("");
+  const handleStatusChange = async () => {
+    const response = await updateClaimStatus({ _id: id, claim_status: message, comment: comment });
+    if (response.success) {
+      toast.success(`Claim request has been ${message.toLowerCase()} successfully!`);
+    }
+    onConfirm();
+  }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="fixed inset-0 bg-black/50" onClick={onClose}></div>
-      <div className="relative z-50 bg-white rounded-2xl shadow-lg">
-        <div className="w-[400px] p-6">
-          <h2 className="text-2xl font-bold mb-4">Confirm</h2>
-          <p className="text-gray-600 mb-6">{message}</p>
-          <div className="flex justify-end gap-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-6 py-2 text-gray-600 hover:bg-gray-100 rounded-full"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                onConfirm();
-                onClose();
-              }}
-              className="px-6 py-2 bg-red-500 text-white rounded-full hover:bg-red-600"
-            >
-              Delete
-            </button>
-          </div>
-        </div>
+    <Modal
+      open={visible}
+      onCancel={onClose}
+      onOk={handleStatusChange}
+      okButtonProps={{ className: `${message === "Approved" ? "!bg-green-600" : message === "Rejected" ? "!bg-red-600" : "!bg-blue-600"} text-white` }}
+      okText={message} cancelText="Cancel"
+      title={<h4 className={`${message === "Approved" ? "!text-green-600" : message === "Rejected" ? "!text-red-600" : "!text-blue-600"} text-2xl font-semibold border-b pb-2`}>
+        {message} Claim Request</h4>}
+      className="flex items-center justify-center rounded-2xl" >
+      <div className="p-4 inline-flex items-center">
+        {message === "Approved" ?
+          <>
+            <Icons.Approve className="w-20 h-20 mx-auto text-green-600" />
+            <p className="my-2 font-semibold text-lg">{MESSAGE}</p>
+          </>
+          : message === "Rejected" ?
+            <div className="flex flex-col items-center">
+              <div className="inline-flex items-center">
+                <Icons.Reject className="w-20 h-20 mx-auto text-red-600" />
+                <p className="my-2 font-semibold text-lg">{MESSAGE}</p>
+              </div>
+              <Input.TextArea
+                rows={3}
+                className="w-full mt-2"
+                placeholder="Enter your rejected reason here"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+              />
+            </div>
+            : null}
       </div>
-    </div>
+    </Modal>
   );
 };
 
-export default ConfirmModal; 
+export default ConfirmModal;

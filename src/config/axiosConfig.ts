@@ -41,14 +41,21 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => {
     useLoadingStore.getState().removeRequest(response.config.url ?? "");
+    if (response.data.errors) {
+      toast.error(response.data.errors[0].message);
+    }
     return response;
   },
-
   (error) => {
+    if (error.response.data.errors) {
+      error.response.data.errors.forEach((err: any) => {
+        toast.error(err.message);
+      });
+    }
     useLoadingStore.getState().removeRequest(error.config?.url || "");
-    toast.error(error.response?.data?.message || "An error occurred");
+    toast.error(error.response?.data?.message || error.message || "An error occurred");
     return Promise.reject(
-      new Error(error.response?.data?.message || "An error occurred")
+      new Error(error.response?.data?.message || error.message || "An error occurred")
     );
   }
 );

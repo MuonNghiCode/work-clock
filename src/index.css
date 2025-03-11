@@ -53,28 +53,28 @@ html {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-:where(.css-dev-only-do-not-override-19lec04).ant-pagination
-  .ant-pagination-item-active {
+.ant-pagination .ant-pagination-item-active {
   border: 2px solid #ff914d !important;
 }
 
-:where(.css-dev-only-do-not-override-19lec04).ant-pagination
-  .ant-pagination-item-active
-  a {
+.ant-pagination .ant-pagination-item-active a {
   color: #ff914d !important;
 }
 
-:where(.ant-select-focused) .ant-select-selector {
+.ant-select-focused .ant-select-selector {
   border-color: #ff914d !important;
   box-shadow: 0 0 2px rgba(255, 145, 77, 0.7) !important;
 }
 
-:where(.ant-select-dropdown)
+.ant-select-dropdown
   .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
   background: rgba(255, 145, 77, 0.5) !important;
 }
 
 @layer theme {
+  .font-squada {
+    font-family: "Squada One", sans-serif;
+  }
   .bg-brand-orange {
     background-color: #ff914d;
   }
@@ -189,7 +189,4 @@ html {
     border: 2px solid rgba(255, 255, 255, 0.7);
     /* filter: blur(0.5px); */
   }
-}
-
-@layer utilities {
 }
