@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { X } from "lucide-react";
+import { X, User } from "lucide-react";
 import { updateEmployee } from "../../../services/userService";
 import { toast } from "react-toastify";
+import axiosInstance from "../../../config/axiosUser";
+import ImageUploader from "../../ImageUploader/ImageUploader";
 
-interface Employee {
+export interface Employee {
   _id: string;
   user_id: string;
   job_rank: string;
@@ -13,13 +15,35 @@ interface Employee {
   phone: string;
   full_name: string;
   avatar_url: string;
-  department_name: string;
+  department_code: string;
   salary: number;
-  start_date: string;
+  start_date: string | null;
   end_date: string | null;
   updated_by: string;
   created_at: string;
   updated_at: string;
+  is_deleted: boolean;
+}
+
+interface Job {
+  _id: string;
+  job_rank: string;
+  job_title: string;
+  is_deleted: boolean;
+}
+
+interface Department {
+  _id: string;
+  department_code: string;
+  department_name: string;
+  description: string;
+  is_deleted: boolean;
+}
+
+interface Contract {
+  _id: string;
+  contract_type: string;
+  description: string;
   is_deleted: boolean;
 }
 
@@ -41,18 +65,14 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
   employee,
   isEmbedded = false,
 }) => {
-  const [formData, setFormData] = useState<Partial<Employee>>({
-    full_name: "",
-    job_rank: "",
-    contract_type: "",
-    address: "",
-    phone: "",
-    avatar_url: "",
-    department_name: "",
-    salary: 0,
-    start_date: "",
-    end_date: "",
-  });
+  const [formData, setFormData] = useState<Partial<Employee>>({});
+  const [previewAvatar, setPreviewAvatar] = useState("");
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [departments, setDepartments] = useState<Department[]>([]);
+  const [contracts, setContracts] = useState<Contract[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   
   // Animation states
   const [isAnimating, setIsAnimating] = useState(false);
@@ -70,411 +90,336 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
     }
   }, [isOpen]);
 
-  // Update form data when employee changes
+  // Initialize formData and previewAvatar with employee data
   useEffect(() => {
     if (employee) {
+      console.log("Setting employee data:", employee);
       setFormData({
-        ...employee,
+        user_id: employee.user_id,
+        job_rank: employee.job_rank,
+        contract_type: employee.contract_type,
+        account: employee.account,
+        address: employee.address || "",
+        phone: employee.phone,
+        full_name: employee.full_name,
+        avatar_url: employee.avatar_url,
+        department_code: employee.department_code,
+        salary: employee.salary || 0,
         start_date: formatDate(employee.start_date),
         end_date: formatDate(employee.end_date),
-        salary: employee.salary || 0,
       });
+      setPreviewAvatar(employee.avatar_url || ""); // Đồng bộ previewAvatar
+    } else {
+      console.log("No employee data provided");
     }
   }, [employee]);
+
+  // Fetch dropdown data
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const [jobsRes, deptsRes, contractsRes] = await Promise.all([
+          axiosInstance.get("/jobs/get-all"),
+          axiosInstance.get("/departments/get-all"),
+          axiosInstance.get("/contracts/get-all"),
+        ]);
+
+        if (jobsRes.data?.data) setJobs(jobsRes.data.data);
+        if (deptsRes.data?.data) setDepartments(deptsRes.data.data);
+        if (contractsRes.data?.data) setContracts(contractsRes.data.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setError("Failed to load form data");
+        toast.error("Failed to load form data");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (isOpen) {
+      fetchData();
+    }
+  }, [isOpen]);
 
   // Handle modal close with animation
   const handleClose = () => {
     setIsAnimating(false);
-    setTimeout(() => onClose(), 300); // Match transition duration
+    setTimeout(() => onClose(), 300);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!employee?.user_id) {
+      console.log("Current employee:", employee);
+      toast.error("No employee data available");
+      return;
+    }
+
+    setIsSubmitting(true);
+
     try {
-      if (employee) {
-        const changedFields: Record<string, unknown> = {};
+      const updateData = {
+        ...formData,
+        salary: Number(formData.salary) || 0,
+      };
 
-        Object.keys(formData).forEach((key) => {
-          const k = key as keyof typeof formData;
-          if (formData[k] !== employee[k]) {
-            changedFields[k] = formData[k];
-          }
-        });
-
-        // Add required fields
-        changedFields.user_id = employee.user_id;
-
-        if (Object.keys(changedFields).length > 0) {
-          await updateEmployee(
-            employee._id,
-            changedFields as Partial<Employee>
-          );
+      await updateEmployee(employee.user_id, updateData);
           toast.success("Employee updated successfully");
-          handleClose(); // Use animated close
-        } else {
-          toast.info("No changes to update");
-        }
-      }
-    } catch (error: unknown) {
+      onClose();
+    } catch (error) {
       console.error("Failed to update employee:", error);
-      const errorMessage =
-        error instanceof Error ? error.message : "Failed to update employee.";
-      toast.error(errorMessage);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to update employee"
+      );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleInputChange = (field: keyof typeof formData, value: unknown) => {
+  const handleInputChange = (field: keyof Employee, value: unknown) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
   };
 
-  // Update the render condition
+  const validateImageUrl = async (url: string) => {
+    try {
+      const img = new Image();
+      img.onload = () => {
+        setPreviewAvatar(url);
+        setFormData((prev) => ({ ...prev, avatar_url: url }));
+      };
+      img.onerror = () => {
+        setPreviewAvatar("");
+        toast.error("Invalid image URL");
+      };
+      img.src = url;
+    } catch {
+      setPreviewAvatar("");
+      toast.error("Invalid image URL");
+    }
+  };
+
+  const getUniqueJobsByTitle = (jobs: Job[]) => {
+    const uniqueJobTitles = new Map<string, Job>();
+    jobs.forEach(job => {
+      if (!uniqueJobTitles.has(job.job_title)) {
+        uniqueJobTitles.set(job.job_title, job);
+      }
+    });
+    return Array.from(uniqueJobTitles.values()).sort((a, b) => 
+      a.job_title.localeCompare(b.job_title)
+    );
+  };
+
+  const handleImageUpload = (imageUrl: string) => {
+    setPreviewAvatar(imageUrl);
+    setFormData(prev => ({ ...prev, avatar_url: imageUrl }));
+  };
+
   if (!modalVisible && !isEmbedded) return null;
 
-  // Nếu là embedded thì không cần wrapper modal
   if (isEmbedded) {
-    return (
+  return (
       <form onSubmit={handleSubmit} className="h-[600px] flex flex-col bg-white">
         <div className="flex-1 overflow-y-auto p-6">
-          <div className="grid grid-cols-2 gap-6">
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="text-lg font-semibold text-gray-700 mb-4">
-                Personal Information
-              </h3>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-gray-700 text-sm font-medium mb-2">
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.full_name || ""}
-                    onChange={(e) =>
-                      handleInputChange("full_name", e.target.value)
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 text-sm font-medium mb-2">
-                    Phone
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.phone || ""}
-                    onChange={(e) =>
-                      handleInputChange("phone", e.target.value)
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 text-sm font-medium mb-2">
-                    Address
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.address || ""}
-                    onChange={(e) =>
-                      handleInputChange("address", e.target.value)
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 text-sm font-medium mb-2">
-                    Avatar URL
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.avatar_url || ""}
-                    onChange={(e) =>
-                      handleInputChange("avatar_url", e.target.value)
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="text-lg font-semibold text-gray-700 mb-4">
-                Employment Details
-              </h3>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-gray-700 text-sm font-medium mb-2">
-                    Job Rank
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.job_rank || ""}
-                    onChange={(e) =>
-                      handleInputChange("job_rank", e.target.value)
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 text-sm font-medium mb-2">
-                    Department
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.department_name || ""}
-                    onChange={(e) =>
-                      handleInputChange("department_name", e.target.value)
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 text-sm font-medium mb-2">
-                    Contract Type
-                  </label>
-                  <select
-                    value={formData.contract_type || ""}
-                    onChange={(e) =>
-                      handleInputChange("contract_type", e.target.value)
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                  >
-                    <option value="">Select Contract Type</option>
-                    <option value="ONE YEAR">One Year</option>
-                    <option value="TWO YEAR">Two Year</option>
-                    <option value="THREE YEAR">Three Year</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-gray-700 text-sm font-medium mb-2">
-                    Salary
-                  </label>
-                  <input
-                    type="number"
-                    value={formData.salary || 0}
-                    onChange={(e) =>
-                      handleInputChange("salary", Number(e.target.value))
-                    }
-                    min="0"
-                    step="1000000"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="bg-gray-50 p-4 rounded-lg col-span-2">
-              <h3 className="text-lg font-semibold text-gray-700 mb-4">
-                Contract Period
-              </h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-gray-700 text-sm font-medium mb-2">
-                    Start Date
-                  </label>
-                  <input
-                    type="date"
-                    value={formData.start_date || ""}
-                    onChange={(e) =>
-                      handleInputChange("start_date", e.target.value)
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 text-sm font-medium mb-2">
-                    End Date
-                  </label>
-                  <input
-                    type="date"
-                    value={formData.end_date || ""}
-                    onChange={(e) =>
-                      handleInputChange("end_date", e.target.value)
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+          {error ? (
+            <div className="text-red-500">{error}</div>
+          ) : (
+            <div className="space-y-6">
+              {/* Avatar Section */}
+              <div className="mb-8">
+                <h3 className="text-lg font-semibold text-gray-700 mb-4">Profile Image</h3>
+                <div className="flex flex-col items-center gap-4">
+                  {/* Avatar Preview với Upload Overlay */}
+                  <div className="relative group">
+                    <div className="w-40 h-40 rounded-full border-4 border-gray-200 overflow-hidden">
+                      {previewAvatar ? (
+                        <img
+                          src={previewAvatar}
+                          alt="Avatar preview"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gray-50 flex items-center justify-center">
+                          <User className="w-16 h-16 text-gray-400" />
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Upload Overlay */}
+                    <div className="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <ImageUploader onImageUploaded={handleImageUpload} />
+                    </div>
+                  </div>
 
-        <div className="px-6 py-4 border-t bg-white">
-          <div className="flex justify-end gap-3">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 text-white bg-[#FF9447] rounded-md hover:bg-[#FF8347] transition-colors"
-            >
-              Save Changes
-            </button>
-          </div>
-        </div>
-      </form>
-    );
-  }
+                  {/* URL Input và Preview Button */}
+                  <div className="w-full max-w-md">
+                    <label className="block text-sm font-medium text-gray-600 mb-2">
+                      Image URL
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={formData.avatar_url || ""}
+                        onChange={(e) => validateImageUrl(e.target.value)}
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                        placeholder="https://example.com/image.jpg"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => validateImageUrl(formData.avatar_url || "")}
+                        className="px-4 py-2 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200"
+                      >
+                        Preview
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-  // Original modal render for standalone use
-  return (
-    <div className="fixed inset-0 z-50 overflow-y-auto transition-opacity duration-300 ease-in-out"
-         style={{ opacity: isAnimating ? 1 : 0 }}>
-      <div className="fixed inset-0 bg-black/30 transition-opacity duration-300 ease-in-out"
-           style={{ opacity: isAnimating ? 1 : 0 }}
-           onClick={handleClose}></div>
-      <div className="relative min-h-screen flex items-center justify-center p-4">
-        <div className="relative bg-white rounded-lg w-full max-w-4xl p-6 transition-all duration-300 ease-in-out transform"
-             style={{ 
-               opacity: isAnimating ? 1 : 0,
-               transform: isAnimating ? 'scale(1)' : 'scale(0.95)'
-             }}>
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-[#FF9447]">Edit Employee</h2>
-            <button
-              onClick={handleClose}
-              className="p-1 hover:bg-gray-100 rounded-full transition-colors"
-            >
-              <X className="w-6 h-6 text-gray-500" />
-            </button>
-          </div>
-          <form onSubmit={handleSubmit}>
-            <div className="grid grid-cols-2 gap-6">
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold text-gray-700 mb-4">
-                  Personal Information
-                </h3>
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-gray-700 text-sm font-medium mb-2">
-                      Full Name
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.full_name || ""}
-                      onChange={(e) =>
-                        handleInputChange("full_name", e.target.value)
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                    />
+              {/* Personal Information */}
+              <div className="grid grid-cols-2 gap-6">
+                <div className="bg-gray-50 p-6 rounded-lg">
+                  <h3 className="text-lg font-semibold text-gray-700 mb-4">Personal Information</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-600 mb-2">
+                        Full Name
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.full_name || ""}
+                        onChange={(e) => handleInputChange("full_name", e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-600 mb-2">
+                        Phone
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.phone || ""}
+                        onChange={(e) => handleInputChange("phone", e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-600 mb-2">
+                        Address
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.address || ""}
+                        onChange={(e) => handleInputChange("address", e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-gray-700 text-sm font-medium mb-2">
-                      Phone
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.phone || ""}
-                      onChange={(e) =>
-                        handleInputChange("phone", e.target.value)
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-700 text-sm font-medium mb-2">
-                      Address
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.address || ""}
-                      onChange={(e) =>
-                        handleInputChange("address", e.target.value)
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-700 text-sm font-medium mb-2">
-                      Avatar URL
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.avatar_url || ""}
-                      onChange={(e) =>
-                        handleInputChange("avatar_url", e.target.value)
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                    />
+                </div>
+
+                {/* Employment Details */}
+                <div className="bg-gray-50 p-6 rounded-lg">
+                  <h3 className="text-lg font-semibold text-gray-700 mb-4">Employment Details</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-600 mb-2">
+                        Job Rank
+                      </label>
+                      {isLoading ? (
+                        <div className="text-gray-500">Loading jobs...</div>
+                      ) : (
+                        <select
+                          value={formData.job_rank || ""}
+                          onChange={(e) =>
+                            handleInputChange("job_rank", e.target.value)
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                        >
+                          <option value="">Select Job Rank</option>
+                          {getUniqueJobsByTitle(jobs).map((job) => (
+                            <option key={job._id} value={job.job_rank}>
+                              {job.job_title}
+                            </option>
+                          ))}
+                        </select>
+                      )}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-600 mb-2">
+                        Department
+                      </label>
+                      {isLoading ? (
+                        <div className="text-gray-500">Loading departments...</div>
+                      ) : (
+                        <select
+                          value={formData.department_code || ""}
+                          onChange={(e) =>
+                            handleInputChange("department_code", e.target.value)
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                        >
+                          <option value="">Select Department</option>
+                          {departments.map((dept) => (
+                            <option key={dept._id} value={dept.department_code}>
+                              {dept.department_name}
+                            </option>
+                          ))}
+                        </select>
+                      )}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-600 mb-2">
+                        Contract Type
+                      </label>
+                      {isLoading ? (
+                        <div className="text-gray-500">Loading contracts...</div>
+                      ) : (
+                        <select
+                          value={formData.contract_type || ""}
+                          onChange={(e) =>
+                            handleInputChange("contract_type", e.target.value)
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                        >
+                          <option value="">Select Contract Type</option>
+                          {contracts.map((contract) => (
+                            <option
+                              key={contract._id}
+                              value={contract.contract_type}
+                            >
+                              {contract.description}
+                            </option>
+                          ))}
+                        </select>
+                      )}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-600 mb-2">
+                        Salary
+                      </label>
+                      <input
+                        type="number"
+                        value={formData.salary || 0}
+                        onChange={(e) => handleInputChange("salary", Number(e.target.value))}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold text-gray-700 mb-4">
-                  Employment Details
-                </h3>
-                <div className="space-y-4">
+
+              {/* Contract Period */}
+              <div className="bg-gray-50 p-6 rounded-lg">
+                <h3 className="text-lg font-semibold text-gray-700 mb-4">Contract Period</h3>
+                <div className="grid grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-gray-700 text-sm font-medium mb-2">
-                      Job Rank
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.job_rank || ""}
-                      onChange={(e) =>
-                        handleInputChange("job_rank", e.target.value)
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-700 text-sm font-medium mb-2">
-                      Department
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.department_name || ""}
-                      onChange={(e) =>
-                        handleInputChange("department_name", e.target.value)
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-700 text-sm font-medium mb-2">
-                      Contract Type
-                    </label>
-                    <select
-                      value={formData.contract_type || ""}
-                      onChange={(e) =>
-                        handleInputChange("contract_type", e.target.value)
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                    >
-                      <option value="">Select Contract Type</option>
-                      <option value="ONE YEAR">One Year</option>
-                      <option value="TWO YEAR">Two Year</option>
-                      <option value="THREE YEAR">Three Year</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-gray-700 text-sm font-medium mb-2">
-                      Salary
-                    </label>
-                    <input
-                      type="number"
-                      value={formData.salary || 0}
-                      onChange={(e) =>
-                        handleInputChange("salary", Number(e.target.value))
-                      }
-                      min="0"
-                      step="1000000"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="bg-gray-50 p-4 rounded-lg col-span-2">
-                <h3 className="text-lg font-semibold text-gray-700 mb-4">
-                  Contract Period
-                </h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-gray-700 text-sm font-medium mb-2">
+                    <label className="block text-sm font-medium text-gray-600 mb-2">
                       Start Date
                     </label>
                     <input
@@ -487,7 +432,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-700 text-sm font-medium mb-2">
+                    <label className="block text-sm font-medium text-gray-600 mb-2">
                       End Date
                     </label>
                     <input
@@ -502,20 +447,298 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                 </div>
               </div>
             </div>
-            <div className="flex justify-end gap-3 mt-6">
-              <button
-                type="button"
-                onClick={handleClose}
-                className="px-4 py-2 text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="px-4 py-2 text-white bg-[#FF9447] rounded-md hover:bg-[#FF8347] transition-colors"
-              >
-                Save Changes
-              </button>
+          )}
+        </div>
+        <div className="px-6 py-4 border-t bg-white">
+          <div className="flex justify-end gap-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-[#FF9447] text-white rounded hover:bg-[#FF8347]"
+              disabled={isSubmitting || isLoading || !!error} // Vô hiệu hóa khi loading hoặc có lỗi
+            >
+              {isSubmitting ? "Saving..." : "Save Changes"}
+            </button>
+          </div>
+        </div>
+      </form>
+    );
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-50 overflow-y-auto transition-opacity duration-300 ease-in-out"
+      style={{ opacity: isAnimating ? 1 : 0 }}
+    >
+      <div
+        className="fixed inset-0 bg-black/30 transition-opacity duration-300 ease-in-out"
+        style={{ opacity: isAnimating ? 1 : 0 }}
+        onClick={handleClose}
+      ></div>
+      <div className="relative min-h-screen flex items-center justify-center p-4">
+        <div
+          className="relative bg-white rounded-lg w-full max-w-4xl p-6 transition-all duration-300 ease-in-out transform"
+          style={{
+            opacity: isAnimating ? 1 : 0,
+            transform: isAnimating ? "scale(1)" : "scale(0.95)",
+          }}
+        >
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold text-[#FF9447]">Edit Employee</h2>
+            <button
+              onClick={handleClose}
+              className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <X className="w-6 h-6 text-gray-500" />
+            </button>
+          </div>
+          <form onSubmit={handleSubmit} className="h-[600px] flex flex-col bg-white">
+            <div className="flex-1 overflow-y-auto p-6">
+              {error ? (
+                <div className="text-red-500">{error}</div>
+              ) : (
+                <div className="space-y-6">
+                  {/* Avatar Section */}
+                  <div className="mb-8">
+                    <h3 className="text-lg font-semibold text-gray-700 mb-4">Profile Image</h3>
+                    <div className="flex flex-col items-center gap-4">
+                      {/* Avatar Preview với Upload Overlay */}
+                      <div className="relative group">
+                        <div className="w-40 h-40 rounded-full border-4 border-gray-200 overflow-hidden">
+                          {previewAvatar ? (
+                            <img
+                              src={previewAvatar}
+                              alt="Avatar preview"
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-gray-50 flex items-center justify-center">
+                              <User className="w-16 h-16 text-gray-400" />
+                            </div>
+                          )}
+                        </div>
+                        
+                        {/* Upload Overlay */}
+                        <div className="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <ImageUploader onImageUploaded={handleImageUpload} />
+                        </div>
+                      </div>
+
+                      {/* URL Input và Preview Button */}
+                      <div className="w-full max-w-md">
+                        <label className="block text-sm font-medium text-gray-600 mb-2">
+                          Image URL
+                        </label>
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            value={formData.avatar_url || ""}
+                            onChange={(e) => validateImageUrl(e.target.value)}
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                            placeholder="https://example.com/image.jpg"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => validateImageUrl(formData.avatar_url || "")}
+                            className="px-4 py-2 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200"
+                          >
+                            Preview
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Personal Information */}
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="bg-gray-50 p-6 rounded-lg">
+                      <h3 className="text-lg font-semibold text-gray-700 mb-4">Personal Information</h3>
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-600 mb-2">
+                            Full Name
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.full_name || ""}
+                            onChange={(e) => handleInputChange("full_name", e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-600 mb-2">
+                            Phone
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.phone || ""}
+                            onChange={(e) => handleInputChange("phone", e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-600 mb-2">
+                            Address
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.address || ""}
+                            onChange={(e) => handleInputChange("address", e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Employment Details */}
+                    <div className="bg-gray-50 p-6 rounded-lg">
+                      <h3 className="text-lg font-semibold text-gray-700 mb-4">Employment Details</h3>
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-600 mb-2">
+                            Job Rank
+                          </label>
+                          {isLoading ? (
+                            <div className="text-gray-500">Loading jobs...</div>
+                          ) : (
+                            <select
+                              value={formData.job_rank || ""}
+                              onChange={(e) =>
+                                handleInputChange("job_rank", e.target.value)
+                              }
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                            >
+                              <option value="">Select Job Rank</option>
+                              {getUniqueJobsByTitle(jobs).map((job) => (
+                                <option key={job._id} value={job.job_rank}>
+                                  {job.job_title}
+                                </option>
+                              ))}
+                            </select>
+                          )}
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-600 mb-2">
+                            Department
+                          </label>
+                          {isLoading ? (
+                            <div className="text-gray-500">Loading departments...</div>
+                          ) : (
+                            <select
+                              value={formData.department_code || ""}
+                              onChange={(e) =>
+                                handleInputChange("department_code", e.target.value)
+                              }
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                            >
+                              <option value="">Select Department</option>
+                              {departments.map((dept) => (
+                                <option key={dept._id} value={dept.department_code}>
+                                  {dept.department_name}
+                                </option>
+                              ))}
+                            </select>
+                          )}
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-600 mb-2">
+                            Contract Type
+                          </label>
+                          {isLoading ? (
+                            <div className="text-gray-500">Loading contracts...</div>
+                          ) : (
+                            <select
+                              value={formData.contract_type || ""}
+                              onChange={(e) =>
+                                handleInputChange("contract_type", e.target.value)
+                              }
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                            >
+                              <option value="">Select Contract Type</option>
+                              {contracts.map((contract) => (
+                                <option
+                                  key={contract._id}
+                                  value={contract.contract_type}
+                                >
+                                  {contract.description}
+                                </option>
+                              ))}
+                            </select>
+                          )}
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-600 mb-2">
+                            Salary
+                          </label>
+                          <input
+                            type="number"
+                            value={formData.salary || 0}
+                            onChange={(e) => handleInputChange("salary", Number(e.target.value))}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Contract Period */}
+                  <div className="bg-gray-50 p-6 rounded-lg">
+                    <h3 className="text-lg font-semibold text-gray-700 mb-4">Contract Period</h3>
+                    <div className="grid grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-600 mb-2">
+                          Start Date
+                        </label>
+                        <input
+                          type="date"
+                          value={formData.start_date || ""}
+                          onChange={(e) =>
+                            handleInputChange("start_date", e.target.value)
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-600 mb-2">
+                          End Date
+                        </label>
+                        <input
+                          type="date"
+                          value={formData.end_date || ""}
+                          onChange={(e) =>
+                            handleInputChange("end_date", e.target.value)
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="px-6 py-4 border-t bg-white">
+              <div className="flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={handleClose}
+                  className="px-4 py-2 text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-[#FF9447] text-white rounded hover:bg-[#FF8347]"
+                  disabled={isSubmitting || isLoading || !!error} // Vô hiệu hóa khi loading hoặc có lỗi
+                >
+                  {isSubmitting ? "Saving..." : "Save Changes"}
+                </button>
+              </div>
             </div>
           </form>
         </div>
