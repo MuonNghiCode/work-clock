@@ -268,16 +268,6 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
                     />
                   </div>
                   <div>
-                    <label className="block text-gray-700 text-sm font-medium mb-2">Start Time</label>
-                    <input
-                      type="time"
-                      value={formData.startTime || ""}
-                      onChange={(e) => handleInputChange("startTime", e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                      disabled={loading}
-                    />
-                  </div>
-                  <div>
                     <label className="block text-gray-700 text-sm font-medium mb-2">End Date</label>
                     <input
                       type="date"
@@ -287,6 +277,17 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
                       disabled={loading}
                     />
                   </div>
+                  <div>
+                    <label className="block text-gray-700 text-sm font-medium mb-2">Start Time</label>
+                    <input
+                      type="time"
+                      value={formData.startTime || ""}
+                      onChange={(e) => handleInputChange("startTime", e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                      disabled={loading}
+                    />
+                  </div>
+                
                   <div>
                     <label className="block text-gray-700 text-sm font-medium mb-2">End Time</label>
                     <input
