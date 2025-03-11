@@ -17,6 +17,7 @@ export const API_CONSTANTS = {
     UPDATE_PROJECT: "/projects/${id}",
     GET_ALLROLEPROJECT: "/projects/roles",
     GET_PROJECT_BY_ID: "/projects/${id}",
+    DELETE_PROJECT: "/projects/${id}"
   },
   APPROVAL: {
     GET_CLAIM_APPROVAL: "/claims/approval-search",
