@@ -13,7 +13,7 @@ const AdminDashBoard: React.FC = () => {
       initial="hidden"
       animate="visible"
       whileHover={{ scale: 1 }}
-      className="p-8 min-h-screen flex flex-col gap-8 bg-transparent"
+      className=" min-h-screen flex flex-col gap-8 bg-transparent"
     >
       {/* Header Section */}
       <header className="text-center py-6">
