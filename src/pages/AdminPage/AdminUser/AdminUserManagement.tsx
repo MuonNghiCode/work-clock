@@ -631,7 +631,7 @@ const AdminUserManagement: React.FC = () => {
         </div>
 
         {/* Table */}
-        <div className="w-full overflow-x-auto">
+        {/* <div className="w-full overflow-x-auto"> */}
           <table className="w-full border-separate border-spacing-y-2.5 text-black border-0">
             <thead className="bg-brand-grandient h-[70px] text-lg text-white !rounded-t-lg">
               <tr className="bg-[#FFB17A]">
@@ -794,7 +794,7 @@ const AdminUserManagement: React.FC = () => {
               ))}
             </tbody>
           </table>
-        </div>
+        {/* </div> */}
 
         {/* Pagination */}
         <div className="flex items-center justify-end gap-2 mt-4">
