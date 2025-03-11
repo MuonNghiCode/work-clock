@@ -1,8 +1,7 @@
 import React, { useEffect, useState, forwardRef } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import DatePicker from "react-datepicker";
-import filestack from 'filestack-js';
+import { Calendar } from "antd";
 import { FaCalendarAlt } from "react-icons/fa";
 // Sử dụng icon cho password (bạn có thể cài react-icons nếu chưa có: npm install react-icons)
 import { FaEye, FaEyeSlash, FaCamera } from "react-icons/fa"; // Thêm icon camera
@@ -12,7 +11,7 @@ import userDefaultImage from "../../assets/images/user-image.png";
 import { changePassword, getEmployeeByUserId, updateEmployee } from "../../services/userService";
 import { getAllDepartments } from "../../services/userService";
 import { getAllContracts } from "../../services/userService";
-
+import dayjs, { Dayjs } from "dayjs";
 interface ProfileImageUploadProps {
     userId: string;
     formData: any;
@@ -46,7 +45,7 @@ interface FormData {
     avatar_url: string;
     department_code: string;
     salary: number;
-
+    user_id: string;
     start_date: Date | null;
     end_date: Date | null;
 }
@@ -56,6 +55,7 @@ interface EditProfilePageProps {
     contracts: Contract[];
     onUpdate: (data: FormData) => void;
 }
+
 const EditProfilePage: React.FC = () => {
     const convertFormDataToPayload = (data: FormData) => ({
         ...data,
@@ -90,6 +90,7 @@ const EditProfilePage: React.FC = () => {
 
     const [formData, setFormData] = useState<FormData>({
         job_rank: "",
+        user_id: "",
         contract_type: "",
         account: "",
         address: "",
@@ -134,6 +135,7 @@ const EditProfilePage: React.FC = () => {
                 .then((data) => {
                     setFormData({
                         job_rank: data.job_rank,
+                        user_id: data.user_id,
                         contract_type: data.contract_type,
                         account: data.account,
                         address: data.address,
@@ -165,10 +167,11 @@ const EditProfilePage: React.FC = () => {
         fetchDropdownData();
     }, []);
     // Xử lý thay đổi ngày cho Start Date
-    const handleStartDateChange = (date: Date | null) => {
-        if (date) {
-            setFormData((prev) => ({ ...prev, start_date: date })); // Lưu luôn đối tượng Date
-        }
+    const handleStartDateChange = (date: Dayjs) => {
+        setFormData((prev) => ({
+            ...prev,
+            start_date: date.toDate(), // Chuyển từ Dayjs sang Date
+        }));
     };
     const handleEndDateChange = (date: Date | null) => {
         if (date) {
@@ -213,19 +216,21 @@ const EditProfilePage: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const storedUserId = localStorage.getItem("userId");
+
         if (!storedUserId) {
             toast.error("User ID is missing");
             return;
         }
+
+        const formattedData = {
+            ...formData,
+            start_date: formData.start_date ? formData.start_date.toISOString() : undefined,
+            end_date: formData.end_date ? formData.end_date.toISOString() : undefined,
+        };
+
         try {
-            // [UPDATED] Chuyển đổi Date sang chuỗi định dạng "YYYY-MM-DD"
-            const payload = {
-                ...formData,
-                start_date: formData.start_date ? formData.start_date.toISOString().split("T")[0] : undefined,
-                end_date: formData.end_date ? formData.end_date.toISOString().split("T")[0] : undefined,
-            };
-            await updateEmployee(storedUserId, payload);
-            localStorage.setItem("accountData", JSON.stringify(payload));
+            await updateEmployee(storedUserId, formattedData);
+            localStorage.setItem("accountData", JSON.stringify(formattedData));
             toast.success("Employee updated successfully!");
         } catch (error) {
             console.error("Error updating employee:", error);
@@ -456,26 +461,28 @@ const EditProfilePage: React.FC = () => {
                             </div>
                             <div className="flex flex-col gap-2">
                                 <label className="block text-gray-700">Start Date</label>
-                                <DatePicker
-                                    selected={formData.start_date ? formData.start_date : null}
-                                    onChange={handleStartDateChange}
-                                    dateFormat="yyyy/MM/dd"
-                                    customInput={<CustomDateInput placeholder="Select Start Date" />}
-                                    placeholderText="Select Start Date"
-                                    className="w-full p-2 border rounded"
+                                <Calendar
+                                    fullscreen={false}
+                                    onSelect={handleStartDateChange}
+                                    value={formData.start_date ? dayjs(formData.start_date) : undefined}
+                                    className="border rounded p-2"
                                 />
                             </div>
                             <div className="flex flex-col gap-2">
                                 <label className="block text-gray-700">End Date</label>
-                                <DatePicker
-                                    selected={formData.end_date ? formData.end_date : null}
-                                    onChange={handleEndDateChange}
-                                    dateFormat="yyyy/MM/dd"
-                                    customInput={<CustomDateInput placeholder="Select End Date" />}
-                                    placeholderText="Select End Date"
-                                    className="w-full p-2 border rounded"
+                                <Calendar
+                                    fullscreen={false}
+                                    onSelect={(date: Dayjs) =>
+                                        setFormData((prev) => ({
+                                            ...prev,
+                                            end_date: date.toDate(), // Chuyển Dayjs thành Date
+                                        }))
+                                    }
+                                    value={formData.end_date ? dayjs(formData.end_date) : undefined} // Chuyển Date thành Dayjs để hiển thị
+                                    className="border rounded p-2"
                                 />
                             </div>
+
                             <div className="col-span-2 flex justify-start mt-4">
                                 <button type="submit" className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">
                                     Update
