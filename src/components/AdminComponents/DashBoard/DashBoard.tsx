@@ -145,33 +145,33 @@ const ChartCard = ({ title, children, bgColor }: ChartCardProps) => (
 
 const Dashboard = () => (
   <div className=" min-h-screen flex flex-col gap-12">
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+    <div className="grid grid-cols-2  md:grid-cols-4 gap-4">
       <StatCard
         icon={<Icons.UserCount className="text-3xl text-blue-600" />}
         label="Total Users"
         value={stats.userCount}
-        bgColor="bg-white p-4 rounded-lg shadow"
+        bgColor="bg-gradient-to-b from-blue-300 to-blue-100 p-6 rounded-xl shadow-lg relative hover:shadow-xl hover:bg-blue-400"
         textColor="text-black-900 font-bold"
       />
       <StatCard
         icon={<Icons.CircleCheck className="text-3xl text-green-600" />}
         label="Approved Claims"
         value={stats.approvedClaims}
-        bgColor="bg-white p-4 rounded-lg shadow"
+        bgColor="bg-gradient-to-b from-green-300 to-green-100"
         textColor="text-black-900 font-bold"
       />
       <StatCard
-        icon={<Icons.Money className="text-3xl text-orange-600" />}
+        icon={<Icons.Money className="text-3xl  text-yellow-500" />}
         label="Total Paid"
         value={`${stats.totalPaid} VND`}
-        bgColor="bg-white p-4 rounded-lg shadow"
+        bgColor="bg-gradient-to-b from-yellow-300 to-yellow-100"
         textColor="text-black-900 font-bold"
       />
       <StatCard
-        icon={<Icons.Project className="text-3xl text-yellow-600" />}
+        icon={<Icons.Project className="text-3xl text-orange-500" />}
         label="Completed Projects"
         value={stats.completedProjects}
-        bgColor="bg-white p-4 rounded-lg shadow"
+        bgColor="bg-gradient-to-b from-orange-300 to-orange-100"
         textColor="text-black-900 font-bold"
       />
     </div>

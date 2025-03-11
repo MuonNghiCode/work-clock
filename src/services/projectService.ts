@@ -74,13 +74,6 @@ export const createProject = async (
   return response as ResponseModel<ProjectInfo>;
 };
 
-export const createProject = async (
-  project: ProjectInfo
-): Promise<ResponseModel<ProjectInfo>> => {
-  const response = await post(API_CONSTANTS.PROJECT.CREATE_PROJECT, project);
-  return response as ResponseModel<ProjectInfo>;
-};
-
 export const getProjectById = async (
   id: string
 ): Promise<ResponseModel<ProjectInfo>> => {

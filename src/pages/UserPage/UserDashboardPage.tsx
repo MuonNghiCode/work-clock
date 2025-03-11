@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "antd";
 import ModalAddNewClaim from "../../components/UserComponents/ModalAddNewClaim";
 import { motion } from "framer-motion";
+import Icons from "../../components/icon";
 
 const fadeInScaleUp = {
   hidden: { opacity: 0, scale: 0.8 },
@@ -9,19 +10,31 @@ const fadeInScaleUp = {
 };
 
 interface StatCardProps {
+  icon: React.ReactNode;
   label: string;
   value: number;
+  bgColor: string;
+  textColor: string;
 }
 
-const StatCard = ({ label, value }: StatCardProps) => (
+const StatCard = ({
+  icon,
+  label,
+  value,
+  bgColor,
+  textColor,
+}: StatCardProps) => (
   <motion.div
     variants={fadeInScaleUp}
     initial="hidden"
     animate="visible"
-    className="p-8 rounded-2xl flex flex-col items-center justify-center bg-white bg-opacity-50 shadow-lg w-full text-center hover:scale-105 transition duration-300"
+    className={` rounded-2xl flex flex-col items-center justify-center ${bgColor} bg-opacity-50 shadow-lg w-full text-center hover:scale-105 transition duration-300`}
   >
-    <p className="text-xl font-medium text-gray-700">{label}</p>
-    <p className="text-4xl font-bold text-blue-600">{value}</p>
+    {icon && (
+      <div className="p-3 rounded-full bg-white bg-opacity-30">{icon}</div>
+    )}
+    <p className={`text-xl font-medium ${textColor}`}>{label}</p>
+    <p className={`text-4xl font-bold ${textColor}`}>{value}</p>
   </motion.div>
 );
 
@@ -43,11 +56,35 @@ const UserDashboardPage = () => {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mt-4">
-        <StatCard label="Created Claims" value={0} />
-        <StatCard label="Draft Claims" value={0} />
-        <StatCard label="Pending Claims" value={0} />
-        <StatCard label="Success Claims" value={0} />
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <StatCard
+          icon={<Icons.FormIcon className="text-3xl text-blue-600" />}
+          label="Created Claims"
+          value={0}
+          bgColor="bg-gradient-to-b from-blue-300 to-blue-100 p-6 rounded-xl shadow-lg relative hover:shadow-xl hover:bg-blue-400"
+          textColor="text-black-900 font-bold"
+        />
+        <StatCard
+          icon={<Icons.Email className="text-3xl   text-orange-500" />}
+          label="Draft Claims"
+          value={0}
+          bgColor="bg-gradient-to-b from-orange-300 to-orange-100"
+          textColor="text-black-900 font-bold"
+        />
+        <StatCard
+          icon={<Icons.Pending className="text-3xl text-yellow-500" />}
+          label="Pending Claims"
+          value={0}
+          bgColor="bg-gradient-to-b from-yellow-300 to-yellow-100"
+          textColor="text-black-900 font-bold"
+        />
+        <StatCard
+          icon={<Icons.CircleCheck className="text-3xl  text-green-600" />}
+          label="Success Claims"
+          value={0}
+          bgColor="bg-gradient-to-b from-green-300 to-green-100"
+          textColor="text-black-900 font-bold"
+        />
       </div>
 
       <div className="col-span-4 p-4 rounded-lg">
