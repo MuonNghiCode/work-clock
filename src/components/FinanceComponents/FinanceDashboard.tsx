@@ -4,6 +4,7 @@ import { getClaimsData } from "../../services/claimService";
 import Icons from "../../components/icon";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import moment from "moment";
 
 // Định nghĩa interface cho dữ liệu
 interface ClaimData {
@@ -53,6 +54,14 @@ const FinanceDashboard: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
+
+      // Get the current date and time, then adjust for Vietnam's time zone (UTC+7)
+      const currentDate = moment().utcOffset(7);
+      const currentMonth = currentDate.month() + 1; // moment's month is zero-based
+
+      // Log the current month
+      console.log("Current month (Vietnam time zone):", currentMonth);
+
       const request = {
         searchCondition: {
           keyword: "",
@@ -63,7 +72,7 @@ const FinanceDashboard: React.FC = () => {
         },
         pageInfo: {
           pageNum: 1,
-          pageSize: 10,
+          pageSize: 1000000,
         },
       };
 
@@ -89,19 +98,21 @@ const FinanceDashboard: React.FC = () => {
             })
           );
 
-          const claimsPerWeek = [0, 0, 0, 0]; // Khởi tạo mảng cho 4 tuần
-          const currentDate = new Date();
-          const currentMonth = currentDate.getMonth();
+          // Filter data for the current month
+          const currentMonthData = formattedData.filter((item) => {
+            const claimDate = moment(item.claim_start_date).utcOffset(7);
+            return claimDate.month() + 1 === currentMonth;
+          });
 
-          // Tính claims trong 4 tuẩn của tháng hiện tại (chart claims order)
-          formattedData.forEach((item) => {
+          const claimsPerWeek = [0, 0, 0, 0]; // Initialize array for 4 weeks
+
+          // Calculate claims in the 4 weeks of the current month (chart claims order)
+          currentMonthData.forEach((item) => {
             if (item.status === "Approved" || item.status === "Paid") {
-              const claimDate = new Date(item.claim_start_date);
-              if (claimDate.getMonth() === currentMonth) {
-                const weekIndex = Math.floor(claimDate.getDate() / 7);
-                if (weekIndex < 4) {
-                  claimsPerWeek[weekIndex] += 1;
-                }
+              const claimDate = moment(item.claim_start_date).utcOffset(7);
+              const weekIndex = Math.floor(claimDate.date() / 7);
+              if (weekIndex < 4) {
+                claimsPerWeek[weekIndex] += 1;
               }
             }
           });
@@ -116,42 +127,32 @@ const FinanceDashboard: React.FC = () => {
             ],
           }));
 
-          const totalRevenue = formattedData.reduce(
+          const totalRevenue = currentMonthData.reduce(
             (sum, item) => sum + item.employee_info.salary,
             0
           );
-          const pendingClaims = formattedData.filter(
+          const pendingClaims = currentMonthData.filter(
             (item) => item.status === "Approved"
           ).length;
-          const processedClaims = formattedData.filter(
+          const processedClaims = currentMonthData.filter(
             (item) => item.status === "Paid"
           ).length;
 
-          // Tính số lượng claims Approved trong tuần của tháng hiện tại
-          const startOfWeek = new Date(
-            currentDate.setDate(currentDate.getDate() - currentDate.getDay())
-          );
-          const endOfWeek = new Date(startOfWeek);
-          endOfWeek.setDate(endOfWeek.getDate() + 6);
-
-          const newApprovedClaims = formattedData.filter((item) => {
-            const claimDate = new Date(item.claim_start_date);
+          const newApprovedClaims = currentMonthData.filter((item) => {
+            const claimDate = moment(item.claim_start_date).utcOffset(7);
             return (
               item.status === "Approved" &&
-              claimDate.getMonth() === currentMonth
+              claimDate.month() + 1 === currentMonth
             );
           }).length;
 
-          // Tính thời gian xử lý trung bình
-          const processingTimes = formattedData
+          // Calculate average processing time
+          const processingTimes = currentMonthData
             .filter((item) => item.status === "Paid" && item.claim_end_date)
             .map((item) => {
-              const startDate = new Date(item.claim_start_date);
-              const endDate = new Date(item.claim_end_date);
-              return (
-                (endDate.getTime() - startDate.getTime()) /
-                (1000 * 60 * 60 * 24)
-              ); // Tính số ngày
+              const startDate = moment(item.claim_start_date).utcOffset(7);
+              const endDate = moment(item.claim_end_date).utcOffset(7);
+              return endDate.diff(startDate, "days");
             });
 
           const averageTime =
@@ -283,7 +284,7 @@ const FinanceDashboard: React.FC = () => {
               <thead className="bg-brand-gradient h-[70px] text-lg text-white !rounded-t-lg">
                 <tr className="bg-[linear-gradient(45deg,#FEB78A,#FF914D)]">
                   <th className="border-white px-4 py-2 !rounded-tl-2xl">
-                    Claims ID
+                    Transaction ID
                   </th>
                   <th className="border-l-2 border-white px-4 py-2">Claimer</th>
                   <th className="border-l-2 border-white px-4 py-2">Salary</th>
@@ -296,6 +297,11 @@ const FinanceDashboard: React.FC = () => {
               <tbody className="w-full">
                 {data
                   .filter((item) => item.status === "Paid")
+                  .sort(
+                    (a, b) =>
+                      new Date(b.claim_start_date).getTime() -
+                      new Date(a.claim_start_date).getTime()
+                  )
                   .map((item) => (
                     <tr
                       key={item._id}

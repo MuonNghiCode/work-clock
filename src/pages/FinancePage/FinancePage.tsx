@@ -200,7 +200,6 @@ const FinancePage: React.FC = () => {
         key: "selection",
       },
     ]);
-    // Khôi phục lại dữ liệu ban đầu
     setDataFinance(originalData);
   };
 
@@ -215,8 +214,8 @@ const FinancePage: React.FC = () => {
       setIsModalVisible(false);
       setIsStatusModalVisible(true);
       setSelectedItem(null);
-      fetchData(); // Refetch data after confirming payment
     }
+    fetchData();
   };
 
   const handleDownload = (items?: FinanceData[]) => {
