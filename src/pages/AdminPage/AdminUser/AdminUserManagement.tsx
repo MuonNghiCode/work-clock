@@ -37,7 +37,6 @@ import EditEmployeeModal from "../../../components/AdminComponents/EditEmployee/
 import { debounce } from "lodash";
 import { EmployeeInfo } from "../../../types/Employee";
 
-
 // ### Interfaces
 
 // User interface
@@ -52,7 +51,7 @@ export interface User<T> {
   is_verified: boolean;
   is_deleted: boolean;
 }
-export interface NewUser extends Omit<UserData, '_id' | 'is_deleted'> {
+export interface NewUser extends Omit<UserData, "_id" | "is_deleted"> {
   _id?: string;
   is_deleted?: boolean;
 }
@@ -186,8 +185,9 @@ const StatusBadge: React.FC<{ type: "role" | "status"; value: string }> = ({
 
     return (
       <span
-        className={`px-3 py-1 rounded-full font-medium ${roleColors[value] || roleColors.default
-          }`}
+        className={`px-3 py-1 rounded-full font-medium ${
+          roleColors[value] || roleColors.default
+        }`}
       >
         {getRoleName(value)}
       </span>
@@ -220,15 +220,27 @@ const AdminUserManagement: React.FC = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [userToDelete, setUserToDelete] = useState<User<string> | null>(null);
   const [isEmployeeModalOpen, setIsEmployeeModalOpen] = useState(false);
-  const [selectedEmployee, setSelectedEmployee] = useState<EmployeeInfo
-    | null>(null);
-  const [activeEditTab, setActiveEditTab] = useState<"account" | "information">("account");
-  const [editingEmployee, setEditingEmployee] = useState<EmployeeInfo | null>(null);
-  const [employeeCache, setEmployeeCache] = useState<Record<string, EmployeeInfo>>({});
-  const [openRoleDropdowns, setOpenRoleDropdowns] = useState<Record<string, boolean>>({});
+  const [selectedEmployee, setSelectedEmployee] = useState<EmployeeInfo | null>(
+    null
+  );
+  const [activeEditTab, setActiveEditTab] = useState<"account" | "information">(
+    "account"
+  );
+  const [editingEmployee, setEditingEmployee] = useState<EmployeeInfo | null>(
+    null
+  );
+  const [employeeCache, setEmployeeCache] = useState<
+    Record<string, EmployeeInfo>
+  >({});
+  const [openRoleDropdowns, setOpenRoleDropdowns] = useState<
+    Record<string, boolean>
+  >({});
   const [showUserId, setShowUserId] = useState(false);
   const [showRoleConfirm, setShowRoleConfirm] = useState(false);
-  const [pendingRoleChange, setPendingRoleChange] = useState<{ userId: string, newRole: string } | null>(null);
+  const [pendingRoleChange, setPendingRoleChange] = useState<{
+    userId: string;
+    newRole: string;
+  } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const currentAdmin = JSON.parse(localStorage.getItem("user") || "{}");
@@ -260,14 +272,14 @@ const AdminUserManagement: React.FC = () => {
             statusFilter === "locked"
               ? true
               : statusFilter === "unlocked"
-                ? false
-                : undefined,
+              ? false
+              : undefined,
           is_verified:
             statusFilter === "verified"
               ? true
               : statusFilter === "unverified"
-                ? false
-                : undefined,
+              ? false
+              : undefined,
           search_by: "username" as const,
         };
         const pageInfo = {
@@ -298,7 +310,14 @@ const AdminUserManagement: React.FC = () => {
 
   useEffect(() => {
     fetchUsers(searchTerm, roleFilter, statusFilter, currentPage, usersPerPage);
-  }, [searchTerm, roleFilter, statusFilter, currentPage, usersPerPage, fetchUsers]);
+  }, [
+    searchTerm,
+    roleFilter,
+    statusFilter,
+    currentPage,
+    usersPerPage,
+    fetchUsers,
+  ]);
 
   const handleUpdateUser = async (updatedUser: User<string>) => {
     try {
@@ -368,7 +387,9 @@ const AdminUserManagement: React.FC = () => {
     }
   };
 
-  const fetchEmployeeData = async (userId: string): Promise<EmployeeInfo | null> => {
+  const fetchEmployeeData = async (
+    userId: string
+  ): Promise<EmployeeInfo | null> => {
     try {
       if (employeeCache[userId]) {
         return employeeCache[userId];
@@ -426,7 +447,7 @@ const AdminUserManagement: React.FC = () => {
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
         is_deleted: false,
-        department_name: ""
+        department_name: "",
       };
 
       // Gọi API để lấy thông tin employee
@@ -434,7 +455,7 @@ const AdminUserManagement: React.FC = () => {
 
       if (response.success && response.data) {
         // Lưu vào cache và state - Chỉ lấy phần data từ response
-        setEmployeeCache(prev => ({ ...prev, [user.id]: response.data }));
+        setEmployeeCache((prev) => ({ ...prev, [user.id]: response.data }));
         setEditingEmployee(response.data);
       } else {
         // Sử dụng employee mặc định nếu không có dữ liệu
@@ -468,7 +489,7 @@ const AdminUserManagement: React.FC = () => {
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
         is_deleted: false,
-        department_name: ""
+        department_name: "",
       };
 
       setEditingEmployee(defaultEmployee);
@@ -483,10 +504,16 @@ const AdminUserManagement: React.FC = () => {
       ...prev,
       [updatedEmployee.user_id]: updatedEmployee,
     }));
-    if (editingEmployee && editingEmployee.user_id === updatedEmployee.user_id) {
+    if (
+      editingEmployee &&
+      editingEmployee.user_id === updatedEmployee.user_id
+    ) {
       setEditingEmployee(updatedEmployee);
     }
-    if (selectedEmployee && selectedEmployee.user_id === updatedEmployee.user_id) {
+    if (
+      selectedEmployee &&
+      selectedEmployee.user_id === updatedEmployee.user_id
+    ) {
       setSelectedEmployee(updatedEmployee);
     }
     toast.success("Employee updated successfully");
@@ -520,7 +547,9 @@ const AdminUserManagement: React.FC = () => {
             usersPerPage
           );
         }
-        toast.success(`User ${newStatus ? "blocked" : "unblocked"} successfully`);
+        toast.success(
+          `User ${newStatus ? "blocked" : "unblocked"} successfully`
+        );
       }
     } catch (error) {
       console.error("Error updating user status:", error);
@@ -549,7 +578,13 @@ const AdminUserManagement: React.FC = () => {
 
       if (response.success) {
         toast.success("User role updated successfully");
-        fetchUsers(searchTerm, roleFilter, statusFilter, currentPage, usersPerPage);
+        fetchUsers(
+          searchTerm,
+          roleFilter,
+          statusFilter,
+          currentPage,
+          usersPerPage
+        );
       }
     } catch (error) {
       console.error("Error updating role:", error);
@@ -772,7 +807,7 @@ const AdminUserManagement: React.FC = () => {
                             style={{
                               display:
                                 user.email === "admin@gmail.com" ||
-                                  user.id === currentAdmin._id
+                                user.id === currentAdmin._id
                                   ? "none"
                                   : "inline",
                             }}
@@ -842,7 +877,9 @@ const AdminUserManagement: React.FC = () => {
                     {selectedEmployee?.avatar_url ? (
                       <img
                         src={selectedEmployee.avatar_url}
-                        alt={selectedEmployee.full_name || selectedUser.user_name}
+                        alt={
+                          selectedEmployee.full_name || selectedUser.user_name
+                        }
                         className="w-28 h-28 rounded-lg object-cover mr-6 shadow-md"
                       />
                     ) : (
@@ -885,7 +922,7 @@ const AdminUserManagement: React.FC = () => {
                         </span>
                         <div className="w-2/3 flex items-center gap-2">
                           <span className="text-gray-800 truncate">
-                            {showUserId ? selectedUser.id : '••••••••••••••••'}
+                            {showUserId ? selectedUser.id : "••••••••••••••••"}
                           </span>
                           <button
                             onClick={() => setShowUserId(!showUserId)}
@@ -945,10 +982,11 @@ const AdminUserManagement: React.FC = () => {
                         </span>
                         <span className="w-2/3">
                           <span
-                            className={`px-3 py-1 rounded-full text-sm ${selectedUser.is_verified
+                            className={`px-3 py-1 rounded-full text-sm ${
+                              selectedUser.is_verified
                                 ? "bg-green-50 text-green-600"
                                 : "bg-yellow-50 text-yellow-600"
-                              }`}
+                            }`}
                           >
                             {selectedUser.is_verified
                               ? "Verified"
@@ -966,10 +1004,11 @@ const AdminUserManagement: React.FC = () => {
                         </span>
                         <span className="w-2/3">
                           <span
-                            className={`px-3 py-1 rounded-full text-sm ${selectedUser.is_blocked
+                            className={`px-3 py-1 rounded-full text-sm ${
+                              selectedUser.is_blocked
                                 ? "bg-red-50 text-red-600"
                                 : "bg-green-50 text-green-600"
-                              }`}
+                            }`}
                           >
                             {selectedUser.is_blocked ? "Blocked" : "Unlocked"}
                           </span>
@@ -1045,8 +1084,8 @@ const AdminUserManagement: React.FC = () => {
                         <span className="w-2/3 text-gray-800">
                           {selectedEmployee?.start_date
                             ? new Date(
-                              selectedEmployee.start_date
-                            ).toLocaleDateString()
+                                selectedEmployee.start_date
+                              ).toLocaleDateString()
                             : ""}
                         </span>
                       </div>
@@ -1061,8 +1100,8 @@ const AdminUserManagement: React.FC = () => {
                         <span className="w-2/3 text-gray-800">
                           {selectedEmployee?.end_date
                             ? new Date(
-                              selectedEmployee.end_date
-                            ).toLocaleDateString()
+                                selectedEmployee.end_date
+                              ).toLocaleDateString()
                             : ""}
                         </span>
                       </div>
@@ -1125,10 +1164,11 @@ const AdminUserManagement: React.FC = () => {
                       : "Edit Information"}
                   </h2>
                   <button
-                    className={`p-2 rounded-full transition-all duration-300 transform hover:scale-110 ${activeEditTab === "account"
+                    className={`p-2 rounded-full transition-all duration-300 transform hover:scale-110 ${
+                      activeEditTab === "account"
                         ? "bg-gray-100 text-gray-600 hover:bg-gray-200"
                         : "bg-[#FF9447] text-white hover:bg-[#FF8347]"
-                      }`}
+                    }`}
                     onClick={() =>
                       setActiveEditTab(
                         activeEditTab === "account" ? "information" : "account"
@@ -1155,10 +1195,11 @@ const AdminUserManagement: React.FC = () => {
 
               <div className="relative">
                 <div
-                  className={`transition-all duration-300 transform ${activeEditTab === "account"
+                  className={`transition-all duration-300 transform ${
+                    activeEditTab === "account"
                       ? "translate-x-0 opacity-100"
                       : "-translate-x-full opacity-0 absolute inset-0"
-                    }`}
+                  }`}
                 >
                   {activeEditTab === "account" && (
                     <UserManagementEdit
@@ -1172,10 +1213,11 @@ const AdminUserManagement: React.FC = () => {
                   )}
                 </div>
                 <div
-                  className={`transition-all duration-300 transform ${activeEditTab === "information"
+                  className={`transition-all duration-300 transform ${
+                    activeEditTab === "information"
                       ? "translate-x-0 opacity-100"
                       : "translate-x-full opacity-0 absolute inset-0"
-                    }`}
+                  }`}
                 >
                   {activeEditTab === "information" && (
                     <EditEmployeeModal
