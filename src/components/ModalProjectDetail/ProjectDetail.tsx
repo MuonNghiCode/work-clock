@@ -13,14 +13,13 @@ interface ProjectDetailProps {
 const ProjectDetail: React.FC<ProjectDetailProps> = ({ visible, onClose, project, users }) => {
     return (
         <Modal
-            width={700}
             open={visible}
             onCancel={onClose}
             footer={null}
-            className="rounded-xl shadow-xl"
         >
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Project Detail</h2>
-            <ProjectDetailTable projectDetail={project} users={users} />
+
+            <ProjectDetailTable projectDetail={project} users={users} visible={visible} onClose={onClose} />
+
         </Modal>
     );
 };
