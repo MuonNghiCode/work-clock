@@ -2,7 +2,6 @@ import React from "react";
 import { Outlet, useLocation } from "react-router";
 import { useInView } from "react-intersection-observer";
 import MainHeader from "../Header/MainHeader/MainHeader";
-import Footer from "../Footer/Footer";
 import ClickSpark from "../../components/ClickSpark/ClickSpark";
 
 const MainLayout: React.FC = () => {
@@ -17,7 +16,7 @@ const MainLayout: React.FC = () => {
     <>
       <div className="flex flex-col h-screen">
         <header
-          className={`fixed top-0 left-0 w-full text-black text-center p-1 z-10 ${
+          className={`fixed top-0 left-0 w-full text-black text-center z-10 ${
             isHomePage && isHomeSectionInView ? "bg-transparent" : "bg-white/70"
           }`}
         >
@@ -39,11 +38,9 @@ const MainLayout: React.FC = () => {
             <Outlet />
           </ClickSpark>
         </main>
-        {!isHomePage && (
-          <footer className="z-10 bg-white text-black text-center p-4 shadow-orange-footer">
-            <Footer />
-          </footer>
-        )}
+        {/* <footer className="z-10 bg-white text-black text-center p-4 ">
+          <Footer />
+        </footer> */}
       </div>
     </>
   );

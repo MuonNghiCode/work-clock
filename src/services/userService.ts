@@ -1,9 +1,10 @@
+import { Contract } from './../pages/EditProfilePage/EditProfilePage';
 import { get, put } from "./apiService";
 
 import { ResponseModel } from "../models/ResponseModel";
 import { API_CONSTANTS } from "../constants/apiConstants";
-import axiosInstance from "../config/axiosUser";
-import { EmployeeInfo } from "../types/Employee";
+import { EmployeeInfo, JobRank } from "../types/Employee";
+import { Department } from "../pages/EditProfilePage/EditProfilePage";
 
 interface ChangePassword {
     old_password: string;
@@ -11,7 +12,6 @@ interface ChangePassword {
 }
 export const changePassword = async (old_password: string, new_password: string): Promise<ResponseModel<ChangePassword>> => {
     const response = await put<ChangePassword>(API_CONSTANTS.USERS.CHANGE_PASSWORD, { old_password, new_password });
-
     if (response.success) {
         localStorage.setItem("lastChangedPassword", JSON.stringify({ old_password, new_password }));
     }
@@ -41,151 +41,43 @@ export const changePassword = async (old_password: string, new_password: string)
 // }
 
 // Hàm lấy tất cả jobs
-export const getAllJobs = async () => {
-  try {
-    const response = await get(API_CONSTANTS.EMPLOYEE.GET_ALL_JOB, null);
-    
-    if (response.data && response.success && Array.isArray(response.data)) {
-      // Remove duplicates using Set
-      const uniqueJobs = Array.from(new Set(response.data.map(job => job.job_rank)))
-        .map(job_rank => ({
-          job_rank,
-          // Add any other properties you need
-        }));
 
-      return { 
-        success: true, 
-        data: uniqueJobs 
-      };
-    }
-    
-    return { 
-      success: false, 
-      message: "Invalid jobs data format",
-      data: [] 
-    };
-  } catch (error) {
-    console.error("Error fetching jobs:", error);
-    return { 
-      success: false, 
-      message: "Failed to fetch jobs",
-      data: [] 
-    };
-  }
-};
 
 // Hàm lấy tất cả departments
-export const getAllDepartments = async () => {
-  try {
-    const response = await axiosInstance.get(API_CONSTANTS.EMPLOYEE.GET_ALL_DEPARTMENT);
-    console.log('Departments API response:', response.data);
-    
-    // Kiểm tra cấu trúc response
-    if (response.data && response.data.success && Array.isArray(response.data.data)) {
-      return { success: true, data: response.data.data };
+export const getAllDepartments = async (): Promise<ResponseModel<Department[]>> => {
+    const response = await get(API_CONSTANTS.EMPLOYEE.GET_ALL_DEPARTMENT);
+    if (response && response.data) {
+        return response as ResponseModel<Department[]>;
+    } else {
+        throw new Error("Failed to fetch departments");
     }
-    
-    return { 
-      success: false, 
-      message: "Invalid departments data format",
-      data: [] 
-    };
-  } catch (error) {
-    console.error("Error fetching departments:", error);
-    return { 
-      success: false, 
-      message: "Failed to fetch departments",
-      data: [] 
-    };
-  }
 };
 
 // Hàm lấy tất cả contracts
-export const getAllContracts = async () => {
-  try {
-    const response = await axiosInstance.get(API_CONSTANTS.EMPLOYEE.GET_ALL_CONTRACT);
-    console.log('Contracts API response:', response.data);
-    
-    // Kiểm tra cấu trúc response
-    if (response.data && response.data.success && Array.isArray(response.data.data)) {
-      return { success: true, data: response.data.data };
+export const getAllContracts = async (): Promise<ResponseModel<Contract[]>> => {
+    const response = await get(API_CONSTANTS.EMPLOYEE.GET_ALL_CONTRACT);
+    if (response && response.data) {
+        return response as ResponseModel<Contract[]>;
+    } else {
+        throw new Error("Failed to fetch contracts");
     }
-    
-    return { 
-      success: false, 
-      message: "Invalid contracts data format",
-      data: [] 
-    };
-  } catch (error) {
-    console.error("Error fetching contracts:", error);
-    return { 
-      success: false, 
-      message: "Failed to fetch contracts",
-      data: [] 
-    };
-  }
 };
-
+export const getAllJobs = async (): Promise<ResponseModel<JobRank[]>> => {
+    const response = await get(API_CONSTANTS.EMPLOYEE.GET_ALL_JOB);
+    return response as ResponseModel<JobRank[]>;
+};
 // Hàm lấy employee theo userId
-export const getEmployeeByUserId = async (userId: string) => {
-  try {
-    console.log("Fetching employee for userId:", userId);
-    const url = API_CONSTANTS.EMPLOYEE.GET_EMPLOYEE_BY_USER_ID.replace(
-      "${id}",
-      userId
-    );
-    console.log("API URL:", url);
-    
-    const response = await axiosInstance.get(url);
-    
-    // Kiểm tra response có phải là HTML không
-    if (typeof response.data === 'string' && response.data.includes('<!DOCTYPE html>')) {
-      console.error("Received HTML instead of JSON data");
-      return { 
-        success: false, 
-        message: "Invalid API response format",
-        data: null
-      };
+export const getEmployeeByUserId = async (userId: string): Promise<ResponseModel<EmployeeInfo>> => {
+    const response = await get<EmployeeInfo>(`${API_CONSTANTS.EMPLOYEE.GET_EMPLOYEE_BY_USER_ID.replace("${id}", userId)}`);
+    if (response && response.data) {
+        return response as ResponseModel<EmployeeInfo>;
+    } else {
+        throw new Error("Failed to fetch employee data");
     }
-    
-    console.log("Employee API response:", response.data);
-    
-    // Nếu response.data đã có cấu trúc {success, data} thì trả về đúng dữ liệu
-    if (response.data && response.data.success && response.data.data) {
-      return response.data;
-    }
-    
-    // Nếu không, bọc dữ liệu vào cấu trúc chuẩn
-    return { success: true, data: response.data };
-  } catch (error) {
-    console.error("Error fetching employee:", error);
-    return { 
-      success: false, 
-      message: "Failed to fetch employee",
-      data: null
-    };
-  }
 };
 
 // Hàm cập nhật employee
-export const updateEmployee = async ( id: string, data: EmployeeInfo): Promise<ResponseModel<EmployeeInfo>> => {
-    // Format the data according to API requirements
-    // if(data){
-    //     const formattedData = {
-    //   _id: data._id, // Include _id in request body
-    //   user_id: data.user_id,
-    //   full_name: data.full_name || '',
-    //   phone: data.phone || '',
-    //   address: data.address || '',
-    //   job_rank: data.job_rank || '',
-    //   department_code: data.department_code || '',
-    //   contract_type: data.contract_type || '',
-    //   salary: Number(data.salary) || 0,
-    //   start_date: data.start_date ? new Date(data.start_date).toISOString() : null,
-    //   end_date: data.end_date ? new Date(data.end_date).toISOString() : null,
-    //   updated_by: JSON.parse(localStorage.getItem('user') || '{}')._id || '',
-    //   account: data.account || ''
-    // };
+export const updateEmployee = async (id: string, data: EmployeeInfo): Promise<ResponseModel<EmployeeInfo>> => {
     const response = await put(API_CONSTANTS.EMPLOYEE.UPDATE_EMPLOYEE.replace("${id}", id), data);
     return response as ResponseModel<EmployeeInfo>;
 }
