@@ -1,13 +1,14 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Button, Pagination } from "antd";
 import { ProjectInfo } from "../../../types/Project";
-import ConfirmModal from "../../ConfirmModal/ConfirmModal";
 import Icons from "../../icon";
 // import EditProject from "../EditProject/EditProject";
 import ProjectDetail from "../../ModalProjectDetail/ProjectDetail";
-import { getAllProject, PageInfo, SearchConditionProject } from "../../../services/projectService";
+import { deleteProject, getAllProject, PageInfo, SearchConditionProject } from "../../../services/projectService";
 import ModalAddProject from "../ModalAddProject/ModalAddProject";
 import { debounce } from "lodash";
+import DeleteConfirmModal from "../../DeleteConfirmModal/DeleteConfirmModal";
+import { toast } from "react-toastify";
 
 
 const TableProject: React.FC = ({ }) => {
@@ -16,15 +17,13 @@ const TableProject: React.FC = ({ }) => {
   const [pageSize, setPageSize] = useState(5);
   const [showProjectDetail, setShowProjectDetail] = useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
-  const [message, setMessage] = useState<string>("");
+  // const [message, setMessage] = useState<string>("");
   const [selectedProject, setSelectedProject] = useState<ProjectInfo | null>(
-    null
   );
   // const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [searchValue, setSearchValue] = useState<string>("");
   const [totalItems, setTotalItems] = useState<number>(1);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-
+  const [isAddModalOpen, setIsAddModalOpen] = useState<{ isOpen: boolean; formStatus: 'add' | 'edit' | undefined }>({ isOpen: false, formStatus: undefined });
 
   const handlePageChange = (page: number, pageSize?: number) => {
     setCurrentPage(page);
@@ -98,20 +97,11 @@ const TableProject: React.FC = ({ }) => {
 
   const handleEditProject = (editedProject: ProjectInfo) => {
     setSelectedProject(editedProject);
-    setIsAddModalOpen(true);
-  };
-
-  const handleDeleteProject = (projectId: string | number) => {
-    console.log("Deleting project with id:", projectId);
-    // Sử dụng callback để đảm bảo có state mới nhất
-    setProjects((prevProjects) => {
-      console.log("Previous projects:", prevProjects);
-      const newProjects = prevProjects.filter(
-        (project) => project._id !== projectId
-      );
-      console.log("New projects:", newProjects);
-      return newProjects;
-    });
+    setIsAddModalOpen({
+      isOpen: true,
+      formStatus: "edit"
+    }
+    );
   };
 
   const handleShowProjectDetail = (project: ProjectInfo) => {
@@ -121,28 +111,32 @@ const TableProject: React.FC = ({ }) => {
 
 
   const handleDelete = (project: ProjectInfo) => {
-    console.log("Deleting project:", project);
     setSelectedProject(project);
-    setMessage(
-      `Are you sure you want to delete project "${project.project_name}"?`
-    );
     setShowConfirmModal(true);
   };
 
-  const handleConfirmDelete = () => {
-    console.log("Confirming delete for project:", selectedProject);
+  const handleConfirmDelete = async () => {
     if (selectedProject?._id) {
-      handleDeleteProject(selectedProject._id);
+      const response = await deleteProject(selectedProject._id)
+      if(response.success){
+        toast.success(`Delete Project ${selectedProject.project_name}`)
+      }
       setShowConfirmModal(false);
       setSelectedProject(null);
+      fetchProjects()
     }
   };
 
   const handleClose = () => {
-    // setIsEditModalOpen(false);
     setShowProjectDetail(false);
     setShowConfirmModal(false);
-    setSelectedProject(null);
+    setIsAddModalOpen({
+      isOpen: false,
+      formStatus: undefined
+    })
+    selectedProject !== null ? 
+    setSelectedProject(null) : null
+    fetchProjects()
   };
 
   const handleStatusChangeHTML = (status: string) => {
@@ -158,7 +152,12 @@ const TableProject: React.FC = ({ }) => {
     }
   };
   const handleAddProject = () => {
-    setIsAddModalOpen(true);
+    setIsAddModalOpen(
+      {
+        isOpen: true,
+        formStatus: 'add'
+      }
+    );
   };
 
   const users = ["dngoc", "haaus", "ntdn"];
@@ -166,12 +165,12 @@ const TableProject: React.FC = ({ }) => {
     <>
       <ModalAddProject
         isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-        projectData={selectedProject}
+        onClose={handleClose}
+        project={selectedProject}
       />
       <div className="flex justify-between items-center mb-4">
         <button
-          onClick={handleAddProject}
+          onClick={() => handleAddProject()}
           className="bg-orange-400 text-white px-6 py-3 rounded-full hover:bg-orange-500 transition-colors flex items-center gap-2"
         >
           <span className="text-xl">+</span>
@@ -292,14 +291,14 @@ const TableProject: React.FC = ({ }) => {
           users={users}
         />
       )}
-      <ConfirmModal
-        modalProps={{
-          visible: showConfirmModal,
-          onClose: handleClose,
-          onConfirm: handleConfirmDelete
-        }}
-        messageProps={{ message, id: selectedProject?._id || "" }}
+      {selectedProject && (
+      <DeleteConfirmModal
+      onClose={handleClose}
+      onConfirm={handleConfirmDelete}
+      project={selectedProject}
+      visible={showConfirmModal}
       />
+      )}
       {/* {selectedProject && (
         <EditProject
           project={selectedProject}

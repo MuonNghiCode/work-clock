@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Form, Input, Tag } from 'antd';
 import EditRequestModal from '../../components/RequestComponents/EditRequestModal/EditRequestModal';
-import DeleteRequestModal from '../../components/RequestComponents/DeleteRequestModal/DeleteRequestModal';
-import RequestApprovalModal from '../../components/RequestComponents/RequestApprovalModal/RequestApprovalModal'; // New import
+import RequestApprovalModal from '../../components/RequestComponents/RequestApprovalModal/RequestApprovalModal';
+import CancelRequestModal from '../../components/RequestComponents/CancelRequestModal/CancelRequestModal';
 import TableRequest from '../../components/RequestComponents/TableRequest/TableRequest';
 import { getClaimerSearch, updateClaimStatus } from '../../services/claimService';
 import { ClaimItem, SearchCondition, PageInfoRequest } from '../../types/ClaimType';
@@ -19,8 +19,8 @@ interface ClaimRequest {
   key: string;
   claimname: string;
   project: string;
-  start_date: string; // "DD/MM/YYYY"
-  end_date: string;   // "DD/MM/YYYY"
+  start_date: string;
+  end_date: string;
   totalHours: string;
   timeFrom: string;
   timeTo: string;
@@ -36,8 +36,8 @@ const RequestPage: React.FC = () => {
   const [editingRecord, setEditingRecord] = useState<ClaimRequest | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deletingRecord, setDeletingRecord] = useState<ClaimRequest | null>(null);
-  const [isApprovalModalOpen, setIsApprovalModalOpen] = useState(false); // New state
-  const [approvingRecord, setApprovingRecord] = useState<ClaimRequest | null>(null); // New state
+  const [isApprovalModalOpen, setIsApprovalModalOpen] = useState(false);
+  const [approvingRecord, setApprovingRecord] = useState<ClaimRequest | null>(null);
   const [form] = Form.useForm();
   const [apiData, setApiData] = useState<ClaimRequest[]>([]);
   const [totalItems, setTotalItems] = useState(0);
@@ -47,8 +47,8 @@ const RequestPage: React.FC = () => {
     key: item._id,
     claimname: item.claim_name || 'Unnamed Claim',
     project: item.project_info?.project_name || 'Unknown',
-    start_date: new Date(item.claim_start_date).toLocaleDateString('vi-VN'), // "DD/MM/YYYY"
-    end_date: new Date(item.claim_end_date).toLocaleDateString('vi-VN'),     // "DD/MM/YYYY"
+    start_date: new Date(item.claim_start_date).toLocaleDateString('vi-VN'),
+    end_date: new Date(item.claim_end_date).toLocaleDateString('vi-VN'),
     timeFrom: new Date(item.claim_start_date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
     timeTo: new Date(item.claim_end_date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
     totalHours: item.total_work_time?.toString() || '0',
@@ -169,21 +169,16 @@ const RequestPage: React.FC = () => {
         claim_status: "Pending Approval",
         comment: comment || '',
       };
-      console.log('Sending request approval with payload:', payload);
-
       const response = await updateClaimStatus(payload);
       if (response.success) {
         toast.success('Request approval sent successfully');
-        fetchClaims(); // Refresh the table data
+        fetchClaims();
       } else {
         throw new Error(response.message || 'Failed to update status');
       }
     } catch (error: any) {
       console.error('Failed to send request approval:', error);
-      const errorMessage = error.response?.status === 404
-        ? 'API endpoint not found. Please verify the URL in API_CONSTANTS.CLAIMS.UPDATE_STATUS.'
-        : error.message || 'Failed to send request approval';
-      toast.error(errorMessage);
+      toast.error(error.message || 'Failed to send request approval');
     } finally {
       setLoading(false);
       setIsApprovalModalOpen(false);
@@ -194,6 +189,30 @@ const RequestPage: React.FC = () => {
   const handleApprovalCancel = () => {
     setIsApprovalModalOpen(false);
     setApprovingRecord(null);
+  };
+
+  // Thêm hàm xử lý hủy yêu cầu
+  const handleCancelRequest = async (record: ClaimRequest) => {
+    setLoading(true);
+    try {
+      const payload = {
+        _id: record.key,
+        claim_status: "Canceled",
+        comment: "",
+      };
+      const response = await updateClaimStatus(payload);
+      if (response.success) {
+        toast.success('Claim canceled successfully');
+        fetchClaims(); 
+      } else {
+        throw new Error(response.message || 'Failed to cancel claim');
+      }
+    } catch (error: any) {
+      console.error('Failed to cancel claim:', error);
+      toast.error(error.message || 'Failed to cancel claim');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -229,7 +248,7 @@ const RequestPage: React.FC = () => {
         totalItems={totalItems}
         loading={loading}
         pagination={{ currentPage, pageSize, onPageChange: handlePageChange }}
-        actions={{ onEdit: handleEdit, onDelete: handleDelete, onRequestApproval: handleRequestApproval }}
+        actions={{ onEdit: handleEdit, onDelete: handleDelete, onRequestApproval: handleRequestApproval, onCancel: handleCancelRequest }}
       />
       <EditRequestModal
         isOpen={isEditModalOpen}
@@ -239,10 +258,11 @@ const RequestPage: React.FC = () => {
         claimId={editingRecord?.key || ''}
         refreshData={fetchClaims}
       />
-      <DeleteRequestModal
+      <CancelRequestModal
         isOpen={isDeleteModalOpen}
         onOk={handleDeleteModalOk}
         onCancel={handleDeleteModalCancel}
+        cancelingRecord={deletingRecord} 
       />
       <RequestApprovalModal
         isOpen={isApprovalModalOpen}

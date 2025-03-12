@@ -1,4 +1,5 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
+import { Form, Input, Select } from "antd";
 import { X } from "lucide-react";
 import { toast } from "react-toastify";
 import { createUser } from "../../../services/userAuth";
@@ -9,65 +10,38 @@ interface UserManagementAddProps {
   onSuccess: (newUser: NewUser) => void;
 }
 
-// Sử dụng React.memo để tránh render lại không cần thiết
-const UserManagementAdd: React.FC<UserManagementAddProps> = React.memo(({ onClose, onSuccess }) => {
-  const [formData, setFormData] = useState<NewUser>({
-    user_name: "",
-    email: "",
-    password: "",
-    role_code: "A002",
-    is_blocked: false,
-    is_verified: false
-  });
+interface FormValues {
+  user_name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  role_code: string;
+}
 
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+const UserManagementAdd: React.FC<UserManagementAddProps> = React.memo(({ onClose, onSuccess }) => {
+  const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Tối ưu validation với useCallback
-  const validateForm = useCallback(() => {
-    const newErrors: { [key: string]: string } = {};
-
-    if (!formData.user_name.trim()) {
-      newErrors.user_name = "Username is required";
-    } else if (formData.user_name.length < 3) {
-      newErrors.user_name = "Username must be at least 3 characters";
-    }
-
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-    } else if (!formData.email.match(/^[a-zA-Z0-9._%+-]+@gmail\.com$/)) {
-      newErrors.email = "Only @gmail.com email addresses are allowed";
-    }
-
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
-    }
-
-    if (!formData.role_code) {
-      newErrors.role_code = "Role is required";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  }, [formData]);
-
-  // Tối ưu handleSubmit với useCallback
-  const handleSubmit = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateForm() || isSubmitting) return;
-
+  const handleSubmit = async (values: FormValues) => {
+    if (isSubmitting) return;
     setIsSubmitting(true);
+
     try {
-      const response = await createUser(formData);
+      // Remove confirmPassword before sending to API
+      const { confirmPassword: _, ...userData } = values;
+      
+      const response = await createUser({
+        ...userData,
+        is_blocked: false,
+        is_verified: false,
+        // is_deleted: false
+      });
+
       if (response.success) {
         toast.success("User created successfully");
-        
-        onSuccess(formData);
+        onSuccess(userData);
         
         try {
-          // await triggerVerifyToken(formData.email);
           toast.success("Verification email sent successfully");
         } catch (error) {
           console.error("Error sending verification email:", error);
@@ -86,106 +60,136 @@ const UserManagementAdd: React.FC<UserManagementAddProps> = React.memo(({ onClos
     } finally {
       setIsSubmitting(false);
     }
-  }, [formData, validateForm, isSubmitting, onSuccess, onClose]);
-
-  // Tối ưu handleChange
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  }, []);
+  };
 
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">Create New Account</h2>
+        <h2 className="text-xl font-semibold text-[#FF9447] mb-6">Add New User</h2>
         <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
           <X className="w-6 h-6" />
         </button>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Username field */}
-        <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">Username</label>
-          <input
-            type="text"
-            name="user_name"
-            value={formData.user_name}
-            onChange={handleChange}
-            className={`w-full px-4 py-2 rounded-md border ${
-              errors.user_name ? "border-red-500" : "border-gray-200"
-            }`}
-          />
-          {errors.user_name && <p className="text-red-500 text-sm mt-1">{errors.user_name}</p>}
-        </div>
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={handleSubmit}
+        initialValues={{ role_code: "A002" }}
+      >
+        <Form.Item
+          name="user_name"
+          label="Username"
+          rules={[
+            { required: true, message: "Username is required" },
+            { min: 3, message: "Username must be at least 3 characters" }
+          ]}
+        >
+          <Input />
+        </Form.Item>
 
-        {/* Email field */}
-        <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">Email</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className={`w-full px-4 py-2 rounded-md border ${
-              errors.email ? "border-red-500" : "border-gray-200"
-            }`}
-          />
-          {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
-        </div>
+        <Form.Item
+          name="email"
+          label="Email"
+          rules={[
+            { required: true, message: "Email is required" },
+            { type: "email", message: "Please enter valid email" },
+            { pattern: /^[a-zA-Z0-9._%+-]+@gmail\.com$/, message: "Only @gmail.com emails allowed" }
+          ]}
+        >
+          <Input />
+        </Form.Item>
 
-        {/* Password field */}
-        <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">Password</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            className={`w-full px-4 py-2 rounded-md border ${
-              errors.password ? "border-red-500" : "border-gray-200"
-            }`}
-          />
-          {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
-        </div>
+        <Form.Item
+          name="password"
+          label="Password"
+          rules={[
+            { required: true, message: "Password is required" },
+            { min: 6, message: "Password must be at least 6 characters" }
+          ]}
+        >
+          <Input.Password />
+        </Form.Item>
 
-        {/* Role selection */}
-        <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">Role</label>
-          <select
-            name="role_code"
-            value={formData.role_code}
-            onChange={handleChange}
-            className={`w-full px-4 py-2 rounded-md border ${
-              errors.role_code ? "border-red-500" : "border-gray-200"
-            }`}
-          >
-            <option value="A001">Admin</option>
-            <option value="A002">Finance</option>
-            <option value="A003">Approval</option>
-            <option value="A004">Member other</option>
-          </select>
-          {errors.role_code && <p className="text-red-500 text-sm mt-1">{errors.role_code}</p>}
-        </div>
+        <Form.Item
+          name="confirmPassword"
+          label="Confirm Password"
+          dependencies={['password']}
+          rules={[
+            { required: true, message: "Please confirm password" },
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                if (!value || getFieldValue('password') === value) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(new Error('Passwords do not match!'));
+              },
+            }),
+          ]}
+        >
+          <Input.Password />
+        </Form.Item>
 
-        <div className="flex justify-end gap-4 mt-6">
+        <Form.Item
+          name="role_code"
+          label="Role"
+          rules={[{ required: true, message: "Role is required" }]}
+        >
+          <Select>
+            <Select.Option value="A001">Admin</Select.Option>
+            <Select.Option value="A002">Finance</Select.Option>
+            <Select.Option value="A003">Approval</Select.Option>
+            <Select.Option value="A004">Member other</Select.Option>
+          </Select>
+        </Form.Item>
+
+        <div className="flex justify-end gap-4">
           <button
             type="button"
             onClick={onClose}
-            className="px-6 py-2 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200"
-            disabled={isSubmitting}
+            className="px-4 py-2 text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="px-6 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600"
             disabled={isSubmitting}
+            className="px-4 py-2 bg-[#FF9447] text-white rounded-md hover:bg-[#FF8335] transition-colors disabled:opacity-50"
           >
-            {isSubmitting ? "Creating..." : "Create Account"}
+            {isSubmitting ? "Creating..." : "Create User"}
           </button>
         </div>
-      </form>
+      </Form>
+
+      <style>
+        {`
+          input, select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+          }
+          
+          input:focus, select:focus {
+            border-color: #FF9447;
+            box-shadow: 0 0 0 2px rgba(255, 148, 71, 0.2);
+          }
+          
+          label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.25rem;
+          }
+          
+          .error-message {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+          }
+        `}
+      </style>
     </div>
   );
 });

@@ -6,6 +6,7 @@ export const API_CONSTANTS = {
     FORGOT_PASSWORD: "/auth/forgot-password",
     VERIFY_TOKEN: "/auth/verify-token",
     RESEND_TOKEN: "/auth/resend-token",
+
   },
   ROLES: {
     GET_ALL: "/roles/get-all",
@@ -16,6 +17,7 @@ export const API_CONSTANTS = {
     UPDATE_PROJECT: "/projects/${id}",
     GET_ALLROLEPROJECT: "/projects/roles",
     GET_PROJECT_BY_ID: "/projects/${id}",
+    DELETE_PROJECT: "/projects/${id}"
   },
   APPROVAL: {
     GET_CLAIM_APPROVAL: "/claims/approval-search",
@@ -41,6 +43,12 @@ export const API_CONSTANTS = {
     SEARCH_USER: "/users/search",
     CHANGE_ROLE: "/users/change-role",
   },
+  EMPLOYEE: {
+    GET_EMPLOYEE_BY_USER_ID: "/employees/${id}",
+    UPDATE_EMPLOYEE: "/employees/${id}",
+    CREATE_EMPLOYEE: "/employees",
+    GET_ALL_JOB: "/jobs/get-all",
+    GET_ALL_DEPARTMENT: "/departments/get-all",
+    GET_ALL_CONTRACT: "/contracts/get-all",
+  },
 };
-
-

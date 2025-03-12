@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Images from "../../images";
 import Icons from "../../icon";
-// import CircularGallery from "../../CircularGallery/CircularGallery"; // Import CircularGallery
 
 const News: React.FC = () => {
   // Tạo mảng chứa thông tin các ảnh cho Featured News
@@ -80,7 +79,7 @@ const News: React.FC = () => {
           </div>
 
           {/* Desktop */}
-          <div className="relative items-center justify-center hidden md:flex md:w-full w-6xl mt-7">
+          <div className="relative items-center justify-center hidden md:flex md:w-full w-6xl mt-7 gap-6">
             {/* Nút Previous */}
             <button
               className="absolute z-10 p-2 text-white transition-all duration-500 bg-gray-300 rounded-full left-15 hover:bg-neutral-400"
@@ -101,9 +100,7 @@ const News: React.FC = () => {
               return (
                 <div
                   key={item.id}
-                  className={`${
-                    isPrimary ? "mr-[25px]" : ""
-                  } relative transition-all duration-500 hover:scale-105`}
+                  className={`relative transition-all duration-500 hover:scale-105`}
                 >
                   <img
                     className={`rounded-[20px] box-shadow-brand-orange transition-all duration-500 object-cover ${
@@ -234,9 +231,16 @@ const News: React.FC = () => {
           </div>
 
           {/* Circular Gallery */}
-          {/* <div style={{ height: "600px", position: "relative" }}>
-            <CircularGallery bend={3} textColor="#ffffff" borderRadius={0.05} />
-          </div> */}
+          {/* <CircularGallery
+            items={popularPosts.map((post) => ({
+              image: post.image,
+              text: post.title,
+            }))}
+            bend={3}
+            textColor="#ffffff"
+            borderRadius={0.05}
+            font="bold 30px DM Sans"
+          /> */}
         </div>
       </div>
     </>
