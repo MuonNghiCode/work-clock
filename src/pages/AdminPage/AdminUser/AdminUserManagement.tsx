@@ -665,170 +665,171 @@ const AdminUserManagement: React.FC = () => {
         </div>
 
         {/* Table */}
-        <div className="w-full overflow-x-auto">
-          <table className="w-full border-separate border-spacing-y-2.5 text-black border-0">
-            <thead className="bg-brand-grandient h-[70px] text-lg text-white !rounded-t-lg">
-              <tr className="bg-[#FFB17A]">
-                <th className="border-white px-4 py-2 !rounded-tl-2xl">
-                  Username
-                </th>
-                <th className="border-l-2 border-white px-4 py-2">Email</th>
-                <th className="border-l-2 border-white px-4 py-2">Role</th>
-                <th className="border-l-2 border-white px-4 py-2">Status</th>
-                <th className="border-l-2 border-white px-4 py-2 !rounded-tr-2xl">
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody className="w-full">
-              {users.map((user, index) => (
-                <tr
-                  key={`${user.id}-${index}`}
-                  className="h-[70px] bg-white overflow-hidden text-center border-collapse hover:shadow-brand-orange !rounded-2xl"
-                >
-                  <td className="px-4 py-2 rounded-l-2xl">
-                    <div className="flex items-center justify-center">
-                      <span className="font-medium">{user.user_name}</span>
-                    </div>
-                  </td>
-                  <td className="px-4 py-2">{user.email}</td>
-                  <td className="px-4 py-2">
-                    <div className="relative">
-                      <div
-                        className="flex items-center justify-center cursor-pointer"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          const newOpenDropdowns = { ...openRoleDropdowns };
-                          newOpenDropdowns[user.id] =
-                            !openRoleDropdowns[user.id];
-                          setOpenRoleDropdowns(newOpenDropdowns);
-                        }}
-                      >
-                        <StatusBadge type="role" value={user.role_code} />
-                        <Shield size={16} className="ml-1 text-gray-400" />
-                      </div>
-
-                      {openRoleDropdowns[user.id] && (
-                        <div
-                          className="absolute z-10 bg-white shadow-lg rounded-md p-2 mt-1 left-1/2 transform -translate-x-1/2"
-                          style={{ minWidth: "120px" }}
-                        >
-                          <div className="flex flex-col space-y-2">
-                            <button
-                              onClick={() => {
-                                handleRoleChange(user.id, "A001");
-                                const newOpenDropdowns = {
-                                  ...openRoleDropdowns,
-                                };
-                                newOpenDropdowns[user.id] = false;
-                                setOpenRoleDropdowns(newOpenDropdowns);
-                              }}
-                              className="px-3 py-1 text-left hover:bg-gray-100 rounded text-sm"
-                            >
-                              Admin
-                            </button>
-                            <button
-                              onClick={() => {
-                                handleRoleChange(user.id, "A002");
-                                const newOpenDropdowns = {
-                                  ...openRoleDropdowns,
-                                };
-                                newOpenDropdowns[user.id] = false;
-                                setOpenRoleDropdowns(newOpenDropdowns);
-                              }}
-                              className="px-3 py-1 text-left hover:bg-gray-100 rounded text-sm"
-                            >
-                              Finance
-                            </button>
-                            <button
-                              onClick={() => {
-                                handleRoleChange(user.id, "A003");
-                                const newOpenDropdowns = {
-                                  ...openRoleDropdowns,
-                                };
-                                newOpenDropdowns[user.id] = false;
-                                setOpenRoleDropdowns(newOpenDropdowns);
-                              }}
-                              className="px-3 py-1 text-left hover:bg-gray-100 rounded text-sm"
-                            >
-                              Approval
-                            </button>
-                            <button
-                              onClick={() => {
-                                handleRoleChange(user.id, "A004");
-                                const newOpenDropdowns = {
-                                  ...openRoleDropdowns,
-                                };
-                                newOpenDropdowns[user.id] = false;
-                                setOpenRoleDropdowns(newOpenDropdowns);
-                              }}
-                              className="px-3 py-1 text-left hover:bg-gray-100 rounded text-sm"
-                            >
-                              Claimer
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-4 py-2">
+        {/* <div className="w-full overflow-x-auto"> */}
+        <table className="w-full border-separate border-spacing-y-2.5 text-black border-0">
+          <thead className="bg-brand-grandient h-[70px] text-lg text-white !rounded-t-lg">
+            <tr className="bg-[#FFB17A]">
+              <th className="border-white px-4 py-2 !rounded-tl-2xl">
+                Username
+              </th>
+              <th className="border-l-2 border-white px-4 py-2">Email</th>
+              <th className="border-l-2 border-white px-4 py-2">Role</th>
+              <th className="border-l-2 border-white px-4 py-2">Status</th>
+              <th className="border-l-2 border-white px-4 py-2 !rounded-tr-2xl">
+                Action
+              </th>
+            </tr>
+          </thead>
+          <tbody className="w-full">
+            {users.map((user, index) => (
+              <tr
+                key={`${user.id}-${index}`}
+                className="h-[70px] bg-white overflow-hidden text-center border-collapse hover:shadow-brand-orange !rounded-2xl"
+              >
+                <td className="px-4 py-2 rounded-l-2xl">
+                  <div className="flex items-center justify-center">
+                    <span className="font-medium">{user.user_name}</span>
+                  </div>
+                </td>
+                <td className="px-4 py-2">{user.email}</td>
+                <td className="px-4 py-2">
+                  <div className="relative">
                     <div
-                      className="cursor-pointer"
-                      onClick={() => handleToggleStatus(user)}
+                      className="flex items-center justify-center cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const newOpenDropdowns = { ...openRoleDropdowns };
+                        newOpenDropdowns[user.id] = !openRoleDropdowns[user.id];
+                        setOpenRoleDropdowns(newOpenDropdowns);
+                      }}
                     >
-                      {user.is_blocked ? (
-                        <div className="flex items-center text-red-500 hover:text-red-600">
-                          <Lock size={16} className="mr-1" />
-                          <span>Locked</span>
-                        </div>
-                      ) : (
-                        <div className="flex items-center text-green-500 hover:text-green-600">
-                          <Unlock size={16} className="mr-1" />
-                          <span>Unlocked</span>
-                        </div>
-                      )}
+                      <StatusBadge type="role" value={user.role_code} />
+                      <Shield size={16} className="ml-1 text-gray-400" />
                     </div>
-                  </td>
-                  <td className="px-4 py-2 rounded-r-2xl">
-                    <div className="flex justify-center gap-4">
-                      {!user.is_deleted && (
-                        <>
-                          <button
-                            className="text-blue-500 hover:text-blue-600"
-                            onClick={() => {
-                              handleEdit(user);
-                            }}
-                          >
-                            <Edit2 size={18} />
-                          </button>
-                          <button
-                            className="text-red-500 hover:text-red-600"
-                            onClick={() => handleDeleteUser(user)}
-                            style={{
-                              display:
-                                user.email === "admin@gmail.com" ||
-                                user.id === currentAdmin._id
-                                  ? "none"
-                                  : "inline",
-                            }}
-                          >
-                            <Trash2 size={18} />
-                          </button>
-                        </>
-                      )}
-                      <button
-                        className="text-green-500 hover:text-green-600"
-                        onClick={() => handleViewUserDetails(user)}
+
+                    {openRoleDropdowns[user.id] && (
+                      <div
+                        className="absolute z-10 bg-white shadow-lg rounded-md p-2 mt-1 left-1/2 transform -translate-x-1/2"
+                        style={{ minWidth: "120px" }}
                       >
-                        <Eye size={18} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                        <div className="flex flex-col space-y-2">
+                          <button
+                            onClick={() => {
+                              handleRoleChange(user.id, "A001");
+                              const newOpenDropdowns = {
+                                ...openRoleDropdowns,
+                              };
+                              newOpenDropdowns[user.id] = false;
+                              setOpenRoleDropdowns(newOpenDropdowns);
+                            }}
+                            className="px-3 py-1 text-left hover:bg-gray-100 rounded text-sm"
+                          >
+                            Admin
+                          </button>
+                          <button
+                            onClick={() => {
+                              handleRoleChange(user.id, "A002");
+                              const newOpenDropdowns = {
+                                ...openRoleDropdowns,
+                              };
+                              newOpenDropdowns[user.id] = false;
+                              setOpenRoleDropdowns(newOpenDropdowns);
+                            }}
+                            className="px-3 py-1 text-left hover:bg-gray-100 rounded text-sm"
+                          >
+                            Finance
+                          </button>
+                          <button
+                            onClick={() => {
+                              handleRoleChange(user.id, "A003");
+                              const newOpenDropdowns = {
+                                ...openRoleDropdowns,
+                              };
+                              newOpenDropdowns[user.id] = false;
+                              setOpenRoleDropdowns(newOpenDropdowns);
+                            }}
+                            className="px-3 py-1 text-left hover:bg-gray-100 rounded text-sm"
+                          >
+                            Approval
+                          </button>
+                          <button
+                            onClick={() => {
+                              handleRoleChange(user.id, "A004");
+                              const newOpenDropdowns = {
+                                ...openRoleDropdowns,
+                              };
+                              newOpenDropdowns[user.id] = false;
+                              setOpenRoleDropdowns(newOpenDropdowns);
+                            }}
+                            className="px-3 py-1 text-left hover:bg-gray-100 rounded text-sm"
+                          >
+                            Claimer
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </td>
+                <td className="px-4 py-2">
+                  <div
+                    className="cursor-pointer justify-center flex items-center"
+                    onClick={() => handleToggleStatus(user)}
+                  >
+                    {user.is_blocked ? (
+                      <div className="flex items-center text-red-500 hover:text-red-600">
+                        <Lock size={16} className="mr-1" />
+                        <span>Locked</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center text-green-500 hover:text-green-600">
+                        <Unlock size={16} className="mr-1" />
+                        <span>Unlocked</span>
+                      </div>
+                    )}
+                  </div>
+                </td>
+                <td className="px-4 py-2 rounded-r-2xl">
+                  <div className="flex justify-center gap-4">
+                    {!user.is_deleted && (
+                      <>
+                        <button
+                          className="text-blue-500 hover:text-blue-600"
+                          onClick={() => {
+                            handleEdit(user);
+                          }}
+                        >
+                          <Edit2 size={18} />
+                        </button>
+
+                        <button
+                          className="text-green-500 hover:text-green-600"
+                          onClick={() => handleViewUserDetails(user)}
+                        >
+                          <Eye size={18} />
+                        </button>
+
+                        <button
+                          className="text-red-500 hover:text-red-600"
+                          onClick={() => handleDeleteUser(user)}
+                          style={{
+                            display:
+                              user.email === "admin@gmail.com" ||
+                              user.id === currentAdmin._id
+                                ? "none"
+                                : "inline",
+                          }}
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {/* </div> */}
 
         {/* Pagination */}
         <div className="flex items-center justify-end gap-2 mt-4">
