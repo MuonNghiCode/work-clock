@@ -75,7 +75,7 @@ const UserManagementAdd: React.FC<UserManagementAddProps> = React.memo(({ onClos
         form={form}
         layout="vertical"
         onFinish={handleSubmit}
-        initialValues={{ role_code: "A002" }}
+        initialValues={{ role_code: "A004" }}
       >
         <Form.Item
           name="user_name"

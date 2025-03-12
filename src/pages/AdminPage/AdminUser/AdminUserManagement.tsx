@@ -37,7 +37,6 @@ import EditEmployeeModal from "../../../components/AdminComponents/EditEmployee/
 import { debounce } from "lodash";
 import { EmployeeInfo } from "../../../types/Employee";
 
-
 // ### Interfaces
 
 // User interface
@@ -52,7 +51,7 @@ export interface User<T> {
   is_verified: boolean;
   is_deleted: boolean;
 }
-export interface NewUser extends Omit<UserData, '_id' | 'is_deleted'> {
+export interface NewUser extends Omit<UserData, "_id" | "is_deleted"> {
   _id?: string;
   is_deleted?: boolean;
 }
@@ -221,15 +220,27 @@ const AdminUserManagement: React.FC = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [userToDelete, setUserToDelete] = useState<User<string> | null>(null);
   const [isEmployeeModalOpen, setIsEmployeeModalOpen] = useState(false);
-  const [selectedEmployee, setSelectedEmployee] = useState<EmployeeInfo
-   | null>(null);
-  const [activeEditTab, setActiveEditTab] = useState<"account" | "information">("account");
-  const [editingEmployee, setEditingEmployee] = useState<EmployeeInfo | null>(null);
-  const [employeeCache, setEmployeeCache] = useState<Record<string, EmployeeInfo>>({});
-  const [openRoleDropdowns, setOpenRoleDropdowns] = useState<Record<string, boolean>>({});
+  const [selectedEmployee, setSelectedEmployee] = useState<EmployeeInfo | null>(
+    null
+  );
+  const [activeEditTab, setActiveEditTab] = useState<"account" | "information">(
+    "account"
+  );
+  const [editingEmployee, setEditingEmployee] = useState<EmployeeInfo | null>(
+    null
+  );
+  const [employeeCache, setEmployeeCache] = useState<
+    Record<string, EmployeeInfo>
+  >({});
+  const [openRoleDropdowns, setOpenRoleDropdowns] = useState<
+    Record<string, boolean>
+  >({});
   const [showUserId, setShowUserId] = useState(false);
   const [showRoleConfirm, setShowRoleConfirm] = useState(false);
-  const [pendingRoleChange, setPendingRoleChange] = useState<{userId: string, newRole: string} | null>(null);
+  const [pendingRoleChange, setPendingRoleChange] = useState<{
+    userId: string;
+    newRole: string;
+  } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const currentAdmin = JSON.parse(localStorage.getItem("user") || "{}");
@@ -299,7 +310,14 @@ const AdminUserManagement: React.FC = () => {
 
   useEffect(() => {
     fetchUsers(searchTerm, roleFilter, statusFilter, currentPage, usersPerPage);
-  }, [searchTerm, roleFilter, statusFilter, currentPage, usersPerPage, fetchUsers]);
+  }, [
+    searchTerm,
+    roleFilter,
+    statusFilter,
+    currentPage,
+    usersPerPage,
+    fetchUsers,
+  ]);
 
   const handleUpdateUser = async (updatedUser: User<string>) => {
     try {
@@ -369,7 +387,9 @@ const AdminUserManagement: React.FC = () => {
     }
   };
 
-  const fetchEmployeeData = async (userId: string): Promise<EmployeeInfo | null> => {
+  const fetchEmployeeData = async (
+    userId: string
+  ): Promise<EmployeeInfo | null> => {
     try {
       if (employeeCache[userId]) {
         return employeeCache[userId];
@@ -404,10 +424,10 @@ const AdminUserManagement: React.FC = () => {
 
   const handleEdit = async (user: User<string>) => {
     setEditingUser(user);
-    
+
     try {
       setIsLoading(true);
-      
+
       // Tạo employee mặc định
       const defaultEmployee = {
         _id: "",
@@ -427,29 +447,29 @@ const AdminUserManagement: React.FC = () => {
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
         is_deleted: false,
-        department_name: ""
+        department_name: "",
       };
-      
+
       // Gọi API để lấy thông tin employee
       const response = await getEmployeeByUserId(user.id);
-      
+
       if (response.success && response.data) {
         // Lưu vào cache và state - Chỉ lấy phần data từ response
-        setEmployeeCache(prev => ({...prev, [user.id]: response.data}));
+        setEmployeeCache((prev) => ({ ...prev, [user.id]: response.data }));
         setEditingEmployee(response.data);
       } else {
         // Sử dụng employee mặc định nếu không có dữ liệu
         console.log("Using default employee object for user:", user);
         setEditingEmployee(defaultEmployee);
       }
-      
+
       // Mở modal
       setIsEditModalOpen(true);
       setActiveEditTab("account"); // Mặc định hiển thị tab account
     } catch (error) {
       console.error("Error fetching employee data:", error);
       toast.error("Failed to load employee data");
-      
+
       // Tạo employee mặc định nếu có lỗi
       const defaultEmployee = {
         _id: "",
@@ -469,9 +489,9 @@ const AdminUserManagement: React.FC = () => {
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
         is_deleted: false,
-        department_name: ""
+        department_name: "",
       };
-      
+
       setEditingEmployee(defaultEmployee);
       setIsEditModalOpen(true);
     } finally {
@@ -484,10 +504,16 @@ const AdminUserManagement: React.FC = () => {
       ...prev,
       [updatedEmployee.user_id]: updatedEmployee,
     }));
-    if (editingEmployee && editingEmployee.user_id === updatedEmployee.user_id) {
+    if (
+      editingEmployee &&
+      editingEmployee.user_id === updatedEmployee.user_id
+    ) {
       setEditingEmployee(updatedEmployee);
     }
-    if (selectedEmployee && selectedEmployee.user_id === updatedEmployee.user_id) {
+    if (
+      selectedEmployee &&
+      selectedEmployee.user_id === updatedEmployee.user_id
+    ) {
       setSelectedEmployee(updatedEmployee);
     }
     toast.success("Employee updated successfully");
@@ -521,7 +547,9 @@ const AdminUserManagement: React.FC = () => {
             usersPerPage
           );
         }
-        toast.success(`User ${newStatus ? "blocked" : "unblocked"} successfully`);
+        toast.success(
+          `User ${newStatus ? "blocked" : "unblocked"} successfully`
+        );
       }
     } catch (error) {
       console.error("Error updating user status:", error);
@@ -540,17 +568,23 @@ const AdminUserManagement: React.FC = () => {
 
   const confirmRoleChange = async () => {
     if (!pendingRoleChange) return;
-    
+
     try {
       setIsLoading(true);
       const response = await updateUserRole(
         pendingRoleChange.userId,
         pendingRoleChange.newRole
       );
-      
+
       if (response.success) {
         toast.success("User role updated successfully");
-        fetchUsers(searchTerm, roleFilter, statusFilter, currentPage, usersPerPage);
+        fetchUsers(
+          searchTerm,
+          roleFilter,
+          statusFilter,
+          currentPage,
+          usersPerPage
+        );
       }
     } catch (error) {
       console.error("Error updating role:", error);
@@ -632,168 +666,169 @@ const AdminUserManagement: React.FC = () => {
 
         {/* Table */}
         {/* <div className="w-full overflow-x-auto"> */}
-          <table className="w-full border-separate border-spacing-y-2.5 text-black border-0">
-            <thead className="bg-brand-grandient h-[70px] text-lg text-white !rounded-t-lg">
-              <tr className="bg-[#FFB17A]">
-                <th className="border-white px-4 py-2 !rounded-tl-2xl">
-                  Username
-                </th>
-                <th className="border-l-2 border-white px-4 py-2">Email</th>
-                <th className="border-l-2 border-white px-4 py-2">Role</th>
-                <th className="border-l-2 border-white px-4 py-2">Status</th>
-                <th className="border-l-2 border-white px-4 py-2 !rounded-tr-2xl">
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody className="w-full">
-              {users.map((user, index) => (
-                <tr
-                  key={`${user.id}-${index}`}
-                  className="h-[70px] bg-white overflow-hidden text-center border-collapse hover:shadow-brand-orange !rounded-2xl"
-                >
-                  <td className="px-4 py-2 rounded-l-2xl">
-                    <div className="flex items-center justify-center">
-                      <span className="font-medium">{user.user_name}</span>
-                    </div>
-                  </td>
-                  <td className="px-4 py-2">{user.email}</td>
-                  <td className="px-4 py-2">
-                    <div className="relative">
-                      <div
-                        className="flex items-center justify-center cursor-pointer"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          const newOpenDropdowns = { ...openRoleDropdowns };
-                          newOpenDropdowns[user.id] =
-                            !openRoleDropdowns[user.id];
-                          setOpenRoleDropdowns(newOpenDropdowns);
-                        }}
-                      >
-                        <StatusBadge type="role" value={user.role_code} />
-                        <Shield size={16} className="ml-1 text-gray-400" />
-                      </div>
-
-                      {openRoleDropdowns[user.id] && (
-                        <div
-                          className="absolute z-10 bg-white shadow-lg rounded-md p-2 mt-1 left-1/2 transform -translate-x-1/2"
-                          style={{ minWidth: "120px" }}
-                        >
-                          <div className="flex flex-col space-y-2">
-                            <button
-                              onClick={() => {
-                                handleRoleChange(user.id, "A001");
-                                const newOpenDropdowns = {
-                                  ...openRoleDropdowns,
-                                };
-                                newOpenDropdowns[user.id] = false;
-                                setOpenRoleDropdowns(newOpenDropdowns);
-                              }}
-                              className="px-3 py-1 text-left hover:bg-gray-100 rounded text-sm"
-                            >
-                              Admin
-                            </button>
-                            <button
-                              onClick={() => {
-                                handleRoleChange(user.id, "A002");
-                                const newOpenDropdowns = {
-                                  ...openRoleDropdowns,
-                                };
-                                newOpenDropdowns[user.id] = false;
-                                setOpenRoleDropdowns(newOpenDropdowns);
-                              }}
-                              className="px-3 py-1 text-left hover:bg-gray-100 rounded text-sm"
-                            >
-                              Finance
-                            </button>
-                            <button
-                              onClick={() => {
-                                handleRoleChange(user.id, "A003");
-                                const newOpenDropdowns = {
-                                  ...openRoleDropdowns,
-                                };
-                                newOpenDropdowns[user.id] = false;
-                                setOpenRoleDropdowns(newOpenDropdowns);
-                              }}
-                              className="px-3 py-1 text-left hover:bg-gray-100 rounded text-sm"
-                            >
-                              Approval
-                            </button>
-                            <button
-                              onClick={() => {
-                                handleRoleChange(user.id, "A004");
-                                const newOpenDropdowns = {
-                                  ...openRoleDropdowns,
-                                };
-                                newOpenDropdowns[user.id] = false;
-                                setOpenRoleDropdowns(newOpenDropdowns);
-                              }}
-                              className="px-3 py-1 text-left hover:bg-gray-100 rounded text-sm"
-                            >
-                              Claimer
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-4 py-2">
+        <table className="w-full border-separate border-spacing-y-2.5 text-black border-0">
+          <thead className="bg-brand-grandient h-[70px] text-lg text-white !rounded-t-lg">
+            <tr className="bg-[#FFB17A]">
+              <th className="border-white px-4 py-2 !rounded-tl-2xl">
+                Username
+              </th>
+              <th className="border-l-2 border-white px-4 py-2">Email</th>
+              <th className="border-l-2 border-white px-4 py-2">Role</th>
+              <th className="border-l-2 border-white px-4 py-2">Status</th>
+              <th className="border-l-2 border-white px-4 py-2 !rounded-tr-2xl">
+                Action
+              </th>
+            </tr>
+          </thead>
+          <tbody className="w-full">
+            {users.map((user, index) => (
+              <tr
+                key={`${user.id}-${index}`}
+                className="h-[70px] bg-white overflow-hidden text-center border-collapse hover:shadow-brand-orange !rounded-2xl"
+              >
+                <td className="px-4 py-2 rounded-l-2xl">
+                  <div className="flex items-center justify-center">
+                    <span className="font-medium">{user.user_name}</span>
+                  </div>
+                </td>
+                <td className="px-4 py-2">{user.email}</td>
+                <td className="px-4 py-2">
+                  <div className="relative">
                     <div
-                      className="cursor-pointer"
-                      onClick={() => handleToggleStatus(user)}
+                      className="flex items-center justify-center cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const newOpenDropdowns = { ...openRoleDropdowns };
+                        newOpenDropdowns[user.id] = !openRoleDropdowns[user.id];
+                        setOpenRoleDropdowns(newOpenDropdowns);
+                      }}
                     >
-                      {user.is_blocked ? (
-                        <div className="flex items-center text-red-500 hover:text-red-600">
-                          <Lock size={16} className="mr-1" />
-                          <span>Locked</span>
-                        </div>
-                      ) : (
-                        <div className="flex items-center text-green-500 hover:text-green-600">
-                          <Unlock size={16} className="mr-1" />
-                          <span>Unlocked</span>
-                        </div>
-                      )}
+                      <StatusBadge type="role" value={user.role_code} />
+                      <Shield size={16} className="ml-1 text-gray-400" />
                     </div>
-                  </td>
-                  <td className="px-4 py-2 rounded-r-2xl">
-                    <div className="flex justify-center gap-4">
-                      {!user.is_deleted && (
-                        <>
-                          <button
-                            className="text-blue-500 hover:text-blue-600"
-                            onClick={() => {
-                              handleEdit(user);
-                            }}
-                          >
-                            <Edit2 size={18} />
-                          </button>
-                          <button
-                            className="text-red-500 hover:text-red-600"
-                            onClick={() => handleDeleteUser(user)}
-                            style={{
-                              display:
-                                user.email === "admin@gmail.com" ||
-                                user.id === currentAdmin._id
-                                  ? "none"
-                                  : "inline",
-                            }}
-                          >
-                            <Trash2 size={18} />
-                          </button>
-                        </>
-                      )}
-                      <button
-                        className="text-green-500 hover:text-green-600"
-                        onClick={() => handleViewUserDetails(user)}
+
+                    {openRoleDropdowns[user.id] && (
+                      <div
+                        className="absolute z-10 bg-white shadow-lg rounded-md p-2 mt-1 left-1/2 transform -translate-x-1/2"
+                        style={{ minWidth: "120px" }}
                       >
-                        <Eye size={18} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                        <div className="flex flex-col space-y-2">
+                          <button
+                            onClick={() => {
+                              handleRoleChange(user.id, "A001");
+                              const newOpenDropdowns = {
+                                ...openRoleDropdowns,
+                              };
+                              newOpenDropdowns[user.id] = false;
+                              setOpenRoleDropdowns(newOpenDropdowns);
+                            }}
+                            className="px-3 py-1 text-left hover:bg-gray-100 rounded text-sm"
+                          >
+                            Admin
+                          </button>
+                          <button
+                            onClick={() => {
+                              handleRoleChange(user.id, "A002");
+                              const newOpenDropdowns = {
+                                ...openRoleDropdowns,
+                              };
+                              newOpenDropdowns[user.id] = false;
+                              setOpenRoleDropdowns(newOpenDropdowns);
+                            }}
+                            className="px-3 py-1 text-left hover:bg-gray-100 rounded text-sm"
+                          >
+                            Finance
+                          </button>
+                          <button
+                            onClick={() => {
+                              handleRoleChange(user.id, "A003");
+                              const newOpenDropdowns = {
+                                ...openRoleDropdowns,
+                              };
+                              newOpenDropdowns[user.id] = false;
+                              setOpenRoleDropdowns(newOpenDropdowns);
+                            }}
+                            className="px-3 py-1 text-left hover:bg-gray-100 rounded text-sm"
+                          >
+                            Approval
+                          </button>
+                          <button
+                            onClick={() => {
+                              handleRoleChange(user.id, "A004");
+                              const newOpenDropdowns = {
+                                ...openRoleDropdowns,
+                              };
+                              newOpenDropdowns[user.id] = false;
+                              setOpenRoleDropdowns(newOpenDropdowns);
+                            }}
+                            className="px-3 py-1 text-left hover:bg-gray-100 rounded text-sm"
+                          >
+                            Claimer
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </td>
+                <td className="px-4 py-2">
+                  <div
+                    className="cursor-pointer justify-center flex items-center"
+                    onClick={() => handleToggleStatus(user)}
+                  >
+                    {user.is_blocked ? (
+                      <div className="flex items-center text-red-500 hover:text-red-600">
+                        <Lock size={16} className="mr-1" />
+                        <span>Locked</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center text-green-500 hover:text-green-600">
+                        <Unlock size={16} className="mr-1" />
+                        <span>Unlocked</span>
+                      </div>
+                    )}
+                  </div>
+                </td>
+                <td className="px-4 py-2 rounded-r-2xl">
+                  <div className="flex justify-center gap-4">
+                    {!user.is_deleted && (
+                      <>
+                        <button
+                          className="text-blue-500 hover:text-blue-600"
+                          onClick={() => {
+                            handleEdit(user);
+                          }}
+                        >
+                          <Edit2 size={18} />
+                        </button>
+
+                        <button
+                          className="text-green-500 hover:text-green-600"
+                          onClick={() => handleViewUserDetails(user)}
+                        >
+                          <Eye size={18} />
+                        </button>
+
+                        <button
+                          className="text-red-500 hover:text-red-600"
+                          onClick={() => handleDeleteUser(user)}
+                          style={{
+                            display:
+                              user.email === "admin@gmail.com" ||
+                              user.id === currentAdmin._id
+                                ? "none"
+                                : "inline",
+                          }}
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
         {/* </div> */}
 
         {/* Pagination */}
@@ -843,7 +878,9 @@ const AdminUserManagement: React.FC = () => {
                     {selectedEmployee?.avatar_url ? (
                       <img
                         src={selectedEmployee.avatar_url}
-                        alt={selectedEmployee.full_name || selectedUser.user_name}
+                        alt={
+                          selectedEmployee.full_name || selectedUser.user_name
+                        }
                         className="w-28 h-28 rounded-lg object-cover mr-6 shadow-md"
                       />
                     ) : (
@@ -886,7 +923,7 @@ const AdminUserManagement: React.FC = () => {
                         </span>
                         <div className="w-2/3 flex items-center gap-2">
                           <span className="text-gray-800 truncate">
-                            {showUserId ? selectedUser.id : '••••••••••••••••'}
+                            {showUserId ? selectedUser.id : "••••••••••••••••"}
                           </span>
                           <button
                             onClick={() => setShowUserId(!showUserId)}
