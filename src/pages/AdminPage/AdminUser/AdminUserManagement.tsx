@@ -1206,7 +1206,7 @@ const AdminUserManagement: React.FC = () => {
                     <UserManagementEdit
                       user={editingUser}
                       onClose={() => {
-                        setIsEditModalOpen(false);
+                        setIsEditModalOpen(false); // Đóng toàn bộ modal
                         setEditingUser(null);
                       }}
                       onSubmit={handleUpdateUser}
@@ -1224,7 +1224,8 @@ const AdminUserManagement: React.FC = () => {
                     <EditEmployeeModal
                       isOpen={true}
                       onClose={() => {
-                        setActiveEditTab("account");
+                        setIsEditModalOpen(false); // Đóng toàn bộ modal
+                        setEditingUser(null);
                       }}
                       employee={editingEmployee}
                       isEmbedded={true}
@@ -1283,6 +1284,7 @@ const AdminUserManagement: React.FC = () => {
           isOpen={isEmployeeModalOpen}
           onClose={() => setIsEmployeeModalOpen(false)}
           employee={selectedEmployee}
+          onUpdateSuccess={handleEmployeeUpdateSuccess}
         />
 
         {/* Role Confirmation Modal */}
