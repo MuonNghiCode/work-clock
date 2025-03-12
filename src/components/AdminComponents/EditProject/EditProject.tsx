@@ -33,7 +33,7 @@ const EditProject: React.FC<EditProjectProps> = ({
       ? formatDate(new Date(project.project_end_date))
       : "",
     status: project?.project_status || "New",
-    user: project?.project_members[0]?.user_id || "",
+    user: project?.project_members[0]?.user_name || "",
     department: project?.project_department || "",
     descriptions: project?.project_description || "",
     role: project?.project_members[0]?.project_role || ""

@@ -1,34 +1,26 @@
 import React from 'react';
-import { Project } from '../../types/Project';
+import { ProjectInfo } from '../../types/Project';
+import { Modal } from 'antd';
 
 interface DeleteConfirmModalProps {
-  project: Project;
+  project: ProjectInfo;
   onClose: () => void;
   onConfirm: () => void;
+  visible: boolean
 }
 
-const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({ project, onClose, onConfirm }) => {
+const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({ project, onClose, onConfirm, visible }) => {
   return (
-    <div className="text-center">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">Delete Project</h2>
-      <p className="text-gray-600 mb-8">
-        Are you sure you want to delete project "{project.name}"? This action cannot be undone.
-      </p>
-      <div className="flex justify-center gap-4">
-        <button
-          className="px-6 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors"
-          onClick={onClose}
-        >
-          Cancel
-        </button>
-        <button
-          className="px-6 py-2 rounded-full bg-red-500 text-white hover:bg-red-600 transition-colors"
-          onClick={onConfirm}
-        >
-          Delete
-        </button>
-      </div>
+    <Modal open={visible} onCancel={onClose} onOk={onConfirm} 
+    okText='Delete'
+    okButtonProps={{ style: { backgroundColor: 'red' } }}
+    title="">
+    <div className="p-2 flex-col items-center">
+      <h1 className='border-b-2 text-3xl font-squada font-bold py-2 text-red-600'>Confirm Delete</h1>
+    <h2 className='font-squada text-xl pt-2'>Are you sure you want to delete project "{project.project_name}"? This action cannot be undone.
+    </h2>
     </div>
+    </Modal>
   );
 };
 

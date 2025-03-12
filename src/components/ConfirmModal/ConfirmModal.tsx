@@ -28,6 +28,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   const { message, id } = messageProps;
   const MESSAGE = `Confirm ${message} this claim request?`;
   const [comment, setComment] = useState<string>("");
+  
   const handleStatusChange = async () => {
     const response = await updateClaimStatus({ _id: id, claim_status: message, comment: comment });
     if (response.success) {

@@ -3,8 +3,6 @@ import { useInView } from "react-intersection-observer";
 import { motion } from "framer-motion";
 // import SplashCursor from "../../components/SplashCursor/SplashCursor";
 import Footer from "../../layouts/Footer/Footer";
-import ImageUploader from "../../components/ImageUploader/ImageUploader";
-// import SplashCursor from "../../components/SplashCursor/SplashCursor";
 
 const LazyCarousel = lazy(
   () => import("../../components/HomeComponents/Carousel/Carousel")
@@ -121,7 +119,7 @@ const HomePage: React.FC = () => {
         </Suspense>
       </div>
       {/* <SplashCursor /> */}
-      <ImageUploader />
+      {/* <ImageUploader /> */}
       <Footer />
     </>
   );
