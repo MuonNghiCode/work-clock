@@ -242,7 +242,7 @@ const TableProject: React.FC = ({ }) => {
                     <Button className="!bg-none !border-none">
                       <span className="hover:scale-110">
                         <Icons.Detail
-                          color="orange"
+                          color="green"
                           onClick={() => handleShowProjectDetail(item)}
                           className="w-5 h-5"
                         />
