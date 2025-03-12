@@ -241,12 +241,9 @@ const TableProject: React.FC = ({ }) => {
                   <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
                     <Button className="!bg-none !border-none">
                       <span className="hover:scale-110">
-                        <Icons.Delete
-                          color="red"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDelete(item);
-                          }}
+                        <Icons.Detail
+                          color="orange"
+                          onClick={() => handleShowProjectDetail(item)}
                           className="w-5 h-5"
                         />
                       </span>
@@ -255,9 +252,12 @@ const TableProject: React.FC = ({ }) => {
                   <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
                     <Button className="!bg-none !border-none">
                       <span className="hover:scale-110">
-                        <Icons.Detail
-                          color="orange"
-                          onClick={() => handleShowProjectDetail(item)}
+                        <Icons.Delete
+                          color="red"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(item);
+                          }}
                           className="w-5 h-5"
                         />
                       </span>
