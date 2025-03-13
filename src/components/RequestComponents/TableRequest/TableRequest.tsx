@@ -29,7 +29,7 @@ interface TableRequestProps {
   apiData: ClaimRequest[];
   totalItems: number;
   loading: boolean;
-  pagination: {
+  pagination?: {
     currentPage: number;
     pageSize: number;
     onPageChange: (page: number, pageSize?: number) => void;
@@ -51,10 +51,10 @@ const TableRequest: React.FC<TableRequestProps> = ({
 }) => {
   const [selectedClaim, setSelectedClaim] = useState<ClaimRequest | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false); // State cho modal Cancel
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [cancelingRecord, setCancelingRecord] = useState<ClaimRequest | null>(
     null
-  ); // Record đang hủy
+  );
 
   const handleRowClick = (record: ClaimRequest) => {
     setSelectedClaim(apiData.find((item) => item.key === record.key) || null);
@@ -237,17 +237,20 @@ const TableRequest: React.FC<TableRequestProps> = ({
             </tbody>
           </table>
 
-          <div className="flex justify-center mt-4">
-            <Pagination
-              current={pagination.currentPage}
-              pageSize={pagination.pageSize}
-              total={totalItems}
-              onChange={pagination.onPageChange}
-              showSizeChanger
-              pageSizeOptions={["5", "10", "20", "50"]}
-              disabled={loading}
-            />
-          </div>
+          {/* Chỉ hiển thị phân trang khi pagination được truyền vào (tức là khi có dữ liệu) */}
+          {pagination && (
+            <div className="flex justify-center mt-4">
+              <Pagination
+                current={pagination.currentPage}
+                pageSize={pagination.pageSize}
+                total={totalItems}
+                onChange={pagination.onPageChange}
+                showSizeChanger
+                pageSizeOptions={["5", "10", "20", "50"]}
+                disabled={loading}
+              />
+            </div>
+          )}
         </div>
 
         <Modal

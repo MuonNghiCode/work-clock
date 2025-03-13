@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { Button, Pagination, Tag, Form } from "antd";
+import { Button, Tag, Form } from "antd";
 import ModalAddNewClaim from "../../components/UserComponents/ModalAddNewClaim";
 import EditRequestModal from "../../components/RequestComponents/EditRequestModal/EditRequestModal";
 import RequestApprovalModal from "../../components/RequestComponents/RequestApprovalModal/RequestApprovalModal";
@@ -91,22 +91,30 @@ const UserDashboardPage = () => {
   const handleOpenModalAddNewClaim = () => setIsOpenModalAddNewClaim(true);
   const handleCloseModalAddNewClaim = () => setIsOpenModalAddNewClaim(false);
 
-  const mapClaimToRequest = (item: ClaimItem): ClaimRequest => ({
-    key: item._id,
+  const mapClaimToRequest = (item: Partial<ClaimItem>): ClaimRequest => ({
+    key: item._id || "unknown",
     claimname: item.claim_name || "Unnamed Claim",
     project: item.project_info?.project_name || "Unknown",
-    start_date: new Date(item.claim_start_date).toLocaleDateString("vi-VN"),
-    end_date: new Date(item.claim_end_date).toLocaleDateString("vi-VN"),
-    timeFrom: new Date(item.claim_start_date).toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    }),
-    timeTo: new Date(item.claim_end_date).toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    }),
+    start_date: item.claim_start_date
+      ? new Date(item.claim_start_date).toLocaleDateString("vi-VN")
+      : "N/A",
+    end_date: item.claim_end_date
+      ? new Date(item.claim_end_date).toLocaleDateString("vi-VN")
+      : "N/A",
+    timeFrom: item.claim_start_date
+      ? new Date(item.claim_start_date).toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        })
+      : "N/A",
+    timeTo: item.claim_end_date
+      ? new Date(item.claim_end_date).toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        })
+      : "N/A",
     totalHours: item.total_work_time?.toString() || "0",
     status: item.claim_status || "Unknown",
   });
@@ -120,6 +128,8 @@ const UserDashboardPage = () => {
           claim_status:
             statusFilter === "All" || !statusFilter ? "" : statusFilter,
           is_delete: false,
+          project_start_date: "",
+          project_end_date: "",
         },
         pageInfo: {
           pageNum,
@@ -433,7 +443,6 @@ const UserDashboardPage = () => {
           pagination={{
             currentPage,
             pageSize,
-            totalItems, // Đảm bảo tổng số items được truyền vào
             onPageChange: handlePageChange,
           }}
           actions={{
