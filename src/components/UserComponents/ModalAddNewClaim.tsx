@@ -1,5 +1,14 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Modal, Form, Input, Space, DatePicker, Select, Spin, ConfigProvider } from "antd";
+import {
+  Modal,
+  Form,
+  Input,
+  Space,
+  DatePicker,
+  Select,
+  Spin,
+  ConfigProvider,
+} from "antd";
 // import { ClaimRequest } from "../../types/ClaimRequest";
 import { ProjectInfo } from "../../types/Project";
 import { getAllProject } from "../../services/projectService";
@@ -136,11 +145,17 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
       }}
     >
       <Modal
-        title={<span className="text-3xl text-gradient-color">Add New Claim Request</span>}
+        title={
+          <span className="text-3xl text-gradient-color">
+            Add New Claim Request
+          </span>
+        }
         open={isOpen}
         onOk={onFinish}
         cancelText={<span className="text-xl font-light">Cancel</span>}
-        okText={<span className="text-xl font-light">Create Claim Request</span>}
+        okText={
+          <span className="text-xl font-light">Create Claim Request</span>
+        }
         okButtonProps={{ className: "!py-5 !rounded-xl" }}
         cancelButtonProps={{ className: "!py-5 !rounded-xl" }}
         onCancel={onClose}
@@ -155,7 +170,11 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
           initialValues={{ claimRequestData }}
           className="font-squada"
         >
-          <Form.Item label={<strong className="text-xl font-light">Claim Name</strong>} name="claim_name" rules={[{ required: true, message: "Please enter claim name" }]}>
+          <Form.Item
+            label={<strong className="text-xl font-light">Claim Name</strong>}
+            name="claim_name"
+            rules={[{ required: true, message: "Please enter claim name" }]}
+          >
             <Input
               value={claimRequestData.claim_name}
               onChange={(e) =>
@@ -163,7 +182,11 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
               }
             />
           </Form.Item>
-          <Form.Item label={<strong className="text-xl font-light">Project Name</strong>} name={"project_id"} rules={[{ required: true, message: "Please select a project" }]}>
+          <Form.Item
+            label={<strong className="text-xl font-light">Project Name</strong>}
+            name={"project_id"}
+            rules={[{ required: true, message: "Please select a project" }]}
+          >
             <Select
               onChange={(value) =>
                 handleClaimRequestDataChange("project_id", value)
@@ -177,7 +200,13 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
                 ))}
             </Select>
           </Form.Item>
-          <Form.Item label={<strong className="text-xl font-light">Approval Name</strong>} name="approval_id" rules={[{ required: true, message: "Please select an approval" }]}>
+          <Form.Item
+            label={
+              <strong className="text-xl font-light">Approval Name</strong>
+            }
+            name="approval_id"
+            rules={[{ required: true, message: "Please select an approval" }]}
+          >
             <Select
               showSearch
               labelInValue
@@ -197,7 +226,13 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
             size="large"
             className="!w-full justify-between !flex-wrap"
           >
-            <Form.Item label={<strong className="text-xl font-light">From</strong>} name="claim_start_date" rules={[{ required: true, message: "Please select a start date" }]}>
+            <Form.Item
+              label={<strong className="text-xl font-light">From</strong>}
+              name="claim_start_date"
+              rules={[
+                { required: true, message: "Please select a start date" },
+              ]}
+            >
               <DatePicker
                 format={"DD-MM-YYYY"}
                 onChange={(value) =>
@@ -215,7 +250,9 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
                     if (!value || !startDate || value.isAfter(startDate)) {
                       return Promise.resolve();
                     }
-                    return Promise.reject(new Error("End date must be after start date"));
+                    return Promise.reject(
+                      new Error("End date must be after start date")
+                    );
                   },
                 },
               ]}
@@ -228,9 +265,15 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
               />
             </Form.Item>
             <Form.Item
-              label={<strong className="text-xl font-light">Total Working Hours</strong>}
+              label={
+                <strong className="text-xl font-light">
+                  Total Working Hours
+                </strong>
+              }
               name="totalNoOfHours"
-              rules={[{ required: true, message: "Please enter total working hours" }]}
+              rules={[
+                { required: true, message: "Please enter total working hours" },
+              ]}
             >
               <Input
                 type="number"
@@ -245,7 +288,10 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
               />
             </Form.Item>
           </Space>
-          <Form.Item label={<strong className="text-xl font-light">Remarks</strong>} name="remark">
+          <Form.Item
+            label={<strong className="text-xl font-light">Remarks</strong>}
+            name="remark"
+          >
             <Input.TextArea
               className="!font-squada"
               value={claimRequestData.remark}
@@ -256,7 +302,7 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
           </Form.Item>
         </Form>
       </Modal>
-    </ConfigProvider >
+    </ConfigProvider>
   );
 };
 

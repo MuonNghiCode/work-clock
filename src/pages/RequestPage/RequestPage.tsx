@@ -20,7 +20,7 @@ import { Search } from "lucide-react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-export interface ClaimRequest {
+interface ClaimRequest {
   key: string;
   claimname: string;
   project: string;
@@ -30,7 +30,6 @@ export interface ClaimRequest {
   timeFrom: string;
   timeTo: string;
   status: string;
-  created_at: string; // Ensure this property is included
 }
 
 const RequestPage: React.FC = () => {
@@ -59,62 +58,65 @@ const RequestPage: React.FC = () => {
     });
   }, []);
 
-  // Cập nhật hàm mapClaimToRequest
-const mapClaimToRequest = (item: ClaimItem): ClaimRequest => ({
-  key: item._id,
-  claimname: item.claim_name || "Unnamed Claim",
-  project: item.project_info?.project_name || "Unknown",
-  start_date: new Date(item.claim_start_date).toLocaleDateString("vi-VN"),
-  end_date: new Date(item.claim_end_date).toLocaleDateString("vi-VN"),
-  timeFrom: new Date(item.claim_start_date).toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  }),
-  timeTo: new Date(item.claim_end_date).toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  }),
-  totalHours: item.total_work_time?.toString() || "0",
-  status: item.claim_status || "Unknown",
-  created_at: item.created_at || "",
-});
+  const mapClaimToRequest = (item: ClaimItem): ClaimRequest => ({
+    key: item._id,
+    claimname: item.claim_name || "Unnamed Claim",
+    project: item.project_info?.project_name || "Unknown",
+    start_date: new Date(item.claim_start_date).toLocaleDateString("vi-VN"),
+    end_date: new Date(item.claim_end_date).toLocaleDateString("vi-VN"),
+    timeFrom: new Date(item.claim_start_date).toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }),
+    timeTo: new Date(item.claim_end_date).toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }),
+    totalHours: item.total_work_time?.toString() || "0",
+    status: item.claim_status || "Unknown",
+  });
 
-// Cập nhật hàm fetchClaims
-const fetchClaims = async () => {
-  setLoading(true);
-  try {
-    const searchCondition: SearchCondition = {
-      keyword: searchText,
-      claim_status: statusFilter === "all" ? "" : statusFilter,
-      claim_start_date: "",
-      claim_end_date: "",
-      is_delete: false,
-    };
-    const pageInfo: PageInfoRequest = { pageNum: currentPage, pageSize };
+  const fetchClaims = async () => {
+    setLoading(true);
+    try {
+      const searchCondition: SearchCondition = {
+        keyword: searchText,
+        claim_status: statusFilter === "all" ? "" : statusFilter,
+        claim_start_date: "",
+        claim_end_date: "",
+        is_delete: false,
+      };
+      const pageInfo: PageInfoRequest = { pageNum: currentPage, pageSize };
 
-    const response: ResponseModel<{
-      pageData: ClaimItem[];
-      pageInfo: PageInfoRequest;
-    }> = await getClaimerSearch(searchCondition, pageInfo);
-    
-    if (response.success) {
-      const claims = response.data.pageData.map(mapClaimToRequest);
-      claims.sort((a, b) => {
-        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-      });
-      setApiData(claims);
-      setTotalItems(response.data.pageInfo.totalItems || 0);
-    } else {
-      console.warn("API returned no data for this search:", searchCondition);
+      const response: ResponseModel<{
+        pageData: ClaimItem[];
+        pageInfo: PageInfoRequest;
+      }> = await getClaimerSearch(searchCondition, pageInfo);
+      if (response.success) {
+        const claims = response.data.pageData.map(mapClaimToRequest);
+        claims.sort((a, b) => {
+          const startDateDiff =
+            new Date(a.start_date.split("/").reverse().join("-")).getTime() -
+            new Date(b.start_date.split("/").reverse().join("-")).getTime();
+          if (startDateDiff !== 0) return startDateDiff;
+          return (
+            new Date(a.end_date.split("/").reverse().join("-")).getTime() -
+            new Date(b.end_date.split("/").reverse().join("-")).getTime()
+          );
+        });
+        setApiData(claims);
+        setTotalItems(response.data.pageInfo.totalItems || 0);
+      } else {
+        console.warn("API returned no data for this search:", searchCondition);
+      }
+    } catch (error) {
+      console.error("Error fetching claims:", error);
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error("Error fetching claims:", error);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const handleSearch = useCallback(
     debounce((value: string) => {
