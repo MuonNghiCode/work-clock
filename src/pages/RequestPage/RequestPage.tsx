@@ -1,17 +1,24 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Form } from 'antd';
-import EditRequestModal from '../../components/RequestComponents/EditRequestModal/EditRequestModal';
-import RequestApprovalModal from '../../components/RequestComponents/RequestApprovalModal/RequestApprovalModal';
-import CancelRequestModal from '../../components/RequestComponents/CancelRequestModal/CancelRequestModal';
-import TableRequest from '../../components/RequestComponents/TableRequest/TableRequest';
-import { getClaimerSearch, updateClaimStatus } from '../../services/claimService';
-import { ClaimItem, SearchCondition, PageInfoRequest } from '../../types/ClaimType';
-import { ResponseModel } from '../../models/ResponseModel';
-import { debounce } from 'lodash';
-import { toast } from 'react-toastify';
-import { Search } from 'lucide-react';
-import AOS from "aos"; 
-import "aos/dist/aos.css"; 
+import React, { useState, useEffect, useCallback } from "react";
+import { Form } from "antd";
+import EditRequestModal from "../../components/RequestComponents/EditRequestModal/EditRequestModal";
+import RequestApprovalModal from "../../components/RequestComponents/RequestApprovalModal/RequestApprovalModal";
+import CancelRequestModal from "../../components/RequestComponents/CancelRequestModal/CancelRequestModal";
+import TableRequest from "../../components/RequestComponents/TableRequest/TableRequest";
+import {
+  getClaimerSearch,
+  updateClaimStatus,
+} from "../../services/claimService";
+import {
+  ClaimItem,
+  SearchCondition,
+  PageInfoRequest,
+} from "../../types/ClaimType";
+import { ResponseModel } from "../../models/ResponseModel";
+import { debounce } from "lodash";
+import { toast } from "react-toastify";
+import { Search } from "lucide-react";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 interface ClaimRequest {
   key: string;
@@ -28,14 +35,18 @@ interface ClaimRequest {
 const RequestPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [searchText, setSearchText] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [searchText, setSearchText] = useState("");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState<ClaimRequest | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [deletingRecord, setDeletingRecord] = useState<ClaimRequest | null>(null);
+  const [deletingRecord, setDeletingRecord] = useState<ClaimRequest | null>(
+    null
+  );
   const [isApprovalModalOpen, setIsApprovalModalOpen] = useState(false);
-  const [approvingRecord, setApprovingRecord] = useState<ClaimRequest | null>(null);
+  const [approvingRecord, setApprovingRecord] = useState<ClaimRequest | null>(
+    null
+  );
   const [form] = Form.useForm();
   const [apiData, setApiData] = useState<ClaimRequest[]>([]);
   const [totalItems, setTotalItems] = useState(0);
@@ -49,14 +60,22 @@ const RequestPage: React.FC = () => {
 
   const mapClaimToRequest = (item: ClaimItem): ClaimRequest => ({
     key: item._id,
-    claimname: item.claim_name || 'Unnamed Claim',
-    project: item.project_info?.project_name || 'Unknown',
-    start_date: new Date(item.claim_start_date).toLocaleDateString('vi-VN'),
-    end_date: new Date(item.claim_end_date).toLocaleDateString('vi-VN'),
-    timeFrom: new Date(item.claim_start_date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
-    timeTo: new Date(item.claim_end_date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
-    totalHours: item.total_work_time?.toString() || '0',
-    status: item.claim_status || 'Unknown',
+    claimname: item.claim_name || "Unnamed Claim",
+    project: item.project_info?.project_name || "Unknown",
+    start_date: new Date(item.claim_start_date).toLocaleDateString("vi-VN"),
+    end_date: new Date(item.claim_end_date).toLocaleDateString("vi-VN"),
+    timeFrom: new Date(item.claim_start_date).toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }),
+    timeTo: new Date(item.claim_end_date).toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }),
+    totalHours: item.total_work_time?.toString() || "0",
+    status: item.claim_status || "Unknown",
   });
 
   const fetchClaims = async () => {
@@ -64,28 +83,36 @@ const RequestPage: React.FC = () => {
     try {
       const searchCondition: SearchCondition = {
         keyword: searchText,
-        claim_status: statusFilter === 'all' ? '' : statusFilter,
-        claim_start_date: '',
-        claim_end_date: '',
+        claim_status: statusFilter === "all" ? "" : statusFilter,
+        claim_start_date: "",
+        claim_end_date: "",
         is_delete: false,
       };
       const pageInfo: PageInfoRequest = { pageNum: currentPage, pageSize };
 
-      const response: ResponseModel<{ pageData: ClaimItem[], pageInfo: PageInfoRequest }> = await getClaimerSearch(searchCondition, pageInfo);
+      const response: ResponseModel<{
+        pageData: ClaimItem[];
+        pageInfo: PageInfoRequest;
+      }> = await getClaimerSearch(searchCondition, pageInfo);
       if (response.success) {
         const claims = response.data.pageData.map(mapClaimToRequest);
         claims.sort((a, b) => {
-          const startDateDiff = new Date(a.start_date.split('/').reverse().join('-')).getTime() - new Date(b.start_date.split('/').reverse().join('-')).getTime();
+          const startDateDiff =
+            new Date(a.start_date.split("/").reverse().join("-")).getTime() -
+            new Date(b.start_date.split("/").reverse().join("-")).getTime();
           if (startDateDiff !== 0) return startDateDiff;
-          return new Date(a.end_date.split('/').reverse().join('-')).getTime() - new Date(b.end_date.split('/').reverse().join('-')).getTime();
+          return (
+            new Date(a.end_date.split("/").reverse().join("-")).getTime() -
+            new Date(b.end_date.split("/").reverse().join("-")).getTime()
+          );
         });
         setApiData(claims);
         setTotalItems(response.data.pageInfo.totalItems || 0);
       } else {
-        console.warn('API returned no data for this search:', searchCondition);
+        console.warn("API returned no data for this search:", searchCondition);
       }
     } catch (error) {
-      console.error('Error fetching claims:', error);
+      console.error("Error fetching claims:", error);
     } finally {
       setLoading(false);
     }
@@ -115,11 +142,11 @@ const RequestPage: React.FC = () => {
 
   const handleEditModalOk = async () => {
     try {
-      if (!editingRecord) throw new Error('No record being edited');
+      if (!editingRecord) throw new Error("No record being edited");
       setIsEditModalOpen(false);
       form.resetFields();
     } catch (error) {
-      console.error('Error in handleEditModalOk:', error);
+      console.error("Error in handleEditModalOk:", error);
     }
   };
 
@@ -130,7 +157,9 @@ const RequestPage: React.FC = () => {
 
   const handleDeleteModalOk = () => {
     if (deletingRecord) {
-      setApiData((prev) => prev.filter((item) => item.key !== deletingRecord.key));
+      setApiData((prev) =>
+        prev.filter((item) => item.key !== deletingRecord.key)
+      );
       setIsDeleteModalOpen(false);
       setDeletingRecord(null);
     }
@@ -167,18 +196,18 @@ const RequestPage: React.FC = () => {
       const payload = {
         _id: approvingRecord.key,
         claim_status: "Pending Approval",
-        comment: comment || '',
+        comment: comment || "",
       };
       const response = await updateClaimStatus(payload);
       if (response.success) {
-        toast.success('Request approval sent successfully');
+        toast.success("Request approval sent successfully");
         fetchClaims();
       } else {
-        throw new Error(response.message || 'Failed to update status');
+        throw new Error(response.message || "Failed to update status");
       }
     } catch (error: any) {
-      console.error('Failed to send request approval:', error);
-      toast.error(error.message || 'Failed to send request approval');
+      console.error("Failed to send request approval:", error);
+      toast.error(error.message || "Failed to send request approval");
     } finally {
       setLoading(false);
       setIsApprovalModalOpen(false);
@@ -201,14 +230,14 @@ const RequestPage: React.FC = () => {
       };
       const response = await updateClaimStatus(payload);
       if (response.success) {
-        toast.success('Claim canceled successfully');
-        fetchClaims(); 
+        toast.success("Claim canceled successfully");
+        fetchClaims();
       } else {
-        throw new Error(response.message || 'Failed to cancel claim');
+        throw new Error(response.message || "Failed to cancel claim");
       }
     } catch (error: any) {
-      console.error('Failed to cancel claim:', error);
-      toast.error(error.message || 'Failed to cancel claim');
+      console.error("Failed to cancel claim:", error);
+      toast.error(error.message || "Failed to cancel claim");
     } finally {
       setLoading(false);
     }
@@ -262,11 +291,16 @@ const RequestPage: React.FC = () => {
           totalItems={totalItems}
           loading={loading}
           pagination={
-            apiData.length > 0 
+            apiData.length > 0
               ? { currentPage, pageSize, onPageChange: handlePageChange }
               : undefined
           }
-          actions={{ onEdit: handleEdit, onDelete: handleDelete, onRequestApproval: handleRequestApproval, onCancel: handleCancelRequest }}
+          actions={{
+            onEdit: handleEdit,
+            onDelete: handleDelete,
+            onRequestApproval: handleRequestApproval,
+            onCancel: handleCancelRequest,
+          }}
         />
       </div>
       <EditRequestModal
@@ -274,14 +308,14 @@ const RequestPage: React.FC = () => {
         onCancel={handleEditModalCancel}
         onOk={handleEditModalOk}
         editingRecord={editingRecord}
-        claimId={editingRecord?.key || ''}
+        claimId={editingRecord?.key || ""}
         refreshData={fetchClaims}
       />
       <CancelRequestModal
         isOpen={isDeleteModalOpen}
         onOk={handleDeleteModalOk}
         onCancel={handleDeleteModalCancel}
-        cancelingRecord={deletingRecord} 
+        cancelingRecord={deletingRecord}
       />
       <RequestApprovalModal
         isOpen={isApprovalModalOpen}
