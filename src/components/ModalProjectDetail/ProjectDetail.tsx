@@ -1,5 +1,4 @@
 import React from "react";
-import { Modal } from "antd";
 import { ProjectInfo } from "../../types/Project";
 import ProjectDetailTable from "../ProjectDetailTable/ProjectDetailTable";
 
@@ -11,17 +10,7 @@ interface ProjectDetailProps {
 }
 
 const ProjectDetail: React.FC<ProjectDetailProps> = ({ visible, onClose, project, users }) => {
-    return (
-        <Modal
-            open={visible}
-            onCancel={onClose}
-            footer={null}
-        >
-
-            <ProjectDetailTable projectDetail={project} users={users} visible={visible} onClose={onClose} />
-
-        </Modal>
-    );
+    return <ProjectDetailTable projectDetail={project} users={users} visible={visible} onClose={onClose} />;
 };
 
 export default ProjectDetail;

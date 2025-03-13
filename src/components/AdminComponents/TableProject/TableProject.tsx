@@ -225,7 +225,7 @@ const TableProject: React.FC = ({ }) => {
               >
                 <div className="w-full flex justify-center gap-2 items-center space-x-2">
                   <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
-                    <Button className="!bg-none !border-none">
+                    <Button className="!bg-transparent !border-none">
                       <span className="hover:scale-110">
                         <Icons.Edit
                           color="blue"
@@ -239,10 +239,10 @@ const TableProject: React.FC = ({ }) => {
                     </Button>
                   </div>
                   <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
-                    <Button className="!bg-none !border-none">
+                    <Button className="!bg-transparent !border-none">
                       <span className="hover:scale-110">
                         <Icons.Detail
-                          color="green"
+                          color="#4CAF50"
                           onClick={() => handleShowProjectDetail(item)}
                           className="w-5 h-5"
                         />
@@ -250,7 +250,7 @@ const TableProject: React.FC = ({ }) => {
                     </Button>
                   </div>
                   <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
-                    <Button className="!bg-none !border-none">
+                    <Button className="!bg-transparent !border-none ">
                       <span className="hover:scale-110">
                         <Icons.Delete
                           color="red"
@@ -258,7 +258,7 @@ const TableProject: React.FC = ({ }) => {
                             e.stopPropagation();
                             handleDelete(item);
                           }}
-                          className="w-5 h-5"
+                          className="w-5 h-5 bg-transparent"
                         />
                       </span>
                     </Button>
