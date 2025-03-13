@@ -148,13 +148,17 @@ html {
     font-weight: bold;
   }
   .rbc-event {
-    background: linear-gradient(135deg, #ff914d 10%, #feb78a 90%);
+    background: linear-gradient(135deg, #ff914d 20%, #feb78a 80%);
     color: white;
     font-weight: bold;
     border-radius: 8px;
     padding: 5px;
     display: flex;
     flex-direction: column;
+  }
+  
+  .event-time {
+    font-weight: bold;
   }
   .rbc-event-label {
     display: none !important;
