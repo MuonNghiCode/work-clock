@@ -73,7 +73,7 @@ const TableRequest: React.FC<TableRequestProps> = ({
 
   const handleCancelConfirm = () => {
     if (cancelingRecord) {
-      actions.onCancel(cancelingRecord); // Gọi hàm onCancel từ props
+      actions.onCancel(cancelingRecord);
     }
     setIsCancelModalOpen(false);
     setCancelingRecord(null);
@@ -244,7 +244,7 @@ const TableRequest: React.FC<TableRequestProps> = ({
               total={totalItems}
               onChange={pagination.onPageChange}
               showSizeChanger
-              pageSizeOptions={["3", "5", "10", "20", "50"]}
+              pageSizeOptions={["5", "10", "20", "50"]}
               disabled={loading}
             />
           </div>
@@ -261,7 +261,6 @@ const TableRequest: React.FC<TableRequestProps> = ({
         >
           {selectedClaim ? (
             <div className="p-8 bg-gray-50 rounded-xl">
-              {/* Giữ nguyên phần hiển thị chi tiết claim */}
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-3xl font-bold text-[#FF9447]">
                   Claim Details

@@ -13,7 +13,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { EmployeeInfo, JobRank } from "../../types/Employee";
 import { User } from "lucide-react";
 import ImageUploader from "../../components/ImageUploader/ImageUploader";
-
+import { formatCurrency } from "../../utils/formatCurrency";
 
 
 export interface Department {
@@ -84,6 +84,8 @@ const EditProfilePage: React.FC = () => {
     const [contracts, setContracts] = useState<Contract[]>([]);
     const [jobrank, setJobRank] = useState<JobRank[]>([]);
     const [previewAvatar, setPreviewAvatar] = useState("");
+    const [showStartCalendar, setShowStartCalendar] = useState(false);
+    const [showEndCalendar, setShowEndCalendar] = useState(false);
     // Lấy userId từ localStorage sau khi đăng nhập
     useEffect(() => {
         const storedUserId = localStorage.getItem("userId");
@@ -147,7 +149,12 @@ const EditProfilePage: React.FC = () => {
             start_date: date.toDate(), // Chuyển từ Dayjs sang Date
         }));
     };
-
+    const handleEndDateChange = (date: Dayjs) => {
+        setFormData((prev) => ({
+            ...prev,
+            end_date: date.toDate(), // Chuyển từ Dayjs sang Date
+        }));
+    };
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>
     ) => {
@@ -411,87 +418,130 @@ const EditProfilePage: React.FC = () => {
                             </div>
                             <div>
                                 <label className="block text-gray-700">Job Rank</label>
-                                <select
-                                    name="job_rank"
-                                    value={formData.job_rank}
-                                    onChange={handleInputChange}
-                                    className="w-full p-2 border rounded"
-                                >
-                                    <option value="">Select Job Rank</option>
-                                    {jobrank.map((job) => (
-                                        <option key={job.id} value={job.job_rank}>
-                                            {job.job_rank}
-                                        </option>
-                                    ))}
-                                </select>
+                                <div className="relative">
+                                    <select
+                                        name="job_rank"
+                                        defaultValue={formData.job_rank}
+                                        className="w-full p-2 border rounded bg-gray-200 text-gray-600 cursor-not-allowed"
+                                        disabled
+                                    >
+                                        <option value="">Select Job Rank</option>
+                                        {jobrank.map((job) => (
+                                            <option key={job.id} value={job.job_rank}>
+                                                {job.job_rank}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
                             <div>
                                 <label className="block text-gray-700">Department Code</label>
-                                <select
-                                    name="department_code"
-                                    value={formData.department_code}
-                                    onChange={handleInputChange}
-                                    className="w-full p-2 border rounded"
-                                >
-                                    <option value="">Select Department</option>
-                                    {departments.map((dept) => (
-                                        <option key={dept._id} value={dept.department_code}>
-                                            {dept.description}
-                                        </option>
-                                    ))}
-                                </select>
+                                <div className="relative">
+                                    <select
+                                        name="department_code"
+                                        defaultValue={formData.department_code}
+                                        className="w-full p-2 border rounded bg-gray-200 text-gray-600 cursor-not-allowed"
+                                        disabled
+                                    >
+                                        <option value="">Select Department</option>
+                                        {departments.map((dept) => (
+                                            <option key={dept._id} value={dept.department_code}>
+                                                {dept.description}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
                             <div>
                                 <label className="block text-gray-700">Contract Type</label>
-                                <select
-                                    name="contract_type"
-                                    value={formData.contract_type}
-                                    onChange={handleInputChange}
-                                    className="w-full p-2 border rounded"
-                                >
-                                    <option value="">Select Contract</option>
-                                    {contracts.map((contract) => (
-                                        <option key={contract._id} value={contract.contract_type}>
-                                            {contract.description}
-                                        </option>
-                                    ))}
-                                </select>
+                                <div className="relative">
+                                    <select
+                                        name="contract_type"
+                                        defaultValue={formData.contract_type}
+                                        className="w-full p-2 border rounded bg-gray-200 text-gray-600 cursor-not-allowed"
+                                        disabled
+                                    >
+                                        <option value="">Select Contract</option>
+                                        {contracts.map((contract) => (
+                                            <option key={contract._id} value={contract.contract_type}>
+                                                {contract.description}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
                             <div>
                                 <label className="block text-gray-700">Salary</label>
                                 <input
                                     type="text"
                                     name="salary"
-                                    value={formData.salary}
-                                    onChange={handleInputChange}
-                                    className="w-full p-2 border rounded"
-                                    placeholder="Salary"
+                                    value={formatCurrency(formData.salary)} // Gọi hàm formatCurrency để format số tiền
+                                    className="w-full p-2 border rounded bg-gray-200 text-gray-600 cursor-not-allowed"
+                                    disabled
                                 />
                             </div>
-                            <div className="flex flex-col gap-2">
+                            <div className="flex flex-col gap-2" >
                                 <label className="block text-gray-700">Start Date</label>
-                                <Calendar
-                                    fullscreen={false}
-                                    onSelect={handleStartDateChange}
-                                    value={formData.start_date ? dayjs(formData.start_date) : undefined}
-                                    className="border rounded p-2"
-                                />
+                                <div className="flex items-center border rounded p-2 w-full bg-white text-gray-700">
+                                    <input
+                                        type="text"
+                                        value={formData.start_date ? dayjs(formData.start_date).format("YYYY-MM-DD") : ""}
+                                        readOnly
+                                        className="w-full bg-transparent outline-none"
+                                        disabled={true}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowStartCalendar((prev) => !prev)}
+                                        className="ml-2 text-gray-600"
+                                        disabled={true}
+                                    >
+                                        📅
+                                    </button>
+                                </div>
+                                {showStartCalendar && (
+                                    <div className="absolute top-full left-0 z-10 bg-white shadow-lg rounded mt-1">
+                                        <Calendar
+                                            fullscreen={false}
+                                            onSelect={(date) => {
+                                                handleStartDateChange(date);
+                                                setShowStartCalendar(false);
+                                            }}
+                                            value={formData.start_date ? dayjs(formData.start_date) : undefined}
+
+                                        />
+                                    </div>
+                                )}
                             </div>
                             <div className="flex flex-col gap-2">
                                 <label className="block text-gray-700">End Date</label>
-                                <Calendar
-                                    fullscreen={false}
-                                    onSelect={(date: Dayjs) =>
-                                        setFormData((prev) => ({
-                                            ...prev,
-                                            end_date: date.toDate(), // Chuyển Dayjs thành Date
-                                        }))
-                                    }
-                                    value={formData.end_date ? dayjs(formData.end_date) : undefined} // Chuyển Date thành Dayjs để hiển thị
-                                    className="border rounded p-2"
-                                />
+                                <div className="relative text-gray-700">
+                                    <input
+                                        type="text"
+                                        value={formData.end_date ? dayjs(formData.end_date).format("YYYY-MM-DD") : ""}
+                                        readOnly
+                                        className="w-full p-2 border rounded bg-white cursor-pointer"
+                                        onClick={() => setShowEndCalendar(!showEndCalendar)}
+                                        disabled={true}
+                                    />
+                                    <button
+                                        className="absolute right-3 top-2 cursor-pointer"
+                                        onClick={() => setShowEndCalendar(!showEndCalendar)}
+                                        disabled={true}
+                                    >
+                                        📅
+                                    </button>
+                                    {showEndCalendar && (
+                                        <div className="absolute top-full left-0 z-10 bg-white shadow-lg rounded border p-2">
+                                            <Calendar
+                                                fullscreen={false}
+                                                onSelect={handleEndDateChange}
+                                                value={formData.end_date ? dayjs(formData.end_date) : undefined}
+                                            />
+                                        </div>
+                                    )}
+                                </div>
                             </div>
-
                             <div className="col-span-2 flex justify-start mt-4">
                                 <button type="submit" className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">
                                     Update
