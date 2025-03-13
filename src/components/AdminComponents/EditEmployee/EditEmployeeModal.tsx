@@ -77,7 +77,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  console.log(formData)
+  console.log(formData);
 
   // Animation states
   const [isAnimating, setIsAnimating] = useState(false);
@@ -244,7 +244,10 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
 
   if (isEmbedded) {
     return (
-      <form onSubmit={handleSubmit} className="h-[600px] flex flex-col bg-white">
+      <form
+        onSubmit={handleSubmit}
+        className="h-[600px] flex flex-col bg-white"
+      >
         <div className="flex-1 overflow-y-auto p-6">
           {error ? (
             <div className="text-red-500">{error}</div>
@@ -319,7 +322,9 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                       <input
                         type="text"
                         value={formData.full_name || ""}
-                        onChange={(e) => handleInputChange("full_name", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("full_name", e.target.value)
+                        }
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
                       />
 
