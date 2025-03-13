@@ -86,12 +86,12 @@ export const getProjectById = async (
 export const deleteProject = async (
   id: string
 ): Promise<ResponseModel<null>> => {
-    await del<ResponseModel<null>>(
-      API_CONSTANTS.PROJECT.DELETE_PROJECT.replace("${id}", id)
-    );
-    return {
-      success: true,
-      message: "Project deleted successfully",
-      data: null,
-    }
-  }
+  await del<ResponseModel<null>>(
+    API_CONSTANTS.PROJECT.DELETE_PROJECT.replace("${id}", id)
+  );
+  return {
+    success: true,
+    message: "Project deleted successfully",
+    data: null,
+  };
+};
