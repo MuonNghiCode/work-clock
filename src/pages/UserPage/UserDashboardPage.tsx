@@ -1,26 +1,24 @@
-import { useEffect, useState, useCallback } from "react";
-import { Button, Tag, Form } from "antd";
+import { useEffect, useState } from "react";
+import { Button } from "antd";
 import ModalAddNewClaim from "../../components/UserComponents/ModalAddNewClaim";
-import EditRequestModal from "../../components/RequestComponents/EditRequestModal/EditRequestModal";
-import RequestApprovalModal from "../../components/RequestComponents/RequestApprovalModal/RequestApprovalModal";
-import CancelRequestModal from "../../components/RequestComponents/CancelRequestModal/CancelRequestModal";
-import TableRequest from "../../components/RequestComponents/TableRequest/TableRequest";
-import { getAllClaims, updateClaimStatus } from "../../services/claimService";
-import { ClaimItem } from "../../types/ClaimType";
-
-import { debounce } from "lodash";
-import { CheckOutlined } from "@ant-design/icons";
-import { toast } from "react-toastify";
-import { Search } from "lucide-react";
-
-import "aos/dist/aos.css";
-import Icons from "../../components/icon";
 import { motion } from "framer-motion";
+import Icons from "../../components/icon";
+import { getAllClaims } from "../../services/claimService";
+import { useNavigate } from "react-router-dom";
+import { Calendar as CalendarIcon } from "lucide-react";
 
 const fadeInScaleUp = {
   hidden: { opacity: 0, scale: 0.8 },
   visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
 };
+
+interface StatCardProps {
+  icon: React.ReactNode;
+  label: string;
+  value: number;
+  bgColor: string;
+  textColor: string;
+}
 
 interface ClaimRequest {
   key: string;
@@ -32,15 +30,6 @@ interface ClaimRequest {
   timeFrom: string;
   timeTo: string;
   status: string;
-  created_at: string; 
-}
-
-interface StatCardProps {
-  icon: React.ReactNode;
-  label: string;
-  value: number;
-  bgColor: string;
-  textColor: string;
 }
 
 const StatCard = ({
@@ -54,7 +43,7 @@ const StatCard = ({
     variants={fadeInScaleUp}
     initial="hidden"
     animate="visible"
-    className={` rounded-2xl flex flex-col items-center justify-center ${bgColor} bg-opacity-50 shadow-lg w-full text-center hover:scale-105 transition duration-300`}
+    className={`rounded-2xl flex flex-col items-center justify-center ${bgColor} bg-opacity-50 shadow-lg w-full text-center hover:scale-105 transition duration-300`}
   >
     {icon && (
       <div className="p-3 rounded-full bg-white bg-opacity-30">{icon}</div>
@@ -66,87 +55,52 @@ const StatCard = ({
 
 const UserDashboardPage = () => {
   const [isOpenModalAddNewClaim, setIsOpenModalAddNewClaim] = useState(false);
+  const [claimsData, setClaimsData] = useState<ClaimRequest[]>([]);
+  const [loading, setLoading] = useState(true);
   const [ClaimsCount, setClaimsCount] = useState(0);
   const [draftClaimsCount, setDraftClaimsCount] = useState(0);
   const [pendingClaimsCount, setPendingClaimsCount] = useState(0);
   const [successClaimsCount, setSuccessClaimsCount] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(3);
-  const [statusFilter, setStatusFilter] = useState<string | null>(null);
-  const [searchText, setSearchText] = useState("");
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editingRecord, setEditingRecord] = useState<ClaimRequest | null>(null);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [deletingRecord, setDeletingRecord] = useState<ClaimRequest | null>(
-    null
-  );
-  const [isApprovalModalOpen, setIsApprovalModalOpen] = useState(false);
-  const [approvingRecord, setApprovingRecord] = useState<ClaimRequest | null>(
-    null
-  );
-  const [form] = Form.useForm();
-  const [apiData, setApiData] = useState<ClaimRequest[]>([]);
-  const [totalItems, setTotalItems] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleOpenModalAddNewClaim = () => setIsOpenModalAddNewClaim(true);
   const handleCloseModalAddNewClaim = () => setIsOpenModalAddNewClaim(false);
 
-  const mapClaimToRequest = (item: Partial<ClaimItem>): ClaimRequest => ({
-    key: item._id || "unknown",
-    claimname: item.claim_name || "Unnamed Claim",
-    project: item.project_info?.project_name || "Unknown",
-    start_date: item.claim_start_date
-      ? new Date(item.claim_start_date).toLocaleDateString("vi-VN")
-      : "N/A",
-    end_date: item.claim_end_date
-      ? new Date(item.claim_end_date).toLocaleDateString("vi-VN")
-      : "N/A",
-    timeFrom: item.claim_start_date
-      ? new Date(item.claim_start_date).toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        })
-      : "N/A",
-    timeTo: item.claim_end_date
-      ? new Date(item.claim_end_date).toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        })
-      : "N/A",
-    totalHours: item.total_work_time?.toString() || "0",
-    status: item.claim_status || "Unknown",
-    created_at: item.created_at || "", 
-  });
-
-  const fetchClaims = async (pageNum: number, pageSize: number) => {
-    setLoading(true);
+  const fetchClaims = async () => {
     try {
       const response = await getAllClaims({
         searchCondition: {
-          keyword: searchText,
-          claim_status:
-            statusFilter === "All" || !statusFilter ? "" : statusFilter,
+          keyword: "",
+          claim_status: "",
           is_delete: false,
           project_start_date: "",
           project_end_date: "",
         },
-        pageInfo: {
-          pageNum,
-          pageSize,
-          totalItems: 0,
-          totalPages: 0,
-        },
+        pageInfo: { pageNum: 1, pageSize: 30 },
       });
-
-      const claims = response.data.pageData.map(mapClaimToRequest);
-      setApiData(claims);
-      setClaimsCount(response.data.pageInfo.totalItems || 0);
-      setTotalItems(response.data.pageInfo.totalItems || 0); // Đảm bảo totalItems cập nhật đúng
+      const data = response.data.pageData.map((item: any) => ({
+        key: item._id,
+        claimname: item.claim_name,
+        project: item.project_info?.project_name,
+        start_date: new Date(item.claim_start_date).toLocaleDateString("en-US"),
+        end_date: new Date(item.claim_end_date).toLocaleDateString("en-US"),
+        totalHours: item.total_work_time,
+        timeFrom: new Date(item.claim_start_date).toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        }),
+        timeTo: new Date(item.claim_end_date).toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        }),
+        status: item.claim_status,
+      }));
+      setClaimsData(data);
+      setClaimsCount(data.length);
     } catch (error) {
-      console.error("Error fetching claims:", error);
+      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -156,21 +110,15 @@ const UserDashboardPage = () => {
     try {
       const response = await getAllClaims({
         searchCondition: {
-          keyword: "",
           claim_status: "Draft",
+          is_delete: false,
+          keyword: "",
           project_start_date: "",
           project_end_date: "",
-          is_delete: false,
         },
-        pageInfo: {
-          pageNum: 1,
-          pageSize: 30,
-          totalItems: 0,
-          totalPages: 0,
-        },
+        pageInfo: { pageNum: 1, pageSize: 30 },
       });
       setDraftClaimsCount(response.data.pageData.length);
-      return response.data;
     } catch (error) {
       console.log(error);
     }
@@ -180,21 +128,15 @@ const UserDashboardPage = () => {
     try {
       const response = await getAllClaims({
         searchCondition: {
-          keyword: "",
           claim_status: "Paid",
+          is_delete: false,
+          keyword: "",
           project_start_date: "",
           project_end_date: "",
-          is_delete: false,
         },
-        pageInfo: {
-          pageNum: 1,
-          pageSize: 30,
-          totalItems: 0,
-          totalPages: 0,
-        },
+        pageInfo: { pageNum: 1, pageSize: 30 },
       });
       setSuccessClaimsCount(response.data.pageData.length);
-      return response.data;
     } catch (error) {
       console.log(error);
     }
@@ -204,151 +146,26 @@ const UserDashboardPage = () => {
     try {
       const response = await getAllClaims({
         searchCondition: {
-          keyword: "",
           claim_status: "Pending Approval",
+          is_delete: false,
+          keyword: "",
           project_start_date: "",
           project_end_date: "",
-          is_delete: false,
         },
-        pageInfo: {
-          pageNum: 1,
-          pageSize: 10,
-          totalItems: 0,
-          totalPages: 0,
-        },
+        pageInfo: { pageNum: 1, pageSize: 10 },
       });
       setPendingClaimsCount(response.data.pageData.length);
-      return response.data;
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(() => {
-    fetchClaims(currentPage, pageSize);
+    fetchClaims();
     fetchDraftClaims();
     fetchPendingClaims();
     fetchSuccessClaims();
-  }, [currentPage, pageSize, statusFilter, searchText]);
-
-  const handlePageChange = (page: number, pageSize?: number) => {
-    setCurrentPage(page);
-    if (pageSize) {
-      setPageSize(pageSize);
-    }
-  };
-
-  const handleEdit = (record: ClaimRequest) => {
-    setEditingRecord(record);
-    setIsEditModalOpen(true);
-  };
-
-  const handleEditModalCancel = () => {
-    setIsEditModalOpen(false);
-    form.resetFields();
-  };
-
-  const handleEditModalOk = async () => {
-    try {
-      if (!editingRecord) throw new Error("No record being edited");
-      setIsEditModalOpen(false);
-      form.resetFields();
-    } catch (error) {
-      console.error("Error in handleEditModalOk:", error);
-    }
-  };
-
-  const handleDelete = (record: ClaimRequest) => {
-    setDeletingRecord(record);
-    setIsDeleteModalOpen(true);
-  };
-
-  const handleDeleteModalOk = () => {
-    if (deletingRecord) {
-      setApiData((prev) =>
-        prev.filter((item) => item.key !== deletingRecord.key)
-      );
-      setIsDeleteModalOpen(false);
-      setDeletingRecord(null);
-    }
-  };
-
-  const handleDeleteModalCancel = () => {
-    setIsDeleteModalOpen(false);
-    setDeletingRecord(null);
-  };
-
-  const handleStatusChange = (status: string) => {
-    setStatusFilter(status === "All" ? null : status);
-    setCurrentPage(1);
-  };
-
-  const handleRequestApproval = (record: ClaimRequest) => {
-    setApprovingRecord(record);
-    setIsApprovalModalOpen(true);
-  };
-
-  const handleApprovalConfirm = async (comment: string) => {
-    if (!approvingRecord) return;
-    setLoading(true);
-    try {
-      const payload = {
-        _id: approvingRecord.key,
-        claim_status: "Pending Approval",
-        comment: comment || "",
-      };
-      const response = await updateClaimStatus(payload);
-      if (response.success) {
-        toast.success("Request approval sent successfully");
-        fetchClaims(currentPage, pageSize);
-      } else {
-        throw new Error(response.message || "Failed to update status");
-      }
-    } catch (error: any) {
-      console.error("Failed to send request approval:", error);
-      toast.error(error.message || "Failed to send request approval");
-    } finally {
-      setLoading(false);
-      setIsApprovalModalOpen(false);
-      setApprovingRecord(null);
-    }
-  };
-
-  const handleApprovalCancel = () => {
-    setIsApprovalModalOpen(false);
-    setApprovingRecord(null);
-  };
-
-  const handleCancelRequest = async (record: ClaimRequest) => {
-    setLoading(true);
-    try {
-      const payload = {
-        _id: record.key,
-        claim_status: "Canceled",
-        comment: "",
-      };
-      const response = await updateClaimStatus(payload);
-      if (response.success) {
-        toast.success("Claim canceled successfully");
-        fetchClaims(currentPage, pageSize);
-      } else {
-        throw new Error(response.message || "Failed to cancel claim");
-      }
-    } catch (error: any) {
-      console.error("Failed to cancel claim:", error);
-      toast.error(error.message || "Failed to cancel claim");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSearch = useCallback(
-    debounce((value: string) => {
-      setCurrentPage(1);
-      setSearchText(value);
-    }, 1000),
-    []
-  );
+  }, []);
 
   return (
     <>
@@ -367,7 +184,7 @@ const UserDashboardPage = () => {
           icon={<Icons.FormIcon className="text-3xl text-blue-600" />}
           label="Created Claims"
           value={ClaimsCount}
-          bgColor="bg-gradient-to-b from-blue-300 to-blue-100 p-6 rounded-xl shadow-lg relative hover:shadow-xl hover:bg-blue-400"
+          bgColor="bg-gradient-to-b from-blue-300 to-blue-100"
           textColor="text-black-900 font-bold"
         />
         <StatCard
@@ -395,91 +212,84 @@ const UserDashboardPage = () => {
 
       <div className="col-span-4 p-4 rounded-lg">
         <h3 className="text-lg font-bold">History Transaction</h3>
-        <div className="flex justify-between items-center mb-4">
-          <div>
-            {[
-              "All",
-              "Draft",
-              "Pending Approval",
-              "Approved",
-              "Rejected",
-              "Canceled",
-              "Paid",
-            ].map((status) => (
-              <Tag
-                key={status}
-                color={
-                  statusFilter === status || (status === "All" && !statusFilter)
-                    ? "#ff914d"
-                    : "default"
-                }
-                onClick={() => handleStatusChange(status)}
-                className="cursor-pointer !px-2 !py-1 !font-squada !text-lg !rounded-lg"
-              >
-                {(statusFilter === status ||
-                  (status === "All" && !statusFilter)) && (
-                  <CheckOutlined />
-                )}{" "}
-                {status}
-              </Tag>
-            ))}
-          </div>
-          <div className="relative w-[300px]">
-            <input
-              type="text"
-              placeholder="Search claim name"
-              className="w-full px-4 py-2 border rounded-full pr-10 font-squada"
-              onChange={(e) => handleSearch(e.target.value)}
-            />
-            <Search
-              className="absolute right-3 top-2.5 text-gray-400"
-              size={20}
-            />
-          </div>
-        </div>
-
-        <TableRequest
-          apiData={apiData}
-          totalItems={totalItems}
-          loading={loading}
-          pagination={{
-            currentPage,
-            pageSize,
-            onPageChange: handlePageChange,
-          }}
-          actions={{
-            onEdit: handleEdit,
-            onDelete: handleDelete,
-            onRequestApproval: handleRequestApproval,
-            onCancel: handleCancelRequest,
-          }}
-        />
+        <table className="min-w-full border-separate border-spacing-y-2.5 border-0 text-black w-full">
+          <thead className="bg-brand-gradient h-[70px] text-lg text-white">
+            <tr className="bg-[linear-gradient(45deg,#FEB78A,#FF914D)]">
+              <th className="px-4 py-2 rounded-tl-2xl">Claim Name</th>
+              <th className="px-4 py-2 border-l-2 border-white">Start Date</th>
+              <th className="px-4 py-2 border-l-2 border-white">End Date</th>
+              <th className="px-4 py-2 border-l-2 border-white">Total Hours</th>
+              <th className="px-4 py-2 border-l-2 border-white">Status</th>
+              <th className="px-4 py-2 border-l-2 border-white rounded-tr-2xl">
+                Action
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? (
+              <tr>
+                <td colSpan={6} className="text-center py-4">
+                  Loading...
+                </td>
+              </tr>
+            ) : claimsData.length > 0 ? (
+              claimsData
+                .sort(
+                  (a, b) =>
+                    new Date(b.start_date).getTime() -
+                    new Date(a.start_date).getTime()
+                )
+                .slice(0, 3)
+                .map((item) => (
+                  <tr
+                    key={item.key}
+                    className="h-[70px] bg-white text-center hover:shadow-brand-orange rounded-2xl"
+                  >
+                    <td className="request-table-cell px-4 py-2 rounded-l-2xl">
+                      {item.claimname}
+                    </td>
+                    <td className="request-table-cell px-4 py-2">
+                      {item.start_date}
+                    </td>
+                    <td className="request-table-cell px-4 py-2">
+                      {item.end_date}
+                    </td>
+                    <td className="request-table-cell px-4 py-2">
+                      <div className="request-table-hours flex flex-col items-center">
+                        <span className="text-gray-700">{`(${item.timeFrom}-${item.timeTo})`}</span>
+                        <span className="font-semibold text-[#FF914D]">
+                          {item.totalHours} hours
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-2">{item.status}</td>
+                    <td className="request-table-cell px-4 py-2 rounded-r-2xl">
+                      <div className="request-table-actions flex justify-center gap-2">
+                        <Button
+                          className="!border-none"
+                          onClick={() => navigate("/user/calendar")}
+                          title="View Calendar"
+                        >
+                          <CalendarIcon size={18} color="#FF914D" />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+            ) : (
+              <tr>
+                <td colSpan={6} className="text-center py-4">
+                  No Data Available
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
       <ModalAddNewClaim
         isOpen={isOpenModalAddNewClaim}
         onClose={handleCloseModalAddNewClaim}
-      />
-      <EditRequestModal
-        isOpen={isEditModalOpen}
-        onCancel={handleEditModalCancel}
-        onOk={handleEditModalOk}
-        editingRecord={editingRecord}
-        claimId={editingRecord?.key || ""}
-        refreshData={() => fetchClaims(currentPage, pageSize)}
-      />
-      <CancelRequestModal
-        isOpen={isDeleteModalOpen}
-        onOk={handleDeleteModalOk}
-        onCancel={handleDeleteModalCancel}
-        cancelingRecord={deletingRecord}
-      />
-      <RequestApprovalModal
-        isOpen={isApprovalModalOpen}
-        onCancel={handleApprovalCancel}
-        onConfirm={handleApprovalConfirm}
-        approvingRecord={approvingRecord}
-        loading={loading}
       />
     </>
   );
