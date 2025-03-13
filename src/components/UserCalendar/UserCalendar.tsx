@@ -14,11 +14,11 @@ interface CalendarEvent {
 
 const EventComponent = ({ event }: { event: CalendarEvent }) => (
   <div className="rbc-events-container">
-    <div className="event-time">
+    <div className="event-time font-semibold">
       {moment(event.start).format("h:mm A")} -{" "}
       {moment(event.end).format("h:mm A")}
     </div>
-    <div className="event-content">{event.title}</div>
+    <div className="event-content font-medium text-gray-900">{event.title}</div>
   </div>
 );
 
@@ -38,7 +38,7 @@ const UserCalendar: React.FC = () => {
         },
         pageInfo: {
           pageNum: 1,
-          pageSize: 10,
+          pageSize: 1000000,
         },
       };
       const response = await getUserClaimsData(request);
@@ -54,19 +54,18 @@ const UserCalendar: React.FC = () => {
   }, []);
 
   return (
-    <div className="relative p-4 bg-none h-screen overflow-y-auto">
-      <div className="h-full bg-white p-6 rounded-xl shadow-xl">
-        <div className="flex justify-between items-center mb-4"></div>
+    <div className="relative h-screen overflow-y-auto">
+      <div className="h-full p-8 rounded-2xl shadow-lg border border-gray-300 bg-white">
         <Calendar
           localizer={localizer}
           events={events}
           startAccessor="start"
           endAccessor="end"
           defaultView={Views.WEEK}
-          views={["week", "day", "month"]}
+          views={["month", "week", "day"]}
           date={date}
           onNavigate={setDate}
-          className="h-full"
+          className="h-[75vh] border border-gray-400 rounded-xl bg-white p-4 shadow-md"
           components={{ event: EventComponent }}
         />
       </div>

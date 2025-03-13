@@ -175,7 +175,6 @@ const FinancePage: React.FC = () => {
       setIsStatusModalVisible(true);
       setSelectedItem(null);
     }
-    fetchData();
   };
 
   const handleDownload = (items?: FinanceData[]) => {
@@ -230,6 +229,7 @@ const FinancePage: React.FC = () => {
   const handleStatusModalClose = () => {
     setIsStatusModalVisible(false);
     setStatus(null);
+    fetchData();
   };
 
   return (
@@ -369,15 +369,17 @@ const FinancePage: React.FC = () => {
         </tbody>
       </table>
       <div className="flex justify-end mt-4">
-        <Pagination
-          className="!font-squada flex justify-end "
-          current={currentPage}
-          total={dataFinance.length}
-          pageSize={pageSize}
-          onChange={handlePageChange}
-          showSizeChanger
-          onShowSizeChange={handlePageChange}
-        />
+        {dataFinance.length > 0 && (
+          <Pagination
+            className="!font-squada flex justify-end"
+            current={currentPage}
+            total={dataFinance.length}
+            pageSize={pageSize}
+            onChange={handlePageChange}
+            showSizeChanger
+            onShowSizeChange={handlePageChange}
+          />
+        )}
       </div>
       {selectedItem && (
         <PaymentModal
