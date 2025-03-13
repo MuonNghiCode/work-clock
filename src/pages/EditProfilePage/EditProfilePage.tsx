@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Calendar } from "antd";
+// import { Calendar } from "antd";
+import { Form, Input, Select, Button, DatePicker } from "antd";
+import { CalendarOutlined } from "@ant-design/icons";
 // Sử dụng icon cho password (bạn có thể cài react-icons nếu chưa có: npm install react-icons)
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Thêm icon camera
 // Import ảnh mặc định
@@ -9,7 +11,8 @@ import { FaEye, FaEyeSlash } from "react-icons/fa"; // Thêm icon camera
 import { changePassword, getAllJobs, getEmployeeByUserId, updateEmployee } from "../../services/userService";
 import { getAllDepartments } from "../../services/userService";
 import { getAllContracts } from "../../services/userService";
-import dayjs, { Dayjs } from "dayjs";
+// import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import { EmployeeInfo, JobRank } from "../../types/Employee";
 import { User } from "lucide-react";
 import ImageUploader from "../../components/ImageUploader/ImageUploader";
@@ -21,7 +24,7 @@ export interface Department {
     department_code: string;
     description: string;
 }
-
+// const { Option } = Select;
 export interface Contract {
     _id: string;
     contract_type: string;
@@ -70,6 +73,7 @@ const EditProfilePage: React.FC = () => {
         end_date: null,
         is_deleted: false,
         updated_by: "",
+
     });
 
     const [activeTab, setActiveTab] = useState<"account" | "password">("account");
@@ -79,13 +83,14 @@ const EditProfilePage: React.FC = () => {
         newPassword: "",
         confirmPassword: "",
     });
+    const [form] = Form.useForm();
     const [userId, setUserId] = useState<string | null>(null);
     const [departments, setDepartments] = useState<Department[]>([]);
     const [contracts, setContracts] = useState<Contract[]>([]);
     const [jobrank, setJobRank] = useState<JobRank[]>([]);
     const [previewAvatar, setPreviewAvatar] = useState("");
-    const [showStartCalendar, setShowStartCalendar] = useState(false);
-    const [showEndCalendar, setShowEndCalendar] = useState(false);
+    // const [showStartCalendar, setShowStartCalendar] = useState(false);
+    // const [showEndCalendar, setShowEndCalendar] = useState(false);
     // Lấy userId từ localStorage sau khi đăng nhập
     useEffect(() => {
         const storedUserId = localStorage.getItem("userId");
@@ -143,27 +148,27 @@ const EditProfilePage: React.FC = () => {
         fetchDropdownData();
     }, []);
     // Xử lý thay đổi ngày cho Start Date
-    const handleStartDateChange = (date: Dayjs) => {
-        setFormData((prev) => ({
-            ...prev,
-            start_date: date.toDate(), // Chuyển từ Dayjs sang Date
-        }));
-    };
-    const handleEndDateChange = (date: Dayjs) => {
-        setFormData((prev) => ({
-            ...prev,
-            end_date: date.toDate(), // Chuyển từ Dayjs sang Date
-        }));
-    };
-    const handleInputChange = (
-        e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>
-    ) => {
-        const { name, value } = e.target as HTMLInputElement | HTMLSelectElement;
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            [name]: value
-        }));
-    };
+    // const handleStartDateChange = (date: Dayjs) => {
+    //     setFormData((prev) => ({
+    //         ...prev,
+    //         start_date: date.toDate(), // Chuyển từ Dayjs sang Date
+    //     }));
+    // };
+    // const handleEndDateChange = (date: Dayjs) => {
+    //     setFormData((prev) => ({
+    //         ...prev,
+    //         end_date: date.toDate(), // Chuyển từ Dayjs sang Date
+    //     }));
+    // };
+    // const handleInputChange = (
+    //     e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>
+    // ) => {
+    //     const { name, value } = e.target as HTMLInputElement | HTMLSelectElement;
+    //     setFormData((prevFormData) => ({
+    //         ...prevFormData,
+    //         [name]: value
+    //     }));
+    // };
 
 
 
@@ -210,6 +215,19 @@ const EditProfilePage: React.FC = () => {
             console.error("Error updating employee:", error);
             toast.error("Error updating employee");
         }
+        let newErrors: { phone?: string } = {};
+
+        // Kiểm tra Phone Number
+        if (!formData.phone) {
+            newErrors.phone = "Empty field! Please enter your phone number";
+        } else if (!/^\d+$/.test(formData.phone)) {
+            newErrors.phone = "Only numbers are allowed!";
+        }
+
+
+        // Nếu không có lỗi, tiến hành submit form
+        console.log("Form submitted:", formData);
+
     };
 
 
@@ -245,6 +263,18 @@ const EditProfilePage: React.FC = () => {
         setPreviewAvatar(imageUrl);
         setFormData(prev => ({ ...prev, avatar_url: imageUrl }));
     };
+
+    const handleImageUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const url = e.target.value;
+        setFormData((prev) => ({ ...prev, avatar_url: url }));
+        validateImageUrl(url);
+    };
+
+    useEffect(() => {
+        if (formData.avatar_url) {
+            validateImageUrl(formData.avatar_url);
+        }
+    }, [formData.avatar_url]);
 
     // Submit cho Change Password
     const handleSubmitPassword = async (e: React.FormEvent) => {
@@ -292,7 +322,7 @@ const EditProfilePage: React.FC = () => {
             <div className="flex gap-6 bg-white shadow rounded-lg p-6">
                 {/* Sidebar: User Profile */}
 
-                <div className="mb-8">
+                <div className="mb-8 ml-10 ">
                     <h3 className="text-lg font-semibold text-gray-700 mb-4">Profile Image</h3>
                     <div className="flex flex-col items-center gap-4">
                         {/* Avatar Preview với Upload Overlay */}
@@ -318,7 +348,7 @@ const EditProfilePage: React.FC = () => {
                         </div>
 
                         {/* URL Input và Preview Button */}
-                        <div className="w-full max-w-md">
+                        <div className="w-full max-w-md ml-13">
                             <label className="block text-sm font-medium text-gray-600 mb-2">
                                 Image URL
                             </label>
@@ -326,26 +356,19 @@ const EditProfilePage: React.FC = () => {
                                 <input
                                     type="text"
                                     value={formData.avatar_url || ""}
-                                    onChange={(e) => validateImageUrl(e.target.value)}
+                                    onChange={handleImageUrlChange}
                                     className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
                                     placeholder="https://example.com/image.jpg"
                                 />
-                                <button
-                                    type="button"
-                                    onClick={() => validateImageUrl(formData.avatar_url || "")}
-                                    className="px-4 py-2 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200"
-                                >
-                                    Preview
-                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Form Section */}
-                <div className="w-3/4">
+                <div className="w-4/4">
                     {/* Tabs */}
-                    <div className="mb-4 border-b">
+                    <div className="ml-30 mb-4 border-b">
                         <nav className="flex space-x-4">
                             <button
                                 onClick={() => setActiveTab("account")}
@@ -371,183 +394,97 @@ const EditProfilePage: React.FC = () => {
                     {/* Nội dung Form */}
                     {activeTab === "account" && (
                         //handleSubmitAccount}
-                        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-gray-700">Account</label>
-                                <input
-                                    type="text"
-                                    name="account"
-                                    value={formData.account}
-                                    onChange={handleInputChange}
-                                    className="w-full p-2 border rounded"
-                                    placeholder="Account"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-gray-700">Full Name</label>
-                                <input
-                                    type="text"
-                                    name="full_name"
-                                    value={formData.full_name}
-                                    onChange={handleInputChange}
-                                    className="w-full p-2 border rounded"
-                                    placeholder="Full Name"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-gray-700">Phone Number</label>
-                                <input
-                                    type="text"
-                                    name="phone"
-                                    value={formData.phone}
-                                    onChange={handleInputChange}
-                                    className="w-full p-2 border rounded"
-                                    placeholder="Phone Number"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-gray-700">Address</label>
-                                <input
-                                    type="text"
-                                    name="address"
-                                    value={formData.address}
-                                    onChange={handleInputChange}
-                                    className="w-full p-2 border rounded"
-                                    placeholder="Address"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-gray-700">Job Rank</label>
-                                <div className="relative">
-                                    <select
-                                        name="job_rank"
-                                        defaultValue={formData.job_rank}
-                                        className="w-full p-2 border rounded bg-gray-200 text-gray-600 cursor-not-allowed"
-                                        disabled
-                                    >
-                                        <option value="">Select Job Rank</option>
-                                        {jobrank.map((job) => (
-                                            <option key={job.id} value={job.job_rank}>
-                                                {job.job_rank}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-                            <div>
-                                <label className="block text-gray-700">Department Code</label>
-                                <div className="relative">
-                                    <select
-                                        name="department_code"
-                                        defaultValue={formData.department_code}
-                                        className="w-full p-2 border rounded bg-gray-200 text-gray-600 cursor-not-allowed"
-                                        disabled
-                                    >
-                                        <option value="">Select Department</option>
-                                        {departments.map((dept) => (
-                                            <option key={dept._id} value={dept.department_code}>
-                                                {dept.description}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-                            <div>
-                                <label className="block text-gray-700">Contract Type</label>
-                                <div className="relative">
-                                    <select
-                                        name="contract_type"
-                                        defaultValue={formData.contract_type}
-                                        className="w-full p-2 border rounded bg-gray-200 text-gray-600 cursor-not-allowed"
-                                        disabled
-                                    >
-                                        <option value="">Select Contract</option>
-                                        {contracts.map((contract) => (
-                                            <option key={contract._id} value={contract.contract_type}>
-                                                {contract.description}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-                            <div>
-                                <label className="block text-gray-700">Salary</label>
-                                <input
-                                    type="text"
-                                    name="salary"
-                                    value={formatCurrency(formData.salary)} // Gọi hàm formatCurrency để format số tiền
-                                    className="w-full p-2 border rounded bg-gray-200 text-gray-600 cursor-not-allowed"
-                                    disabled
-                                />
-                            </div>
-                            <div className="flex flex-col gap-2" >
-                                <label className="block text-gray-700">Start Date</label>
-                                <div className="flex items-center border rounded p-2 w-full bg-white text-gray-700">
-                                    <input
-                                        type="text"
-                                        value={formData.start_date ? dayjs(formData.start_date).format("YYYY-MM-DD") : ""}
-                                        readOnly
-                                        className="w-full bg-transparent outline-none"
-                                        disabled={true}
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowStartCalendar((prev) => !prev)}
-                                        className="ml-2 text-gray-600"
-                                        disabled={true}
-                                    >
-                                        📅
-                                    </button>
-                                </div>
-                                {showStartCalendar && (
-                                    <div className="absolute top-full left-0 z-10 bg-white shadow-lg rounded mt-1">
-                                        <Calendar
-                                            fullscreen={false}
-                                            onSelect={(date) => {
-                                                handleStartDateChange(date);
-                                                setShowStartCalendar(false);
-                                            }}
-                                            value={formData.start_date ? dayjs(formData.start_date) : undefined}
+                        <Form
+                            form={form}
+                            layout="vertical"
+                            className="grid grid-cols-2 gap-6 w-full max-w-4xl translate-x-30 p-6 bg-white rounded-lg font-semibold "
+                            onSubmitCapture={handleSubmit}
+                        >
+                            <Form.Item label="Account">
+                                <Input value={formData.account} onChange={(e) => setFormData({ ...formData, account: e.target.value })} />
 
-                                        />
-                                    </div>
-                                )}
-                            </div>
-                            <div className="flex flex-col gap-2">
-                                <label className="block text-gray-700">End Date</label>
-                                <div className="relative text-gray-700">
-                                    <input
-                                        type="text"
-                                        value={formData.end_date ? dayjs(formData.end_date).format("YYYY-MM-DD") : ""}
-                                        readOnly
-                                        className="w-full p-2 border rounded bg-white cursor-pointer"
-                                        onClick={() => setShowEndCalendar(!showEndCalendar)}
-                                        disabled={true}
-                                    />
-                                    <button
-                                        className="absolute right-3 top-2 cursor-pointer"
-                                        onClick={() => setShowEndCalendar(!showEndCalendar)}
-                                        disabled={true}
-                                    >
-                                        📅
-                                    </button>
-                                    {showEndCalendar && (
-                                        <div className="absolute top-full left-0 z-10 bg-white shadow-lg rounded border p-2">
-                                            <Calendar
-                                                fullscreen={false}
-                                                onSelect={handleEndDateChange}
-                                                value={formData.end_date ? dayjs(formData.end_date) : undefined}
-                                            />
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                            <div className="col-span-2 flex justify-start mt-4">
-                                <button type="submit" className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">
+                            </Form.Item>
+
+                            <Form.Item label="Full Name ">
+                                <Input value={formData.full_name} onChange={(e) => setFormData({ ...formData, full_name: e.target.value })} />
+                            </Form.Item>
+
+                            <Form.Item label="Phone Number" >
+                                <Input value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} />
+                            </Form.Item>
+
+                            <Form.Item label="Address">
+                                <Input value={formData.address} onChange={(e) => setFormData({ ...formData, address: e.target.value })} />
+                            </Form.Item>
+
+                            <Form.Item label="Job Rank">
+                                <Select value={formData.job_rank} disabled className="w-full">
+                                    {jobrank.map((job) => (
+                                        <Select.Option key={job.id} value={job.job_rank}>
+                                            {job.job_rank}
+                                        </Select.Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+
+                            <Form.Item label="Department Code">
+                                <Select value={formData.department_code} disabled className="w-full">
+                                    {departments.map((dept) => (
+                                        <Select.Option key={dept._id} value={dept.department_code}>
+                                            {dept.description}
+                                        </Select.Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+
+                            <Form.Item label="Contract Type">
+                                <Select value={formData.contract_type} disabled className="w-full">
+                                    {contracts.map((contract) => (
+                                        <Select.Option key={contract._id} value={contract.contract_type}>
+                                            {contract.description}
+                                        </Select.Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+
+                            <Form.Item label="Salary">
+                                <Input
+                                    value={formatCurrency(formData.salary)}
+                                    disabled
+                                    className="w-full"
+                                />
+                            </Form.Item>
+
+                            {/* Chia làm 2 cột ngang hàng */}
+                            <Form.Item label="Start Date" className="w-full">
+                                <DatePicker
+                                    value={formData.start_date ? dayjs(formData.start_date) : null}
+                                    disabled
+                                    suffixIcon={<CalendarOutlined />}
+                                    className="w-full"
+                                />
+                            </Form.Item>
+
+                            <Form.Item label="End Date" className="w-full">
+                                <DatePicker
+                                    value={formData.end_date ? dayjs(formData.end_date) : null}
+                                    disabled
+                                    suffixIcon={<CalendarOutlined />}
+                                    className="w-full"
+                                />
+                            </Form.Item>
+
+                            {/* Giữ nguyên vị trí nút Update, chỉ đổi màu cam */}
+                            <Form.Item className="col-span-2 flex justify-start mt-4">
+                                <Button
+                                    type="primary"
+                                    htmlType="submit"
+                                    className="!bg-[#ff8c00] !hover:bg-[#e67e22] text-white font-semibold px-6 py-2 rounded-lg"
+                                >
                                     Update
-                                </button>
-                            </div>
-                        </form>
+                                </Button>
+                            </Form.Item>
+                        </Form>
                     )}
 
                     {activeTab === "password" && (
