@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Pagination, Modal } from 'antd';
-import { Trash, Edit, UserCheck, X, User, Briefcase, Calendar, Clock, CheckCircle } from 'lucide-react'; 
-import CancelRequestModal from '../CancelRequestModal/CancelRequestModal'; // Import modal mới
+import { Trash2, Edit2, UserCheck, X, User, Briefcase, Calendar, Clock, CheckCircle } from 'lucide-react'; 
+import CancelRequestModal from '../CancelRequestModal/CancelRequestModal'; 
 
 interface ClaimRequest {
   key: string;
@@ -123,7 +123,7 @@ const TableRequest: React.FC<TableRequestProps> = ({
                             disabled={loading}
                             title="Cancel Request"
                           >
-                            <Trash size={24} color="red" strokeWidth={3} className="hover:bg-red-200" />
+                            <Trash2 size={18} color="red" />
                           </Button>
                         ) : item.status !== 'Approved' && item.status !== 'Rejected' && item.status !== 'Canceled' && item.status !== 'Paid' && (
                           <>
@@ -133,15 +133,7 @@ const TableRequest: React.FC<TableRequestProps> = ({
                               disabled={loading}
                               title="Edit Request"
                             >
-                              <Edit size={24} color="#FF914D" strokeWidth={3} className="request-edit-icon hover:bg-orange-200" />
-                            </Button>
-                            <Button 
-                              className="!border-none" 
-                              onClick={e => { e.stopPropagation(); handleCancelClick(item); }} 
-                              disabled={loading}
-                              title="Cancel Request"
-                            >
-                              <Trash size={24} color="red" strokeWidth={3} className="request-delete-icon hover:bg-red-200" />
+                              <Edit2 size={18} color="#50ab9a"/>
                             </Button>
                             <Button 
                               className="!border-none" 
@@ -149,8 +141,16 @@ const TableRequest: React.FC<TableRequestProps> = ({
                               disabled={loading || item.status !== 'Draft'} 
                               title="Request Approval"
                             >
-                              <UserCheck size={24} color="green" strokeWidth={3} className="request-user-icon hover:bg-green-200" />
+                              <UserCheck size={18} color="green"  />
                             </Button>
+                            <Button 
+                              className="!border-none" 
+                              onClick={e => { e.stopPropagation(); handleCancelClick(item); }} 
+                              disabled={loading}
+                              title="Cancel Request"
+                            >
+                              <Trash2 size={18} color="red" />
+                            </Button>                           
                           </>
                         )}
                       </div>
