@@ -3,7 +3,7 @@ import { Form, Input, message } from "antd";
 import { MailOutlined, UserOutlined } from "@ant-design/icons";
 import { User } from "../../../pages/AdminPage/AdminUser/AdminUserManagement";
 import { updateUser } from "../../../services/userAuth";
-import Icons from "../../icon";
+// import Icons from "../../icon";
 interface UserManagementEditProps {
   user: User<string>;
   onClose: () => void;
