@@ -1,9 +1,9 @@
 import React from "react";
 import { Form, Input, message } from "antd";
-import { MailOutlined } from "@ant-design/icons";
+import { MailOutlined, UserOutlined } from "@ant-design/icons";
 import { User } from "../../../pages/AdminPage/AdminUser/AdminUserManagement";
 import { updateUser } from "../../../services/userAuth";
-
+// import Icons from "../../icon";
 interface UserManagementEditProps {
   user: User<string>;
   onClose: () => void;
@@ -53,31 +53,62 @@ const UserManagementEdit: React.FC<UserManagementEditProps> = ({
       >
         {/* Username Field */}
         <Form.Item
-          label="Username"
+          label={
+            <span>
+              Username <span className="text-red-600">*</span>
+            </span>
+          }
           name="user_name"
           rules={[
             { required: true, message: "Username is required" },
             { min: 3, message: "Username must be at least 3 characters" },
           ]}
         >
-          <Input placeholder="Enter username" />
+          <Input
+            suffix={
+              <div
+                style={{ display: "flex", gap: "8px", alignItems: "center" }}
+              >
+                <UserOutlined style={{ color: "black", fontSize: "16px" }} />
+              </div>
+            }
+            placeholder="Enter username"
+            style={{ fontFamily: "Squada-One" }}
+          />
         </Form.Item>
 
         {/* Email Field */}
         <Form.Item
           name="email"
-          label="Email"
+          label={
+            <span>
+              Email <span className="text-red-600">*</span>
+            </span>
+          }
           rules={[
             { required: true, message: "Email is required" },
-            { pattern: /^[a-zA-Z0-9._%+-]+@gmail\.com$/, message: "Only @gmail.com emails allowed" },
+            {
+              pattern: /^[a-zA-Z0-9._%+-]+@gmail\.com$/,
+              message: "Only @gmail.com emails allowed",
+            },
           ]}
         >
-          <Input prefix={<MailOutlined />} placeholder="Enter email address" />
+          <Input
+            suffix={
+              <div
+                style={{ display: "flex", gap: "8px", alignItems: "center" }}
+              >
+                <MailOutlined style={{ color: "black", fontSize: "16px" }} />
+              </div>
+            }
+            placeholder="Enter email address"
+            style={{ fontFamily: "Squada-One" }}
+          />
         </Form.Item>
-
+        <hr className="text-gray-400 bg-gray-400 mb-5" />
         {/* Buttons */}
         <div className="flex justify-end gap-3">
-        <button
+          <button
             type="button"
             onClick={onClose}
             className="px-4 py-2 text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
@@ -89,9 +120,10 @@ const UserManagementEdit: React.FC<UserManagementEditProps> = ({
           </Button> */}
           <button
             type="submit"
-            className="px-4 py-2 bg-[#FF9447] text-white rounded-md hover:bg-[#FF8335] transition-colors disabled:opacity-50">
+            className="px-4 py-2 bg-brand-gradient text-white rounded-md hover:bg-[#FF8335] transition-colors disabled:opacity-50"
+          >
             Apply Changes
-            </button>
+          </button>
         </div>
       </Form>
 
@@ -116,7 +148,12 @@ const UserManagementEdit: React.FC<UserManagementEditProps> = ({
             color: #374151;
             margin-bottom: 0.25rem;
           }
-          
+          .ant-form-item-required{
+            font-family: 'Squada-One';
+          }
+          .ant-form-item-required::before {
+            display: none !important;
+          }
           .error-message {
             color: #ef4444;
             font-size: 0.875rem;
