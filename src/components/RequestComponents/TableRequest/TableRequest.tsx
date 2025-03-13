@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import CancelRequestModal from "../CancelRequestModal/CancelRequestModal";
 
-interface ClaimRequest {
+ interface ClaimRequest {
   key: string;
   claimname: string;
   project: string;
@@ -23,6 +23,7 @@ interface ClaimRequest {
   timeFrom: string;
   timeTo: string;
   status: string;
+  created_at: string;
 }
 
 interface TableRequestProps {
