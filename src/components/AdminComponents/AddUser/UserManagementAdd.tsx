@@ -70,6 +70,13 @@ const UserManagementAdd: React.FC<UserManagementAddProps> = React.memo(({ onClos
           <X className="w-6 h-6" />
         </button>
       </div>
+      {/* <ConfigProvider
+      theme={{
+        token: {
+          fontFamily: "Squada One",
+        },
+      }}
+    > */}
 
       <Form
         form={form}
@@ -169,7 +176,11 @@ const UserManagementAdd: React.FC<UserManagementAddProps> = React.memo(({ onClos
             border: 1px solid #d1d5db;
             border-radius: 0.375rem;
           }
+          .ant-form-item-required {
+          font-family: 'Squada-One';
           
+
+          }
           input:focus, select:focus {
             border-color: #FF9447;
             box-shadow: 0 0 0 2px rgba(255, 148, 71, 0.2);
