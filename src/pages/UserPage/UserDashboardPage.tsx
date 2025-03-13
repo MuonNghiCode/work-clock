@@ -32,6 +32,7 @@ interface ClaimRequest {
   timeFrom: string;
   timeTo: string;
   status: string;
+  created_at: string; 
 }
 
 interface StatCardProps {
@@ -117,6 +118,7 @@ const UserDashboardPage = () => {
       : "N/A",
     totalHours: item.total_work_time?.toString() || "0",
     status: item.claim_status || "Unknown",
+    created_at: item.created_at || "", 
   });
 
   const fetchClaims = async (pageNum: number, pageSize: number) => {
