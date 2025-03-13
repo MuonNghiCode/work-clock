@@ -18,7 +18,7 @@ import { Form, Input} from "antd";
 //   full_name: string;
 //   avatar_url: string;
 //   department_code: string;
-//   salary: number;
+//   salary: number;npm i
 //   start_date: string | null;
 //   end_date: string | null;
 //   updated_by: string;
