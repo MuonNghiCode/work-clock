@@ -200,13 +200,13 @@ const UserManagementAdd: React.FC<UserManagementAddProps> = React.memo(
             border: 1px solid #d1d5db;
             border-radius: 0.375rem;
           }
-          
           input:focus, select:focus {
             border-color: #FF9447;
             box-shadow: 0 0 0 2px rgba(255, 148, 71, 0.2);
           }
           .ant-form-item-required::before {
             display: none !important;
+            font-family: 'Squada-One';
           }
           label {
             display: block;

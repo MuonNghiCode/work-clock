@@ -28,7 +28,9 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
   onClose,
 }) => {
   const [form] = Form.useForm();
+
   const [projects, setProjects] = useState<ProjectInfo[]>([]);
+
   const [approvals, setApprovals] = useState<
     { label: string; value: string }[]
   >([]);
