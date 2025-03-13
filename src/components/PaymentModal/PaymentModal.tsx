@@ -1,11 +1,7 @@
 import React from "react";
-import { Modal, Button, Input, Select, Form } from "antd";
 import { format } from "date-fns";
 import emailjs from "@emailjs/browser";
 import { updateClaimStatus } from "../../services/claimService";
-
-const { TextArea } = Input;
-const { Option } = Select;
 
 interface PaymentModalProps {
   isVisible: boolean;
@@ -32,38 +28,44 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   claim_name,
   claimId,
 }) => {
-  const [form] = Form.useForm();
+  const [formData, setFormData] = React.useState({
+    title: "",
+    amount: "",
+    payment: "Card",
+    message: "",
+  });
 
   const handleConfirm = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        sendEmail(values);
-        updateClaimStatus({
-          _id: claimId,
-          claim_status: "Paid",
-          comment: "Payment confirmed",
-        })
-          .then(() => {
-            console.log("Claim status updated successfully");
-          })
-          .catch((error) => {
-            console.error("Failed to update claim status:", error);
-          });
-        if (onConfirm) onConfirm(values);
+    sendEmail(formData);
+    updateClaimStatus({
+      _id: claimId,
+      claim_status: "Paid",
+      comment: "Payment confirmed",
+    })
+      .then(() => {
+        console.log("Claim status updated successfully");
       })
-      .catch((info) => {
-        console.log("Validate Failed:", info);
-        onStateChange("error");
+      .catch((error) => {
+        console.error("Failed to update claim status:", error);
       });
+    if (onConfirm) onConfirm(formData);
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
   const sendEmail = (formData: any) => {
     const templateParams = {
       title: formData.title,
       amount: formData.amount,
-      email: formData.email,
-      to_email: formData.to_email,
+      email: email,
+      to_email: accountantEmail,
       message: formData.message,
       transaction: formData.payment,
       claimer: claimer,
@@ -88,108 +90,103 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
       });
   };
 
-  const handleClose = () => {
-    onClose();
-  };
-
-  const formatNumberWithCommas = (value: string) => {
-    const cleanedValue = value.replace(/[^0-9.]/g, "");
-    return cleanedValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
-
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formattedValue = formatNumberWithCommas(e.target.value);
-    form.setFieldsValue({ amount: formattedValue });
-  };
-
   return (
-    <Modal
-      title={"Payment"}
-      open={isVisible}
-      onCancel={handleClose}
-      footer={[
-        <Button key="submit" type="primary" onClick={handleConfirm}>
-          Confirm
-        </Button>,
-      ]}
+    <div
+      className={`fixed inset-0 z-50 flex items-center justify-center ${
+        isVisible ? "block" : "hidden"
+      }`}
     >
-      <Form
-        form={form}
-        layout="vertical"
-        initialValues={{
-          payment: "Card",
-          email: accountantEmail,
-          to_email: email,
-        }}
-      >
-        <div className="grid grid-cols-2 gap-4">
-          <Form.Item
-            label="Title"
-            name="title"
-            rules={[{ required: true, message: "Title is required" }]}
-          >
-            <Input placeholder="Enter the title..." />
-          </Form.Item>
-          <Form.Item label="Claimer">
-            <Input value={claimer} readOnly />
-          </Form.Item>
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <Form.Item
-            label="Amount"
-            name="amount"
-            rules={[
-              { required: true, message: "Amount is required" },
-              {
-                validator: (_, value) =>
-                  parseFloat(value.replace(/,/g, "")) > 0
-                    ? Promise.resolve()
-                    : Promise.reject(
-                        new Error("Amount must be greater than 0")
-                      ),
-              },
-            ]}
-          >
-            <Input
-              type="text"
-              placeholder="Value"
-              onChange={handleAmountChange}
+      <div
+        className="absolute inset-0 bg-black opacity-50 focus:outline-none"
+        aria-label="Close modal"
+      ></div>
+      <div className="bg-white rounded-lg shadow-lg p-6 w-1/2 z-10">
+        <h2 className="text-xl font-bold mb-4 text-orange-500">Payment</h2>
+        <form>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block mb-1">Title</label>
+              <input
+                name="title"
+                value={formData.title}
+                onChange={handleChange}
+                className="border border-gray-300 rounded-lg p-2 w-full"
+                placeholder="Enter the title..."
+              />
+            </div>
+            <div>
+              <label className="block mb-1">Claimer</label>
+              <input
+                value={claimer}
+                readOnly
+                className="border border-gray-300 rounded-lg p-2 w-full"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block mb-1">Amount</label>
+              <input
+                name="amount"
+                value={formData.amount}
+                onChange={handleChange}
+                className="border border-gray-300 rounded-lg p-2 w-full"
+                placeholder="Value"
+              />
+            </div>
+            <div>
+              <label className="block mb-1">Date</label>
+              <input
+                value={format(date, "dd-MM-yyyy")}
+                readOnly
+                className="border border-gray-300 rounded-lg p-2 w-full"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block mb-1">Payment</label>
+              <select
+                name="payment"
+                value={formData.payment}
+                onChange={handleChange}
+                className="border border-gray-300 rounded-lg p-2 w-full"
+              >
+                <option value="Card">Card</option>
+                <option value="Bank">Bank</option>
+                <option value="Cash">Cash</option>
+              </select>
+            </div>
+          </div>
+          <div className="mb-4">
+            <label className="block mb-1">Message</label>
+            <textarea
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
+              className="border border-gray-300 rounded-lg p-2 w-full"
+              placeholder="Input your message"
             />
-          </Form.Item>
-          <Form.Item label="Date">
-            <Input value={format(date, "dd-MM-yyyy")} readOnly />
-          </Form.Item>
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <Form.Item label="Accountant Email" name="email">
-            <Input type="email" placeholder="Your email address" readOnly />
-          </Form.Item>
-          <Form.Item label="Recipient Email" name="to_email">
-            <Input placeholder="Recipient email address" readOnly />
-          </Form.Item>
-          <Form.Item
-            label="Payment"
-            name="payment"
-            rules={[
-              { required: true, message: "Please select a payment method" },
-            ]}
-          >
-            <Select>
-              <Option value="Card">Card</Option>
-              <Option value="Bank">Bank</Option>
-              <Option value="Cash">Cash</Option>
-            </Select>
-          </Form.Item>
-        </div>
-        <Form.Item
-          label="Message"
-          name="message"
-          rules={[{ required: true, message: "Message is required" }]}
-        >
-          <TextArea placeholder="Input your message" />
-        </Form.Item>
-      </Form>
-    </Modal>
+          </div>
+          <div className="flex justify-end">
+            <button
+              type="button"
+              onClick={onClose}
+              className="bg-gray-300 hover:bg-gray-400 text-black rounded-lg px-4 py-2 mr-2"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleConfirm}
+              className="bg-orange-500 hover:bg-orange-600 text-white rounded-lg px-4 py-2"
+            >
+              Confirm
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 };
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Pagination } from "antd";
 import { Bar } from "react-chartjs-2";
 import { getClaimsData } from "../../services/claimService";
 import Icons from "../../components/icon";
@@ -6,6 +7,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import moment from "moment";
 import { motion } from "framer-motion";
+import { formatCurrency } from "../../utils/formatCurrency";
 
 const fadeInScaleUp = {
   hidden: { opacity: 0, scale: 0.8 },
@@ -15,7 +17,7 @@ const fadeInScaleUp = {
 interface StatCardProps {
   icon: React.ReactNode;
   label: string;
-  value: number;
+  value: string;
   bgColor: string;
   textColor: string;
 }
@@ -59,6 +61,7 @@ interface ClaimData {
   claim_start_date: string;
   claim_end_date: string;
   status: string;
+  claim_name: string;
 }
 const FinanceDashboard: React.FC = () => {
   const [data, setData] = useState<ClaimData[]>([]);
@@ -80,6 +83,8 @@ const FinanceDashboard: React.FC = () => {
       },
     ],
   });
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   useEffect(() => {
     AOS.init({
@@ -93,7 +98,7 @@ const FinanceDashboard: React.FC = () => {
 
       // Get the current date and time, then adjust for Vietnam's time zone (UTC+7)
       const currentDate = moment().utcOffset(7);
-      const currentMonth = currentDate.month() + 1; // moment's month is zero-based
+      const currentMonth = currentDate.month() + 1;
 
       // Log the current month
       console.log("Current month (Vietnam time zone):", currentMonth);
@@ -108,7 +113,7 @@ const FinanceDashboard: React.FC = () => {
         },
         pageInfo: {
           pageNum: 1,
-          pageSize: 1000000,
+          pageSize: 10000000,
         },
       };
 
@@ -131,6 +136,7 @@ const FinanceDashboard: React.FC = () => {
               claim_start_date: item.claim_start_date,
               claim_end_date: item.claim_end_date,
               status: item.claim_status,
+              claim_name: item.claim_name,
             })
           );
 
@@ -207,6 +213,15 @@ const FinanceDashboard: React.FC = () => {
     fetchData();
   }, []);
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  // Tính toán dữ liệu cho trang hiện tại
+  const displayedData = data
+    .filter((item) => item.status === "Paid")
+    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
   if (error) return <div className="text-center text-red-500">{error}</div>;
 
   const moneyFlowData = {
@@ -229,21 +244,21 @@ const FinanceDashboard: React.FC = () => {
           <StatCard
             icon={<Icons.Dollar className="text-3xl text-blue-600" />}
             label="Total Revenue"
-            value={parseFloat(totalRevenue.toFixed(2))}
+            value={formatCurrency(totalRevenue)}
             bgColor="bg-gradient-to-b from-blue-300 to-blue-100"
             textColor="text-black-900 font-bold"
           />
           <StatCard
             icon={<Icons.Pending className="text-3xl text-yellow-500" />}
             label="Pending Claims"
-            value={pendingClaims}
+            value={pendingClaims.toString()}
             bgColor="bg-gradient-to-b from-yellow-300 to-yellow-100"
             textColor="text-black-900 font-bold"
           />
           <StatCard
             icon={<Icons.Check className="text-3xl text-green-600" />}
             label="Processed Claims"
-            value={processedClaims}
+            value={processedClaims.toString()}
             bgColor="bg-gradient-to-b from-green-300 to-green-100"
             textColor="text-black-900 font-bold"
           />
@@ -252,8 +267,8 @@ const FinanceDashboard: React.FC = () => {
             label="Average Processing Time"
             value={
               averageProcessingTime !== null
-                ? parseFloat(averageProcessingTime.toFixed(2))
-                : 0
+                ? parseFloat(averageProcessingTime.toFixed(2)).toString()
+                : "0"
             }
             bgColor="bg-gradient-to-b from-orange-300 to-orange-100"
             textColor="text-black-900 font-bold"
@@ -289,8 +304,8 @@ const FinanceDashboard: React.FC = () => {
             >
               <thead className="bg-brand-gradient h-[70px] text-lg text-white !rounded-t-lg">
                 <tr className="bg-[linear-gradient(45deg,#FEB78A,#FF914D)]">
-                  <th className="border-white px-4 py-2 !rounded-tl-2xl">
-                    Transaction ID
+                  <th className="border-l-2 border-white px-4 py-2 !rounded-tl-2xl">
+                    Claim Name
                   </th>
                   <th className="border-l-2 border-white px-4 py-2">Claimer</th>
                   <th className="border-l-2 border-white px-4 py-2">Salary</th>
@@ -301,35 +316,38 @@ const FinanceDashboard: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="w-full">
-                {data
-                  .filter((item) => item.status === "Paid")
-                  .sort(
-                    (a, b) =>
-                      new Date(b.claim_start_date).getTime() -
-                      new Date(a.claim_start_date).getTime()
-                  )
-                  .map((item) => (
-                    <tr
-                      key={item._id}
-                      className="h-[70px] bg-white overflow-scroll text-center border-collapse hover:shadow-brand-orange !rounded-2xl"
-                    >
-                      <td className="px-4 py-2 rounded-l-2xl">{item._id}</td>
-                      <td className="px-4 py-2">
-                        {item.employee_info.full_name}
-                      </td>
-                      <td className="px-4 py-2">
-                        ${item.employee_info.salary}
-                      </td>
-                      <td className="px-4 py-2">{item.status}</td>
-                      <td className="px-4 py-2 rounded-r-2xl">
-                        {new Date(item.claim_start_date).toLocaleDateString(
-                          "vi-VN"
-                        )}
-                      </td>
-                    </tr>
-                  ))}
+                {displayedData.map((item) => (
+                  <tr
+                    key={item._id}
+                    className="h-[70px] bg-white overflow-scroll text-center border-collapse hover:shadow-brand-orange !rounded-2xl"
+                  >
+                    <td className="px-4 py-2">{item.claim_name}</td>
+                    <td className="px-4 py-2">
+                      {item.employee_info.full_name}
+                    </td>
+                    <td className="px-4 py-2">
+                      {formatCurrency(item.employee_info.salary)}
+                    </td>
+                    <td className="px-4 py-2">{item.status}</td>
+                    <td className="px-4 py-2 rounded-r-2xl">
+                      {new Date(item.claim_start_date).toLocaleDateString(
+                        "vi-VN"
+                      )}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
+            <div className="flex justify-end mt-4">
+              <Pagination
+                className="!font-squada flex justify-end"
+                current={currentPage}
+                total={data.filter((item) => item.status === "Paid").length}
+                pageSize={itemsPerPage}
+                onChange={handlePageChange}
+                showSizeChanger={false}
+              />
+            </div>
           </div>
         </div>
       )}

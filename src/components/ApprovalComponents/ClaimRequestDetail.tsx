@@ -77,6 +77,11 @@ const ClaimRequestDetail: React.FC<ClaimRequestModalProps> = ({
           </div>
         </div>
       </div>
+      <style>{`
+        .ant-modal-content {
+          width: 650px !important;
+        }
+      `}</style>
     </Modal >
   );
 };

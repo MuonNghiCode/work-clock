@@ -17,6 +17,11 @@ import Background4 from "../assets/images/background4.png";
 import Background5 from "../assets/images/background-large.png";
 import Background6 from "../assets/images/bg-5.png";
 import Background7 from "../assets/images/background6.png";
+import auth from "../assets/images/auth.png";
+import auth1 from "../assets/images/auth1.png";
+import news1 from "../assets/images/NewsBackground.jpg";
+import group from "../assets/images/class.jpg";
+import news2 from "../assets/images/8-3.jpg";
 const Images = {
   Logo,
   Logo2,
@@ -37,6 +42,11 @@ const Images = {
   Background5,
   Background6,
   Background7,
+  auth,
+  auth1,
+  news1,
+  group,
+  news2,
 };
 
 export default Images;

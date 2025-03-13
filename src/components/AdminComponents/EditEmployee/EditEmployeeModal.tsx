@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import axiosInstance from "../../../config/axiosUser";
 import ImageUploader from "../../ImageUploader/ImageUploader";
 import { EmployeeInfo } from "../../../types/Employee";
+// import { Form, Input, Select } from "antd";
 
 // export interface Employee {
 //   _id: string;
@@ -77,7 +78,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   console.log(formData)
-  
+
   // Animation states
   const [isAnimating, setIsAnimating] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -141,7 +142,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
         setIsLoading(false);
       }
     };
-      fetchData();
+    fetchData();
   }, [isOpen]);
 
   // Handle modal close with animation
@@ -184,8 +185,8 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
       };
 
       await updateEmployee(employee.user_id, updateData);
-          toast.success("Employee updated successfully");
-          onUpdateSuccess?.(updateData);
+      toast.success("Employee updated successfully");
+      onUpdateSuccess?.(updateData);
       onClose();
     } catch (error) {
       console.error("Failed to update employee:", error);
@@ -224,25 +225,25 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
 
   const getUniqueJobsByTitle = (jobs: Job[]) => {
     const uniqueJobTitles = new Map<string, Job>();
-    jobs.forEach(job => {
+    jobs.forEach((job) => {
       if (!uniqueJobTitles.has(job.job_title)) {
         uniqueJobTitles.set(job.job_title, job);
       }
     });
-    return Array.from(uniqueJobTitles.values()).sort((a, b) => 
+    return Array.from(uniqueJobTitles.values()).sort((a, b) =>
       a.job_title.localeCompare(b.job_title)
     );
   };
 
   const handleImageUpload = (imageUrl: string) => {
     setPreviewAvatar(imageUrl);
-    setFormData(prev => ({ ...prev, avatar_url: imageUrl }));
+    setFormData((prev) => ({ ...prev, avatar_url: imageUrl }));
   };
 
   if (!modalVisible && !isEmbedded) return null;
 
   if (isEmbedded) {
-  return (
+    return (
       <form onSubmit={handleSubmit} className="h-[600px] flex flex-col bg-white">
         <div className="flex-1 overflow-y-auto p-6">
           {error ? (
@@ -251,7 +252,9 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
             <div className="space-y-6">
               {/* Avatar Section */}
               <div className="mb-8">
-                <h3 className="text-lg font-semibold text-gray-700 mb-4">Profile Image</h3>
+                <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                  Profile Image
+                </h3>
                 <div className="flex flex-col items-center gap-4">
                   {/* Avatar Preview với Upload Overlay */}
                   <div className="relative group">
@@ -268,7 +271,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                         </div>
                       )}
                     </div>
-                    
+
                     {/* Upload Overlay */}
                     <div className="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                       <ImageUploader onImageUploaded={handleImageUpload} />
@@ -290,7 +293,9 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                       />
                       <button
                         type="button"
-                        onClick={() => validateImageUrl(formData.avatar_url || "")}
+                        onClick={() =>
+                          validateImageUrl(formData.avatar_url || "")
+                        }
                         className="px-4 py-2 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200"
                       >
                         Preview
@@ -303,7 +308,9 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
               {/* Personal Information */}
               <div className="grid grid-cols-2 gap-6">
                 <div className="bg-gray-50 p-6 rounded-lg">
-                  <h3 className="text-lg font-semibold text-gray-700 mb-4">Personal Information</h3>
+                  <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                    Personal Information
+                  </h3>
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-600 mb-2">
@@ -315,6 +322,22 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                         onChange={(e) => handleInputChange("full_name", e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
                       />
+
+                      {/* <Form.Item
+                        label="Full Name"
+                        name="full_name"
+                        rules={[
+                          { required: true, message: "Full Name is required" },
+                        ]}
+                      ></Form.Item>
+                      <Input
+                        type="text"
+                        value={formData.full_name || ""}
+                        onChange={(e) =>
+                          handleInputChange("full_name", e.target.value)
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                      /> */}
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-600 mb-2">
@@ -323,7 +346,9 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                       <input
                         type="text"
                         value={formData.phone || ""}
-                        onChange={(e) => handleInputChange("phone", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("phone", e.target.value)
+                        }
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
                       />
                     </div>
@@ -334,7 +359,9 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                       <input
                         type="text"
                         value={formData.address || ""}
-                        onChange={(e) => handleInputChange("address", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("address", e.target.value)
+                        }
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
                       />
                     </div>
@@ -343,7 +370,9 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
 
                 {/* Employment Details */}
                 <div className="bg-gray-50 p-6 rounded-lg">
-                  <h3 className="text-lg font-semibold text-gray-700 mb-4">Employment Details</h3>
+                  <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                    Employment Details
+                  </h3>
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-600 mb-2">
@@ -373,7 +402,9 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                         Department
                       </label>
                       {isLoading ? (
-                        <div className="text-gray-500">Loading departments...</div>
+                        <div className="text-gray-500">
+                          Loading departments...
+                        </div>
                       ) : (
                         <select
                           value={formData.department_code || ""}
@@ -396,7 +427,9 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                         Contract Type
                       </label>
                       {isLoading ? (
-                        <div className="text-gray-500">Loading contracts...</div>
+                        <div className="text-gray-500">
+                          Loading contracts...
+                        </div>
                       ) : (
                         <select
                           value={formData.contract_type || ""}
@@ -424,7 +457,9 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                       <input
                         type="number"
                         value={formData.salary || 0}
-                        onChange={(e) => handleInputChange("salary", Number(e.target.value))}
+                        onChange={(e) =>
+                          handleInputChange("salary", Number(e.target.value))
+                        }
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
                       />
                     </div>
@@ -434,7 +469,9 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
 
               {/* Contract Period */}
               <div className="bg-gray-50 p-6 rounded-lg">
-                <h3 className="text-lg font-semibold text-gray-700 mb-4">Contract Period</h3>
+                <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                  Contract Period
+                </h3>
                 <div className="grid grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-600 mb-2">
@@ -516,7 +553,10 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
               <X className="w-6 h-6 text-gray-500" />
             </button>
           </div>
-          <form onSubmit={handleSubmit} className="h-[600px] flex flex-col bg-white">
+          <form
+            onSubmit={handleSubmit}
+            className="h-[600px] flex flex-col bg-white"
+          >
             <div className="flex-1 overflow-y-auto p-6">
               {error ? (
                 <div className="text-red-500">{error}</div>
@@ -524,7 +564,9 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                 <div className="space-y-6">
                   {/* Avatar Section */}
                   <div className="mb-8">
-                    <h3 className="text-lg font-semibold text-gray-700 mb-4">Profile Image</h3>
+                    <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                      Profile Image
+                    </h3>
                     <div className="flex flex-col items-center gap-4">
                       {/* Avatar Preview với Upload Overlay */}
                       <div className="relative group">
@@ -541,7 +583,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                             </div>
                           )}
                         </div>
-                        
+
                         {/* Upload Overlay */}
                         <div className="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                           <ImageUploader onImageUploaded={handleImageUpload} />
@@ -563,7 +605,9 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                           />
                           <button
                             type="button"
-                            onClick={() => validateImageUrl(formData.avatar_url || "")}
+                            onClick={() =>
+                              validateImageUrl(formData.avatar_url || "")
+                            }
                             className="px-4 py-2 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200"
                           >
                             Preview
@@ -576,7 +620,9 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                   {/* Personal Information */}
                   <div className="grid grid-cols-2 gap-6">
                     <div className="bg-gray-50 p-6 rounded-lg">
-                      <h3 className="text-lg font-semibold text-gray-700 mb-4">Personal Information</h3>
+                      <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                        Personal Information
+                      </h3>
                       <div className="space-y-4">
                         <div>
                           <label className="block text-sm font-medium text-gray-600 mb-2">
@@ -585,7 +631,9 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                           <input
                             type="text"
                             value={formData.full_name || ""}
-                            onChange={(e) => handleInputChange("full_name", e.target.value)}
+                            onChange={(e) =>
+                              handleInputChange("full_name", e.target.value)
+                            }
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
                           />
                         </div>
@@ -596,7 +644,9 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                           <input
                             type="text"
                             value={formData.phone || ""}
-                            onChange={(e) => handleInputChange("phone", e.target.value)}
+                            onChange={(e) =>
+                              handleInputChange("phone", e.target.value)
+                            }
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
                           />
                         </div>
@@ -607,7 +657,9 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                           <input
                             type="text"
                             value={formData.address || ""}
-                            onChange={(e) => handleInputChange("address", e.target.value)}
+                            onChange={(e) =>
+                              handleInputChange("address", e.target.value)
+                            }
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
                           />
                         </div>
@@ -616,7 +668,9 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
 
                     {/* Employment Details */}
                     <div className="bg-gray-50 p-6 rounded-lg">
-                      <h3 className="text-lg font-semibold text-gray-700 mb-4">Employment Details</h3>
+                      <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                        Employment Details
+                      </h3>
                       <div className="space-y-4">
                         <div>
                           <label className="block text-sm font-medium text-gray-600 mb-2">
@@ -646,18 +700,26 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                             Department
                           </label>
                           {isLoading ? (
-                            <div className="text-gray-500">Loading departments...</div>
+                            <div className="text-gray-500">
+                              Loading departments...
+                            </div>
                           ) : (
                             <select
                               value={formData.department_code || ""}
                               onChange={(e) =>
-                                handleInputChange("department_code", e.target.value)
+                                handleInputChange(
+                                  "department_code",
+                                  e.target.value
+                                )
                               }
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
                             >
                               <option value="">Select Department</option>
                               {departments.map((dept) => (
-                                <option key={dept._id} value={dept.department_code}>
+                                <option
+                                  key={dept._id}
+                                  value={dept.department_code}
+                                >
                                   {dept.department_name}
                                 </option>
                               ))}
@@ -669,12 +731,17 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                             Contract Type
                           </label>
                           {isLoading ? (
-                            <div className="text-gray-500">Loading contracts...</div>
+                            <div className="text-gray-500">
+                              Loading contracts...
+                            </div>
                           ) : (
                             <select
                               value={formData.contract_type || ""}
                               onChange={(e) =>
-                                handleInputChange("contract_type", e.target.value)
+                                handleInputChange(
+                                  "contract_type",
+                                  e.target.value
+                                )
                               }
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
                             >
@@ -697,7 +764,12 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                           <input
                             type="number"
                             value={formData.salary || 0}
-                            onChange={(e) => handleInputChange("salary", Number(e.target.value))}
+                            onChange={(e) =>
+                              handleInputChange(
+                                "salary",
+                                Number(e.target.value)
+                              )
+                            }
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
                           />
                         </div>
@@ -707,7 +779,9 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
 
                   {/* Contract Period */}
                   <div className="bg-gray-50 p-6 rounded-lg">
-                    <h3 className="text-lg font-semibold text-gray-700 mb-4">Contract Period</h3>
+                    <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                      Contract Period
+                    </h3>
                     <div className="grid grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-medium text-gray-600 mb-2">
@@ -761,6 +835,35 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
           </form>
         </div>
       </div>
+      {/* <style>
+        {`
+          input, select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+          }
+          
+          input:focus, select:focus {
+            border-color: #FF9447;
+            box-shadow: 0 0 0 2px rgba(255, 148, 71, 0.2);
+          }
+          
+          label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.25rem;
+          }
+          
+          .error-message {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+          }
+        `}
+      </style> */}
     </div>
   );
 };

@@ -1,25 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Calendar } from "antd";
 // Sử dụng icon cho password (bạn có thể cài react-icons nếu chưa có: npm install react-icons)
-import { FaEye, FaEyeSlash, FaCamera } from "react-icons/fa"; // Thêm icon camera
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // Thêm icon camera
 // Import ảnh mặc định
-import userDefaultImage from "../../assets/images/user-image.png";
 //import { UserContext } from "../../context/UserContext"; // Import UserContext
-import { changePassword } from "../../services/userService";
-interface FormData {
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
-    email: string;
-    district: string;
-    city: string;
-    postcode: string;
-    country: string;
-    job_rank: string;
+import { changePassword, getAllJobs, getEmployeeByUserId, updateEmployee } from "../../services/userService";
+import { getAllDepartments } from "../../services/userService";
+import { getAllContracts } from "../../services/userService";
+import dayjs, { Dayjs } from "dayjs";
+import { EmployeeInfo, JobRank } from "../../types/Employee";
+import { User } from "lucide-react";
+import ImageUploader from "../../components/ImageUploader/ImageUploader";
+import { formatCurrency } from "../../utils/formatCurrency";
+
+
+export interface Department {
+    _id: string;
+    department_code: string;
+    description: string;
+}
+
+export interface Contract {
+    _id: string;
     contract_type: string;
-    department_name: string;
-    salary: string;
+    description: string;
 }
 
 interface PasswordData extends Record<string, string> {
@@ -27,121 +33,218 @@ interface PasswordData extends Record<string, string> {
     newPassword: string;
     confirmPassword: string;
 }
+interface FormData {
+    job_rank: string;
+    contract_type: string;
+    account: string;
+    address: string;
+    phone: string;
+    department_name: string;
+    full_name: string;
+    avatar_url: string;
+    department_code: string;
+    salary: number;
+    user_id: string;
+    is_deleted: boolean;
+    start_date: Date | null;
+    end_date: Date | null;
+    updated_by: string;
+}
+
 
 const EditProfilePage: React.FC = () => {
-    // Khởi tạo state cho active tab: "account" hoặc "password"
-    const [activeTab, setActiveTab] = useState<"account" | "password">("account");
 
-    // Lấy dữ liệu từ localStorage (nếu có), hoặc dùng dữ liệu mặc định
-    const defaultAccountData: FormData = {
-        firstName: "David",
-        lastName: "Thompson",
-        phoneNumber: "0362740921",
-        email: "haitrilehu@gmail.com",
-        district: "Thu Duc",
-        city: "Ho Chi Minh",
-        postcode: "12000",
-        country: "Viet Nam",
-        job_rank: "DEV1",
-        contract_type: "THREE YEAR",
-        department_name: "CMS",
-        salary: "5000000",
-    };
-
-    const [formData, setFormData] = useState<FormData>(() => {
-        const storedData = localStorage.getItem("accountData");
-        return storedData ? JSON.parse(storedData) : defaultAccountData;
+    const [formData, setFormData] = useState<FormData>({
+        job_rank: "",
+        user_id: "",
+        contract_type: "",
+        account: "",
+        address: "",
+        phone: "",
+        department_name: "",
+        full_name: "",
+        avatar_url: "",
+        department_code: "",
+        salary: 0,
+        start_date: null,
+        end_date: null,
+        is_deleted: false,
+        updated_by: "",
     });
 
-    // State cho dữ liệu đổi mật khẩu
+    const [activeTab, setActiveTab] = useState<"account" | "password">("account");
+
     const [passwordData, setPasswordData] = useState<PasswordData>({
         oldPassword: "",
         newPassword: "",
         confirmPassword: "",
     });
+    const [userId, setUserId] = useState<string | null>(null);
+    const [departments, setDepartments] = useState<Department[]>([]);
+    const [contracts, setContracts] = useState<Contract[]>([]);
+    const [jobrank, setJobRank] = useState<JobRank[]>([]);
+    const [previewAvatar, setPreviewAvatar] = useState("");
+    const [showStartCalendar, setShowStartCalendar] = useState(false);
+    const [showEndCalendar, setShowEndCalendar] = useState(false);
+    // Lấy userId từ localStorage sau khi đăng nhập
+    useEffect(() => {
+        const storedUserId = localStorage.getItem("userId");
+        if (storedUserId) {
+            setUserId(storedUserId);
+        }
+    }, []);
 
+    // Gọi API lấy thông tin nhân viên khi có userId
+    useEffect(() => {
+        if (userId) {
+            getEmployeeByUserId(userId)
+                .then((response) => {
+                    if (response.success) {
+                        const data = response.data;
+                        setFormData({
+                            job_rank: data.job_rank,
+                            user_id: userId,
+                            contract_type: data.contract_type,
+                            account: data.account,
+                            address: data.address,
+                            phone: data.phone,
+                            full_name: data.full_name,
+                            avatar_url: data.avatar_url || "",
+                            is_deleted: data.is_deleted,
+                            updated_by: data.updated_by,
+                            department_name: data.department_name,
+                            department_code: data.department_code,
+                            salary: data.salary,
+                            start_date: data.start_date ? new Date(data.start_date) : null,
+                            end_date: data.end_date ? new Date(data.end_date) : null,
+                        });
+                    } else {
+                        console.error("Error fetching employee data:", response.message);
+                    }
+                })
+                .catch((error) => console.error("Error fetching employee data:", error));
+        }
+    }, [userId]);
     // State cho ảnh đại diện
+    // Lấy dropdown data cho Department và Contract
+    useEffect(() => {
+        const fetchDropdownData = async () => {
+            try {
+                const deptData = await getAllDepartments();
+                const contractData = await getAllContracts();
+                const jobRankData = await getAllJobs();
+                setJobRank(jobRankData.data);
+                setDepartments(deptData.data);
+                setContracts(contractData.data);
+            } catch (error) {
+                console.error("Error fetching dropdown data:", error);
+            }
+        };
+        fetchDropdownData();
+    }, []);
+    // Xử lý thay đổi ngày cho Start Date
+    const handleStartDateChange = (date: Dayjs) => {
+        setFormData((prev) => ({
+            ...prev,
+            start_date: date.toDate(), // Chuyển từ Dayjs sang Date
+        }));
+    };
+    const handleEndDateChange = (date: Dayjs) => {
+        setFormData((prev) => ({
+            ...prev,
+            end_date: date.toDate(), // Chuyển từ Dayjs sang Date
+        }));
+    };
+    const handleInputChange = (
+        e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>
+    ) => {
+        const { name, value } = e.target as HTMLInputElement | HTMLSelectElement;
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            [name]: value
+        }));
+    };
 
 
-    // State toggle hiển thị mật khẩu (cho từng field)
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const storedUserId = localStorage.getItem("userId");
+
+        if (!storedUserId) {
+            toast.error("User ID is missing");
+            return;
+        }
+
+        const formattedData: EmployeeInfo = {
+            ...formData,
+            start_date: formData.start_date ? formData.start_date.toISOString() : "",
+            end_date: formData.end_date ? formData.end_date.toISOString() : null,
+        };
+
+        try {
+            await updateEmployee(storedUserId, formattedData);
+            localStorage.setItem("accountData", JSON.stringify(formattedData));
+            toast.success("Employee updated successfully!");
+
+            // Refresh the employee data
+            const updatedEmployeeData = await getEmployeeByUserId(storedUserId);
+            setFormData({
+                job_rank: updatedEmployeeData.data.job_rank,
+                user_id: storedUserId,
+                contract_type: updatedEmployeeData.data.contract_type,
+                account: updatedEmployeeData.data.account,
+                address: updatedEmployeeData.data.address,
+                phone: updatedEmployeeData.data.phone,
+                full_name: updatedEmployeeData.data.full_name,
+                avatar_url: updatedEmployeeData.data.avatar_url || "",
+                is_deleted: updatedEmployeeData.data.is_deleted,
+                updated_by: updatedEmployeeData.data.updated_by,
+                department_name: updatedEmployeeData.data.department_name,
+                department_code: updatedEmployeeData.data.department_code,
+                salary: updatedEmployeeData.data.salary,
+                start_date: updatedEmployeeData.data.start_date ? new Date(updatedEmployeeData.data.start_date) : null,
+                end_date: updatedEmployeeData.data.end_date ? new Date(updatedEmployeeData.data.end_date) : null,
+            });
+        } catch (error) {
+            console.error("Error updating employee:", error);
+            toast.error("Error updating employee");
+        }
+    };
+
 
     const [showPassword, setShowPassword] = useState<Record<keyof PasswordData, boolean>>({
         oldPassword: false,
         newPassword: false,
         confirmPassword: false,
     });
-
-    // Lưu dữ liệu Account Settings vào localStorage khi formData thay đổi (sau khi update)
-    useEffect(() => {
-        localStorage.setItem("accountData", JSON.stringify(defaultAccountData));
-    }, [formData]);
-
-    // Xử lý thay đổi input Account Settings
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-    };
-
-    // Xử lý thay đổi input Password
     const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setPasswordData((prev) => ({ ...prev, [name]: value }));
     };
 
-    // Xử lý thay đổi ảnh đại diện
-    const [userImage, setUserImage] = useState<string | null>(() => {
-        return localStorage.getItem("userImage") || null;
-    });
-
-    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files && event.target.files[0]) {
-            const file = event.target.files[0];
-            const reader = new FileReader();
-
-            reader.onloadend = () => {
-                const imageData = reader.result as string;
-                setUserImage(imageData); // Hiển thị ngay ảnh mới
+    const validateImageUrl = async (url: string) => {
+        try {
+            const img = new Image();
+            img.onload = () => {
+                setPreviewAvatar(url);
+                setFormData((prev) => ({ ...prev, avatar_url: url }));
             };
-
-            reader.readAsDataURL(file);
+            img.onerror = () => {
+                setPreviewAvatar("");
+                toast.error("Invalid image URL");
+            };
+            img.src = url;
+        } catch {
+            setPreviewAvatar("");
+            toast.error("Invalid image URL");
         }
     };
 
-    useEffect(() => {
-        if (userImage) {
-            localStorage.setItem("userImage", userImage);
-        }
-    }, [userImage]);
-
-
-
-    // Kiểm tra nếu có trường nào rỗng trong đối tượng (trừ các trường không bắt buộc)
-    const hasEmptyField = (data: Record<string, string>): boolean =>
-        Object.values(data).some(value => value.trim() === "");
-    const formDataStrings: Record<string, string> = {
-        firstName: formData.firstName || "",
-        lastName: formData.lastName || "",
-        phoneNumber: formData.phoneNumber || "",
-        email: formData.email || "",
-        district: formData.district || "",
-        city: formData.city || "",
-        postcode: formData.postcode || "",
-        country: formData.country || "",
+    const handleImageUpload = (imageUrl: string) => {
+        setPreviewAvatar(imageUrl);
+        setFormData(prev => ({ ...prev, avatar_url: imageUrl }));
     };
-    // Submit cho Account Settings
-    const handleSubmitAccount = (e: React.FormEvent) => {
-        e.preventDefault();
-
-        // Kiểm tra xem có trường nào bị bỏ trống không
-        if (hasEmptyField(formDataStrings)) {
-            toast.error("Empty field, try again");
-            return;
-        }
-
-        // Cập nhật dữ liệu vào localStorage (đã có useEffect lo lưu)
-        toast.success("Update successfully");
-    };
-
 
     // Submit cho Change Password
     const handleSubmitPassword = async (e: React.FormEvent) => {
@@ -189,39 +292,54 @@ const EditProfilePage: React.FC = () => {
             <div className="flex gap-6 bg-white shadow rounded-lg p-6">
                 {/* Sidebar: User Profile */}
 
-                <div className="w-1/4 flex flex-col items-center bg-white p-4 shadow rounded-lg">
-                    <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
-                    <div className="relative w-24 h-24 rounded-full overflow-hidden border border-gray-300 cursor-pointer" onClick={() => document.getElementById('fileInput')?.click()}>
-                        <img src={userImage || userDefaultImage} alt="User" className="w-full h-full object-cover" />
-                        <input id="fileInput" type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
-                        <div className="absolute bottom-1 right-1 bg-gray-700 p-1 rounded-full text-white text-xs cursor-pointer hover:bg-gray-600">
-                            <FaCamera />
+                <div className="mb-8">
+                    <h3 className="text-lg font-semibold text-gray-700 mb-4">Profile Image</h3>
+                    <div className="flex flex-col items-center gap-4">
+                        {/* Avatar Preview với Upload Overlay */}
+                        <div className="relative group">
+                            <div className="w-40 h-40 rounded-full border-4 border-gray-200 overflow-hidden">
+                                {previewAvatar ? (
+                                    <img
+                                        src={previewAvatar}
+                                        alt="Avatar preview"
+                                        className="w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <div className="w-full h-full bg-gray-50 flex items-center justify-center">
+                                        <User className="w-16 h-16 text-gray-400" />
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Upload Overlay */}
+                            <div className="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <ImageUploader onImageUploaded={handleImageUpload} />
+                            </div>
+                        </div>
+
+                        {/* URL Input và Preview Button */}
+                        <div className="w-full max-w-md">
+                            <label className="block text-sm font-medium text-gray-600 mb-2">
+                                Image URL
+                            </label>
+                            <div className="flex gap-2">
+                                <input
+                                    type="text"
+                                    value={formData.avatar_url || ""}
+                                    onChange={(e) => validateImageUrl(e.target.value)}
+                                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                                    placeholder="https://example.com/image.jpg"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => validateImageUrl(formData.avatar_url || "")}
+                                    className="px-4 py-2 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200"
+                                >
+                                    Preview
+                                </button>
+                            </div>
                         </div>
                     </div>
-                    <h3 className="mt-4 text-xl font-bold">
-                        {formData.firstName} {formData.lastName}
-                    </h3>
-                    <p className="text-gray-500">FPT Corp.</p>
-                    <div className="space-y-1">
-                        <div className="flex justify-between items-center">
-                            <p className="font-semibold text-orange-500">Job rank:</p>
-                            <p className="text-orange-500 pl-10 pr-1">{formData.job_rank}</p>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <p className="font-semibold text-gray-500">Contract:</p>
-                            <p className="text-gray-500 pl-10 pr-1">{formData.contract_type}</p>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <p className="font-semibold text-gray-500">Department:</p>
-                            <p className="text-gray-500 pl-10 pr-1">{formData.department_name}</p>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <p className="font-semibold text-green-500">Salary:</p>
-                            <p className="text-green-500 pl-10 pr-1">{formData.salary} VND</p>
-                        </div>
-                    </div>
-
-
                 </div>
 
                 {/* Form Section */}
@@ -252,100 +370,180 @@ const EditProfilePage: React.FC = () => {
 
                     {/* Nội dung Form */}
                     {activeTab === "account" && (
-                        <form onSubmit={handleSubmitAccount} className="grid grid-cols-2 gap-4">
+                        //handleSubmitAccount}
+                        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-gray-700">First Name</label>
+                                <label className="block text-gray-700">Account</label>
                                 <input
                                     type="text"
-                                    name="firstName"
-                                    value={formData.firstName}
+                                    name="account"
+                                    value={formData.account}
                                     onChange={handleInputChange}
                                     className="w-full p-2 border rounded"
-                                    placeholder="First Name"
+                                    placeholder="Account"
                                 />
                             </div>
                             <div>
-                                <label className="block text-gray-700">Last Name</label>
+                                <label className="block text-gray-700">Full Name</label>
                                 <input
                                     type="text"
-                                    name="lastName"
-                                    value={formData.lastName}
+                                    name="full_name"
+                                    value={formData.full_name}
                                     onChange={handleInputChange}
                                     className="w-full p-2 border rounded"
-                                    placeholder="Last Name"
+                                    placeholder="Full Name"
                                 />
                             </div>
                             <div>
                                 <label className="block text-gray-700">Phone Number</label>
                                 <input
                                     type="text"
-                                    name="phoneNumber"
-                                    value={formData.phoneNumber}
+                                    name="phone"
+                                    value={formData.phone}
                                     onChange={handleInputChange}
                                     className="w-full p-2 border rounded"
                                     placeholder="Phone Number"
                                 />
                             </div>
                             <div>
-                                <label className="block text-gray-700">Email Address</label>
+                                <label className="block text-gray-700">Address</label>
                                 <input
-                                    type="email"
-                                    name="email"
-                                    value={formData.email}
+                                    type="text"
+                                    name="address"
+                                    value={formData.address}
                                     onChange={handleInputChange}
                                     className="w-full p-2 border rounded"
-                                    placeholder="Email Address"
+                                    placeholder="Address"
                                 />
                             </div>
                             <div>
-                                <label className="block text-gray-700">District</label>
-                                <input
-                                    type="text"
-                                    name="district"
-                                    value={formData.district}
-                                    onChange={handleInputChange}
-                                    className="w-full p-2 border rounded"
-                                    placeholder="district"
-                                />
+                                <label className="block text-gray-700">Job Rank</label>
+                                <div className="relative">
+                                    <select
+                                        name="job_rank"
+                                        defaultValue={formData.job_rank}
+                                        className="w-full p-2 border rounded bg-gray-200 text-gray-600 cursor-not-allowed"
+                                        disabled
+                                    >
+                                        <option value="">Select Job Rank</option>
+                                        {jobrank.map((job) => (
+                                            <option key={job.id} value={job.job_rank}>
+                                                {job.job_rank}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
                             <div>
-                                <label className="block text-gray-700">City</label>
-                                <input
-                                    type="text"
-                                    name="city"
-                                    value={formData.city}
-                                    onChange={handleInputChange}
-                                    className="w-full p-2 border rounded"
-                                    placeholder="City"
-                                />
+                                <label className="block text-gray-700">Department Code</label>
+                                <div className="relative">
+                                    <select
+                                        name="department_code"
+                                        defaultValue={formData.department_code}
+                                        className="w-full p-2 border rounded bg-gray-200 text-gray-600 cursor-not-allowed"
+                                        disabled
+                                    >
+                                        <option value="">Select Department</option>
+                                        {departments.map((dept) => (
+                                            <option key={dept._id} value={dept.department_code}>
+                                                {dept.description}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
                             <div>
-                                <label className="block text-gray-700">Postcode</label>
-                                <input
-                                    type="text"
-                                    name="postcode"
-                                    value={formData.postcode}
-                                    onChange={handleInputChange}
-                                    className="w-full p-2 border rounded"
-                                    placeholder="Postcode"
-                                />
+                                <label className="block text-gray-700">Contract Type</label>
+                                <div className="relative">
+                                    <select
+                                        name="contract_type"
+                                        defaultValue={formData.contract_type}
+                                        className="w-full p-2 border rounded bg-gray-200 text-gray-600 cursor-not-allowed"
+                                        disabled
+                                    >
+                                        <option value="">Select Contract</option>
+                                        {contracts.map((contract) => (
+                                            <option key={contract._id} value={contract.contract_type}>
+                                                {contract.description}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
                             <div>
-                                <label className="block text-gray-700">Country</label>
+                                <label className="block text-gray-700">Salary</label>
                                 <input
                                     type="text"
-                                    name="country"
-                                    value={formData.country}
-                                    onChange={handleInputChange}
-                                    className="w-full p-2 border rounded"
-                                    placeholder="Country"
+                                    name="salary"
+                                    value={formatCurrency(formData.salary)} // Gọi hàm formatCurrency để format số tiền
+                                    className="w-full p-2 border rounded bg-gray-200 text-gray-600 cursor-not-allowed"
+                                    disabled
                                 />
+                            </div>
+                            <div className="flex flex-col gap-2" >
+                                <label className="block text-gray-700">Start Date</label>
+                                <div className="flex items-center border rounded p-2 w-full bg-white text-gray-700">
+                                    <input
+                                        type="text"
+                                        value={formData.start_date ? dayjs(formData.start_date).format("YYYY-MM-DD") : ""}
+                                        readOnly
+                                        className="w-full bg-transparent outline-none"
+                                        disabled={true}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowStartCalendar((prev) => !prev)}
+                                        className="ml-2 text-gray-600"
+                                        disabled={true}
+                                    >
+                                        📅
+                                    </button>
+                                </div>
+                                {showStartCalendar && (
+                                    <div className="absolute top-full left-0 z-10 bg-white shadow-lg rounded mt-1">
+                                        <Calendar
+                                            fullscreen={false}
+                                            onSelect={(date) => {
+                                                handleStartDateChange(date);
+                                                setShowStartCalendar(false);
+                                            }}
+                                            value={formData.start_date ? dayjs(formData.start_date) : undefined}
+
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                            <div className="flex flex-col gap-2">
+                                <label className="block text-gray-700">End Date</label>
+                                <div className="relative text-gray-700">
+                                    <input
+                                        type="text"
+                                        value={formData.end_date ? dayjs(formData.end_date).format("YYYY-MM-DD") : ""}
+                                        readOnly
+                                        className="w-full p-2 border rounded bg-white cursor-pointer"
+                                        onClick={() => setShowEndCalendar(!showEndCalendar)}
+                                        disabled={true}
+                                    />
+                                    <button
+                                        className="absolute right-3 top-2 cursor-pointer"
+                                        onClick={() => setShowEndCalendar(!showEndCalendar)}
+                                        disabled={true}
+                                    >
+                                        📅
+                                    </button>
+                                    {showEndCalendar && (
+                                        <div className="absolute top-full left-0 z-10 bg-white shadow-lg rounded border p-2">
+                                            <Calendar
+                                                fullscreen={false}
+                                                onSelect={handleEndDateChange}
+                                                value={formData.end_date ? dayjs(formData.end_date) : undefined}
+                                            />
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                             <div className="col-span-2 flex justify-start mt-4">
-                                <button
-                                    type="submit"
-                                    className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600"
-                                >
+                                <button type="submit" className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">
                                     Update
                                 </button>
                             </div>

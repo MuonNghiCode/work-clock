@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Form, Input, Tag } from 'antd';
+import { Form, Tag } from 'antd';
 import EditRequestModal from '../../components/RequestComponents/EditRequestModal/EditRequestModal';
 import RequestApprovalModal from '../../components/RequestComponents/RequestApprovalModal/RequestApprovalModal';
 import CancelRequestModal from '../../components/RequestComponents/CancelRequestModal/CancelRequestModal';
@@ -8,12 +8,11 @@ import { getClaimerSearch, updateClaimStatus } from '../../services/claimService
 import { ClaimItem, SearchCondition, PageInfoRequest } from '../../types/ClaimType';
 import { ResponseModel } from '../../models/ResponseModel';
 import { debounce } from 'lodash';
-import { GetProps } from 'antd/es/_util/type';
 import { CheckOutlined } from "@ant-design/icons";
 import { toast } from 'react-toastify';
-
-type SearchProps = GetProps<typeof Input.Search>;
-const { Search } = Input;
+import { Search } from 'lucide-react';
+import AOS from "aos"; // Thêm import AOS
+import "aos/dist/aos.css"; // Thêm import CSS của AOS
 
 interface ClaimRequest {
   key: string;
@@ -42,6 +41,13 @@ const RequestPage: React.FC = () => {
   const [apiData, setApiData] = useState<ClaimRequest[]>([]);
   const [totalItems, setTotalItems] = useState(0);
   const [loading, setLoading] = useState(false);
+
+  // Khởi tạo AOS
+  useEffect(() => {
+    AOS.init({
+      once: false, // Giống như trong FinanceDashboard
+    });
+  }, []);
 
   const mapClaimToRequest = (item: ClaimItem): ClaimRequest => ({
     key: item._id,
@@ -94,10 +100,6 @@ const RequestPage: React.FC = () => {
     }, 1000),
     []
   );
-
-  const onSearch: SearchProps['onSearch'] = (value) => {
-    handleSearch(value);
-  };
 
   useEffect(() => {
     fetchClaims();
@@ -191,7 +193,6 @@ const RequestPage: React.FC = () => {
     setApprovingRecord(null);
   };
 
-  // Thêm hàm xử lý hủy yêu cầu
   const handleCancelRequest = async (record: ClaimRequest) => {
     setLoading(true);
     try {
@@ -216,9 +217,19 @@ const RequestPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 bg-orange-100 shadow-md rounded-lg">
-      <h1 className="text-3xl font-bold text-gray-800 mb-4">Claim Request Management</h1>
-      <div className="flex justify-between items-center mb-4">
+    <div className="p-6 rounded-lg">
+      <h1
+        className="text-3xl font-bold text-gray-800 mb-4"
+        data-aos="fade-down"
+        data-aos-duration="1000"
+      >
+        Claim Request Management
+      </h1>
+      <div
+        className="flex justify-between items-center mb-4"
+        data-aos="fade-down"
+        data-aos-duration="1000"
+      >
         <div>
           {["All", "Draft", "Pending Approval", "Approved", "Rejected", "Canceled", "Paid"].map((status) => (
             <Tag
@@ -231,25 +242,28 @@ const RequestPage: React.FC = () => {
             </Tag>
           ))}
         </div>
-        <div className="w-[250px] height-[48px] overflow-hidden rounded-full border-[1px] border-gray-300 bg-white !font-squada">
-          <Search
+        <div className="relative w-[300px]">
+          <input
+            type="text"
             placeholder="Search claim name"
-            onSearch={onSearch}
+            className="w-full px-4 py-2 border rounded-full pr-10 font-squada"
             onChange={(e) => handleSearch(e.target.value)}
-            style={{ width: 250 }}
-            size="large"
-            className="custom-search pl-1"
-            variant="borderless"
+          />
+          <Search
+            className="absolute right-3 top-2.5 text-gray-400"
+            size={20}
           />
         </div>
       </div>
-      <TableRequest
-        apiData={apiData}
-        totalItems={totalItems}
-        loading={loading}
-        pagination={{ currentPage, pageSize, onPageChange: handlePageChange }}
-        actions={{ onEdit: handleEdit, onDelete: handleDelete, onRequestApproval: handleRequestApproval, onCancel: handleCancelRequest }}
-      />
+      <div data-aos="fade-up" data-aos-duration="1000">
+        <TableRequest
+          apiData={apiData}
+          totalItems={totalItems}
+          loading={loading}
+          pagination={{ currentPage, pageSize, onPageChange: handlePageChange }}
+          actions={{ onEdit: handleEdit, onDelete: handleDelete, onRequestApproval: handleRequestApproval, onCancel: handleCancelRequest }}
+        />
+      </div>
       <EditRequestModal
         isOpen={isEditModalOpen}
         onCancel={handleEditModalCancel}

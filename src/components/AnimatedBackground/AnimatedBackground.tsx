@@ -1,44 +1,57 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const AnimatedBackground: React.FC = () => {
-  const blobRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const blobRefs = useRef<(HTMLDivElement | null)[]>(new Array(8).fill(null)); // Initialize with 8 slots
+  const [isMounted, setIsMounted] = useState(false); // Track when DOM is ready
   const initialPositions = [
-    { x: -4, y: 0 },
-    { x: -4, y: 0 },
-    { x: 20, y: -8 },
-    { x: 20, y: -8 },
+    { x: -4, y: 0 },    // Blob 0
+    { x: -4, y: 0 },    // Blob 1
+    { x: 20, y: -8 },   // Blob 2
+    { x: 20, y: -8 },   // Blob 3
+    { x: 0, y: 10 },    // Blob 4
+    { x: 10, y: 20 },   // Blob 5
+    { x: -10, y: -10 }, // Blob 6
+    { x: 5, y: -5 },    // Blob 7
   ];
 
   useEffect(() => {
+    // Mark component as mounted once refs are assigned
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return; // Wait until DOM is ready
+
     let requestId: number;
 
     const handleScroll = () => {
       const newScroll = window.pageYOffset;
 
-      blobRefs.current?.forEach((blob, index) => {
-        const initialPos = initialPositions[index];
+      blobRefs.current.forEach((blob, index) => {
+        if (!blob) return; // Skip if ref is null (e.g., hidden elements)
 
-        if (blob) {
-          const xOffset = Math.sin(newScroll / 100 + index * 0.5) * 340;
-          const yOffset = Math.cos(newScroll / 100 + index * 0.5) * 40;
+        const initialPos = initialPositions[index] || { x: 0, y: 0 };
+        const xOffset = Math.sin(newScroll / 100 + index * 0.5) * 340;
+        const yOffset = Math.cos(newScroll / 100 + index * 0.5) * 40;
 
-          const x = initialPos.x + xOffset;
-          const y = initialPos.y + yOffset;
+        const x = initialPos.x + xOffset;
+        const y = initialPos.y + yOffset;
 
-          blob.style.transform = `translate(${x}px, ${y}px)`;
-          blob.style.transition = "transform 1.4s ease-out";
-        }
+        blob.style.transform = `translate(${x}px, ${y}px)`;
+        blob.style.transition = "transform 1.4s ease-out";
       });
 
       requestId = requestAnimationFrame(handleScroll);
     };
 
     window.addEventListener("scroll", handleScroll);
+    handleScroll(); // Initial call to set positions
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
       cancelAnimationFrame(requestId);
     };
-  }, []);
+  }, [isMounted]);
 
   return (
     <div className="fixed inset-0 pointer-events-none z-0">
@@ -79,7 +92,6 @@ const AnimatedBackground: React.FC = () => {
           className="absolute bottom-5 right-[5%] w-80 h-80 bg-white rounded-full mix-blend-multiply filter blur-[128px] opacity-30 md:opacity-15 hidden sm:block"
         ></div>
       </div>
-      {/* <div className="absolute inset-0 bg-[linear-gradient(to_right,#ff914d10_2px,transparent_2px),linear-gradient(to_bottom,#ff914d10_2px,transparent_2px)] bg-[size:24px_24px]"></div>a */}
     </div>
   );
 };

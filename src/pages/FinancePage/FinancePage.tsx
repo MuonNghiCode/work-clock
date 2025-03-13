@@ -48,7 +48,6 @@ interface FinanceData {
 
 const FinancePage: React.FC = () => {
   const [dataFinance, setDataFinance] = useState<FinanceData[]>([]);
-  const [useApiData, setUseApiData] = useState(true);
   const [dateRange, setDateRange] = useState<Range[]>([
     {
       startDate: undefined,
@@ -90,72 +89,38 @@ const FinancePage: React.FC = () => {
   }, []);
 
   const fetchData = async () => {
-    if (useApiData) {
-      const request = {
-        searchCondition: {
-          keyword: searchQuery,
-          claim_status: "",
-          claim_start_date: "",
-          claim_end_date: "",
-          is_delete: false,
-        },
-        pageInfo: {
-          pageNum: currentPage,
-          pageSize: pageSize,
-        },
-      };
+    const request = {
+      searchCondition: {
+        keyword: searchQuery,
+        claim_status: "",
+        claim_start_date: "",
+        claim_end_date: "",
+        is_delete: false,
+      },
+      pageInfo: {
+        pageNum: currentPage,
+        pageSize: pageSize,
+      },
+    };
 
-      try {
-        const response = await getFinanceData(request);
-        console.log("API Response:", response);
-        if (response.success && response.data?.pageData) {
-          console.log("Page Data:", response.data.pageData);
-          setDataFinance(response.data.pageData);
-          setOriginalData(response.data.pageData);
-        } else {
-          console.error("Invalid data or response:", response);
-        }
-      } catch (error) {
-        console.error("Error fetching finance data:", error);
+    try {
+      const response = await getFinanceData(request);
+      console.log("API Response:", response);
+      if (response.success && response.data?.pageData) {
+        console.log("Page Data:", response.data.pageData);
+        setDataFinance(response.data.pageData);
+        setOriginalData(response.data.pageData);
+      } else {
+        console.error("Invalid data or response:", response);
       }
-    } else {
-      const staticData: FinanceData[] = [
-        {
-          _id: "1",
-          staff_name: "John Doe",
-          staff_email: "john@example.com",
-          employee_info: {
-            account: "123",
-            full_name: "John Doe",
-            department_name: "Finance",
-            salary: 50000,
-            start_date: "2023-01-01",
-          },
-          approval_info: {
-            user_name: "Jane Smith",
-            email: "jane@example.com",
-            role_code: "manager",
-          },
-          project_info: {
-            project_name: "Project X",
-            project_code: "PX123",
-            project_department: "Development",
-          },
-          claim_name: "Travel",
-          claim_start_date: "2023-01-10",
-          claim_end_date: "2023-01-15",
-          claim_status: "Pending",
-          created_at: "2023-01-05",
-          total_work_time: 5,
-        },
-      ];
-      setDataFinance(staticData);
+    } catch (error) {
+      console.error("Error fetching finance data:", error);
     }
   };
 
   useEffect(() => {
     fetchData();
-  }, [currentPage, pageSize, searchQuery, useApiData]);
+  }, [currentPage, pageSize, searchQuery]);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -173,11 +138,6 @@ const FinancePage: React.FC = () => {
       once: false,
     });
   }, []);
-
-  const toggleDataSource = () => {
-    setUseApiData((prev) => !prev);
-    console.log("Toggled useApiData to:", !useApiData);
-  };
 
   const toggleDatePicker = () => {
     setIsDatePickerVisible(!isDatePickerVisible);
@@ -275,12 +235,9 @@ const FinancePage: React.FC = () => {
   return (
     <div className="!mx-auto !p-1">
       <h1 className="text-[40px] font-bold mb-2">Finance Management</h1>
-      <button onClick={toggleDataSource}>
-        {useApiData ? "Use Static Data" : "Use API Data"}
-      </button>
       <div className="flex flex-row justify-between items-center py-2">
         <div className="flex gap-4">
-          <div className="flex items-center space-x-2 bg-[#ff8a65] rounded-full w-20px h-10 p-2 px-4 relative">
+          <div className="flex items-center space-x-2 border border-black text-black rounded-full w-20px h-10 p-2 px-4 relative">
             <span className="p-2">
               <FaCalendarAlt />
             </span>
@@ -333,7 +290,7 @@ const FinancePage: React.FC = () => {
           </div>
           <button
             onClick={() => handleDownload()}
-            className="flex items-center justify-center bg-[#ff8a65] rounded-full gap-2 w-25 h-10 cursor-pointer"
+            className="flex items-center justify-center border border-black  rounded-full gap-2 w-25 h-10 cursor-pointer text-black"
           >
             <span className="hidden sm:inline">Export</span>
             <span>
@@ -342,7 +299,7 @@ const FinancePage: React.FC = () => {
           </button>
         </div>
         <div
-          className="flex items-center space-x-2 bg-white w-70 sm:w-1/3 md:w-70 mb-3 md:mb-0 h-10 rounded-xl px-2 transition-all"
+          className="flex items-center space-x-2 border border-black w-70 sm:w-1/3 md:w-70 mb-3 md:mb-0 h-10 rounded-xl px-2 transition-all"
           data-aos="fade-out"
           data-aos-duration="1000"
         >
@@ -351,7 +308,7 @@ const FinancePage: React.FC = () => {
             type="text"
             name="search"
             placeholder="Type to search..."
-            className="w-full border-transparent text-gray-400 outline-none p-2"
+            className="w-full border-transparent text-black outline-none p-2"
             defaultValue={searchQuery}
             onChange={(e) => debouncedSearch(e.target.value)}
           />
@@ -393,18 +350,18 @@ const FinancePage: React.FC = () => {
               </td>
               <td className="action px-4 py-4 rounded-r-lg flex justify-center space-x-1">
                 <button
-                  className="flex items-center justify-center h-10 w-28 bg-green-500 text-white rounded-lg shadow-md cursor-pointer"
+                  className="flex items-center justify-center h-10 w-20 text-green-300 rounded-lg cursor-pointer hover:text-green-600 hover:font-bold hover:scale-105 transition-colors duration-200"
                   onClick={() => handlePay(item)}
                 >
                   <Icons.Dollar className="mr-1" />
-                  <span className="hidden sm:inline">Pay</span>
+                  <span className="hidden sm:inline"></span>
                 </button>
                 <button
-                  className="flex items-center justify-center h-10 w-28 bg-orange-500 text-white rounded-lg shadow-md cursor-pointer"
+                  className="flex items-center justify-center h-10 w-20 text-orange-300 rounded-lg cursor-pointer hover:text-orange-600 hover:font-bold hover:scale-105 transition-colors duration-200"
                   onClick={() => handleDownload([item])}
                 >
                   <FaDownload className="mr-1" />
-                  <span className="hidden sm:inline">Download</span>
+                  <span className="hidden sm:inline"></span>
                 </button>
               </td>
             </tr>

@@ -1,13 +1,14 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Button, Pagination } from "antd";
 import { ProjectInfo } from "../../../types/Project";
-import ConfirmModal from "../../ConfirmModal/ConfirmModal";
 import Icons from "../../icon";
 // import EditProject from "../EditProject/EditProject";
 import ProjectDetail from "../../ModalProjectDetail/ProjectDetail";
-import { getAllProject, PageInfo, SearchConditionProject } from "../../../services/projectService";
+import { deleteProject, getAllProject, PageInfo, SearchConditionProject } from "../../../services/projectService";
 import ModalAddProject from "../ModalAddProject/ModalAddProject";
 import { debounce } from "lodash";
+import DeleteConfirmModal from "../../DeleteConfirmModal/DeleteConfirmModal";
+import { toast } from "react-toastify";
 
 
 const TableProject: React.FC = ({ }) => {
@@ -16,7 +17,7 @@ const TableProject: React.FC = ({ }) => {
   const [pageSize, setPageSize] = useState(5);
   const [showProjectDetail, setShowProjectDetail] = useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
-  const [message, setMessage] = useState<string>("");
+  // const [message, setMessage] = useState<string>("");
   const [selectedProject, setSelectedProject] = useState<ProjectInfo | null>(
   );
   // const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -103,19 +104,6 @@ const TableProject: React.FC = ({ }) => {
     );
   };
 
-  const handleDeleteProject = (projectId: string | number) => {
-    console.log("Deleting project with id:", projectId);
-    // Sử dụng callback để đảm bảo có state mới nhất
-    setProjects((prevProjects) => {
-      console.log("Previous projects:", prevProjects);
-      const newProjects = prevProjects.filter(
-        (project) => project._id !== projectId
-      );
-      console.log("New projects:", newProjects);
-      return newProjects;
-    });
-  };
-
   const handleShowProjectDetail = (project: ProjectInfo) => {
     setSelectedProject(project);
     setShowProjectDetail(true);
@@ -123,20 +111,19 @@ const TableProject: React.FC = ({ }) => {
 
 
   const handleDelete = (project: ProjectInfo) => {
-    console.log("Deleting project:", project);
     setSelectedProject(project);
-    setMessage(
-      `Are you sure you want to delete project "${project.project_name}"?`
-    );
     setShowConfirmModal(true);
   };
 
-  const handleConfirmDelete = () => {
-    console.log("Confirming delete for project:", selectedProject);
+  const handleConfirmDelete = async () => {
     if (selectedProject?._id) {
-      handleDeleteProject(selectedProject._id);
+      const response = await deleteProject(selectedProject._id)
+      if(response.success){
+        toast.success(`Delete Project ${selectedProject.project_name}`)
+      }
       setShowConfirmModal(false);
       setSelectedProject(null);
+      fetchProjects()
     }
   };
 
@@ -238,7 +225,7 @@ const TableProject: React.FC = ({ }) => {
               >
                 <div className="w-full flex justify-center gap-2 items-center space-x-2">
                   <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
-                    <Button className="!bg-none !border-none">
+                    <Button className="!bg-transparent !border-none">
                       <span className="hover:scale-110">
                         <Icons.Edit
                           color="blue"
@@ -252,7 +239,18 @@ const TableProject: React.FC = ({ }) => {
                     </Button>
                   </div>
                   <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
-                    <Button className="!bg-none !border-none">
+                    <Button className="!bg-transparent !border-none">
+                      <span className="hover:scale-110">
+                        <Icons.Detail
+                          color="#4CAF50"
+                          onClick={() => handleShowProjectDetail(item)}
+                          className="w-5 h-5"
+                        />
+                      </span>
+                    </Button>
+                  </div>
+                  <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
+                    <Button className="!bg-transparent !border-none ">
                       <span className="hover:scale-110">
                         <Icons.Delete
                           color="red"
@@ -260,18 +258,7 @@ const TableProject: React.FC = ({ }) => {
                             e.stopPropagation();
                             handleDelete(item);
                           }}
-                          className="w-5 h-5"
-                        />
-                      </span>
-                    </Button>
-                  </div>
-                  <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
-                    <Button className="!bg-none !border-none">
-                      <span className="hover:scale-110">
-                        <Icons.Detail
-                          color="orange"
-                          onClick={() => handleShowProjectDetail(item)}
-                          className="w-5 h-5"
+                          className="w-5 h-5 bg-transparent"
                         />
                       </span>
                     </Button>
@@ -304,14 +291,14 @@ const TableProject: React.FC = ({ }) => {
           users={users}
         />
       )}
-      <ConfirmModal
-        modalProps={{
-          visible: showConfirmModal,
-          onClose: handleClose,
-          onConfirm: handleConfirmDelete
-        }}
-        messageProps={{ message, id: selectedProject?._id || "" }}
+      {selectedProject && (
+      <DeleteConfirmModal
+      onClose={handleClose}
+      onConfirm={handleConfirmDelete}
+      project={selectedProject}
+      visible={showConfirmModal}
       />
+      )}
       {/* {selectedProject && (
         <EditProject
           project={selectedProject}
