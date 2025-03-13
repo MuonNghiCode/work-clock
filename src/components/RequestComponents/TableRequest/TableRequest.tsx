@@ -19,7 +19,7 @@ interface TableRequestProps {
   apiData: ClaimRequest[];
   totalItems: number;
   loading: boolean;
-  pagination: { currentPage: number; pageSize: number; onPageChange: (page: number, pageSize?: number) => void };
+  pagination?: { currentPage: number; pageSize: number; onPageChange: (page: number, pageSize?: number) => void };
   actions: { 
     onEdit: (record: ClaimRequest) => void; 
     onDelete: (record: ClaimRequest) => void; 
@@ -37,8 +37,8 @@ const TableRequest: React.FC<TableRequestProps> = ({
 }) => {
   const [selectedClaim, setSelectedClaim] = useState<ClaimRequest | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false); // State cho modal Cancel
-  const [cancelingRecord, setCancelingRecord] = useState<ClaimRequest | null>(null); // Record đang hủy
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+  const [cancelingRecord, setCancelingRecord] = useState<ClaimRequest | null>(null);
 
   const handleRowClick = (record: ClaimRequest) => {
     setSelectedClaim(apiData.find(item => item.key === record.key) || null);
@@ -57,7 +57,7 @@ const TableRequest: React.FC<TableRequestProps> = ({
 
   const handleCancelConfirm = () => {
     if (cancelingRecord) {
-      actions.onCancel(cancelingRecord); // Gọi hàm onCancel từ props
+      actions.onCancel(cancelingRecord);
     }
     setIsCancelModalOpen(false);
     setCancelingRecord(null);
@@ -163,17 +163,20 @@ const TableRequest: React.FC<TableRequestProps> = ({
             </tbody>
           </table>
 
-          <div className="flex justify-center mt-4">
-            <Pagination
-              current={pagination.currentPage}
-              pageSize={pagination.pageSize}
-              total={totalItems}
-              onChange={pagination.onPageChange}
-              showSizeChanger
-              pageSizeOptions={['5', '10', '20', '50']}
-              disabled={loading}
-            />
-          </div>
+          {/* Chỉ hiển thị phân trang khi pagination được truyền vào (tức là khi có dữ liệu) */}
+          {pagination && (
+            <div className="flex justify-center mt-4">
+              <Pagination
+                current={pagination.currentPage}
+                pageSize={pagination.pageSize}
+                total={totalItems}
+                onChange={pagination.onPageChange}
+                showSizeChanger
+                pageSizeOptions={['5', '10', '20', '50']}
+                disabled={loading}
+              />
+            </div>
+          )}
         </div>
 
         <Modal
@@ -187,7 +190,6 @@ const TableRequest: React.FC<TableRequestProps> = ({
         >
           {selectedClaim ? (
             <div className="p-8 bg-gray-50 rounded-xl">
-              {/* Giữ nguyên phần hiển thị chi tiết claim */}
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-3xl font-bold text-[#FF9447]">
                   Claim Details
