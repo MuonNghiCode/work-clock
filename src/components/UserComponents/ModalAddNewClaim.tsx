@@ -1,17 +1,19 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Modal, Form, Input, Space, DatePicker, Select, Spin } from "antd";
-import { ClaimRequest } from "../../types/ClaimRequest";
+// import { ClaimRequest } from "../../types/ClaimRequest";
 import { ProjectInfo } from "../../types/Project";
 import { getAllProject } from "../../services/projectService";
 import { getUsers } from "../../services/userAuth";
 import { debounce } from "lodash";
+import { createClaimRequest } from "../../services/claimService";
+import { toast } from "react-toastify";
 
 interface ModalAddNewClaimProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-interface ClaimRequestDataField {
+export interface ClaimRequestDataField {
   project_id: string;
   approval_id: string;
   claim_name: string;
@@ -31,7 +33,7 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
     { label: string; value: string }[]
   >([]);
   const [fetching, setFetching] = useState(false);
-  let userId = JSON.parse(localStorage.getItem("user") || "{}")._id;
+  const userId = JSON.parse(localStorage.getItem("user") || "{}")._id;
 
   const fetchProjects = async () => {
     try {
@@ -96,7 +98,7 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
     });
 
   const handleClaimRequestDataChange = (
-    key: keyof ClaimRequest,
+    key: keyof ClaimRequestDataField,
     value: any
   ) => {
     setClaimRequestData((prevData) => ({
@@ -107,8 +109,20 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
     }));
   };
 
-  const onFinish = () => {
-    console.log(claimRequestData);
+  const onFinish = async () => {
+    form.validateFields().then(async (values) => {
+      const formData: ClaimRequestDataField = {
+        ...claimRequestData,
+        approval_id: values.approval_id.value,
+        project_id: values.project_id,
+      };
+      const response = await createClaimRequest(formData);
+      if (response.success) {
+        toast.success("Claim request submitted successfully");
+        form.resetFields();
+        onClose();
+      }
+    });
   };
 
   return (
@@ -128,8 +142,12 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
         size="large"
         initialValues={{ claimRequestData }}
       >
-        <Form.Item label={<strong>Project Name</strong>}>
-          <Select>
+        <Form.Item label={<strong>Project Name</strong>} name={"project_id"}>
+          <Select
+            onChange={(value) =>
+              handleClaimRequestDataChange("project_id", value)
+            }
+          >
             {projects &&
               projects.map((project, index) => (
                 <Select.Option key={index} value={project._id}>
@@ -138,7 +156,7 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
               ))}
           </Select>
         </Form.Item>
-        <Form.Item label={<strong>Approval Name</strong>}>
+        <Form.Item label={<strong>Approval Name</strong>} name="approval_id">
           <Select
             showSearch
             labelInValue
@@ -148,6 +166,9 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
             onSearch={debounceFetcher}
             options={approvals}
             style={{ width: "100%" }}
+            onChange={(value) =>
+              handleClaimRequestDataChange("approval_id", value.value)
+            }
           />
         </Form.Item>
         <Space
@@ -194,6 +215,14 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
             value={claimRequestData.remark}
             onChange={(e) =>
               handleClaimRequestDataChange("remark", e.target.value)
+            }
+          />
+        </Form.Item>
+        <Form.Item label={<strong>Claim Name</strong>} name="claim_name">
+          <Input
+            value={claimRequestData.claim_name}
+            onChange={(e) =>
+              handleClaimRequestDataChange("claim_name", e.target.value)
             }
           />
         </Form.Item>
