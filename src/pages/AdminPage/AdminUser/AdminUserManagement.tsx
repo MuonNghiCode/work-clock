@@ -1159,7 +1159,7 @@ const AdminUserManagement: React.FC = () => {
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
                 <div className="flex items-center gap-4">
-                  <h2 className="text-2xl font-bold text-[#FF9447]">
+                  <h2 className="text-2xl font-bold text-gradient-color">
                     {activeEditTab === "account"
                       ? "Edit Account"
                       : "Edit Information"}
