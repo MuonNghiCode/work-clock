@@ -10,7 +10,6 @@ interface DataProps {
 }
 
 const ApprovalChart: React.FC<DataProps> = ({ data }) => {
-
     const statusCounts = data.reduce((acc, request) => {
         acc[request.claim_status] = (acc[request.claim_status] || 0) + 1;
         return acc;
@@ -27,14 +26,14 @@ const ApprovalChart: React.FC<DataProps> = ({ data }) => {
                     statusCounts['Rejected'] || 0,
                 ],
                 backgroundColor: [
-                    'rgba(192, 192, 192, 0.2)', // gray
-                    'rgba(75, 192, 75, 0.2)', // green
-                    'rgba(192, 75, 75, 0.2)', // red
+                    'rgba(192, 192, 192, 0.2)',
+                    'rgba(75, 192, 75, 0.2)',
+                    'rgba(192, 75, 75, 0.2)',
                 ],
                 borderColor: [
-                    'rgba(192, 192, 192, 1)', // gray
-                    'rgba(75, 192, 75, 1)', // green
-                    'rgba(192, 75, 75, 1)', // red
+                    'rgba(192, 192, 192, 1)',
+                    'rgba(75, 192, 75, 1)',
+                    'rgba(192, 75, 75, 1)',
                 ],
                 borderWidth: 1,
             },
