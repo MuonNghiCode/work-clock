@@ -28,7 +28,7 @@ export interface ClaimRequestDataField {
   claim_name: string;
   claim_start_date: string;
   claim_end_date: string;
-  totalNoOfHours: number;
+  total_work_time: number;
   remark: string;
 }
 
@@ -104,7 +104,7 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
       claim_name: "",
       claim_start_date: "",
       claim_end_date: "",
-      totalNoOfHours: 0,
+      total_work_time: 0,
       remark: "",
     });
 
@@ -270,18 +270,18 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
                   Total Working Hours
                 </strong>
               }
-              name="totalNoOfHours"
+              name="total_work_time"
               rules={[
                 { required: true, message: "Please enter total working hours" },
               ]}
             >
               <Input
                 type="number"
-                value={claimRequestData.totalNoOfHours}
+                value={claimRequestData.total_work_time}
                 className="!font-squada"
                 onChange={(e) =>
                   handleClaimRequestDataChange(
-                    "totalNoOfHours",
+                    "total_work_time",
                     Number(e.target.value)
                   )
                 }
