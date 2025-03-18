@@ -70,7 +70,7 @@ const TableRequest: React.FC<TableRequestProps> = ({
       });
       if (response.success) {
         // Sort logs by created_at in descending order (newest first)
-        const sortedLogs = [...response.data.pageData].sort((a, b) => 
+        const sortedLogs = [...response.data.pageData].sort((a, b) =>
           new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
         );
         setClaimLogs(sortedLogs);
@@ -412,16 +412,16 @@ const TableRequest: React.FC<TableRequestProps> = ({
                         <span className="w-2/3">
                           <span
                             className={`px-3 py-1 rounded-full text-sm font-semibold ${selectedClaim.status === "Approved"
-                                ? "bg-green-50 text-green-600"
-                                : selectedClaim.status === "Rejected"
-                                  ? "bg-red-50 text-red-600"
-                                  : selectedClaim.status === "Pending Approval"
-                                    ? "bg-yellow-50 text-yellow-600"
-                                    : selectedClaim.status === "Canceled"
-                                      ? "bg-purple-50 text-purple-600"
-                                      : selectedClaim.status === "Paid"
-                                        ? "bg-blue-50 text-blue-600"
-                                        : "bg-gray-50 text-gray-600"
+                              ? "bg-green-50 text-green-600"
+                              : selectedClaim.status === "Rejected"
+                                ? "bg-red-50 text-red-600"
+                                : selectedClaim.status === "Pending Approval"
+                                  ? "bg-yellow-50 text-yellow-600"
+                                  : selectedClaim.status === "Canceled"
+                                    ? "bg-purple-50 text-purple-600"
+                                    : selectedClaim.status === "Paid"
+                                      ? "bg-blue-50 text-blue-600"
+                                      : "bg-gray-50 text-gray-600"
                               }`}
                           >
                             {selectedClaim.status}
@@ -432,7 +432,7 @@ const TableRequest: React.FC<TableRequestProps> = ({
                   </div>
                 </div>
               </div>
-              
+
               {/* Add Claim Log Section */}
               <div className="mt-8">
                 <h4 className="text-lg font-bold text-[#FF9447] mb-4 flex items-center">
@@ -457,25 +457,23 @@ const TableRequest: React.FC<TableRequestProps> = ({
                             </div>
                           </div>
                           <div className="flex items-center space-x-2">
-                            <span className={`px-2 py-1 rounded text-sm ${
-                              log.old_status === "Approved" ? "bg-green-100 text-green-600" :
-                              log.old_status === "Rejected" ? "bg-red-100 text-red-600" :
-                              log.old_status === "Pending Approval" ? "bg-yellow-100 text-yellow-600" :
-                              log.old_status === "Canceled" ? "bg-purple-100 text-purple-600" :
-                              log.old_status === "Paid" ? "bg-blue-100 text-blue-600" :
-                              "bg-gray-100 text-gray-600"
-                            }`}>
+                            <span className={`px-2 py-1 rounded text-sm ${log.old_status === "Approved" ? "bg-green-100 text-green-600" :
+                                log.old_status === "Rejected" ? "bg-red-100 text-red-600" :
+                                  log.old_status === "Pending Approval" ? "bg-yellow-100 text-yellow-600" :
+                                    log.old_status === "Canceled" ? "bg-purple-100 text-purple-600" :
+                                      log.old_status === "Paid" ? "bg-blue-100 text-blue-600" :
+                                        "bg-gray-100 text-gray-600"
+                              }`}>
                               {log.old_status}
                             </span>
                             <span className="text-gray-400">→</span>
-                            <span className={`px-2 py-1 rounded text-sm ${
-                              log.new_status === "Approved" ? "bg-green-100 text-green-600" :
-                              log.new_status === "Rejected" ? "bg-red-100 text-red-600" :
-                              log.new_status === "Pending Approval" ? "bg-yellow-100 text-yellow-600" :
-                              log.new_status === "Canceled" ? "bg-purple-100 text-purple-600" :
-                              log.new_status === "Paid" ? "bg-blue-100 text-blue-600" :
-                              "bg-gray-100 text-gray-600"
-                            }`}>
+                            <span className={`px-2 py-1 rounded text-sm ${log.new_status === "Approved" ? "bg-green-100 text-green-600" :
+                                log.new_status === "Rejected" ? "bg-red-100 text-red-600" :
+                                  log.new_status === "Pending Approval" ? "bg-yellow-100 text-yellow-600" :
+                                    log.new_status === "Canceled" ? "bg-purple-100 text-purple-600" :
+                                      log.new_status === "Paid" ? "bg-blue-100 text-blue-600" :
+                                        "bg-gray-100 text-gray-600"
+                              }`}>
                               {log.new_status}
                             </span>
                           </div>

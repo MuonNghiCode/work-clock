@@ -44,7 +44,7 @@ const Contact: React.FC = () => {
       phone: formData.get("phone"),
       message: formData.get("message"),
       cc_email:
-        "tylum123@gmail.com, meme91men@gmail.com, phamdanh0305@gmail.com, miruhinana@gmail.com, haitrilehuu@gmail.com, kietvippro123009@gmail.com, ",
+        "tylum123@gmail.com, meme91men@gmail.com, phamdanh0305@gmail.com, miruhinana@gmail.com, haitrilehuu@gmail.com, kietvippro123009@gmail.com, nguyenducthinh06092004@gmail.com",
     };
 
     emailjs
