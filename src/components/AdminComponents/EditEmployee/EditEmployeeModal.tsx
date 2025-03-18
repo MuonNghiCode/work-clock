@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import axiosInstance from "../../../config/axiosUser";
 import ImageUploader from "../../ImageUploader/ImageUploader";
 import { EmployeeInfo } from "../../../types/Employee";
-import { Form, Input} from "antd";
+import { Form, Input, Select} from "antd";
 
 // export interface Employee {
 //   _id: string;
@@ -61,6 +61,7 @@ const formatDate = (dateString: string | null | undefined): string => {
   if (!dateString) return "";
   return new Date(dateString).toISOString().split("T")[0];
 };
+const { Option } = Select;
 
 const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
   isOpen,
@@ -337,6 +338,8 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                         rules={[
                           { required: true, message: "Full Name is required" },
                         ]}
+                        style={{ marginBottom: '16px'  }}
+                        className="block text-sm font-medium text-gray-600 mb-2"
                       ></Form.Item>
                       <Input
                         type="text"
@@ -346,6 +349,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                         }
                       />
                     </div>
+                    
 
                     {/* Phone Employee */}
                     {/* <div>
@@ -729,7 +733,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                         Employment Details
                       </h3>
                       <div className="space-y-4">
-                        <div>
+                        {/* <div>
                           <label className="block text-sm font-medium text-gray-600 mb-2">
                             Job Rank
                           </label>
@@ -751,7 +755,25 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                               ))}
                             </select>
                           )}
-                        </div>
+                        </div> */}
+                        <Form.Item
+                  name="job_rank"
+                  label="Job Rank"
+                  rules={[{ required: true, message: "Job Rank is required" }]}
+                >
+                  <Select
+                    value={formData.job_rank || ""}
+                    onChange={(value) => handleInputChange("job_rank", value)}
+                  >
+                    <Option value="">Select Job Rank</Option>
+                    {getUniqueJobsByTitle(jobs).map((job) => (
+                      <Option key={job._id} value={job.job_rank}>
+                        {job.job_title}
+                      </Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+
                         <div>
                           <label className="block text-sm font-medium text-gray-600 mb-2">
                             Department
@@ -882,7 +904,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#FF9447] text-white rounded hover:bg-[#FF8347]"
+                  className="px-4 py-2 bg-[#FF9447] text-white rounded hover:bg-[#FF8335]"
                   disabled={isSubmitting || isLoading || !!error} // Vô hiệu hóa khi loading hoặc có lỗi
                 >
                   {isSubmitting ? "Saving..." : "Save Changes"}
@@ -892,40 +914,6 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
           </form>
         </div>
       </div>
-      <style>
-        {`
-          input, select {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.375rem;
-          }
-          
-          input:focus, select:focus {
-            border-color: #FF9447;
-            box-shadow: 0 0 0 2px rgba(255, 148, 71, 0.2);
-          }
-          .ant-form-item-required{
-          font-family: 'Squada-One';
-          }
-          .ant-form-item-required::before {
-            display: none !important;
-          }
-          label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #374151;
-            margin-bottom: 0.25rem;
-          }
-          
-          .error-message {
-            color: #ef4444;
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-          }
-        `}
-      </style>
     </div>
   );
 };

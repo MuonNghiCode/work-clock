@@ -173,7 +173,7 @@ const UserManagementAdd: React.FC<UserManagementAddProps> = React.memo(
               <Select.Option value="A004">Member other</Select.Option>
             </Select>
           </Form.Item>
-
+          <hr className="text-gray-400 bg-gray-400 mb-5" />
           <div className="flex justify-end gap-4">
             <button
               type="button"
@@ -185,44 +185,18 @@ const UserManagementAdd: React.FC<UserManagementAddProps> = React.memo(
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-4 py-2 bg-[#FF9447] text-white rounded-md hover:bg-[#FF8335] transition-colors disabled:opacity-50"
+              className="px-4 py-2 bg-brand-gradient text-white rounded-md hover:bg-[#FF8335] transition-colors disabled:opacity-50"
             >
               {isSubmitting ? "Creating..." : "Create User"}
             </button>
           </div>
         </Form>
-
-        <style>
-          {`
-          input, select {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.375rem;
-          }
-          input:focus, select:focus {
-            border-color: #FF9447;
-            box-shadow: 0 0 0 2px rgba(255, 148, 71, 0.2);
-          }
-          .ant-form-item-required::before {
-            display: none !important;
-            font-family: 'Squada-One';
-          }
-          label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #374151;
-            margin-bottom: 0.25rem;
-          }
-          
-          .error-message {
-            color: #ef4444;
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-          }
-        `}
-        </style>
+            <style>
+                {`
+                    
+                `
+                }
+            </style>
       </div>
     );
   }

@@ -52,6 +52,7 @@ const UserManagementEdit: React.FC<UserManagementEditProps> = ({
         initialValues={{ user_name: user.user_name, email: user.email }}
       >
         {/* Username Field */}
+        <div>
         <Form.Item
           label={
             <span>
@@ -76,8 +77,10 @@ const UserManagementEdit: React.FC<UserManagementEditProps> = ({
             style={{ fontFamily: "Squada-One" }}
           />
         </Form.Item>
+        </div>
 
         {/* Email Field */}
+        <div>
         <Form.Item
           name="email"
           label={
@@ -105,6 +108,8 @@ const UserManagementEdit: React.FC<UserManagementEditProps> = ({
             style={{ fontFamily: "Squada-One" }}
           />
         </Form.Item>
+        </div>
+
         <hr className="text-gray-400 bg-gray-400 mb-5" />
         {/* Buttons */}
         <div className="flex justify-end gap-3">
@@ -127,38 +132,7 @@ const UserManagementEdit: React.FC<UserManagementEditProps> = ({
         </div>
       </Form>
 
-      <style>
-        {`
-          input, select {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.375rem;
-          }
-          
-          input:focus, select:focus {
-            border-color: #FF9447;
-            box-shadow: 0 0 0 2px rgba(255, 148, 71, 0.2);
-          }
-          
-          label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #374151;
-            margin-bottom: 0.25rem;
-          }
-          .ant-form-item-required::before {
-            display: none !important;
-            font-family: 'Squada-One';
-          }
-          .error-message {
-            color: #ef4444;
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-          }
-        `}
-      </style>
+
     </div>
   );
 };

@@ -55,7 +55,7 @@ html {
 
 
 .ant-form-item-required{
-  font-family: 'Squada-One';
+  font-family: 'Squada-One ';
   font-weight: bold;
   }
   .ant-form-item-required::before {
