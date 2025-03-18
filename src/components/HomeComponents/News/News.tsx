@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Images from "../../images";
-import ReactMarkdown from "react-markdown";
 import Icons from "../../icon";
 
 const News: React.FC = () => {
