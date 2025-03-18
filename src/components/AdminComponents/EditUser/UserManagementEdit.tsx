@@ -53,70 +53,56 @@ const UserManagementEdit: React.FC<UserManagementEditProps> = ({
       >
         {/* Username Field */}
         <div>
-        <Form.Item
-          label={
-            <span>
-              Username <span className="text-red-600">*</span>
-            </span>
-          }
-          name="user_name"
-          rules={[
-            { required: true, message: "Username is required" },
-            { min: 3, message: "Username must be at least 3 characters" },
-          ]}
-        >
-          <Input
-            suffix={
-              <div
-                style={{ display: "flex", gap: "8px", alignItems: "center" }}
-              >
-                <UserOutlined style={{ color: "black", fontSize: "16px" }} />
-              </div>
+          <Form.Item
+            label={
+              <span>
+                Username <span className="text-red-600">*</span>
+              </span>
             }
-            placeholder="Enter username"
-            style={{ fontFamily: "Squada-One" }}
-          />
-        </Form.Item>
+            name="user_name"
+            rules={[
+              { required: true, message: "Username is required" },
+              { min: 3, message: "Username must be at least 3 characters" },
+            ]}
+          >
+            <Input
+              suffix={<UserOutlined />}
+              placeholder="Enter username"
+            />
+          </Form.Item>
         </div>
 
         {/* Email Field */}
         <div>
-        <Form.Item
-          name="email"
-          label={
-            <span>
-              Email <span className="text-red-600">*</span>
-            </span>
-          }
-          rules={[
-            { required: true, message: "Email is required" },
-            {
-              pattern: /^[a-zA-Z0-9._%+-]+@gmail\.com$/,
-              message: "Only @gmail.com emails allowed",
-            },
-          ]}
-        >
-          <Input
-            suffix={
-              <div
-                style={{ display: "flex", gap: "8px", alignItems: "center" }}
-              >
-                <MailOutlined style={{ color: "black", fontSize: "16px" }} />
-              </div>
+          <Form.Item
+            name="email"
+            label={
+              <span>
+                Email <span className="text-red-600">*</span>
+              </span>
             }
-            placeholder="Enter email address"
-            style={{ fontFamily: "Squada-One" }}
-          />
-        </Form.Item>
+            rules={[
+              { required: true, message: "Email is required" },
+              {
+                pattern: /^[a-zA-Z0-9._%+-]+@gmail\.com$/,
+                message: "Only @gmail.com emails allowed",
+              },
+            ]}
+          >
+            <Input
+              suffix={<MailOutlined />}
+              placeholder="Enter email address"
+            />
+          </Form.Item>
         </div>
 
         <hr className="text-gray-400 bg-gray-400 mb-5" />
         {/* Buttons */}
-        <div className="flex justify-end gap-3">
+        <div className="edit-form-buttons">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+            className="edit-form-cancel"
           >
             Cancel
           </button>
@@ -125,14 +111,12 @@ const UserManagementEdit: React.FC<UserManagementEditProps> = ({
           </Button> */}
           <button
             type="submit"
-            className="px-4 py-2 bg-brand-gradient text-white rounded-md hover:bg-[#FF8335] transition-colors disabled:opacity-50"
+            className="edit-form-submit"
           >
             Apply Changes
           </button>
         </div>
       </Form>
-
-
     </div>
   );
 };
