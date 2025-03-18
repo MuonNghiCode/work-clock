@@ -16,6 +16,7 @@ const LazyAboutUs = lazy(
 const LazyContactUs = lazy(
   () => import("../../components/HomeComponents/ContactPage/Contact")
 );
+
 const HomePage: React.FC = () => {
   const { ref: carouselRef, inView: isCarouselInView } = useInView({
     threshold: 0.2,
@@ -36,6 +37,7 @@ const HomePage: React.FC = () => {
     threshold: 0.2,
     triggerOnce: false,
   });
+
 
   return (
     <>
@@ -118,6 +120,7 @@ const HomePage: React.FC = () => {
           </motion.div>
         </Suspense>
       </div>
+
       {/* <SplashCursor /> */}
       {/* <ImageUploader /> */}
       <Footer />

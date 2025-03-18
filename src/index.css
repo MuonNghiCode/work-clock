@@ -6,8 +6,10 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  /* min-height: 100vh; */
   font-family: "Squada One", sans-serif;
   cursor: url("/Default.png"), auto;
+  background-color: white;
 }
 
 a,
@@ -54,18 +56,14 @@ html {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
+.ant-form-item-required::before {
+  display: none !important;
+}
 
-.ant-form-item-required{
-  font-family: 'Squada-One';
-  font-weight: bold;
-  }
-  .ant-form-item-required::before {
-    display: none !important;
-  }
-  .ant-form-item{
-    margin-bottom: 0 !important;
-  }
-
+.ant-select-focused .ant-select-selector {
+  border-color: #ff914d !important;
+  box-shadow: 0 0 2px rgba(255, 145, 77, 0.7) !important;
+}
 
 .ant-pagination .ant-pagination-item-active {
   border: 2px solid #ff914d !important;
@@ -73,11 +71,6 @@ html {
 
 .ant-pagination .ant-pagination-item-active a {
   color: #ff914d !important;
-}
-
-.ant-select-focused .ant-select-selector {
-  border-color: #ff914d !important;
-  box-shadow: 0 0 2px rgba(255, 145, 77, 0.7) !important;
 }
 
 .ant-select-dropdown
@@ -93,16 +86,18 @@ html {
     background-color: #ff914d;
   }
   .bg-brand-orange-light {
-    background-color: rgba(255, 145, 77, 0.2);
+    background-color: rgba(255, 145, 77, 0.5);
   }
-  .bg-brand-orange-light-1 {
+  .bg-brand-orange-light-1,
+  .hover\:bg-brand-orange-light-1:hover {
     background-color: rgba(255, 145, 77, 0.1);
   }
   .bg-brand-orange-dark {
     background-color: #d67548;
   }
   .bg-brand-gradient,
-  .bg-brand-grandient {
+  .bg-brand-grandient,
+  .hover\:bg-brand-gradient:hover {
     background: linear-gradient(90deg, #feb78a 0%, #ff914d 100%);
   }
   .border-brand-orange {
@@ -157,7 +152,7 @@ html {
     display: flex;
     flex-direction: column;
   }
-  
+
   .event-time {
     font-weight: bold;
   }
@@ -207,4 +202,97 @@ html {
     border: 2px solid rgba(255, 255, 255, 0.7);
     /* filter: blur(0.5px); */
   }
+}
+
+/* Form Edit Styles */
+.ant-form-vertical {
+  font-family: "Squada One", sans-serif;
+}
+
+.ant-form-item-label > label {
+  font-family: "Squada One", sans-serif !important;
+  font-size: 1.1rem !important;
+  color: #333333 !important;
+  font-weight: 500 !important;
+}
+
+.ant-form-item-label > label .ant-form-item-required {
+  font-family: "Squada One", sans-serif !important;
+}
+
+.ant-form-item-label > label .text-red-600 {
+  color: #ff4d4f !important;
+  margin-left: 4px;
+}
+
+.ant-form-item {
+  margin-bottom: 24px !important;
+}
+
+.ant-input-affix-wrapper {
+  padding: 8px 12px !important;
+  border-radius: 8px !important;
+  border: 2px solid rgba(255, 145, 77, 0.2) !important;
+  background: rgba(255, 255, 255, 0.8) !important;
+  transition: all 0.3s ease !important;
+}
+
+.ant-input-affix-wrapper:hover,
+.ant-input-affix-wrapper:focus {
+  border-color: #ff914d !important;
+  box-shadow: none !important;
+}
+
+.ant-input-affix-wrapper-focused {
+  border-color: #ff914d !important;
+  box-shadow: none !important;
+}
+
+.ant-input-affix-wrapper .ant-input {
+  font-family: "Squada One", sans-serif !important;
+  font-size: 1rem !important;
+  background: transparent !important;
+}
+
+.ant-input-affix-wrapper .anticon {
+  color: #333333 !important;
+  font-size: 16px !important;
+}
+
+/* Edit Form Buttons */
+.edit-form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.edit-form-buttons button {
+  font-family: "Squada One", sans-serif !important;
+  font-size: 1rem;
+  padding: 8px 24px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.edit-form-cancel {
+  color: #666666;
+  background: #f5f5f5;
+  border: none;
+}
+
+.edit-form-cancel:hover {
+  background: #e8e8e8;
+}
+
+.edit-form-submit {
+  color: white;
+  background: linear-gradient(90deg, #ff914d 0%, #feb78a 100%);
+  border: none;
+}
+
+.edit-form-submit:hover {
+  background: linear-gradient(90deg, #feb78a 0%, #ff914d 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 145, 77, 0.3);
 }
