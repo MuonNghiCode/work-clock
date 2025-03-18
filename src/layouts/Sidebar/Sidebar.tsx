@@ -5,6 +5,7 @@ import Icons from "../../components/icon";
 import { NavLink } from "react-router-dom";
 import { toast } from "react-toastify";
 import { logout } from "../../utils/userUtils";
+
 const Sidebar: React.FC = () => {
   let user = localStorage.getItem("user");
   let parseUser = JSON.parse(user || "{}");

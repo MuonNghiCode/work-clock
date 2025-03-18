@@ -169,7 +169,7 @@ const UserDashboardPage = () => {
 
   return (
     <>
-      <div className="flex items-center justify-between w-full">
+      <div className="flex items-center justify-end w-full mb-10">
         <button
           className="bg-[#FFB17A] text-white px-6 py-2 rounded-full hover:bg-[#FF9147] flex items-center gap-2 text-sm"
           onClick={handleOpenModalAddNewClaim}
@@ -178,7 +178,6 @@ const UserDashboardPage = () => {
           Add New Claim
         </button>
       </div>
-
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <StatCard
           icon={<Icons.FormIcon className="text-3xl text-blue-600" />}
@@ -266,7 +265,7 @@ const UserDashboardPage = () => {
                       <div className="request-table-actions flex justify-center gap-2">
                         <Button
                           className="!border-none"
-                          onClick={() => navigate("/user/calendar")}
+                          onClick={() => navigate("/user/request")}
                           title="View Calendar"
                         >
                           <CalendarIcon size={18} color="#FF914D" />
