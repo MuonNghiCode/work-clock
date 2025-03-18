@@ -8,6 +8,7 @@ import {
   ClaimsResponse,
   PageInfoRequest,
   SearchCondition,
+  ClaimLogResponse,
 } from "../types/ClaimType";
 import { ClaimRequestDataField } from "../components/UserComponents/ModalAddNewClaim";
 
@@ -122,6 +123,23 @@ export const createClaimRequest = async (
   const response = await post<ClaimItem>(
     API_CONSTANTS.CLAIMS.CLAIM_DETAIL,
     data
+  );
+  return response;
+};
+
+export const getClaimLog = async (
+  claimId: string,
+  pageInfo: PageInfo
+): Promise<ResponseModel<ClaimLogResponse>> => {
+  const response = await post<ClaimLogResponse>(
+    API_CONSTANTS.CLAIMS.CLAIM_LOG,
+    {
+      searchCondition: {
+        claim_id: claimId,
+        is_deleted: false
+      },
+      pageInfo
+    }
   );
   return response;
 };

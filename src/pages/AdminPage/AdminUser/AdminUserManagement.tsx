@@ -611,8 +611,6 @@ const AdminUserManagement: React.FC = () => {
   return (
     <div className="w-full flex justify-center">
       <div className="w-full flex-col px-6">
-        <h1 className="text-5xl !py-9">User Management</h1>
-
         {/* Search and Filters */}
         <div className="flex justify-between items-center mb-6">
           <div className="flex gap-4">

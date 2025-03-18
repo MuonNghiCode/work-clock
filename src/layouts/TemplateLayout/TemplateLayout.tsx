@@ -1,9 +1,9 @@
 import React from "react";
-import AdminHeader from "../Header/AdminHeader/AdminHeader";
-import { Outlet } from "react-router";
+import { Outlet } from "react-router-dom";
 import Sidebar from "../Sidebar/Sidebar";
+import AdminHeader from "../Header/AdminHeader/AdminHeader";
 
-const FinanceLayout: React.FC = () => {
+const TemplateLayout: React.FC = () => {
   return (
     <div className="flex h-screen overflow-hidden ">
       <aside className="flex-shrink-0 flex flex-col">
@@ -21,4 +21,4 @@ const FinanceLayout: React.FC = () => {
   );
 };
 
-export default FinanceLayout;
+export default TemplateLayout;
