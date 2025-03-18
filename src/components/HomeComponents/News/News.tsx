@@ -79,7 +79,7 @@ const News: React.FC = () => {
           </div>
 
           {/* Desktop */}
-          <div className="relative items-center justify-center hidden md:flex md:w-full w-6xl mt-7 gap-6">
+          <div className="relative items-center justify-center hidden gap-6 md:flex md:w-full w-6xl mt-7">
             {/* Nút Previous */}
             <button
               className="absolute z-10 p-2 text-white transition-all duration-500 bg-gray-300 rounded-full left-15 hover:bg-neutral-400"
@@ -179,7 +179,7 @@ const News: React.FC = () => {
             Popular Post
           </p>
 
-          <div className="flex flex-col items-center justify-center gap-15 mb-5 md:flex-row">
+          <div className="flex flex-col items-center justify-center mb-5 gap-15 md:flex-row">
             {/* Render Popular Posts */}
             {popularPosts.map((post) => (
               <div

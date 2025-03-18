@@ -117,6 +117,11 @@ const Sidebar: React.FC = () => {
         label: "REPORT",
       },
       {
+        path: "user-project",
+        icon: <Icons.FolderDot className="w-8 h-8" />,
+        label: "User Projects",
+      },
+      {
         path: "edit_profile",
         icon: <Icons.Settings className="w-8 h-8" />,
         label: "SETTING",

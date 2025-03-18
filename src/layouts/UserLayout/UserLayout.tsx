@@ -11,11 +11,11 @@ const UserLayout: React.FC = () => {
         <header className="bg-white w-full inline-flex justify-between items-center text-black text-center lg:p-8 p-4 shadow-[0_5px_5px_rgba(255,145,77,0.2)] relative">
           <AdminHeader />
         </header>
-        <div className="flex flex-1">
+        <div className="flex flex-1 overflow-hidden">
           <aside className="relative bg-white text-black shadow-[10px_0_10px_rgba(255,145,77,0.2)]">
             <Sidebar />
           </aside>
-          <main className="flex-1 p-6 bg-brand-orange-light">
+          <main className="flex-1 p-6 bg-brand-orange-light overflow-auto">
             <Outlet />
           </main>
         </div>

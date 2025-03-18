@@ -54,18 +54,16 @@ html {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-
-.ant-form-item-required{
-  font-family: 'Squada-One';
+.ant-form-item-required {
+  font-family: "Squada-One";
   font-weight: bold;
-  }
-  .ant-form-item-required::before {
-    display: none !important;
-  }
-  .ant-form-item{
-    margin-bottom: 0 !important;
-  }
-
+}
+.ant-form-item-required::before {
+  display: none !important;
+}
+.ant-form-item {
+  margin-bottom: 0 !important;
+}
 
 .ant-pagination .ant-pagination-item-active {
   border: 2px solid #ff914d !important;
@@ -157,7 +155,7 @@ html {
     display: flex;
     flex-direction: column;
   }
-  
+
   .event-time {
     font-weight: bold;
   }
