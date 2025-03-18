@@ -105,10 +105,14 @@ const LoginPage: React.FC = () => {
         <motion.div
           initial={{ x: 0, opacity: 0 }}
           animate={{
-            x: isForgotPassword ? "70%" : "0%",
-            opacity: isForgotPassword ? 1 : 1,
+            x: isForgotPassword ? "70%" : "0%", // Chuyển sang phải khi mở quên mật khẩu
+            opacity: 1,
           }}
-          transition={{ duration: 1 }}
+          exit={{
+            x: "-70%", // Di chuyển sang trái trước khi biến mất
+            opacity: 0,
+          }}
+          transition={{ duration: 1, ease: "easeOut" }}
           className="w-full lg:flex hidden items-center justify-center"
         >
           <img
@@ -302,7 +306,7 @@ const LoginPage: React.FC = () => {
           className="w-full  items-center justify-center  lg:flex hidden"
         >
           <img
-            src={Images.Background7}
+            src={Images.Background4}
             alt=""
             className="w-120 h-130 scale-x-112 object-contain translate-x-7"
           />

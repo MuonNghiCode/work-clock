@@ -298,7 +298,7 @@ const FinancePage: React.FC = () => {
           </button>
         </div>
         <div
-          className="flex items-center space-x-2 border border-black w-70 sm:w-1/3 md:w-70 mb-3 md:mb-0 h-10 rounded-xl px-2 transition-all"
+          className="flex items-center space-x-2 border border-black w-70 sm:w-1/3 md:w-70 mb-3 md:mb-0 h-10 rounded-xl px-2 transition-all not-first z-20"
           data-aos="fade-out"
           data-aos-duration="1000"
         >

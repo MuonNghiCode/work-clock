@@ -14,16 +14,15 @@ const AdminHeader: React.FC = () => {
 
   const userRole =
     APP_CONSTANTS.roleNames[
-    user?.role_code as keyof typeof APP_CONSTANTS.roleNames
+      user?.role_code as keyof typeof APP_CONSTANTS.roleNames
     ] || "Guest";
   const currentTitle =
     APP_CONSTANTS.pageTitles[
-    location.pathname as keyof typeof APP_CONSTANTS.pageTitles
+      location.pathname as keyof typeof APP_CONSTANTS.pageTitles
     ] || "Home";
 
-
   return (
-    <div className="flex items-center justify-between w-full py-4 px-6">
+    <div className="flex items-center justify-between  w-full py-4 px-6">
       <div className="flex items-center gap-4">
         <button
           onClick={toggleSidebar}
@@ -32,7 +31,7 @@ const AdminHeader: React.FC = () => {
           <Icons.Menu3 className="w-10 h-10" />
         </button>
         {/* 🟢 Hiển thị title động theo trang */}
-        <h1 className="text-white text-2xl font-bold">{currentTitle}</h1>
+        <h1 className="text-white text-3xl font-bold">{currentTitle}</h1>
       </div>
       <div className="flex-1 max-w-md mx-8">
         <div className="relative">
