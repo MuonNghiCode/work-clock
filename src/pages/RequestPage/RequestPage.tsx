@@ -97,14 +97,9 @@ const RequestPage: React.FC = () => {
       if (response.success) {
         const claims = response.data.pageData.map(mapClaimToRequest);
         claims.sort((a, b) => {
-          const startDateDiff =
-            new Date(a.start_date.split("/").reverse().join("-")).getTime() -
-            new Date(b.start_date.split("/").reverse().join("-")).getTime();
-          if (startDateDiff !== 0) return startDateDiff;
-          return (
-            new Date(a.end_date.split("/").reverse().join("-")).getTime() -
-            new Date(b.end_date.split("/").reverse().join("-")).getTime()
-          );
+          const claimA = response.data.pageData.find(claim => claim._id === a.key);
+          const claimB = response.data.pageData.find(claim => claim._id === b.key);
+          return new Date(claimB?.created_at || 0).getTime() - new Date(claimA?.created_at || 0).getTime();
         });
         setApiData(claims);
         setTotalItems(response.data.pageInfo.totalItems || 0);
