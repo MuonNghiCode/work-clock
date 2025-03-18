@@ -318,15 +318,11 @@ const FinanceDashboard: React.FC = () => {
           </div>
           <div className="col-span-4 p-4 rounded-lg">
             <div className="flex justify-between items-center mb-4">
-              <h3
-                data-aos="fade-down"
-                data-aos-duration="1000"
-                className="text-2xl font-bold text-gray-800"
-              >
+              <h3 className="text-2xl font-bold text-gray-800">
                 History Transaction
               </h3>
               <button
-                className={`px-4 py-2 rounded transition duration-300 
+                className={`px-4 py-2 rounded transition duration-300
                   ${
                     showAll
                       ? "bg-red-500 hover:bg-red-600"
@@ -338,11 +334,7 @@ const FinanceDashboard: React.FC = () => {
                 {showAll ? "Show Recent Only" : "View All"}
               </button>
             </div>
-            <table
-              data-aos="fade-down"
-              data-aos-duration="1000"
-              className="min-w-full border-separate border-spacing-y-2.5 border-0 text-black w-full"
-            >
+            <table className="min-w-full border-separate border-spacing-y-2.5 border-0 text-black w-full">
               <thead className="bg-brand-gradient h-[70px] text-lg text-white !rounded-t-lg">
                 <tr className="bg-[linear-gradient(45deg,#FEB78A,#FF914D)]">
                   <th className="border-l-2 border-white px-4 py-2 !rounded-tl-2xl">
