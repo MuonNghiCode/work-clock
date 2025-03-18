@@ -68,14 +68,14 @@ npm run dev
 Dự án được xây dựng bởi nhóm **9 thành viên** từ **FPT University**, hiện đang thực tập tại **FPT Software**:
 
 1. **Phạm Minh Quân** – *Vai trò*  
-2. **[Tên Thành Viên 2]** – *Vai trò*  
-3. **[Tên Thành Viên 3]** – *Vai trò*  
-4. **[Tên Thành Viên 4]** – *Vai trò*  
-5. **[Tên Thành Viên 5]** – *Vai trò*  
-6. **[Tên Thành Viên 6]** – *Vai trò*  
-7. **[Tên Thành Viên 7]** – *Vai trò*  
-8. **[Tên Thành Viên 8]** – *Vai trò*  
-9. **[Tên Thành Viên 9]** – *Vai trò*  
+2. **Nguyễn Đức Hoàng** – *Vai trò*  
+3. **Lương Thị Thùy Trang** – *Vai trò*  
+4. **Nguyễn Tuấn Kiệt** – *Vai trò* 
+5. **Nguyễn Nhật Minh** – *Vai trò*  
+6. **Bùi Quang Vinh** – *Vai trò*  
+7. **Nguyễn Đức Thịnh** – *Vai trò*  
+8. **Lê Hữu Hải Trí** – *Vai trò*  
+9. **Phạm Thế Danh** – *Vai trò*  
 
 ---
 
