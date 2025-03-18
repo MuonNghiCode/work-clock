@@ -32,6 +32,7 @@ export const API_CONSTANTS = {
     GET_BY_ID: "/claims",
     UPDATE_CLAIM: "/claims",
     UPDATE_STATUS: "/claims/change-status",
+    CLAIM_LOG: "/claim-logs/search",
   },
   USERS: {
     CHANGE_PASSWORD: "/users/change-password",
