@@ -16,6 +16,7 @@ const ProfilePictureCamera: React.FC<ProfilePictureCameraProps> = ({ userImage, 
                 const imageDataUrl = reader.result as string;
                 setUserImage(imageDataUrl);
                 localStorage.setItem("userImage", imageDataUrl);
+                console.log(imageDataUrl);
             };
             reader.readAsDataURL(file);
         }
