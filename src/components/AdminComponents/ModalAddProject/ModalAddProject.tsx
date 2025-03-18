@@ -148,63 +148,78 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({
 
   return (
     <Modal
-      title={formCheck === "add" ? "Create New Project" : "Edit Project"}
+    title={
+      <span className={formCheck === "add" ? "text-gradient-color" : "text-gradient-color"}>
+        {formCheck === "add" ? "Create New Project" : "Edit Project"}
+      </span>
+    }
       open={isOpen.isOpen}
       onOk={handleSubmit}
       onCancel={handleClose}
     >
       <Form form={form} layout="vertical">
-        <Form.Item
-          name="project_name"
-          label="Project Name"
-          rules={[{ required: true, message: "Enter project name" }]}
-        >
-          <Input placeholder="Enter project name" />
-        </Form.Item>
-        <Form.Item
-          name="project_code"
-          label="Project Code"
-          rules={[{ required: true, message: "Enter project code" }]}
-        >
-          <Input placeholder="Enter project code" />
-        </Form.Item>
-        <Form.Item
-          name="project_department"
-          label="Department"
-          rules={[{ required: true, message: "Enter department" }]}
-        >
-          <Input placeholder="Enter department" />
-        </Form.Item>
-        {formCheck === "edit" ? (
-          <Form.Item name="project_status" label="Status">
-            <Select
-              options={optionStatus.map((status) => ({
-                label: status,
-                value: status,
-              }))}
-              placeholder="Select Status"
-            />
+        <div className="grid grid-cols-2 gap-4">
+          <Form.Item
+            name="project_name"
+            label="Project Name"
+            rules={[{ required: true, message: "Enter project name" }]}
+            className="w-full"
+          >
+            <Input placeholder="Enter project name" />
           </Form.Item>
-        ) : null}
-        <Form.Item name="project_start_date" label="Start Date">
-          <DatePicker style={{ width: "100%" }} />
-        </Form.Item>
-        <Form.Item name="project_end_date" label="End Date">
-          <DatePicker />
-        </Form.Item>
+          <Form.Item
+            name="project_code"
+            label="Project Code"
+            rules={[{ required: true, message: "Enter project code" }]}
+            className="w-full"
+          >
+            <Input placeholder="Enter project code" />
+          </Form.Item>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <Form.Item
+            name="project_department"
+            label="Department"
+            rules={[{ required: true, message: "Enter department" }]}
+            className="w-full"
+          >
+            <Input placeholder="Enter department" />
+          </Form.Item>
+          {formCheck === "edit" && (
+            <Form.Item name="project_status" label="Status" className="w-full">
+              <Select
+                options={optionStatus.map(status => ({ label: status, value: status }))}
+                placeholder="Select Status"
+              />
+            </Form.Item>
+          )}
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <Form.Item name="project_start_date" label="Start Date" className="w-full">
+            <DatePicker className="w-full" />
+          </Form.Item>
+          <Form.Item name="project_end_date" label="End Date" className="w-full">
+            <DatePicker className="w-full" />
+          </Form.Item>
+        </div>
+
         <Form.Item name="project_description" label="Description">
           <Input.TextArea placeholder="Enter project description" />
         </Form.Item>
+
         <Form.List name="project_members">
           {(fields, { add, remove }) => (
             <>
               {fields.map(({ key, name, ...restField }) => (
-                <div key={key} className="flex gap-2">
+                <div key={key} className="flex gap-2 items-center">
                   <Form.Item
                     {...restField}
                     name={[name, "user_id"]}
                     label="Member"
                     rules={[{ required: true, message: "Select a member" }]}
+                    className="w-full"
                   >
                     <Select
                       showSearch
@@ -214,7 +229,7 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({
                       filterOption={false}
                       onSearch={debounceFetcher}
                       options={userOptions}
-                      style={{ width: "100%" }}
+                      className="w-full"
                     />
                   </Form.Item>
                   <Form.Item
@@ -222,12 +237,11 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({
                     name={[name, "role"]}
                     label="Role"
                     rules={[{ required: true, message: "Select role" }]}
+                    className="w-full"
                   >
                     <Select placeholder="Select role" options={roleList} />
                   </Form.Item>
-                  <Button type="link" onClick={() => remove(name)}>
-                    Remove
-                  </Button>
+                  <Button type="link" danger onClick={() => remove(name)}>Remove</Button>
                 </div>
               ))}
               <Form.Item>
