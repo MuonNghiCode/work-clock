@@ -189,7 +189,8 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
         await onOk();
         toast.success('Claim request updated successfully');
         refreshData();
-        handleClose();
+        setIsAnimating(false); 
+        setTimeout(() => setIsVisible(false), 300); 
       } else {
         throw new Error(response.message || 'Failed to update claim');
       }
@@ -243,13 +244,13 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
                 <div className="space-y-4">
                   <Form.Item
                     name="claimname"
-                    label={<span className="text-gray-700 text-sm font-SquadaOne">Claim Name</span>}
+                    label={<span className="text-gray-700 text-sm font-['Squada One']">Claim Name</span>}
                     rules={[{ required: true, message: 'Please enter claim name' }]}
                   >
                     <Input
                       className="rounded-md py-2 w-full"
                       style={{
-                        borderColor: '#D1D5DB',
+                        borderColor: '#D1D5DB', 
                         color: '#374151', 
                       }}
                       placeholder="Enter claim name"
@@ -257,7 +258,7 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
                   </Form.Item>
                   <Form.Item
                     name="totalHours"
-                    label={<span className="text-gray-700 text-sm font-SquadaOne">Total Hours</span>}
+                    label={<span className="text-gray-700 text-sm font-['Squada One']">Total Hours</span>}
                     rules={[{ required: true, message: 'Please enter total hours' }]}
                   >
                     <Input
@@ -276,7 +277,7 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
                 <div className="space-y-4">
                   <Form.Item
                     name="startDate"
-                    label={<span className="text-gray-700 text-sm font-SquadaOne">Start Date</span>}
+                    label={<span className="text-gray-700 text-sm font-['Squada One']">Start Date</span>}
                     rules={[{ required: true, message: 'Please select start date' }]}
                   >
                     <DatePicker
@@ -291,7 +292,7 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
                   </Form.Item>
                   <Form.Item
                     name="endDate"
-                    label={<span className="text-gray-700 text-sm font-SquadaOne">End Date</span>}
+                    label={<span className="text-gray-700 text-sm font-['Squada One']">End Date</span>}
                     rules={[{ required: true, message: 'Please select end date' }]}
                   >
                     <DatePicker
@@ -306,7 +307,7 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
                   </Form.Item>
                   <Form.Item
                     name="startTime"
-                    label={<span className="text-gray-700 text-sm font-SquadaOne">Start Time</span>}
+                    label={<span className="text-gray-700 text-sm font-['Squada One']">Start Time</span>}
                     rules={[{ required: true, message: 'Please select start time' }]}
                   >
                     <TimePicker
@@ -321,7 +322,7 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
                   </Form.Item>
                   <Form.Item
                     name="endTime"
-                    label={<span className="text-gray-700 text-sm font-SquadaOne">End Time</span>}
+                    label={<span className="text-gray-700 text-sm font-['Squada One']">End Time</span>}
                     rules={[{ required: true, message: 'Please select end time' }]}
                   >
                     <TimePicker
@@ -357,7 +358,7 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
                 className={`px-4 py-2 rounded-md ${!hasChanges || loading ? 'cursor-not-allowed' : 'hover:bg-[#FF8347]'}`}
                 style={{
                   backgroundColor: hasChanges && !loading ? '#FF9447' : '#E5E7EB', 
-                  color: hasChanges && !loading ? '#FFFFFF' : '#A3A3A3', 
+                  color: hasChanges && !loading ? '#FFFFFF' : '#A3A3A3',
                   border: 'none',
                   fontWeight: 400,
                 }}
