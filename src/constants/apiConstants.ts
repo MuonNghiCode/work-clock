@@ -39,6 +39,7 @@ export const API_CONSTANTS = {
     CREATE_USER: "/users",
     UPDATE_USER: "/users/${id}",
     DELETE_USER: "/users/${id}",
+    GET_USER_BY_ID: "/users/${id}",
     CHANGE_STATUS: "/users/change-status",
     SEARCH_USER: "/users/search",
     CHANGE_ROLE: "/users/change-role",

@@ -159,7 +159,7 @@ html {
     display: flex;
     flex-direction: column;
   }
-  
+
   .event-time {
     font-weight: bold;
   }
