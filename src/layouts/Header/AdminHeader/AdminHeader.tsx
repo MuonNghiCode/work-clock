@@ -9,15 +9,18 @@ const AdminHeader: React.FC = () => {
   const { user } = useUser();
   const { toggleSidebar } = useSidebarStore();
   const location = useLocation();
+  const userUrl = localStorage.getItem("imageDataUrl");
+  console.log(userUrl);
 
   const userRole =
     APP_CONSTANTS.roleNames[
-      user?.role_code as keyof typeof APP_CONSTANTS.roleNames
+    user?.role_code as keyof typeof APP_CONSTANTS.roleNames
     ] || "Guest";
   const currentTitle =
     APP_CONSTANTS.pageTitles[
-      location.pathname as keyof typeof APP_CONSTANTS.pageTitles
+    location.pathname as keyof typeof APP_CONSTANTS.pageTitles
     ] || "Home";
+
 
   return (
     <div className="flex items-center justify-between w-full py-4 px-6">
