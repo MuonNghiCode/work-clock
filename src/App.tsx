@@ -39,6 +39,7 @@ import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
 import AnimatedBackground from "./components/AnimatedBackground/AnimatedBackground";
 import TableApproval from "./components/ApprovalComponents/TableApproval";
 import TemplateLayout from "./layouts/TemplateLayout/TemplateLayout";
+import PolicyLayout from "./layouts/PolicyLayout/PolicyLayout";
 
 const router = createBrowserRouter([
   {
@@ -196,6 +197,11 @@ const router = createBrowserRouter([
   {
     path: "/verify-email/:token",
     element: <VerifyEmail />,
+  },
+  {
+    path: "/privacy-policy",
+    element: <PolicyLayout />,
+    errorElement: <ErrorPage />,
   },
 ]);
 

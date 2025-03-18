@@ -97,7 +97,7 @@ const UserManagementAdd: React.FC<UserManagementAddProps> = React.memo(
               { min: 3, message: "Username must be at least 3 characters" },
             ]}
           >
-            <Input />
+            <Input className="rounded-lg py-2 font-['Squada_One']"/>
           </Form.Item>
 
           <Form.Item
@@ -116,7 +116,7 @@ const UserManagementAdd: React.FC<UserManagementAddProps> = React.memo(
               },
             ]}
           >
-            <Input />
+            <Input className="rounded-lg py-2 font-['Squada_One']"/>
           </Form.Item>
 
           <Form.Item
@@ -154,7 +154,7 @@ const UserManagementAdd: React.FC<UserManagementAddProps> = React.memo(
               }),
             ]}
           >
-            <Input.Password />
+            <Input.Password  />
           </Form.Item>
 
           <Form.Item
@@ -166,14 +166,14 @@ const UserManagementAdd: React.FC<UserManagementAddProps> = React.memo(
             }
             rules={[{ required: true, message: "Role is required" }]}
           >
-            <Select>
+            <Select className="rounded-lg py-2 font-['Squada_One']">
               <Select.Option value="A001">Admin</Select.Option>
               <Select.Option value="A002">Finance</Select.Option>
               <Select.Option value="A003">Approval</Select.Option>
               <Select.Option value="A004">Member other</Select.Option>
             </Select>
           </Form.Item>
-
+          <hr className="text-gray-400 bg-gray-400 mb-5" />
           <div className="flex justify-end gap-4">
             <button
               type="button"
@@ -185,44 +185,74 @@ const UserManagementAdd: React.FC<UserManagementAddProps> = React.memo(
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-4 py-2 bg-[#FF9447] text-white rounded-md hover:bg-[#FF8335] transition-colors disabled:opacity-50"
+              className="px-4 py-2 bg-brand-gradient text-white rounded-md hover:bg-[#FF8335] transition-colors disabled:opacity-50"
             >
               {isSubmitting ? "Creating..." : "Create User"}
             </button>
           </div>
         </Form>
+            <style>
+                {`
+                    .ant-form-item-label > label {
+                        font-weight: 500;
+                        color: #4B5563;
+                    }
 
-        <style>
-          {`
-          input, select {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.375rem;
-          }
-          input:focus, select:focus {
-            border-color: #FF9447;
-            box-shadow: 0 0 0 2px rgba(255, 148, 71, 0.2);
-          }
-          .ant-form-item-required::before {
-            display: none !important;
-            font-family: 'Squada-One';
-          }
-          label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #374151;
-            margin-bottom: 0.25rem;
-          }
-          
-          .error-message {
-            color: #ef4444;
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-          }
-        `}
-        </style>
+                    .ant-input, .ant-input-password {
+                        border-radius: 8px;
+                        border: 1px solid #E5E7EB;
+                        padding: 8px 12px;
+                        transition: all 0.3s ease;
+                    }
+
+                    .ant-input:hover, .ant-input-password:hover {
+                        border-color: #FF9447;
+                    }
+
+                    .ant-input:focus, .ant-input-password:focus {
+                        border-color: #FF9447;
+                        box-shadow: 0 0 0 2px rgba(255, 148, 71, 0.2);
+                    }
+
+                    .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
+                        border-color: #FF9447;
+                    }
+
+                    .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
+                        border-color: #FF9447;
+                        box-shadow: 0 0 0 2px rgba(255, 148, 71, 0.2);
+                    }
+
+                    .ant-select-selector {
+                        border-radius: 8px !important;
+                        border: 1px solid #E5E7EB !important;
+                        padding: 4px 12px !important;
+                    }
+
+                    .ant-form-item {
+                        margin-bottom: 24px;
+                    }
+
+                    button[type="submit"] {
+                        background: linear-gradient(to right, #FF9447, #FF8335);
+                        transition: all 0.3s ease;
+                    }
+
+                    button[type="submit"]:hover:not(:disabled) {
+                        transform: translateY(-1px);
+                        box-shadow: 0 4px 6px rgba(255, 148, 71, 0.2);
+                    }
+
+                    button[type="button"] {
+                        transition: all 0.3s ease;
+                    }
+
+                    button[type="button"]:hover {
+                        transform: translateY(-1px);
+                        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                    }
+                `}
+            </style>
       </div>
     );
   }
