@@ -1,5 +1,4 @@
 import React, { useRef, useState } from "react";
-import ClickSpark from "../../components/ClickSpark/ClickSpark";
 import Policy from "../../pages/PrivatePolicy/Policy";
 import Icons from "../../components/icon";
 
@@ -109,27 +108,19 @@ const PolicyLayout: React.FC = () => {
 
       {/* Main Content */}
       <main className="flex-1">
-        <ClickSpark
-          sparkColor="#ff914d"
-          sparkSize={15}
-          sparkRadius={30}
-          sparkCount={8}
-          duration={400}
-        >
-          <Policy
-            refs={{
-              dataCollectionRef,
-              purposeRef,
-              dataUsageRef,
-              dataSharingRef,
-              dataSecurityRef,
-              userRightsRef,
-              contactUsRef,
-              dataRetentionRef,
-              cookiesPolicyRef,
-            }}
-          />
-        </ClickSpark>
+        <Policy
+          refs={{
+            dataCollectionRef,
+            purposeRef,
+            dataUsageRef,
+            dataSharingRef,
+            dataSecurityRef,
+            userRightsRef,
+            contactUsRef,
+            dataRetentionRef,
+            cookiesPolicyRef,
+          }}
+        />
       </main>
 
       {/* Modal */}
