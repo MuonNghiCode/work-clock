@@ -40,6 +40,7 @@ import AnimatedBackground from "./components/AnimatedBackground/AnimatedBackgrou
 import TableApproval from "./components/ApprovalComponents/TableApproval";
 import UserProject from "./components/UserProject/UserProject";
 import TemplateLayout from "./layouts/TemplateLayout/TemplateLayout";
+import PolicyLayout from "./layouts/PolicyLayout/PolicyLayout";
 
 const router = createBrowserRouter([
   {
@@ -198,6 +199,11 @@ const router = createBrowserRouter([
   {
     path: "/verify-email/:token",
     element: <VerifyEmail />,
+  },
+  {
+    path: "/privacy-policy",
+    element: <PolicyLayout />,
+    errorElement: <ErrorPage />,
   },
 ]);
 

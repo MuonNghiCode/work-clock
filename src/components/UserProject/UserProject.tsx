@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Pagination } from "antd";
 import { getAllProject } from "../../services/projectService"; // Import the new function
 
 interface ProjectInfo {
@@ -11,10 +12,12 @@ interface ProjectInfo {
 
 const UserProject = () => {
   const [projectsData, setProjectsData] = useState<ProjectInfo[]>([]); // Add state for projects
-  const [ProjectsCount, setProjectsCount] = useState(0); // Add state for projects count
+  const [projectsCount, setProjectsCount] = useState(0); // Add state for projects count
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1); // Add state for current page
+  const pageSize = 5; // Set page size to 5
 
-  const fetchProjects = async () => {
+  const fetchProjects = async (pageNum: number, pageSize: number) => {
     try {
       const response = await getAllProject({
         searchCondition: {
@@ -24,7 +27,7 @@ const UserProject = () => {
           is_delete: false,
           user_id: "",
         },
-        pageInfo: { pageNum: 1, pageSize: 30 },
+        pageInfo: { pageNum, pageSize },
       });
       const data = response.data.pageData.map((item: any) => ({
         key: item._id,
@@ -36,7 +39,7 @@ const UserProject = () => {
         status: item.project_status,
       }));
       setProjectsData(data);
-      setProjectsCount(data.length);
+      setProjectsCount(response.data.pageInfo.totalItems || 0); // Assuming the API returns total count
     } catch (error) {
       console.log(error);
     } finally {
@@ -45,8 +48,15 @@ const UserProject = () => {
   };
 
   useEffect(() => {
-    fetchProjects(); // Fetch projects data
-  }, []);
+    fetchProjects(currentPage, pageSize); // Fetch projects data
+  }, [currentPage, pageSize]);
+
+  const handlePageChange = (page: number, pageSize?: number) => {
+    setCurrentPage(page);
+    setLoading(true);
+    fetchProjects(page, pageSize || 5);
+  };
+
   return (
     <div>
       <div className="col-span-4 p-4 rounded-lg mt-8">
@@ -60,65 +70,54 @@ const UserProject = () => {
               <th className="px-4 py-2 border-l-2 border-white rounded-tr-2xl">
                 Status
               </th>
-              {/* <th className="px-4 py-2 border-l-2 border-white rounded-tr-2xl">
-          Action
-        </th> */}
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={5} className="text-center py-4">
+                <td colSpan={4} className="text-center py-4">
                   Loading...
                 </td>
               </tr>
             ) : projectsData.length > 0 ? (
-              projectsData
-                .sort(
-                  (a, b) =>
-                    new Date(b.startDate).getTime() -
-                    new Date(a.startDate).getTime()
-                )
-                .slice(0, 3)
-                .map((item) => (
-                  <tr
-                    key={item.key}
-                    className="h-[70px] bg-white text-center hover:shadow-brand-orange rounded-2xl"
-                  >
-                    <td className="request-table-cell px-4 py-2 rounded-l-2xl">
-                      {item.projectName}
-                    </td>
-                    <td className="request-table-cell px-4 py-2">
-                      {item.startDate}
-                    </td>
-                    <td className="request-table-cell px-4 py-2">
-                      {item.endDate}
-                    </td>
-                    <td className="request-table-cell px-4 py-2 rounded-r-2xl">
-                      {item.status}
-                    </td>
-                    {/* <td className="request-table-cell px-4 py-2 rounded-r-2xl">
-                <div className="request-table-actions flex justify-center gap-2">
-                  <Button
-                    className="!border-none"
-                    onClick={() => navigate("/user/project-details")}
-                    title="View Details"
-                  >
-                    <CalendarIcon size={18} color="#FF914D" />
-                  </Button>
-                </div>
-              </td> */}
-                  </tr>
-                ))
+              projectsData.map((item) => (
+                <tr
+                  key={item.key}
+                  className="h-[70px] bg-white text-center hover:shadow-brand-orange rounded-2xl"
+                >
+                  <td className="request-table-cell px-4 py-2 rounded-l-2xl">
+                    {item.projectName}
+                  </td>
+                  <td className="request-table-cell px-4 py-2">
+                    {item.startDate}
+                  </td>
+                  <td className="request-table-cell px-4 py-2">
+                    {item.endDate}
+                  </td>
+                  <td className="request-table-cell px-4 py-2 rounded-r-2xl">
+                    {item.status}
+                  </td>
+                </tr>
+              ))
             ) : (
               <tr>
-                <td colSpan={5} className="text-center py-4">
+                <td colSpan={4} className="text-center py-4">
                   No Data Available
                 </td>
               </tr>
             )}
           </tbody>
         </table>
+        <div className="flex justify-center mt-4">
+          <Pagination
+            current={currentPage}
+            pageSize={pageSize}
+            total={projectsCount}
+            onChange={handlePageChange}
+            showSizeChanger={false}
+          // onShowSizeChange={(current, size) => setPageSize(size)}
+          />
+        </div>
       </div>
     </div>
   );

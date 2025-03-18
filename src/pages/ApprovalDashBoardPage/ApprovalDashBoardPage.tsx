@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import ApprovalChart from "../../components/ApprovalComponents/ApprovalChart";
 import ApprovalDashboard from "../../components/ApprovalComponents/ApprovalDashboard";
-import { Button } from "antd";
 import ModalAddNewClaim from "../../components/UserComponents/ModalAddNewClaim";
 import { ClaimRequest } from "../../types/ClaimRequest";
 import { searchApprovalClaims } from "../../services/approvalService";
@@ -43,13 +42,14 @@ const ApprovalDashBoardPage = () => {
   return (
     <>
       <div className="w-full flex-col">
-        <div className="w-full flex py-4">
-          <Button
-            className="w-42 !h-12 !p-4 !bg-[#ff914d] !text-lg !font-semibold !text-white hover:!bg-[#feb78a]"
+        <div className="w-full flex">
+          <button
             onClick={handleOpenModalAddNewClaim}
+            className="bg-[#FFB17A] text-white px-6 py-2 rounded-full hover:bg-[#FF9147] flex items-center gap-2 text-lg"
           >
+            <span>+</span>
             Add New Claim
-          </Button>
+          </button>
         </div>
         {/* <TableUserDashboard data={data} /> */}
         <ModalAddNewClaim
