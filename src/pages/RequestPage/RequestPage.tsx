@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Form, Tag } from "antd";
+import { Form } from "antd";
 import EditRequestModal from "../../components/RequestComponents/EditRequestModal/EditRequestModal";
 import RequestApprovalModal from "../../components/RequestComponents/RequestApprovalModal/RequestApprovalModal";
 import CancelRequestModal from "../../components/RequestComponents/CancelRequestModal/CancelRequestModal";
@@ -15,11 +15,10 @@ import {
 } from "../../types/ClaimType";
 import { ResponseModel } from "../../models/ResponseModel";
 import { debounce } from "lodash";
-import { CheckOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
 import { Search } from "lucide-react";
-import AOS from "aos"; // Thêm import AOS
-import "aos/dist/aos.css"; // Thêm import CSS của AOS
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 interface ClaimRequest {
   key: string;
@@ -36,7 +35,7 @@ interface ClaimRequest {
 const RequestPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
-  const [statusFilter, setStatusFilter] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState<string>("all");
   const [searchText, setSearchText] = useState("");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState<ClaimRequest | null>(null);
@@ -53,10 +52,9 @@ const RequestPage: React.FC = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  // Khởi tạo AOS
   useEffect(() => {
     AOS.init({
-      once: false, // Giống như trong FinanceDashboard
+      once: false,
     });
   }, []);
 
@@ -85,8 +83,7 @@ const RequestPage: React.FC = () => {
     try {
       const searchCondition: SearchCondition = {
         keyword: searchText,
-        claim_status:
-          statusFilter === "All" || !statusFilter ? "" : statusFilter,
+        claim_status: statusFilter === "all" ? "" : statusFilter,
         claim_start_date: "",
         claim_end_date: "",
         is_delete: false,
@@ -182,8 +179,8 @@ const RequestPage: React.FC = () => {
     }
   };
 
-  const handleStatusChange = (status: string) => {
-    setStatusFilter(status === "All" ? null : status);
+  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setStatusFilter(e.target.value);
     setCurrentPage(1);
   };
 
@@ -254,30 +251,19 @@ const RequestPage: React.FC = () => {
         data-aos-duration="1000"
       >
         <div>
-          {[
-            "All",
-            "Draft",
-            "Pending Approval",
-            "Approved",
-            "Rejected",
-            "Canceled",
-            "Paid",
-          ].map((status) => (
-            <Tag
-              key={status}
-              color={
-                statusFilter === status || (status === "All" && !statusFilter)
-                  ? "#ff914d"
-                  : "default"
-              }
-              onClick={() => handleStatusChange(status)}
-              className="cursor-pointer !px-2 !py-1 !font-squada !text-lg !rounded-lg"
-            >
-              {(statusFilter === status ||
-                (status === "All" && !statusFilter)) && <CheckOutlined />}{" "}
-              {status}
-            </Tag>
-          ))}
+          <select
+            value={statusFilter}
+            onChange={handleStatusChange}
+            className="px-3 py-1 border rounded-lg font-squada text-lg"
+          >
+            <option value="all">All Status</option>
+            <option value="Draft">Draft</option>
+            <option value="Pending Approval">Pending Approval</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+            <option value="Canceled">Canceled</option>
+            <option value="Paid">Paid</option>
+          </select>
         </div>
         <div className="relative w-[300px]">
           <input
@@ -297,7 +283,11 @@ const RequestPage: React.FC = () => {
           apiData={apiData}
           totalItems={totalItems}
           loading={loading}
-          pagination={{ currentPage, pageSize, onPageChange: handlePageChange }}
+          pagination={
+            apiData.length > 0
+              ? { currentPage, pageSize, onPageChange: handlePageChange }
+              : undefined
+          }
           actions={{
             onEdit: handleEdit,
             onDelete: handleDelete,

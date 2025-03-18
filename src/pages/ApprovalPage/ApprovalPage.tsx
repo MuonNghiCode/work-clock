@@ -4,9 +4,6 @@ const ApprovalPage: React.FC = () => {
   return (
     <>
       <div className="w-full flex-col ">
-        <header>
-          <h1 className="text-5xl !py-9">Approvals Management</h1>
-        </header>
         <TableApproval />
       </div>
     </>

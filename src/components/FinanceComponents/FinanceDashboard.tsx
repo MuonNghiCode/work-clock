@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Pagination } from "antd";
 import { Bar } from "react-chartjs-2";
 import { getClaimsData } from "../../services/claimService";
 import Icons from "../../components/icon";
@@ -73,18 +72,53 @@ const FinanceDashboard: React.FC = () => {
   const [averageProcessingTime, setAverageProcessingTime] = useState<
     number | null
   >(null);
+  const [moneyFlowData, setMoneyFlowData] = useState({
+    labels: [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ],
+    datasets: [
+      {
+        label: "Money Flow",
+        data: Array(12).fill(0), // Khởi tạo mảng với 12 tháng
+        backgroundColor: "rgba(75, 192, 192, 0.6)",
+      },
+    ],
+  });
   const [claimsOrderData, setClaimsOrderData] = useState({
-    labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
+    labels: [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ],
     datasets: [
       {
         label: "Claims Order",
-        data: [0, 0, 0, 0],
+        data: Array(12).fill(0), // Khởi tạo mảng với 12 tháng
         backgroundColor: "rgba(153, 102, 255, 0.6)",
       },
     ],
   });
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     AOS.init({
@@ -95,12 +129,10 @@ const FinanceDashboard: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-
       // Get the current date and time, then adjust for Vietnam's time zone (UTC+7)
       const currentDate = moment().utcOffset(7);
       const currentMonth = currentDate.month() + 1;
 
-      // Log the current month
       console.log("Current month (Vietnam time zone):", currentMonth);
 
       const request = {
@@ -140,48 +172,63 @@ const FinanceDashboard: React.FC = () => {
             })
           );
 
-          // Filter data for the current month
-          const currentMonthData = formattedData.filter((item) => {
+          // Tính tổng lương cho từng tháng
+          const monthlySalaries = Array(12).fill(0); // Mảng để lưu tổng lương theo tháng
+          formattedData.forEach((item) => {
             const claimDate = moment(item.claim_start_date).utcOffset(7);
-            return claimDate.month() + 1 === currentMonth;
-          });
-
-          const claimsPerWeek = [0, 0, 0, 0]; // Initialize array for 4 weeks
-
-          // Calculate claims in the 4 weeks of the current month (chart claims order)
-          currentMonthData.forEach((item) => {
-            if (item.status === "Approved" || item.status === "Paid") {
-              const claimDate = moment(item.claim_start_date).utcOffset(7);
-              const weekIndex = Math.floor(claimDate.date() / 7);
-              if (weekIndex < 4) {
-                claimsPerWeek[weekIndex] += 1;
-              }
+            const monthIndex = claimDate.month(); // Lấy chỉ số tháng (0-11)
+            if (item.status === "Paid") {
+              monthlySalaries[monthIndex] += item.employee_info.salary; // Cộng lương vào tháng tương ứng
             }
           });
 
+          // Cập nhật moneyFlowData
+          setMoneyFlowData((prevData) => ({
+            ...prevData,
+            datasets: [
+              {
+                ...prevData.datasets[0],
+                data: monthlySalaries, // Cập nhật dữ liệu với tổng lương theo tháng
+              },
+            ],
+          }));
+
+          // Tính số lượng claim theo tháng cho trạng thái "Approved" và "Paid"
+          const monthlyClaims = Array(12).fill(0); // Mảng để lưu số lượng claim theo tháng
+          formattedData.forEach((item) => {
+            const claimDate = moment(item.claim_start_date).utcOffset(7);
+            const monthIndex = claimDate.month(); // Lấy chỉ số tháng (0-11)
+
+            // Kiểm tra trạng thái và tăng số lượng claim vào tháng tương ứng
+            if (item.status === "Approved" || item.status === "Paid") {
+              monthlyClaims[monthIndex] += 1; // Tăng số lượng claim vào tháng tương ứng
+            }
+          });
+
+          // Cập nhật claimsOrderData
           setClaimsOrderData((prevData) => ({
             ...prevData,
             datasets: [
               {
                 ...prevData.datasets[0],
-                data: claimsPerWeek,
+                data: monthlyClaims, // Cập nhật dữ liệu với số lượng claim theo tháng
               },
             ],
           }));
 
-          const totalRevenue = currentMonthData.reduce(
+          const totalRevenue = formattedData.reduce(
             (sum, item) => sum + item.employee_info.salary,
             0
           );
-          const pendingClaims = currentMonthData.filter(
+          const pendingClaims = formattedData.filter(
             (item) => item.status === "Approved"
           ).length;
-          const processedClaims = currentMonthData.filter(
+          const processedClaims = formattedData.filter(
             (item) => item.status === "Paid"
           ).length;
 
           // Calculate average processing time
-          const processingTimes = currentMonthData
+          const processingTimes = formattedData
             .filter((item) => item.status === "Paid" && item.claim_end_date)
             .map((item) => {
               const startDate = moment(item.claim_start_date).utcOffset(7);
@@ -213,27 +260,7 @@ const FinanceDashboard: React.FC = () => {
     fetchData();
   }, []);
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  // Tính toán dữ liệu cho trang hiện tại
-  const displayedData = data
-    .filter((item) => item.status === "Paid")
-    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
   if (error) return <div className="text-center text-red-500">{error}</div>;
-
-  const moneyFlowData = {
-    labels: ["January", "February", "March", "April", "May"],
-    datasets: [
-      {
-        label: "Money Flow",
-        data: [12000, 19000, 30000, 50000, 20000],
-        backgroundColor: "rgba(75, 192, 192, 0.6)",
-      },
-    ],
-  };
 
   return (
     <div className="py-2">
@@ -290,13 +317,27 @@ const FinanceDashboard: React.FC = () => {
             <Bar data={claimsOrderData} />
           </div>
           <div className="col-span-4 p-4 rounded-lg">
-            <h3
-              data-aos="fade-down"
-              data-aos-duration="1000"
-              className="text-lg font-bold"
-            >
-              History Transaction
-            </h3>
+            <div className="flex justify-between items-center mb-4">
+              <h3
+                data-aos="fade-down"
+                data-aos-duration="1000"
+                className="text-2xl font-bold text-gray-800"
+              >
+                History Transaction
+              </h3>
+              <button
+                className={`px-4 py-2 rounded transition duration-300 
+                  ${
+                    showAll
+                      ? "bg-red-500 hover:bg-red-600"
+                      : "bg-blue-500 hover:bg-blue-600"
+                  } 
+                  text-white font-semibold`}
+                onClick={() => setShowAll(!showAll)}
+              >
+                {showAll ? "Show Recent Only" : "View All"}
+              </button>
+            </div>
             <table
               data-aos="fade-down"
               data-aos-duration="1000"
@@ -316,38 +357,38 @@ const FinanceDashboard: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="w-full">
-                {displayedData.map((item) => (
-                  <tr
-                    key={item._id}
-                    className="h-[70px] bg-white overflow-scroll text-center border-collapse hover:shadow-brand-orange !rounded-2xl"
-                  >
-                    <td className="px-4 py-2">{item.claim_name}</td>
-                    <td className="px-4 py-2">
-                      {item.employee_info.full_name}
-                    </td>
-                    <td className="px-4 py-2">
-                      {formatCurrency(item.employee_info.salary)}
-                    </td>
-                    <td className="px-4 py-2">{item.status}</td>
-                    <td className="px-4 py-2 rounded-r-2xl">
-                      {new Date(item.claim_start_date).toLocaleDateString(
-                        "vi-VN"
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                {data
+                  .filter((item) => item.status === "Paid")
+                  .slice(
+                    0,
+                    showAll
+                      ? data.filter((item) => item.status === "Paid").length
+                      : 3
+                  )
+                  .map((item) => (
+                    <tr
+                      key={item._id}
+                      className="h-[70px] bg-white overflow-scroll text-center border-collapse hover:shadow-brand-orange"
+                    >
+                      <td className="px-4 py-2 rounded-l-2xl">
+                        {item.claim_name}
+                      </td>
+                      <td className="px-4 py-2">
+                        {item.employee_info.full_name}
+                      </td>
+                      <td className="px-4 py-2">
+                        {formatCurrency(item.employee_info.salary)}
+                      </td>
+                      <td className="px-4 py-2">{item.status}</td>
+                      <td className="px-4 py-2 rounded-r-2xl">
+                        {new Date(item.claim_start_date).toLocaleDateString(
+                          "vi-VN"
+                        )}
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
-            <div className="flex justify-end mt-4">
-              <Pagination
-                className="!font-squada flex justify-end"
-                current={currentPage}
-                total={data.filter((item) => item.status === "Paid").length}
-                pageSize={itemsPerPage}
-                onChange={handlePageChange}
-                showSizeChanger={false}
-              />
-            </div>
           </div>
         </div>
       )}

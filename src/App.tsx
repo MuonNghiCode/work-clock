@@ -37,6 +37,7 @@ import WelcomeScreen from "./components/WelcomeScreen/WelcomeScreen";
 import VerifyEmail from "./pages/VerifyEmailPage/VerifyEmail";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
 import AnimatedBackground from "./components/AnimatedBackground/AnimatedBackground";
+import TableApproval from "./components/ApprovalComponents/TableApproval";
 import TemplateLayout from "./layouts/TemplateLayout/TemplateLayout";
 
 const router = createBrowserRouter([
@@ -127,6 +128,8 @@ const router = createBrowserRouter([
       },
       { path: "dashboard", element: <ApprovalDashBoardPage /> },
       { path: "approval-management", element: <ApprovalPage /> },
+      { path: "/approval/dashboard", element: <ApprovalDashBoardPage /> },
+      { path: "/approval/table-approval", element: <TableApproval /> },
     ],
   },
   {
