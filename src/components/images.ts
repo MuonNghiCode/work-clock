@@ -22,6 +22,8 @@ import auth1 from "../assets/images/auth1.png";
 import news1 from "../assets/images/NewsBackground.jpg";
 import group from "../assets/images/class.jpg";
 import news2 from "../assets/images/8-3.jpg";
+import changelog from "../assets/images/changelog.png";
+import Logo3 from "../assets/images/logo3.png";
 const Images = {
   Logo,
   Logo2,
@@ -47,6 +49,8 @@ const Images = {
   news1,
   group,
   news2,
+  changelog,
+  Logo3,
 };
 
 export default Images;
