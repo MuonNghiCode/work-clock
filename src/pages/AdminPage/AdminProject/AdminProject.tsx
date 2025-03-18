@@ -2,8 +2,6 @@ import React from "react";
 import TableProject from "../../../components/AdminComponents/TableProject/TableProject";
 
 const AdminProject: React.FC = () => {
-
-
   // const fetchProjects = async () => {
   //   setLoading(true); // Start loading
   //   try {
@@ -48,7 +46,6 @@ const AdminProject: React.FC = () => {
   //   fetchProjects();
   // }, [currentPage, pageSize, searchValue]); // Add searchValue to dependencies
 
-
   // const handleEditProject = (editedProject: Project) => {
   //   const newProjects = projects.map(project =>
   //     project.key === editedProject.key ? editedProject : project
@@ -67,29 +64,21 @@ const AdminProject: React.FC = () => {
   //   });
   // };
 
-  
-
   return (
     <>
       <div className="p-6 w-full rounded-lg">
         <div className="w-full flex-col">
-          <div className="flex justify-between items-center py-9">
-            <h1 className="text-5xl">Project Management</h1>
-           
-          </div>
-
           <TableProject
-            // data={projects}
-            // totalItems={totalItems}
-            // loading={loading}
-            // onEditProject={handleEditProject}
-            // onDeleteProject={handleDeleteProject}
-            // searchValue={searchValue} // Pass searchValue to TableProject
-            // setSearchValue={setSearchValue} // Pass setSearchValue to TableProject
+          // data={projects}
+          // totalItems={totalItems}
+          // loading={loading}
+          // onEditProject={handleEditProject}
+          // onDeleteProject={handleDeleteProject}
+          // searchValue={searchValue} // Pass searchValue to TableProject
+          // setSearchValue={setSearchValue} // Pass setSearchValue to TableProject
           />
         </div>
       </div>
-
     </>
   );
 };

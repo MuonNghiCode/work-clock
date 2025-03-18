@@ -39,6 +39,7 @@ import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
 import AnimatedBackground from "./components/AnimatedBackground/AnimatedBackground";
 import TableApproval from "./components/ApprovalComponents/TableApproval";
 import UserProject from "./components/UserProject/UserProject";
+import TemplateLayout from "./layouts/TemplateLayout/TemplateLayout";
 
 const router = createBrowserRouter([
   {
@@ -46,6 +47,33 @@ const router = createBrowserRouter([
     element: <MainLayout />,
     errorElement: <ErrorPage />,
     children: [{ path: "/", element: <HomePage /> }],
+  },
+  {
+    path: "/template",
+    element: <TemplateLayout />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "",
+        element: <Navigate to="dashboard" replace />,
+      },
+      {
+        path: "dashboard",
+        element: <AdminDashBoard />,
+      },
+      {
+        path: "user",
+        element: <AdminUserManagement />,
+      },
+      {
+        path: "project",
+        element: <AdminProject />,
+      },
+      {
+        path: "edit_profile",
+        element: <EditProfilePage />,
+      },
+    ],
   },
   {
     path: "/admin",

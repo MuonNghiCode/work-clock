@@ -14,7 +14,6 @@ const UserDashboard = () => {
   return (
     <>
       <Button onClick={handleOpenModalAddNewClaim}>Add New Claim</Button>
-      <div> UserDashboard</div>
       <ModalAddNewClaim
         isOpen={isOpenModalAddNewClaim}
         onClose={handleCloseModalAddNewClaim}
