@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { X, User } from "lucide-react";
+import { User } from "lucide-react";
 import { updateEmployee } from "../../../services/userService";
 import { toast } from "react-toastify";
 import axiosInstance from "../../../config/axiosUser";
 import ImageUploader from "../../ImageUploader/ImageUploader";
 import { EmployeeInfo } from "../../../types/Employee";
-import { Form, Input, Select} from "antd";
+import { Form, Input, Select } from "antd";
 
 // export interface Employee {
 //   _id: string;
@@ -70,6 +70,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
   isEmbedded = false,
   onUpdateSuccess,
 }) => {
+  const [form] = Form.useForm();
   const [formData, setFormData] = useState<Partial<EmployeeInfo>>({});
   const [previewAvatar, setPreviewAvatar] = useState("");
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -100,7 +101,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
   useEffect(() => {
     if (employee) {
       console.log("Setting employee data:", employee);
-      setFormData({
+      const newFormData = {
         user_id: employee.user_id,
         job_rank: employee.job_rank,
         contract_type: employee.contract_type,
@@ -113,12 +114,14 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
         salary: employee.salary || 0,
         start_date: formatDate(employee.start_date),
         end_date: employee.end_date ? formatDate(employee.end_date) : "",
-      });
+      };
+      setFormData(newFormData);
+      form.setFieldsValue(newFormData);
       setPreviewAvatar(employee.avatar_url || ""); // Đồng bộ previewAvatar
     } else {
       console.log("No employee data provided");
     }
-  }, [employee]);
+  }, [employee, form]);
 
   // Fetch dropdown data
   useEffect(() => {
@@ -147,14 +150,12 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
   }, [isOpen]);
 
   // Handle modal close with animation
-  const handleClose = () => {
-    setIsAnimating(false);
-    setTimeout(() => onClose(), 300);
-  };
+  // const handleClose = () => {
+  //   setIsAnimating(false);
+  //   setTimeout(() => onClose(), 300);
+  // };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const handleSubmit = async (values: EmployeeInfo) => {
     if (!employee?.user_id) {
       console.log("Current employee:", employee);
       toast.error("No employee data available");
@@ -185,8 +186,10 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
         is_deleted: employee?.is_deleted || false,
       };
 
-      await updateEmployee(employee.user_id, updateData);
-      toast.success("Employee updated successfully");
+      const response = await updateEmployee(employee.user_id, updateData);
+      if(response.success){
+        toast.success("Employee updated successfully");
+      }
       onUpdateSuccess?.(updateData);
       onClose();
     } catch (error) {
@@ -240,333 +243,357 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
     setPreviewAvatar(imageUrl);
     setFormData((prev) => ({ ...prev, avatar_url: imageUrl }));
   };
+  console.log(formData);
 
   if (!modalVisible && !isEmbedded) return null;
 
   if (isEmbedded) {
     return (
-      <form
-        onSubmit={handleSubmit}
-        className="h-[600px] flex flex-col bg-white"
+      // <form
+      //   onSubmit={handleSubmit}
+      //   className="h-[600px] flex flex-col bg-white"
+      // >
+      <Form
+        form={form}
+        onValuesChange={(changedValues) =>
+          setFormData((prev) => ({ ...prev, ...changedValues }))
+        }
+        layout="vertical"
+        initialValues={formData}
+        onFinish={handleSubmit}
       >
-        <div className="flex-1 overflow-y-auto p-6">
-          {error ? (
-            <div className="text-red-500">{error}</div>
-          ) : (
-            <div className="space-y-6">
-              {/* Avatar Section */}
-              <div className="mb-8">
-                <h3 className="text-lg font-semibold text-gray-700 mb-4">
-                  Profile Image
-                </h3>
-                <div className="flex flex-col items-center gap-4">
-                  {/* Avatar Preview với Upload Overlay */}
-                  <div className="relative group">
-                    <div className="w-40 h-40 rounded-full border-4 border-gray-200 overflow-hidden">
-                      {previewAvatar ? (
-                        <img
-                          src={previewAvatar}
-                          alt="Avatar preview"
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gray-50 flex items-center justify-center">
-                          <User className="w-16 h-16 text-gray-400" />
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Upload Overlay */}
-                    <div className="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <ImageUploader onImageUploaded={handleImageUpload} />
-                    </div>
+        {error ? (
+          <div className="text-red-500">{error}</div>
+        ) : (
+          <div className="space-y-6">
+            {/* Avatar Section */}
+            <div className="mb-8">
+              <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                Profile Image
+              </h3>
+              <div className="flex flex-col items-center gap-4">
+                {/* Avatar Preview với Upload Overlay */}
+                <div className="relative group">
+                  <div className="w-40 h-40 rounded-full border-4 border-gray-200 overflow-hidden">
+                    {previewAvatar ? (
+                      <img
+                        src={previewAvatar}
+                        alt="Avatar preview"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gray-50 flex items-center justify-center">
+                        <User className="w-16 h-16 text-gray-400" />
+                      </div>
+                    )}
                   </div>
 
-                  {/* URL Input và Preview Button */}
-                  <div className="w-full max-w-md">
-                    <label className="block text-sm font-medium text-gray-600 mb-2">
-                      Image URL
-                    </label>
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        value={formData.avatar_url || ""}
-                        onChange={(e) => validateImageUrl(e.target.value)}
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                        placeholder="https://example.com/image.jpg"
-                      />
-                      <button
-                        type="button"
-                        onClick={() =>
-                          validateImageUrl(formData.avatar_url || "")
-                        }
-                        className="px-4 py-2 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200"
-                      >
-                        Preview
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Personal Information */}
-              <div className="grid grid-cols-2 gap-6">
-                <div className="bg-gray-50 p-6 rounded-lg">
-                  <h3 className="text-lg font-semibold text-gray-700 mb-4">
-                    Personal Information
-                  </h3>
-                  <div className="space-y-4">
-                    <div>
-                      {/* <label className="block text-sm font-medium text-gray-600 mb-2">
-                        Full Name
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.full_name || ""}
-                        onChange={(e) =>
-                          handleInputChange("full_name", e.target.value)
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                      /> */}
-
-                      {/* Full Name Employee */}
-                      <Form.Item
-                        name="full_name"
-                        label={
-                          <span>
-                            Full Name<span className="text-red-600">*</span>
-                          </span>
-                        }
-                        rules={[
-                          { required: true, message: "Full Name is required" },
-                        ]}
-                        style={{ marginBottom: '16px'  }}
-                        className="block text-sm font-medium text-gray-600 mb-2"
-                      ></Form.Item>
-                      <Input
-                        type="text"
-                        value={formData.full_name || ""}
-                        onChange={(e) =>
-                          handleInputChange("full_name", e.target.value)
-                        }
-                      />
-                    </div>
-                    
-
-                    {/* Phone Employee */}
-                    {/* <div>
-                      <label className="block text-sm font-medium text-gray-600 mb-2">
-                        Phone
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.phone || ""}
-                        onChange={(e) =>
-                          handleInputChange("phone", e.target.value)
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                      />
-                    </div> */}
-                    <div>
-                      <Form.Item
-                        name="phone"
-                        label={
-                          <span>
-                            Phone<span className="text-red-600">*</span>
-                          </span>
-                        }
-                        rules={[
-                          { required: true, message: "Phone is required" },
-                        ]}
-                      ></Form.Item>
-                      <Input
-                        type="text"
-                        value={formData.phone || ""}
-                        onChange={(e) =>
-                          handleInputChange("phone", e.target.value)
-                        }
-                      />
-                    </div>
-
-                    {/* Address Employee */}
-                    {/* <div>
-                      <label className="block text-sm font-medium text-gray-600 mb-2">
-                        Address
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.address || ""}
-                        onChange={(e) =>
-                          handleInputChange("address", e.target.value)
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                      />
-                    </div> */}
-
-                    <div>
-                      <Form.Item
-                        name="address"
-                        label={
-                          <span>
-                            Address<span className="text-red-600">*</span>
-                          </span>
-                        }
-                        rules={[
-                          { required: true, message: "Address is required" },
-                        ]}
-                      ></Form.Item>
-                      <Input
-                        type="text"
-                        value={formData.address || ""}
-                        onChange={(e) =>
-                          handleInputChange("address", e.target.value)
-                        }
-                      />
-                    </div>
+                  {/* Upload Overlay */}
+                  <div className="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <ImageUploader onImageUploaded={handleImageUpload} />
                   </div>
                 </div>
 
-                {/* Employment Details */}
-                <div className="bg-gray-50 p-6 rounded-lg">
-                  <h3 className="text-lg font-semibold text-gray-700 mb-4">
-                    Employment Details
-                  </h3>
-                  <div className="space-y-4">
-                    {/* Job Rank */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-600 mb-2">
-                        Job Rank
-                      </label>
-                      {isLoading ? (
-                        <div className="text-gray-500">Loading jobs...</div>
-                      ) : (
-                        <select
-                          value={formData.job_rank || ""}
-                          onChange={(e) =>
-                            handleInputChange("job_rank", e.target.value)
-                          }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                        >
-                          <option value="">Select Job Rank</option>
-                          {getUniqueJobsByTitle(jobs).map((job) => (
-                            <option key={job._id} value={job.job_rank}>
-                              {job.job_rank}
-                            </option>
-                          ))}
-                        </select>
-                      )}
-                    </div>
-
-                    {/* Department */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-600 mb-2">
-                        Department
-                      </label>
-                      {isLoading ? (
-                        <div className="text-gray-500">
-                          Loading departments...
-                        </div>
-                      ) : (
-                        <select
-                          value={formData.department_code || ""}
-                          onChange={(e) =>
-                            handleInputChange("department_code", e.target.value)
-                          }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                        >
-                          <option value="">Select Department</option>
-                          {departments.map((dept) => (
-                            <option key={dept._id} value={dept.department_code}>
-                              {dept.department_name}
-                            </option>
-                          ))}
-                        </select>
-                      )}
-                    </div>
-                    {/* Contract Type */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-600 mb-2">
-                        Contract Type
-                      </label>
-                      {isLoading ? (
-                        <div className="text-gray-500">
-                          Loading contracts...
-                        </div>
-                      ) : (
-                        <select
-                          value={formData.contract_type || ""}
-                          onChange={(e) =>
-                            handleInputChange("contract_type", e.target.value)
-                          }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                        >
-                          <option value="">Select Contract Type</option>
-                          {contracts.map((contract) => (
-                            <option
-                              key={contract._id}
-                              value={contract.contract_type}
-                            >
-                              {contract.description}
-                            </option>
-                          ))}
-                        </select>
-                      )}
-                    </div>
-                    {/* Salary */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-600 mb-2">
-                        Salary
-                      </label>
-                      <input
-                        type="number"
-                        value={formData.salary || 0}
-                        onChange={(e) =>
-                          handleInputChange("salary", Number(e.target.value))
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Contract Period */}
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <h3 className="text-lg font-semibold text-gray-700 mb-4">
-                  Contract Period
-                </h3>
-                <div className="grid grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-2">
-                      Start Date
-                    </label>
+                {/* URL Input và Preview Button */}
+                <div className="w-full max-w-md">
+                  <label className="block text-sm font-medium text-gray-600 mb-2">
+                    Image URL
+                  </label>
+                  <div className="flex gap-2">
                     <input
-                      type="date"
-                      value={formData.start_date || ""}
-                      onChange={(e) =>
-                        handleInputChange("start_date", e.target.value)
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                      type="text"
+                      value={formData.avatar_url || ""}
+                      onChange={(e) => validateImageUrl(e.target.value)}
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                      placeholder="https://example.com/image.jpg"
                     />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-2">
-                      End Date
-                    </label>
-                    <input
-                      type="date"
-                      value={formData.end_date || ""}
-                      onChange={(e) =>
-                        handleInputChange("end_date", e.target.value)
+                    <button
+                      type="button"
+                      onClick={() =>
+                        validateImageUrl(formData.avatar_url || "")
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                    />
+                      className="px-4 py-2 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200"
+                    >
+                      Preview
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
-          )}
-        </div>
+
+            {/* Personal Information */}
+            <div className="grid grid-cols-2 gap-6">
+              <div className="bg-gray-50 p-6 rounded-lg">
+                <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                  Personal Information
+                </h3>
+                <div className="space-y-4">
+                  <div>
+                    <Form.Item
+                      name="full_name"
+                      label={
+                        <span>
+                          Full Name<span className="text-red-600">*</span>
+                        </span>
+                      }
+                      rules={[
+                        { required: true, message: "Full Name is required" },
+                      ]}
+                      style={{ marginBottom: "16px" }}
+                      className="block text-sm font-medium text-gray-600 mb-2"
+                    >
+                      <Input
+                        type="text"
+                        value={formData.full_name || ""}
+                        onChange={(e) =>
+                          handleInputChange("full_name", e.target.value)
+                        }
+                      />
+                    </Form.Item>
+                  </div>
+
+                  <div>
+                    <Form.Item
+                      name="phone"
+                      label={
+                        <span>
+                          Phone<span className="text-red-600">*</span>
+                        </span>
+                      }
+                      rules={[{ required: true, message: "Phone is required" }]}
+                    >
+                      <Input
+                        type="text"
+                        value={formData.phone || ""}
+                        onChange={(e) =>
+                          handleInputChange("phone", e.target.value)
+                        }
+                      />
+                    </Form.Item>
+                  </div>
+
+                  <div>
+                    <Form.Item
+                      name="address"
+                      label={
+                        <span>
+                          Address<span className="text-red-600">*</span>
+                        </span>
+                      }
+                      rules={[
+                        { required: true, message: "Address is required" },
+                      ]}
+                    >
+                      <Input
+                        type="text"
+                        value={formData.address || ""}
+                        onChange={(e) =>
+                          handleInputChange("address", e.target.value)
+                        }
+                      />
+                    </Form.Item>
+                  </div>
+                </div>
+              </div>
+
+              {/* Employment Details */}
+              <div className="bg-gray-50 p-6 rounded-lg">
+                <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                  Employment Details
+                </h3>
+                <div className="space-y-4">
+                  {/* Job Rank */}
+                  <Form.Item
+                    name="job_rank"
+                    label={
+                      <span>
+                        Job Rank<span className="text-red-600">*</span>
+                      </span>
+                    }
+                    rules={[
+                      { required: true, message: "Job Rank is required" },
+                    ]}
+                  >
+                    {isLoading ? (
+                      <div className="text-gray-500">Loading jobs...</div>
+                    ) : (
+                      <Select
+                        defaultValue={formData.job_rank}
+                        value={formData.job_rank}
+                        onChange={(value) =>
+                          handleInputChange("job_rank", value)
+                        }
+                        placeholder="Select Job Rank"
+                        style={{ width: "100%" }}
+                      >
+                        {getUniqueJobsByTitle(jobs).map((job) => (
+                          <Option key={job._id} value={job.job_rank}>
+                            {job.job_rank}
+                          </Option>
+                        ))}
+                      </Select>
+                    )}
+                  </Form.Item>
+
+                  {/* Department */}
+                  <Form.Item
+                    name="department_code"
+                    label={
+                      <span>
+                        Department<span className="text-red-600">*</span>
+                      </span>
+                    }
+                    rules={[
+                      { required: true, message: "Department is required" },
+                    ]}
+                  >
+                    {isLoading ? (
+                      <div className="text-gray-500">
+                        Loading departments...
+                      </div>
+                    ) : (
+                      <Select
+                        defaultValue={formData.department_code}
+                        value={formData.department_code}
+                        onChange={(value) =>
+                          handleInputChange("department_code", value)
+                        }
+                        placeholder="Select Department"
+                        style={{ width: "100%" }}
+                      >
+                        {departments.map((dept) => (
+                          <Option key={dept._id} value={dept.department_code}>
+                            {dept.department_name}
+                          </Option>
+                        ))}
+                      </Select>
+                    )}
+                  </Form.Item>
+
+                  {/* Contract Type */}
+                  <Form.Item
+                    name="contract_type"
+                    label={
+                      <span>
+                        Contract Type<span className="text-red-600">*</span>
+                      </span>
+                    }
+                    rules={[
+                      { required: true, message: "Contract Type is required" },
+                    ]}
+                  >
+                    {isLoading ? (
+                      <div className="text-gray-500">Loading contracts...</div>
+                    ) : (
+                      <Select
+                        defaultValue={formData.contract_type}
+                        value={formData.contract_type}
+                        onChange={(value) =>
+                          handleInputChange("contract_type", value)
+                        }
+                        placeholder="Select Contract Type"
+                        style={{ width: "100%" }}
+                      >
+                        {contracts.map((contract) => (
+                          <Option
+                            key={contract._id}
+                            value={contract.contract_type}
+                          >
+                            {contract.description}
+                          </Option>
+                        ))}
+                      </Select>
+                    )}
+                  </Form.Item>
+
+                  {/* Salary */}
+                  <Form.Item
+                    name="salary"
+                    label={
+                      <span>
+                        Salary<span className="text-red-600">*</span>
+                      </span>
+                    }
+                    rules={[{ required: true, message: "Salary is required" }]}
+                  >
+                    <Input
+                      type="number"
+                      value={formData.salary || 0}
+                      onChange={(e) =>
+                        handleInputChange("salary", Number(e.target.value))
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                    />
+                  </Form.Item>
+                </div>
+              </div>
+            </div>
+
+            {/* Contract Period */}
+            <div className="bg-gray-50 p-6 rounded-lg">
+              <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                Contract Period
+              </h3>
+              <div className="grid grid-cols-2 gap-6">
+                <Form.Item
+                  name="start_date"
+                  label={
+                    <span className="block text-sm font-medium text-gray-600 mb-2">
+                      Start Date
+                    </span>
+                  }
+                  rules={[
+                    { required: true, message: "Start Date is required" },
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        if (!value || !getFieldValue('end_date') || new Date(value) < new Date(getFieldValue('end_date'))) {
+                          return Promise.resolve();
+                        }
+                        return Promise.reject(new Error('Start Date must be before End Date'));
+                      },
+                    }),
+                  ]}
+                >
+                  <Input
+                    type="date"
+                    value={formData.start_date || ""}
+                    onChange={(e) =>
+                      handleInputChange("start_date", e.target.value)
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                  />
+                </Form.Item>
+                <Form.Item
+                  name="end_date"
+                  label={
+                    <span className="block text-sm font-medium text-gray-600 mb-2">
+                      End Date
+                    </span>
+                  }
+                  rules={[{ required: true, message: "End Date is required" },
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        if (!value || !getFieldValue('start_date') || new Date(value) > new Date(getFieldValue('start_date'))) {
+                          return Promise.resolve();
+                        }
+                        return Promise.reject(new Error('End Date must be after Start Date'));
+                      },
+                    }),
+                  ]}
+                >
+                  <Input
+                    type="date"
+                    value={formData.end_date || ""}
+                    onChange={(e) =>
+                      handleInputChange("end_date", e.target.value)
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                  />
+                </Form.Item>
+              </div>
+            </div>
+          </div>
+        )}
         <div className="px-6 py-4 border-t bg-white">
           <div className="flex justify-end gap-3">
             <button
@@ -585,339 +612,12 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
             </button>
           </div>
         </div>
-      </form>
+      </Form>
+      // </div>
+
+      // </form>
     );
   }
-
-  return (
-    <div
-      className="fixed inset-0 z-50 overflow-y-auto transition-opacity duration-300 ease-in-out"
-      style={{ opacity: isAnimating ? 1 : 0 }}
-    >
-      <div
-        className="fixed inset-0 bg-black/30 transition-opacity duration-300 ease-in-out"
-        style={{ opacity: isAnimating ? 1 : 0 }}
-        onClick={handleClose}
-      ></div>
-      <div className="relative min-h-screen flex items-center justify-center p-4">
-        <div
-          className="relative bg-white rounded-lg w-full max-w-4xl p-6 transition-all duration-300 ease-in-out transform"
-          style={{
-            opacity: isAnimating ? 1 : 0,
-            transform: isAnimating ? "scale(1)" : "scale(0.95)",
-          }}
-        >
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-[#FF9447]">Edit Employee</h2>
-            <button
-              onClick={handleClose}
-              className="p-1 hover:bg-gray-100 rounded-full transition-colors"
-            >
-              <X className="w-6 h-6 text-gray-500" />
-            </button>
-          </div>
-          <form
-            onSubmit={handleSubmit}
-            className="h-[600px] flex flex-col bg-white"
-          >
-            <div className="flex-1 overflow-y-auto p-6">
-              {error ? (
-                <div className="text-red-500">{error}</div>
-              ) : (
-                <div className="space-y-6">
-                  {/* Avatar Section */}
-                  <div className="mb-8">
-                    <h3 className="text-lg font-semibold text-gray-700 mb-4">
-                      Profile Image
-                    </h3>
-                    <div className="flex flex-col items-center gap-4">
-                      {/* Avatar Preview với Upload Overlay */}
-                      <div className="relative group">
-                        <div className="w-40 h-40 rounded-full border-4 border-gray-200 overflow-hidden">
-                          {previewAvatar ? (
-                            <img
-                              src={previewAvatar}
-                              alt="Avatar preview"
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full bg-gray-50 flex items-center justify-center">
-                              <User className="w-16 h-16 text-gray-400" />
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Upload Overlay */}
-                        <div className="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <ImageUploader onImageUploaded={handleImageUpload} />
-                        </div>
-                      </div>
-
-                      {/* URL Input và Preview Button */}
-                      <div className="w-full max-w-md">
-                        <label className="block text-sm font-medium text-gray-600 mb-2">
-                          Image URL
-                        </label>
-                        <div className="flex gap-2">
-                          <input
-                            type="text"
-                            value={formData.avatar_url || ""}
-                            onChange={(e) => validateImageUrl(e.target.value)}
-                            className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                            placeholder="https://example.com/image.jpg"
-                          />
-                          <button
-                            type="button"
-                            onClick={() =>
-                              validateImageUrl(formData.avatar_url || "")
-                            }
-                            className="px-4 py-2 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200"
-                          >
-                            Preview
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Personal Information */}
-                  <div className="grid grid-cols-2 gap-6">
-                    <div className="bg-gray-50 p-6 rounded-lg">
-                      <h3 className="text-lg font-semibold text-gray-700 mb-4">
-                        Personal Information
-                      </h3>
-                      <div className="space-y-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-600 mb-2">
-                            Full Name
-                          </label>
-                          <input
-                            type="text"
-                            value={formData.full_name || ""}
-                            onChange={(e) =>
-                              handleInputChange("full_name", e.target.value)
-                            }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-600 mb-2">
-                            Phone
-                          </label>
-                          <input
-                            type="text"
-                            value={formData.phone || ""}
-                            onChange={(e) =>
-                              handleInputChange("phone", e.target.value)
-                            }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-600 mb-2">
-                            Address
-                          </label>
-                          <input
-                            type="text"
-                            value={formData.address || ""}
-                            onChange={(e) =>
-                              handleInputChange("address", e.target.value)
-                            }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Employment Details */}
-                    <div className="bg-gray-50 p-6 rounded-lg">
-                      <h3 className="text-lg font-semibold text-gray-700 mb-4">
-                        Employment Details
-                      </h3>
-                      <div className="space-y-4">
-                        {/* <div>
-                          <label className="block text-sm font-medium text-gray-600 mb-2">
-                            Job Rank
-                          </label>
-                          {isLoading ? (
-                            <div className="text-gray-500">Loading jobs...</div>
-                          ) : (
-                            <select
-                              value={formData.job_rank || ""}
-                              onChange={(e) =>
-                                handleInputChange("job_rank", e.target.value)
-                              }
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                            >
-                              <option value="">Select Job Rank</option>
-                              {getUniqueJobsByTitle(jobs).map((job) => (
-                                <option key={job._id} value={job.job_rank}>
-                                  {job.job_title}
-                                </option>
-                              ))}
-                            </select>
-                          )}
-                        </div> */}
-                        <Form.Item
-                  name="job_rank"
-                  label="Job Rank"
-                  rules={[{ required: true, message: "Job Rank is required" }]}
-                >
-                  <Select
-                    value={formData.job_rank || ""}
-                    onChange={(value) => handleInputChange("job_rank", value)}
-                  >
-                    <Option value="">Select Job Rank</Option>
-                    {getUniqueJobsByTitle(jobs).map((job) => (
-                      <Option key={job._id} value={job.job_rank}>
-                        {job.job_title}
-                      </Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-
-                        <div>
-                          <label className="block text-sm font-medium text-gray-600 mb-2">
-                            Department
-                          </label>
-                          {isLoading ? (
-                            <div className="text-gray-500">
-                              Loading departments...
-                            </div>
-                          ) : (
-                            <select
-                              value={formData.department_code || ""}
-                              onChange={(e) =>
-                                handleInputChange(
-                                  "department_code",
-                                  e.target.value
-                                )
-                              }
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                            >
-                              <option value="">Select Department</option>
-                              {departments.map((dept) => (
-                                <option
-                                  key={dept._id}
-                                  value={dept.department_code}
-                                >
-                                  {dept.department_name}
-                                </option>
-                              ))}
-                            </select>
-                          )}
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-600 mb-2">
-                            Contract Type
-                          </label>
-                          {isLoading ? (
-                            <div className="text-gray-500">
-                              Loading contracts...
-                            </div>
-                          ) : (
-                            <select
-                              value={formData.contract_type || ""}
-                              onChange={(e) =>
-                                handleInputChange(
-                                  "contract_type",
-                                  e.target.value
-                                )
-                              }
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                            >
-                              <option value="">Select Contract Type</option>
-                              {contracts.map((contract) => (
-                                <option
-                                  key={contract._id}
-                                  value={contract.contract_type}
-                                >
-                                  {contract.description}
-                                </option>
-                              ))}
-                            </select>
-                          )}
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-600 mb-2">
-                            Salary
-                          </label>
-                          <input
-                            type="number"
-                            value={formData.salary || 0}
-                            onChange={(e) =>
-                              handleInputChange(
-                                "salary",
-                                Number(e.target.value)
-                              )
-                            }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Contract Period */}
-                  <div className="bg-gray-50 p-6 rounded-lg">
-                    <h3 className="text-lg font-semibold text-gray-700 mb-4">
-                      Contract Period
-                    </h3>
-                    <div className="grid grid-cols-2 gap-6">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-600 mb-2">
-                          Start Date
-                        </label>
-                        <input
-                          type="date"
-                          value={formData.start_date || ""}
-                          onChange={(e) =>
-                            handleInputChange("start_date", e.target.value)
-                          }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-600 mb-2">
-                          End Date
-                        </label>
-                        <input
-                          type="date"
-                          value={formData.end_date || ""}
-                          onChange={(e) =>
-                            handleInputChange("end_date", e.target.value)
-                          }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-            <div className="px-6 py-4 border-t bg-white">
-              <div className="flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={handleClose}
-                  className="px-4 py-2 text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-[#FF9447] text-white rounded hover:bg-[#FF8335]"
-                  disabled={isSubmitting || isLoading || !!error} // Vô hiệu hóa khi loading hoặc có lỗi
-                >
-                  {isSubmitting ? "Saving..." : "Save Changes"}
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  );
 };
 
 export default EditEmployeeModal;
