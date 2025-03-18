@@ -38,6 +38,8 @@ import VerifyEmail from "./pages/VerifyEmailPage/VerifyEmail";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
 import AnimatedBackground from "./components/AnimatedBackground/AnimatedBackground";
 import TableApproval from "./components/ApprovalComponents/TableApproval";
+import PrivatePolicy from "./pages/PrivatePolicy/Policy";
+import PolicyLayout from "./layouts/PolicyLayout/PolicyLayout";
 
 const router = createBrowserRouter([
   {
@@ -101,8 +103,7 @@ const router = createBrowserRouter([
       { path: "dashboard", element: <ApprovalDashBoardPage /> },
       { path: "approval-management", element: <ApprovalPage /> },
       { path: "/approval/dashboard", element: <ApprovalDashBoardPage /> },
-      { path: "/approval/table-approval", element: <TableApproval /> }
-
+      { path: "/approval/table-approval", element: <TableApproval /> },
     ],
   },
   {
@@ -170,8 +171,11 @@ const router = createBrowserRouter([
     path: "/verify-email/:token",
     element: <VerifyEmail />,
   },
-
-
+  {
+    path: "/privacy-policy",
+    element: <PolicyLayout />,
+    errorElement: <ErrorPage />,
+  },
 ]);
 
 const App: React.FC = () => {

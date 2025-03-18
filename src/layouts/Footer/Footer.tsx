@@ -8,6 +8,7 @@ const Footer: React.FC = () => {
     { href: "#news-section", label: "News" },
     { href: "#about-us-section", label: "About Us" },
     { href: "#contact-us-section", label: "Contact Us" },
+    { href: "/privacy-policy", label: "Privacy Policy" },
   ];
 
   return (
