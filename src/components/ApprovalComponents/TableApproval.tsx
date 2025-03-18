@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Button, Pagination, Tag } from "antd";
+import { Button, Pagination } from "antd";
+import { useLocation } from 'react-router-dom';
 import ClaimRequestDetail from "./ClaimRequestDetail";
 import ConfirmModal from "../ConfirmModal/ConfirmModal";
 import Icons from "../icon";
@@ -7,12 +8,17 @@ import { searchApprovalClaims } from "../../services/approvalService";
 import { toast } from "react-toastify";
 import debounce from "lodash/debounce";
 import { ClaimInfo } from "../../types/ClaimType";
+import { formatDate } from "../../utils/formatDate";
 
 const TableApproval: React.FC = () => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const initialStatusFilter = queryParams.get('status') || 'Pending Approval';
+
   const [approvalData, setApprovalData] = useState<ClaimInfo[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
-  const [statusFilter, setStatusFilter] = useState<string>("Pending Approval");
+  const [statusFilter, setStatusFilter] = useState<string>(initialStatusFilter);
   const [showApprovalDetail, setShowApprovalDetail] = useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
@@ -133,34 +139,21 @@ const TableApproval: React.FC = () => {
     }
   };
 
-  const formatDateTime = (date: string) => {
-    const dateTime = new Date(date);
-    return `${dateTime.toLocaleDateString('vi-VN')} - ${dateTime.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}`;
-  };
-
   return (
     <>
       <div className="flex justify-between items-center mb-4 flex-wrap gap-4">
-        <div>
-          {statusTags.map((status) => (
-            <Tag
-              key={status}
-              color={
-                statusFilter === status ||
-                  (status === "Pending Approval" && statusFilter === "")
-                  ? "#ff914d"
-                  : "default"
-              }
-              onClick={() => handleStatusChange(status)}
-              className="cursor-pointer !px-2 !py-1 !font-squada !text-lg !rounded-lg"
-            >
-              {(statusFilter === status ||
-                (status === "Pending Approval")) && (
-                  <Icons.Check className="inline-flex" />
-                )}{" "}
-              {status}
-            </Tag>
-          ))}
+        <div className="flex items-center ">
+          <select
+            onChange={(value) => handleStatusChange(value.target.value)}
+            className="px-3 py-1 border rounded-lg font-squada text-lg"
+            value={statusFilter}
+          >
+            {statusTags.map((tag) => (
+              <option key={tag} value={tag}>
+                {tag}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="relative">
@@ -176,14 +169,14 @@ const TableApproval: React.FC = () => {
             fontSize={20}
           />
         </div>
-      </div>
+      </div >
       <div className="overflow-x-auto max-w-screen">
         <table className="min-w-full !border-separate border-spacing-y-2.5 text-black border-0 p-2">
           <thead className="bg-brand-grandient h-[70px] text-lg text-white !rounded-t-lg">
             <tr className="bg-gradient from-[FEB78A] to-[FF914D] w-full">
               <th className="border-white px-4 py-2 !rounded-tl-2xl">Claim Name</th>
               <th className="border-l-2 border-white px-4 py-2">Claimer</th>
-              <th className="border-l-2 border-white px-4 py-2">Time</th>
+              <th className="border-l-2 border-white px-4 py-2">Total Work Time</th>
               <th className="border-l-2 border-white px-4 py-2">Status</th>
               {statusFilter === "Pending Approval" ? (<>
                 <th className="border-l-2 border-white px-4 py-2">Date Create</th>
@@ -203,12 +196,12 @@ const TableApproval: React.FC = () => {
               >
                 <td className="px-4 py-2 rounded-l-2xl">{item.claim_name}</td>
                 <td className="px-4 py-2">{item.staff_name}</td>
-                <td className="px-4 py-2">{formatDateTime(item.claim_start_date)}</td>
+                <td className="px-4 py-2 text-gradient-color">{item.total_work_time} hours</td>
                 <td className="px-4 py-2">{handleStatusChangeHTML(item.claim_status)}</td>
                 {item.claim_status === "Pending Approval" ? (
-                  <td className="px-4 py-2">{formatDateTime(item.created_at)}</td>
+                  <td className="px-4 py-2">{formatDate(item.created_at)}</td>
                 ) : (
-                  <td className="px-4 py-2 rounded-r-2xl">{formatDateTime(item.created_at)}</td>
+                  <td className="px-4 py-2 rounded-r-2xl">{formatDate(item.created_at)}</td>
                 )}
                 {item.claim_status === "Pending Approval" ? (
                   <td
@@ -217,9 +210,9 @@ const TableApproval: React.FC = () => {
                   >
                     <div className="w-full flex justify-center gap-2 items-center space-x-2">
                       <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
-                        <Button className="!bg-transparent !border-none">
-                          <span className="hover:scale-110">
-                            <Icons.Approve
+                        <Button className="!bg-transparent !border-none !p-2">
+                          <span className="hover:scale-105">
+                            <Icons.CircleCheck
                               color="green"
                               onClick={() => handleApprove(item._id)}
                               className="w-10 h-10"
@@ -228,9 +221,9 @@ const TableApproval: React.FC = () => {
                         </Button>
                       </div>
                       <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
-                        <Button className="!bg-transparent !border-none">
-                          <span className="hover:scale-110">
-                            <Icons.Reject
+                        <Button className="!bg-transparent !border-none !p-2">
+                          <span className="hover:scale-105">
+                            <Icons.CircleReject
                               color="red"
                               onClick={() => handleReject(item._id)}
                               className="w-10 h-10"
@@ -260,13 +253,15 @@ const TableApproval: React.FC = () => {
           pageSizeOptions={["5", "10", "20", "50"]}
         />
       </div>
-      {selectedApproval && (
-        <ClaimRequestDetail
-          visible={showApprovalDetail}
-          onClose={handleClose}
-          id={selectedApproval} // Pass the selectedApprovalId here
-        />
-      )}
+      {
+        selectedApproval && (
+          <ClaimRequestDetail
+            visible={showApprovalDetail}
+            onClose={handleClose}
+            id={selectedApproval} // Pass the selectedApprovalId here
+          />
+        )
+      }
       <ConfirmModal
         modalProps={{
           visible: showConfirmModal,

@@ -611,8 +611,6 @@ const AdminUserManagement: React.FC = () => {
   return (
     <div className="w-full flex justify-center">
       <div className="w-full flex-col px-6">
-        <h1 className="text-5xl !py-9">User Management</h1>
-
         {/* Search and Filters */}
         <div className="flex justify-between items-center mb-6">
           <div className="flex gap-4">
@@ -798,14 +796,14 @@ const AdminUserManagement: React.FC = () => {
                             handleEdit(user);
                           }}
                         >
-                          <Edit2 size={18} />
+                          <Edit2 size={20} />
                         </button>
 
                         <button
                           className="text-green-500 hover:text-green-600"
                           onClick={() => handleViewUserDetails(user)}
                         >
-                          <Eye size={18} />
+                          <Eye size={20} />
                         </button>
 
                         <button
@@ -819,7 +817,7 @@ const AdminUserManagement: React.FC = () => {
                                 : "inline",
                           }}
                         >
-                          <Trash2 size={18} />
+                          <Trash2 size={20} />
                         </button>
                       </>
                     )}

@@ -2,18 +2,39 @@ import { get, post, put } from "./apiService";
 import { ResponseModel } from "../models/ResponseModel";
 import { API_CONSTANTS } from "../constants/apiConstants";
 import {
+  ClaimInfo,
   ClaimItem,
   ClaimsRequest,
   ClaimsResponse,
   PageInfoRequest,
   SearchCondition,
+  ClaimLogResponse,
 } from "../types/ClaimType";
 import { ClaimRequestDataField } from "../components/UserComponents/ModalAddNewClaim";
+
+export interface PageInfo {
+  pageNum: number;
+  pageSize: number;
+  totalItems?: number;
+  totalPages?: number;
+}
 
 interface UpdateClaimStatusPayload {
   _id: string;
   claim_status: string;
   comment: string;
+}
+export interface ClaimSearchRequest {
+  searchCondition: SearchConditionClaim;
+  pageInfo: PageInfo;
+}
+
+export interface SearchConditionClaim {
+  keyword: string;
+  claim_status: string;
+  project_start_date: string;
+  project_end_date: string;
+  is_delete: boolean;
 }
 
 // Hàm để gọi API lấy dữ liệu yêu cầu
@@ -52,6 +73,22 @@ export const getClaimerSearch = async (
   });
   return response;
 };
+//                 //
+export const getAllClaims = async ({
+  searchCondition,
+  pageInfo,
+}: ClaimSearchRequest): Promise<
+  ResponseModel<{ pageData: ClaimInfo[]; pageInfo: PageInfo }>
+> => {
+  const response = await post(API_CONSTANTS.CLAIMS.CLAIMERS_SEARCH, {
+    searchCondition,
+    pageInfo,
+  });
+  return response as ResponseModel<{
+    pageData: ClaimInfo[];
+    pageInfo: PageInfo;
+  }>;
+};
 
 export const getClaimDetail = async (
   id: string
@@ -86,6 +123,23 @@ export const createClaimRequest = async (
   const response = await post<ClaimItem>(
     API_CONSTANTS.CLAIMS.CLAIM_DETAIL,
     data
+  );
+  return response;
+};
+
+export const getClaimLog = async (
+  claimId: string,
+  pageInfo: PageInfo
+): Promise<ResponseModel<ClaimLogResponse>> => {
+  const response = await post<ClaimLogResponse>(
+    API_CONSTANTS.CLAIMS.CLAIM_LOG,
+    {
+      searchCondition: {
+        claim_id: claimId,
+        is_deleted: false
+      },
+      pageInfo
+    }
   );
   return response;
 };

@@ -37,6 +37,7 @@ import {
   FaClock,
 } from "react-icons/fa";
 
+import { BiMenuAltLeft } from "react-icons/bi";
 import { GoArrowUpRight } from "react-icons/go";
 import { FaArrowRight } from "react-icons/fa6";
 import { MdOutlineEmail, MdApproval, MdCancel } from "react-icons/md";
@@ -95,6 +96,7 @@ const Icons: IconType = {
   Facebook: Facebook,
   Instagram: Instagram,
   SearchIcon: Search,
+  Menu3: BiMenuAltLeft,
 };
 
 export default Icons;

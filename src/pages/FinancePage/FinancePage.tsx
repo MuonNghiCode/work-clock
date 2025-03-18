@@ -175,7 +175,6 @@ const FinancePage: React.FC = () => {
       setIsStatusModalVisible(true);
       setSelectedItem(null);
     }
-    fetchData();
   };
 
   const handleDownload = (items?: FinanceData[]) => {
@@ -230,11 +229,11 @@ const FinancePage: React.FC = () => {
   const handleStatusModalClose = () => {
     setIsStatusModalVisible(false);
     setStatus(null);
+    fetchData();
   };
 
   return (
     <div className="!mx-auto !p-1">
-      <h1 className="text-[40px] font-bold mb-2">Finance Management</h1>
       <div className="flex flex-row justify-between items-center py-2">
         <div className="flex gap-4">
           <div className="flex items-center space-x-2 border border-black text-black rounded-full w-20px h-10 p-2 px-4 relative">
@@ -255,7 +254,7 @@ const FinancePage: React.FC = () => {
             {isDatePickerVisible && (
               <div
                 ref={datePickerRef}
-                className="absolute top-full mt-2 bg-white shadow-lg p-2 rounded-md z-50 left-0 sm:right-0 sm:right-auto"
+                className="absolute top-full mt-2 bg-white shadow-lg p-2 rounded-md z-50 left-0 sm:right-0 "
               >
                 <DateRangePicker
                   ranges={dateRange}
@@ -369,15 +368,17 @@ const FinancePage: React.FC = () => {
         </tbody>
       </table>
       <div className="flex justify-end mt-4">
-        <Pagination
-          className="!font-squada flex justify-end "
-          current={currentPage}
-          total={dataFinance.length}
-          pageSize={pageSize}
-          onChange={handlePageChange}
-          showSizeChanger
-          onShowSizeChange={handlePageChange}
-        />
+        {dataFinance.length > 0 && (
+          <Pagination
+            className="!font-squada flex justify-end"
+            current={currentPage}
+            total={dataFinance.length}
+            pageSize={pageSize}
+            onChange={handlePageChange}
+            showSizeChanger
+            onShowSizeChange={handlePageChange}
+          />
+        )}
       </div>
       {selectedItem && (
         <PaymentModal

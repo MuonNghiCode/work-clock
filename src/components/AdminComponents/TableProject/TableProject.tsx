@@ -9,9 +9,10 @@ import ModalAddProject from "../ModalAddProject/ModalAddProject";
 import { debounce } from "lodash";
 import DeleteConfirmModal from "../../DeleteConfirmModal/DeleteConfirmModal";
 import { toast } from "react-toastify";
+import { formatDate } from "../../../utils/formatDate";
 
 
-const TableProject: React.FC = ({ }) => {
+const TableProject: React.FC = () => {
   const [projects, setProjects] = useState<ProjectInfo[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
@@ -77,7 +78,7 @@ const TableProject: React.FC = ({ }) => {
       };
 
       const response = await getAllProject({ searchCondition, pageInfo });
-      console.log("Response:", response.data.pageData);
+      // console.log("Response:", response.data.pageData);
       if (response.success) {
         const projects = response.data.pageData.map(projectDetail);
         setProjects(projects);
@@ -92,7 +93,7 @@ const TableProject: React.FC = ({ }) => {
 
   useEffect(() => {
     fetchProjects();
-    console.log(projects[0])
+    // console.log(projects[0])
   }, [currentPage, pageSize, searchValue]); // Add searchValue to dependencies
 
   const handleEditProject = (editedProject: ProjectInfo) => {
@@ -118,7 +119,7 @@ const TableProject: React.FC = ({ }) => {
   const handleConfirmDelete = async () => {
     if (selectedProject?._id) {
       const response = await deleteProject(selectedProject._id)
-      if(response.success){
+      if (response.success) {
         toast.success(`Delete Project ${selectedProject.project_name}`)
       }
       setShowConfirmModal(false);
@@ -134,8 +135,8 @@ const TableProject: React.FC = ({ }) => {
       isOpen: false,
       formStatus: undefined
     })
-    selectedProject !== null ? 
-    setSelectedProject(null) : null
+    selectedProject !== null ?
+      setSelectedProject(null) : null
     fetchProjects()
   };
 
@@ -148,7 +149,7 @@ const TableProject: React.FC = ({ }) => {
       case "Complete":
         return <span className="text-[#00B087]">Complete</span>;
       default:
-        return <span>{status}</span>;
+        return <span className="text-gray-600">{status}</span>;
     }
   };
   const handleAddProject = () => {
@@ -171,7 +172,7 @@ const TableProject: React.FC = ({ }) => {
       <div className="flex justify-between items-center mb-4">
         <button
           onClick={() => handleAddProject()}
-          className="bg-orange-400 text-white px-6 py-3 rounded-full hover:bg-orange-500 transition-colors flex items-center gap-2"
+          className="bg-[#FFB17A] text-white px-6 py-2 rounded-full hover:bg-[#FF9147] flex items-center gap-2 text-sm"
         >
           <span className="text-xl">+</span>
           <span className="text-lg">Add Project</span>
@@ -213,8 +214,8 @@ const TableProject: React.FC = ({ }) => {
               className="h-[70px] bg-white overflow-hidden text-center border-collapse hover:shadow-brand-orange !rounded-2xl cursor-pointer"
             >
               <td className="px-4 py-2 rounded-l-2xl">{item.project_name}</td>
-              <td className="px-4 py-2">{item.created_at}</td>
-              <td className="px-4 py-2">{item.project_end_date}</td>
+              <td className="px-4 py-2">{formatDate(item.created_at || "")}</td>
+              <td className="px-4 py-2">{formatDate(item.project_end_date)}</td>
               <td className="px-4 py-2">{item.project_department}</td>
               <td className="px-4 py-2">
                 {handleStatusChangeHTML(item.project_status)}
@@ -292,21 +293,13 @@ const TableProject: React.FC = ({ }) => {
         />
       )}
       {selectedProject && (
-      <DeleteConfirmModal
-      onClose={handleClose}
-      onConfirm={handleConfirmDelete}
-      project={selectedProject}
-      visible={showConfirmModal}
-      />
-      )}
-      {/* {selectedProject && (
-        <EditProject
-          project={selectedProject}
+        <DeleteConfirmModal
           onClose={handleClose}
-          users={users}
-          isEditModalOpen={isEditModalOpen}
+          onConfirm={handleConfirmDelete}
+          project={selectedProject}
+          visible={showConfirmModal}
         />
-      )} */}
+      )}
     </>
   );
 };

@@ -2,6 +2,7 @@ import React from "react";
 import { format } from "date-fns";
 import emailjs from "@emailjs/browser";
 import { updateClaimStatus } from "../../services/claimService";
+import { formatCurrency } from "../../utils/formatCurrency";
 
 interface PaymentModalProps {
   isVisible: boolean;
@@ -30,7 +31,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
 }) => {
   const [formData, setFormData] = React.useState({
     title: "",
-    amount: "",
+    amount: 0,
     payment: "Card",
     message: "",
   });
@@ -57,15 +58,31 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
     >
   ) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    if (name === "amount") {
+      // Xóa ký tự không phải số
+      const numericValue = value.replace(/\./g, "").replace(/[^0-9]/g, "");
+      setFormData({
+        ...formData,
+        [name]: parseFloat(numericValue) || 0, // Store as number
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
+  };
+
+  const formatAmount = (amount: number) => {
+    return amount.toLocaleString("vi-VN", { style: "decimal" });
   };
 
   const sendEmail = (formData: any) => {
     const templateParams = {
       title: formData.title,
-      amount: formData.amount,
-      email: email,
-      to_email: accountantEmail,
+      amount: formatCurrency(formData.amount),
+      email: accountantEmail,
+      to_email: email,
       message: formData.message,
       transaction: formData.payment,
       claimer: claimer,
@@ -126,13 +143,16 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block mb-1">Amount</label>
-              <input
-                name="amount"
-                value={formData.amount}
-                onChange={handleChange}
-                className="border border-gray-300 rounded-lg p-2 w-full"
-                placeholder="Value"
-              />
+              <div className="flex items-center border border-gray-300 rounded-lg">
+                <input
+                  name="amount"
+                  value={formatAmount(formData.amount)}
+                  onChange={handleChange}
+                  className="p-2 w-full rounded-l-lg"
+                  placeholder="Value"
+                />
+                <span className="p-2">VND</span>
+              </div>
             </div>
             <div>
               <label className="block mb-1">Date</label>
