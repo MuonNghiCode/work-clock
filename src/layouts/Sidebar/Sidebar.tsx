@@ -188,7 +188,7 @@ const Sidebar: React.FC = () => {
               ))}
             </>
           )}
-          <div className="border-t border-gray-400 my-2"></div>
+          <div className="border-t border-gray-400 my-2 mr-4"></div>
           <NavLink
             to="#"
             onClick={(e) => {
