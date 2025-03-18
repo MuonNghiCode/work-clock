@@ -798,14 +798,14 @@ const AdminUserManagement: React.FC = () => {
                             handleEdit(user);
                           }}
                         >
-                          <Edit2 size={18} />
+                          <Edit2 size={20} />
                         </button>
 
                         <button
                           className="text-green-500 hover:text-green-600"
                           onClick={() => handleViewUserDetails(user)}
                         >
-                          <Eye size={18} />
+                          <Eye size={20} />
                         </button>
 
                         <button
@@ -819,7 +819,7 @@ const AdminUserManagement: React.FC = () => {
                                 : "inline",
                           }}
                         >
-                          <Trash2 size={18} />
+                          <Trash2 size={20} />
                         </button>
                       </>
                     )}

@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Squada+One&display=swap");
+
 @import "tailwindcss";
 @layer theme, base, components, utilities;
 :root {
@@ -52,6 +53,19 @@ html {
   border: 2px solid rgba(255, 255, 255, 0.6);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
+
+
+.ant-form-item-required{
+  font-family: 'Squada-One';
+  font-weight: bold;
+  }
+  .ant-form-item-required::before {
+    display: none !important;
+  }
+  .ant-form-item{
+    margin-bottom: 0 !important;
+  }
+
 
 .ant-pagination .ant-pagination-item-active {
   border: 2px solid #ff914d !important;
@@ -135,13 +149,17 @@ html {
     font-weight: bold;
   }
   .rbc-event {
-    background: linear-gradient(135deg, #ff914d 10%, #feb78a 90%);
+    background: linear-gradient(135deg, #ff914d 20%, #feb78a 80%);
     color: white;
     font-weight: bold;
     border-radius: 8px;
     padding: 5px;
     display: flex;
     flex-direction: column;
+  }
+  
+  .event-time {
+    font-weight: bold;
   }
   .rbc-event-label {
     display: none !important;

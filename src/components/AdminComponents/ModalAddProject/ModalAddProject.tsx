@@ -69,15 +69,22 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({
       });
     } else {
       setFormCheck("add");
-      console.log("no project data...");
+      // console.log("no project data...");
       form.resetFields();
     }
   };
 
   useEffect(() => {
-    loadEditProject();
-    console.log("form", formCheck);
-  }, [project]);
+    if (isOpen.isOpen) {
+      loadEditProject();
+    }
+  }, [isOpen.isOpen, project]);
+
+  useEffect(() => {
+    if (form) {
+      loadEditProject();
+    }
+  }, [form, project]);
 
   const fetchUserList = async (search: string) => {
     if (!search) return;
@@ -119,7 +126,7 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({
       is_deleted: false,
       _id: project?._id || undefined, // Use optional chaining and provide undefined instead of null
     };
-    console.log("check submit", newProjectData);
+    // console.log("check submit", newProjectData);
     const response = newProjectData._id
       ? await getEditProject(newProjectData, newProjectData._id)
       : await createProject(newProjectData);

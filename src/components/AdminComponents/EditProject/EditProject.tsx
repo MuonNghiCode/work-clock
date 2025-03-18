@@ -4,6 +4,7 @@ import { Modal } from "antd";
 import { getEditProject } from "../../../services/projectService";
 import { ResponseModel } from "../../../models/ResponseModel";
 import { toast } from "react-toastify";
+import { formatDate } from "../../../utils/formatDate";
 
 interface EditProjectProps {
   onClose: () => void;
@@ -18,10 +19,6 @@ const EditProject: React.FC<EditProjectProps> = ({
   users,
   isEditModalOpen,
 }) => {
-  const formatDate = (date: Date) => {
-    if (!date) return "";
-    return date.toISOString().split("T")[0]; // Format to YYYY-MM-DD
-  };
 
   // Store original project data
   const [originalProjectData] = useState({

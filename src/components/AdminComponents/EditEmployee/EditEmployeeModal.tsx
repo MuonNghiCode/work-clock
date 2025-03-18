@@ -5,29 +5,11 @@ import { toast } from "react-toastify";
 import axiosInstance from "../../../config/axiosUser";
 import ImageUploader from "../../ImageUploader/ImageUploader";
 import { EmployeeInfo } from "../../../types/Employee";
-// import { Form, Input, Select } from "antd";
+import { Form, Input } from "antd";
+import { formatDate } from "../../../utils/formatDate";
 
-// export interface Employee {
-//   _id: string;
-//   user_id: string;
-//   job_rank: string;
-//   contract_type: string;
-//   account: string;
-//   address: string;
-//   phone: string;
-//   full_name: string;
-//   avatar_url: string;
-//   department_code: string;
-//   salary: number;
-//   start_date: string | null;
-//   end_date: string | null;
-//   updated_by: string;
-//   created_at: string;
-//   updated_at: string;
-//   is_deleted: boolean;
-// }
 
-interface Job {
+export interface Job {
   _id: string;
   job_rank: string;
   job_title: string;
@@ -57,10 +39,6 @@ interface EditEmployeeModalProps {
   onUpdateSuccess?: (updatedEmployee: EmployeeInfo) => void;
 }
 
-const formatDate = (dateString: string | null | undefined): string => {
-  if (!dateString) return "";
-  return new Date(dateString).toISOString().split("T")[0];
-};
 
 const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
   isOpen,
@@ -77,7 +55,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  console.log(formData)
+  console.log(formData);
 
   // Animation states
   const [isAnimating, setIsAnimating] = useState(false);
@@ -111,7 +89,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
         department_code: employee.department_code,
         salary: employee.salary || 0,
         start_date: formatDate(employee.start_date),
-        end_date: formatDate(employee.end_date),
+        end_date: employee.end_date ? formatDate(employee.end_date) : "",
       });
       setPreviewAvatar(employee.avatar_url || ""); // Đồng bộ previewAvatar
     } else {
@@ -226,12 +204,12 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
   const getUniqueJobsByTitle = (jobs: Job[]) => {
     const uniqueJobTitles = new Map<string, Job>();
     jobs.forEach((job) => {
-      if (!uniqueJobTitles.has(job.job_title)) {
-        uniqueJobTitles.set(job.job_title, job);
+      if (!uniqueJobTitles.has(job.job_rank)) {
+        uniqueJobTitles.set(job.job_rank, job);
       }
     });
     return Array.from(uniqueJobTitles.values()).sort((a, b) =>
-      a.job_title.localeCompare(b.job_title)
+      a.job_rank.localeCompare(b.job_rank)
     );
   };
 
@@ -244,7 +222,10 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
 
   if (isEmbedded) {
     return (
-      <form onSubmit={handleSubmit} className="h-[600px] flex flex-col bg-white">
+      <form
+        onSubmit={handleSubmit}
+        className="h-[600px] flex flex-col bg-white"
+      >
         <div className="flex-1 overflow-y-auto p-6">
           {error ? (
             <div className="text-red-500">{error}</div>
@@ -313,7 +294,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                   </h3>
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-600 mb-2">
+                      {/* <label className="block text-sm font-medium text-gray-600 mb-2">
                         Full Name
                       </label>
                       <input
@@ -321,11 +302,16 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                         value={formData.full_name || ""}
                         onChange={(e) => handleInputChange("full_name", e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                      />
+                      /> */}
 
-                      {/* <Form.Item
-                        label="Full Name"
+                      {/* Full Name Employee */}
+                      <Form.Item
                         name="full_name"
+                        label={
+                          <span>
+                            Full Name<span className="text-red-600">*</span>
+                          </span>
+                        }
                         rules={[
                           { required: true, message: "Full Name is required" },
                         ]}
@@ -336,10 +322,11 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                         onChange={(e) =>
                           handleInputChange("full_name", e.target.value)
                         }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                      /> */}
+                      />
                     </div>
-                    <div>
+
+                    {/* Phone Employee */}
+                    {/* <div>
                       <label className="block text-sm font-medium text-gray-600 mb-2">
                         Phone
                       </label>
@@ -351,8 +338,30 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                         }
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
                       />
-                    </div>
+                    </div> */}
                     <div>
+                      <Form.Item
+                        name="phone"
+                        label={
+                          <span>
+                            Phone<span className="text-red-600">*</span>
+                          </span>
+                        }
+                        rules={[
+                          { required: true, message: "Phone is required" },
+                        ]}
+                      ></Form.Item>
+                      <Input
+                        type="text"
+                        value={formData.phone || ""}
+                        onChange={(e) =>
+                          handleInputChange("phone", e.target.value)
+                        }
+                      />
+                    </div>
+
+                    {/* Address Employee */}
+                    {/* <div>
                       <label className="block text-sm font-medium text-gray-600 mb-2">
                         Address
                       </label>
@@ -364,6 +373,27 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                         }
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
                       />
+                    </div> */}
+
+                    <div>
+                      <Form.Item
+                        name="address"
+                        label={
+                          <span>
+                            Address<span className="text-red-600">*</span>
+                          </span>
+                        }
+                        rules={[
+                          { required: true, message: "Address is required" },
+                        ]}
+                      ></Form.Item>
+                      <Input
+                        type="text"
+                        value={formData.address || ""}
+                        onChange={(e) =>
+                          handleInputChange("address", e.target.value)
+                        }
+                      />
                     </div>
                   </div>
                 </div>
@@ -374,6 +404,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                     Employment Details
                   </h3>
                   <div className="space-y-4">
+                    {/* Job Rank */}
                     <div>
                       <label className="block text-sm font-medium text-gray-600 mb-2">
                         Job Rank
@@ -391,12 +422,14 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                           <option value="">Select Job Rank</option>
                           {getUniqueJobsByTitle(jobs).map((job) => (
                             <option key={job._id} value={job.job_rank}>
-                              {job.job_title}
+                              {job.job_rank}
                             </option>
                           ))}
                         </select>
                       )}
                     </div>
+
+                    {/* Department */}
                     <div>
                       <label className="block text-sm font-medium text-gray-600 mb-2">
                         Department
@@ -422,6 +455,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                         </select>
                       )}
                     </div>
+                    {/* Contract Type */}
                     <div>
                       <label className="block text-sm font-medium text-gray-600 mb-2">
                         Contract Type
@@ -450,6 +484,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                         </select>
                       )}
                     </div>
+                    {/* Salary */}
                     <div>
                       <label className="block text-sm font-medium text-gray-600 mb-2">
                         Salary
@@ -835,7 +870,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
           </form>
         </div>
       </div>
-      {/* <style>
+      <style>
         {`
           input, select {
             width: 100%;
@@ -848,7 +883,12 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
             border-color: #FF9447;
             box-shadow: 0 0 0 2px rgba(255, 148, 71, 0.2);
           }
-          
+          .ant-form-item-required{
+          font-family: 'Squada-One';
+          }
+          .ant-form-item-required::before {
+            display: none !important;
+          }
           label {
             display: block;
             font-size: 0.875rem;
@@ -863,7 +903,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
             margin-top: 0.25rem;
           }
         `}
-      </style> */}
+      </style>
     </div>
   );
 };

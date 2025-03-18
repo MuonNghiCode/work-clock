@@ -148,11 +148,9 @@ const UserManagementEdit: React.FC<UserManagementEditProps> = ({
             color: #374151;
             margin-bottom: 0.25rem;
           }
-          .ant-form-item-required{
-            font-family: 'Squada-One';
-          }
           .ant-form-item-required::before {
             display: none !important;
+            font-family: 'Squada-One';
           }
           .error-message {
             color: #ef4444;

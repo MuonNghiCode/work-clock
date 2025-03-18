@@ -28,9 +28,6 @@ interface ApprovalSearchResponse {
 }
 
 export const searchApprovalClaims = async (request: ApprovalSearchRequest): Promise<ResponseModel<ApprovalSearchResponse>> => {
-    // const { setLoading } = useLoadingStore.getState();
-    // setLoading(true);
-    // try {
     const response = await post<ApprovalSearchResponse>(API_CONSTANTS.APPROVAL.GET_CLAIM_APPROVAL, request);
     return response;
 };
