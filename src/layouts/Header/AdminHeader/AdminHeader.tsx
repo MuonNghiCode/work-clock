@@ -1,168 +1,63 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
 import { useUser } from "../../../contexts/UserContext";
-import Images from "../../../components/images";
 import Icons from "../../../components/icon";
-import { Dropdown, Badge, Button } from "antd";
-import type { MenuProps } from "antd";
 import { useSidebarStore } from "../../../config/zustand";
+import { APP_CONSTANTS } from "../../../constants/appConstants";
 
 const AdminHeader: React.FC = () => {
   const { user } = useUser();
   const { toggleSidebar } = useSidebarStore();
+  const location = useLocation();
 
-  const items: MenuProps["items"] = [
-    {
-      key: "1",
-      label: "Welcome back" + " " + `${user?.user_name || "Guest"}` + " !",
-      disabled: true,
-    },
-    {
-      type: "divider",
-      className: "lg:!hidden",
-    },
-    {
-      key: "2",
-      label: "Profile",
-    },
-    // {
-    //   key: "3",
-    //   label: <span className="lg:hidden inline-flex items-center">Settings
-    //     <Icons.Settings className="w-4 h-4 !ml-1" />
-    //   </span>,
-    //   className: 'lg:!hidden'
-    // },
-    // {
-    //   type: "divider",
-    //   className: 'lg:!hidden'
-    // },
-    // {
-    //   key: "4",
-    //   label:
-    //     <a href="#">
-    //       <div className="inline-flex items-center">
-    //         Dashboard <Icons.Dashboard
-    //           strokeWidth={1.5}
-    //           className="w-4 h-4 ml-1"
-    //         />
-    //       </div>
-    //     </a>,
-    //   className: 'lg:!hidden'
-    // },
-    // {
-    //   key: "5",
-    //   label: <>
-    //     <a href="#" className="lg:hidden inline-flex items-center">
-    //       Report
-    //       <Icons.ChartColumn
-    //         strokeWidth={1.5}
-    //         className="w-4 h-4 ml-1"
-    //       />
-    //     </a>
-    //   </>,
-    //   className: 'lg:!hidden'
-
-    // },
-    // {
-    //   type: "divider",
-    //   className: 'lg:!hidden'
-    // },
-    // {
-    //   key: "6",
-    //   label: <div className="">
-    //     <span className="lg:!hidden">
-    //       <hr className="py-2 border-gray-300 lg:hidden" />
-    //     </span>
-    //     <span className="lg:hidden">
-    //       <Badge count={5} className="!pr-2">
-    //         <div className="inline-flex items-center">
-    //           Notification
-    //           <Icons.Bell
-    //             strokeWidth={1.5}
-    //             className="w-4 h-4 ml-1"
-    //           />
-    //         </div>
-    //       </Badge>
-    //     </span>
-    //   </div>,
-    //   className: 'lg:!hidden'
-
-    // },
-    // {
-    //   key: "7",
-    //   label: <span className="lg:hidden inline-flex items-center">
-    //     Help
-    //     <Icons.Help
-    //       strokeWidth={1.5}
-    //       className="w-4 h-4 lg:hidden ml-1"
-    //     />
-    //   </span>,
-    //   className: 'lg:!hidden'
-    // },
-    // {
-    //   key: "8",
-    //   label: <a href="/login" className="inline-flex items-center lg:hidden">
-    //     Logout
-    //     <Icons.LogOut className="w-4 h-4 ml-1" />
-    //   </a>,
-    //   className: 'lg:!hidden'
-
-    // }
-  ];
+  const userRole =
+    APP_CONSTANTS.roleNames[
+      user?.role_code as keyof typeof APP_CONSTANTS.roleNames
+    ] || "Guest";
+  const currentTitle =
+    APP_CONSTANTS.pageTitles[
+      location.pathname as keyof typeof APP_CONSTANTS.pageTitles
+    ] || "Home";
 
   return (
-    <>
-      <div className="h-8 lg:h-12 w-full flex items-center lg:py-4 lg:space-x-7 !-pl-4">
-        <Button
+    <div className="flex items-center justify-between w-full py-4 px-6">
+      <div className="flex items-center gap-4">
+        <button
           onClick={toggleSidebar}
-          className="!h-fit !p-3 !border-none hover:!shadow-lg !text-black"
+          className="text-white p-2 bg-transparent"
         >
-          <Icons.Menu strokeWidth={2.5} className="w-8 h-8" />
-        </Button>
-        <img
-          src={Images.Logo}
-          alt="logo"
-          className="lg:max-w-64 lg:h-25 max-w-40"
-        />
+          <Icons.Menu3 className="w-10 h-10" />
+        </button>
+        {/* 🟢 Hiển thị title động theo trang */}
+        <h1 className="text-white text-2xl font-bold">{currentTitle}</h1>
       </div>
-      <div className="w-full flex justify-end items-center space-x-12 mr-5">
-        <div className="w-12 h-12 lg:block hidden">
-          <Badge count={5} className="">
-            <Icons.Bell
-              strokeWidth={2.5}
-              className="lg:w-12 lg:h-12 w-8 h-8 text-gray-300 hover:scale-110"
-            />
-          </Badge>
+      <div className="flex-1 max-w-md mx-8">
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Search..."
+            className="w-full bg-white text-gray-400 py-2 px-4 pr-10 rounded-full focus:outline-none focus:ring-1 focus:ring-[#ff914d]"
+          />
+          <div className="absolute right-3 top-2">
+            <Icons.SearchIcon className="w-6 h-6 text-gray-400" />
+          </div>
         </div>
-        <Icons.Help
-          strokeWidth={2.5}
-          className="w-12 h-12 lg:block hidden text-gray-300 hover:scale-110"
-        />
-        <Dropdown
-          menu={{ items }}
-          trigger={["click"]}
-          placement="bottomLeft"
-          overlayClassName="!w-60 !font-squanda"
-          arrow
-          autoAdjustOverflow
-          className="flex items-center "
-        >
-          <a
-            onClick={(e) => e.preventDefault()}
-            className="w-12 h-12 bg-brand-grandient text-white rounded-full hover:scale-110"
-          >
-            {user ? (
-              <img
-                src="https://randomuser.me/api/portraits/men/1.jpg"
-                alt="user"
-                className="w-12 h-12 rounded-full"
-              />
-            ) : (
-              <Icons.UserAdmin className="w-12 h-12" strokeWidth={2.5} />
-            )}
-          </a>
-        </Dropdown>
       </div>
-    </>
+      <div className="flex items-center gap-6">
+        <button className="p-2 bg-white hover:bg-brand-gradient rounded-full group">
+          <Icons.Bell className="text-gray-400 group-hover:text-white" />
+        </button>
+        <div className="flex items-center gap-4 mr-5">
+          <div className="bg-white p-2 rounded-full">
+            <Icons.User className="text-gray-400" />
+          </div>
+          <div>
+            <p className="font-semibold">{user?.user_name || "Guest"}</p>
+            <p className="text-xs text-gray-400">{userRole}</p>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

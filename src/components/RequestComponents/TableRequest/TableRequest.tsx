@@ -10,8 +10,11 @@ import {
   Calendar,
   Clock,
   CheckCircle,
+  History,
 } from "lucide-react";
 import CancelRequestModal from "../CancelRequestModal/CancelRequestModal";
+import { getClaimLog } from "../../../services/claimService";
+import { ClaimLog } from "../../../types/ClaimType";
 
 interface ClaimRequest {
   key: string;
@@ -55,10 +58,34 @@ const TableRequest: React.FC<TableRequestProps> = ({
   const [cancelingRecord, setCancelingRecord] = useState<ClaimRequest | null>(
     null
   );
+  const [claimLogs, setClaimLogs] = useState<ClaimLog[]>([]);
+  const [loadingLogs, setLoadingLogs] = useState(false);
+
+  const fetchClaimLogs = async (claimId: string) => {
+    setLoadingLogs(true);
+    try {
+      const response = await getClaimLog(claimId, {
+        pageNum: 1,
+        pageSize: 10
+      });
+      if (response.success) {
+        // Sort logs by created_at in descending order (newest first)
+        const sortedLogs = [...response.data.pageData].sort((a, b) => 
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+        setClaimLogs(sortedLogs);
+      }
+    } catch (error) {
+      console.error("Error fetching claim logs:", error);
+    } finally {
+      setLoadingLogs(false);
+    }
+  };
 
   const handleRowClick = (record: ClaimRequest) => {
     setSelectedClaim(apiData.find((item) => item.key === record.key) || null);
     setIsModalVisible(true);
+    fetchClaimLogs(record.key);
   };
 
   const handleModalClose = () => {
@@ -405,6 +432,62 @@ const TableRequest: React.FC<TableRequestProps> = ({
                   </div>
                 </div>
               </div>
+              
+              {/* Add Claim Log Section */}
+              <div className="mt-8">
+                <h4 className="text-lg font-bold text-[#FF9447] mb-4 flex items-center">
+                  <History size={20} className="mr-2" />
+                  Status History
+                </h4>
+                <div className="bg-white rounded-lg p-4 shadow-sm">
+                  {loadingLogs ? (
+                    <div className="text-center py-4">Loading logs...</div>
+                  ) : claimLogs.length > 0 ? (
+                    <div className="space-y-4">
+                      {claimLogs.map((log) => (
+                        <div key={log._id} className="flex items-center justify-between border-b pb-2">
+                          <div className="flex items-center space-x-4">
+                            <div className="flex flex-col">
+                              <span className="text-sm text-gray-500">
+                                {new Date(log.created_at).toLocaleDateString()} {new Date(log.created_at).toLocaleTimeString()}
+                              </span>
+                              <span className="font-medium">
+                                Changed by: {log.updated_by}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <span className={`px-2 py-1 rounded text-sm ${
+                              log.old_status === "Approved" ? "bg-green-100 text-green-600" :
+                              log.old_status === "Rejected" ? "bg-red-100 text-red-600" :
+                              log.old_status === "Pending Approval" ? "bg-yellow-100 text-yellow-600" :
+                              log.old_status === "Canceled" ? "bg-purple-100 text-purple-600" :
+                              log.old_status === "Paid" ? "bg-blue-100 text-blue-600" :
+                              "bg-gray-100 text-gray-600"
+                            }`}>
+                              {log.old_status}
+                            </span>
+                            <span className="text-gray-400">→</span>
+                            <span className={`px-2 py-1 rounded text-sm ${
+                              log.new_status === "Approved" ? "bg-green-100 text-green-600" :
+                              log.new_status === "Rejected" ? "bg-red-100 text-red-600" :
+                              log.new_status === "Pending Approval" ? "bg-yellow-100 text-yellow-600" :
+                              log.new_status === "Canceled" ? "bg-purple-100 text-purple-600" :
+                              log.new_status === "Paid" ? "bg-blue-100 text-blue-600" :
+                              "bg-gray-100 text-gray-600"
+                            }`}>
+                              {log.new_status}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-4 text-gray-500">No status changes found</div>
+                  )}
+                </div>
+              </div>
+
               <div className="mt-8 flex justify-end">
                 <button
                   onClick={handleModalClose}

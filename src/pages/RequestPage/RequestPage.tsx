@@ -245,13 +245,6 @@ const RequestPage: React.FC = () => {
 
   return (
     <div className="p-6 rounded-lg">
-      <h1
-        className="text-3xl font-bold text-gray-800 mb-4"
-        data-aos="fade-down"
-        data-aos-duration="1000"
-      >
-        Claim Request Management
-      </h1>
       <div
         className="flex justify-between items-center mb-4"
         data-aos="fade-down"
