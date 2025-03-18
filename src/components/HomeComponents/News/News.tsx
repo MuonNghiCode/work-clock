@@ -151,7 +151,7 @@ const News: React.FC = () => {
                 <img
                   src={Images.Logo}
                   alt="News Banner"
-                  className="rounded-lg w-full h-2/3 object-cover mt-6 mb-4"
+                  className="rounded-lg object-cover mt-6 mb-4 mx-auto"
                 />
 
                 {/* Tiêu đề */}
