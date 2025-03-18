@@ -112,14 +112,14 @@ const TableRequest: React.FC<TableRequestProps> = ({
   };
 
   const getStatusColor = (status: string) =>
-    ({
-      Approved: "text-green-600",
-      Rejected: "text-red-600",
-      Draft: "text-gray-600",
-      "Pending Approval": "text-yellow-600",
-      Canceled: "text-purple-600",
-      Paid: "text-blue-600",
-    }[status] || "text-gray-600");
+  ({
+    Approved: "text-green-600",
+    Rejected: "text-red-600",
+    Draft: "text-gray-600",
+    "Pending Approval": "text-yellow-600",
+    Canceled: "text-purple-600",
+    Paid: "text-blue-600",
+  }[status] || "text-gray-600");
 
   return (
     <div className="request-container">
@@ -176,7 +176,6 @@ const TableRequest: React.FC<TableRequestProps> = ({
                     </td>
                     <td className="request-table-cell px-4 py-2">
                       <div className="request-table-hours flex flex-col items-center">
-                        <span className="text-gray-700">{`(${item.timeFrom}-${item.timeTo})`}</span>
                         <span className="font-semibold text-[#FF914D]">
                           {item.totalHours} hours
                         </span>
@@ -412,19 +411,18 @@ const TableRequest: React.FC<TableRequestProps> = ({
                         </span>
                         <span className="w-2/3">
                           <span
-                            className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                              selectedClaim.status === "Approved"
+                            className={`px-3 py-1 rounded-full text-sm font-semibold ${selectedClaim.status === "Approved"
                                 ? "bg-green-50 text-green-600"
                                 : selectedClaim.status === "Rejected"
-                                ? "bg-red-50 text-red-600"
-                                : selectedClaim.status === "Pending Approval"
-                                ? "bg-yellow-50 text-yellow-600"
-                                : selectedClaim.status === "Canceled"
-                                ? "bg-purple-50 text-purple-600"
-                                : selectedClaim.status === "Paid"
-                                ? "bg-blue-50 text-blue-600"
-                                : "bg-gray-50 text-gray-600"
-                            }`}
+                                  ? "bg-red-50 text-red-600"
+                                  : selectedClaim.status === "Pending Approval"
+                                    ? "bg-yellow-50 text-yellow-600"
+                                    : selectedClaim.status === "Canceled"
+                                      ? "bg-purple-50 text-purple-600"
+                                      : selectedClaim.status === "Paid"
+                                        ? "bg-blue-50 text-blue-600"
+                                        : "bg-gray-50 text-gray-600"
+                              }`}
                           >
                             {selectedClaim.status}
                           </span>

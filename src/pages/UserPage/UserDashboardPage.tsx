@@ -26,7 +26,7 @@ interface ClaimRequest {
   project: string;
   start_date: string;
   end_date: string;
-  totalHours: string;
+  total_work_time: string;
   timeFrom: string;
   timeTo: string;
   status: string;
@@ -84,7 +84,7 @@ const UserDashboardPage = () => {
         project: item.project_info?.project_name,
         start_date: new Date(item.claim_start_date).toLocaleDateString("en-US"),
         end_date: new Date(item.claim_end_date).toLocaleDateString("en-US"),
-        totalHours: item.total_work_time,
+        total_work_time: item.total_work_time,
         timeFrom: new Date(item.claim_start_date).toLocaleTimeString("en-US", {
           hour: "2-digit",
           minute: "2-digit",
@@ -171,12 +171,13 @@ const UserDashboardPage = () => {
     <>
       <div className="flex items-center justify-between w-full">
         <h1 className="text-[40px] mt-4 font-bold">User Dashboard</h1>
-        <Button
-          className="w-50 !h-12 !p-4 !bg-[#ff914d] !text-lg !font-semibold !text-white hover:!bg-[#feb78a]"
+        <button
+          className="bg-[#FFB17A] text-white px-6 py-2 rounded-full hover:bg-[#FF9147] flex items-center gap-2 text-sm"
           onClick={handleOpenModalAddNewClaim}
         >
+          <span>+</span>
           Add New Claim
-        </Button>
+        </button>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -256,9 +257,8 @@ const UserDashboardPage = () => {
                     </td>
                     <td className="request-table-cell px-4 py-2">
                       <div className="request-table-hours flex flex-col items-center">
-                        <span className="text-gray-700">{`(${item.timeFrom}-${item.timeTo})`}</span>
                         <span className="font-semibold text-[#FF914D]">
-                          {item.totalHours} hours
+                          {item.total_work_time} hours
                         </span>
                       </div>
                     </td>

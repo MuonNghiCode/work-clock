@@ -1,13 +1,15 @@
-import React from 'react'
-import { ClaimRequest } from '../../types/ClaimRequest'
-import { Card } from 'antd'
-import Icons from '../icon'
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Card } from 'antd';
+import Icons from '../icon';
+import { ClaimRequest } from '../../types/ClaimRequest';
 
 interface DataProps {
     claimData: ClaimRequest[];
 }
 
 const ApprovalDashboard: React.FC<DataProps> = ({ claimData }) => {
+    const navigate = useNavigate();
     const data: ClaimRequest[] = claimData;
     const statusCounts = React.useMemo(() => {
         return data.reduce((acc, request) => {
@@ -15,6 +17,10 @@ const ApprovalDashboard: React.FC<DataProps> = ({ claimData }) => {
             return acc;
         }, {} as Record<string, number>);
     }, [claimData]);
+
+    const handleViewAll = (status: string) => {
+        navigate(`/approval/table-approval?status=${status}`);
+    };
 
     return (
         <div className='flex flex-wrap justify-between w-full gap-4'>
@@ -31,7 +37,13 @@ const ApprovalDashboard: React.FC<DataProps> = ({ claimData }) => {
                             <span className='lg:text-3xl text-xl mb-4 font-semibold'>
                                 {statusCounts[status] !== undefined ? statusCounts[status] : 0}
                             </span>
-                            <a className={`font-semibold ${status === 'Approved' ? '!text-[#ff914d]' : status === 'Rejected' ? '!text-[#ff0000]' : status === 'Cancelled' ? '!text-[#4d6eff]' : '!text-[#6b3b1c]'} text-xl hover:!text-[#ff914da9]`} href="#">View all</a>
+                            <a
+                                className={`font-semibold ${status === 'Approved' ? '!text-[#ff914d]' : status === 'Rejected' ? '!text-[#ff0000]' : status === 'Canceled' ? '!text-[#4d6eff]' : '!text-[#6b3b1c]'} text-xl hover:!text-[#ff914da9]`}
+                                href="#"
+                                onClick={() => handleViewAll(status)}
+                            >
+                                View all
+                            </a>
                         </div>
                         <div>
                             {status === 'Approved' && <Icons.FormIcon className='lg:w-20 w-12 h-auto text-[#ff914d]' />}
@@ -42,7 +54,7 @@ const ApprovalDashboard: React.FC<DataProps> = ({ claimData }) => {
                 </Card>
             ))}
         </div>
-    )
-}
+    );
+};
 
-export default ApprovalDashboard
+export default ApprovalDashboard;

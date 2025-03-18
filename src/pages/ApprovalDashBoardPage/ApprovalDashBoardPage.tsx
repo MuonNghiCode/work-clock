@@ -22,7 +22,7 @@ const ApprovalDashBoardPage = () => {
                 },
                 pageInfo: {
                     pageNum: 1,
-                    pageSize: 10,
+                    pageSize: 9999,
                 },
             });
             setClaimData(response.data.pageData);
