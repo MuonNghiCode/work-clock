@@ -1,6 +1,6 @@
 # WorkClock – Hệ Thống Quản Lý OT
 
-![WorkClock Logo]([https://firebasestorage.googleapis.com/v0/b/move-management-4fb2c.appspot.com/o/379128395d441b9667fb5156f1bbc970.png?alt=media&token=bb8dc2b6-2551-46e3-bf68-903798945e0d](https://console.cloudinary.com/console/c-85d9b79f3c4867426975ec84464ed2/media_library/search/asset/8dc910efb5fc0e39c20b04c45517b223/manage?q=&view_mode=mosaic&context=manage))
+![WorkClock Logo](https://console.cloudinary.com/console/c-85d9b79f3c4867426975ec84464ed2/media_library/search/asset/8dc910efb5fc0e39c20b04c45517b223/manage?q=&view_mode=mosaic&context=manage)
 
 ## 📌 Giới Thiệu
 
