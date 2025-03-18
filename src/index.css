@@ -6,8 +6,10 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  /* min-height: 100vh; */
   font-family: "Squada One", sans-serif;
   cursor: url("/Default.png"), auto;
+  background-color: white;
 }
 
 a,
@@ -54,18 +56,16 @@ html {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-
-.ant-form-item-required{
-  font-family: 'Squada-One ';
+.ant-form-item-required {
+  font-family: "Squada-One";
   font-weight: bold;
-  }
-  .ant-form-item-required::before {
-    display: none !important;
-  }
-  .ant-form-item{
-    margin-bottom: 0 !important;
-  }
-
+}
+.ant-form-item-required::before {
+  display: none !important;
+}
+.ant-form-item {
+  margin-bottom: 0 !important;
+}
 
 .ant-pagination .ant-pagination-item-active {
   border: 2px solid #ff914d !important;
@@ -93,16 +93,18 @@ html {
     background-color: #ff914d;
   }
   .bg-brand-orange-light {
-    background-color: rgba(255, 145, 77, 0.2);
+    background-color: rgba(255, 145, 77, 0.5);
   }
-  .bg-brand-orange-light-1 {
+  .bg-brand-orange-light-1,
+  .hover\:bg-brand-orange-light-1:hover {
     background-color: rgba(255, 145, 77, 0.1);
   }
   .bg-brand-orange-dark {
     background-color: #d67548;
   }
   .bg-brand-gradient,
-  .bg-brand-grandient {
+  .bg-brand-grandient,
+  .hover\:bg-brand-gradient:hover {
     background: linear-gradient(90deg, #feb78a 0%, #ff914d 100%);
   }
   .border-brand-orange {
