@@ -17,11 +17,11 @@ const AdminHeader: React.FC = () => {
 
   const userRole =
     APP_CONSTANTS.roleNames[
-      user?.role_code as keyof typeof APP_CONSTANTS.roleNames
+    user?.role_code as keyof typeof APP_CONSTANTS.roleNames
     ] || "Guest";
   const currentTitle =
     APP_CONSTANTS.pageTitles[
-      location.pathname as keyof typeof APP_CONSTANTS.pageTitles
+    location.pathname as keyof typeof APP_CONSTANTS.pageTitles
     ] || "Home";
 
   const handleLogout = () => {

@@ -117,7 +117,7 @@ const StatCard = ({
     animate="visible"
     className={`p-6 rounded-xl flex flex-col items-center justify-center ${bgColor} bg-opacity-50 shadow-lg w-full text-center hover:scale-105 transition duration-300`}
   >
-    <div className="p-3 rounded-full bg-white bg-opacity-30">{icon}</div>
+    <div className="p-3 bg-white rounded-full bg-opacity-30">{icon}</div>
     <p className={`text-lg font-medium ${textColor}`}>{label}</p>
     <p className={`text-3xl font-bold ${textColor}`}>{value}</p>
   </motion.div>
@@ -136,7 +136,7 @@ const ChartCard = ({ title, children, bgColor }: ChartCardProps) => (
     animate="visible"
     className={` rounded-xl shadow-lg hover:shadow-2xl transition duration-300 ${bgColor} bg-opacity-30`}
   >
-    <h2 className="text-lg font-semibold text-center mb-4 text-gray-900">
+    <h2 className="mb-4 text-lg font-semibold text-center text-gray-900">
       {title}
     </h2>
     <div className="flex justify-center">{children}</div>
@@ -144,8 +144,8 @@ const ChartCard = ({ title, children, bgColor }: ChartCardProps) => (
 );
 
 const Dashboard = () => (
-  <div className=" min-h-screen flex flex-col gap-12">
-    <div className="grid grid-cols-2  md:grid-cols-4 gap-4">
+  <div className="flex flex-col min-h-screen gap-12 ">
+    <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
       <StatCard
         icon={<Icons.UserCount className="text-3xl text-blue-600" />}
         label="Total Users"
@@ -161,7 +161,7 @@ const Dashboard = () => (
         textColor="text-black-900 font-bold"
       />
       <StatCard
-        icon={<Icons.Money className="text-3xl  text-yellow-500" />}
+        icon={<Icons.Money className="text-3xl text-yellow-500" />}
         label="Total Paid"
         value={`${stats.totalPaid} VND`}
         bgColor="bg-gradient-to-b from-yellow-300 to-yellow-100"
@@ -176,7 +176,7 @@ const Dashboard = () => (
       />
     </div>
 
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+    <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
       <ChartCard title="User Statistics" bgColor="bg-blue-100">
         <div className="w-64 h-64">
           <Pie data={userData} options={chartOptions} />
@@ -189,7 +189,7 @@ const Dashboard = () => (
       </ChartCard>
     </div>
 
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+    <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
       <ChartCard title="Financial Overview" bgColor="bg-orange-100">
         <div className="w-72 h-72">
           <Line data={financeData} options={chartOptions} />
