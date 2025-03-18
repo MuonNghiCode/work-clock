@@ -1,24 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-// import { Calendar } from "antd";
 import { Form, Input, Select, Button, DatePicker } from "antd";
 import { CalendarOutlined } from "@ant-design/icons";
-// Sử dụng icon cho password (bạn có thể cài react-icons nếu chưa có: npm install react-icons)
-import { FaEye, FaEyeSlash } from "react-icons/fa"; // Thêm icon camera
-// Import ảnh mặc định
-//import { UserContext } from "../../context/UserContext"; // Import UserContext
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { changePassword, getAllJobs, getEmployeeByUserId, updateEmployee } from "../../services/userService";
 import { getAllDepartments } from "../../services/userService";
 import { getAllContracts } from "../../services/userService";
-// import dayjs, { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import { EmployeeInfo, JobRank } from "../../types/Employee";
 import { User } from "lucide-react";
 import ImageUploader from "../../components/ImageUploader/ImageUploader";
 import { formatCurrency } from "../../utils/formatCurrency";
-
-
 export interface Department {
     _id: string;
     department_code: string;
@@ -89,6 +82,7 @@ const EditProfilePage: React.FC = () => {
     const [contracts, setContracts] = useState<Contract[]>([]);
     const [jobrank, setJobRank] = useState<JobRank[]>([]);
     const [previewAvatar, setPreviewAvatar] = useState("");
+
     // const [showStartCalendar, setShowStartCalendar] = useState(false);
     // const [showEndCalendar, setShowEndCalendar] = useState(false);
     // Lấy userId từ localStorage sau khi đăng nhập
@@ -106,7 +100,7 @@ const EditProfilePage: React.FC = () => {
                 .then((response) => {
                     if (response.success) {
                         const data = response.data;
-                        setFormData({
+                        const updatedData = {
                             job_rank: data.job_rank,
                             user_id: userId,
                             contract_type: data.contract_type,
@@ -122,16 +116,18 @@ const EditProfilePage: React.FC = () => {
                             salary: data.salary,
                             start_date: data.start_date ? new Date(data.start_date) : null,
                             end_date: data.end_date ? new Date(data.end_date) : null,
-                        });
+                        };
+
+                        setFormData(updatedData); // Cập nhật state
+                        form.setFieldsValue(updatedData); // Cập nhật form
                     } else {
                         console.error("Error fetching employee data:", response.message);
                     }
                 })
                 .catch((error) => console.error("Error fetching employee data:", error));
         }
-    }, [userId]);
-    // State cho ảnh đại diện
-    // Lấy dropdown data cho Department và Contract
+    }, [userId, form]); // Thêm `form` vào dependency để tránh lỗi form không cập nhật
+
     useEffect(() => {
         const fetchDropdownData = async () => {
             try {
@@ -147,31 +143,6 @@ const EditProfilePage: React.FC = () => {
         };
         fetchDropdownData();
     }, []);
-    // Xử lý thay đổi ngày cho Start Date
-    // const handleStartDateChange = (date: Dayjs) => {
-    //     setFormData((prev) => ({
-    //         ...prev,
-    //         start_date: date.toDate(), // Chuyển từ Dayjs sang Date
-    //     }));
-    // };
-    // const handleEndDateChange = (date: Dayjs) => {
-    //     setFormData((prev) => ({
-    //         ...prev,
-    //         end_date: date.toDate(), // Chuyển từ Dayjs sang Date
-    //     }));
-    // };
-    // const handleInputChange = (
-    //     e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>
-    // ) => {
-    //     const { name, value } = e.target as HTMLInputElement | HTMLSelectElement;
-    //     setFormData((prevFormData) => ({
-    //         ...prevFormData,
-    //         [name]: value
-    //     }));
-    // };
-
-
-
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const storedUserId = localStorage.getItem("userId");
@@ -231,11 +202,6 @@ const EditProfilePage: React.FC = () => {
     };
 
 
-    const [showPassword, setShowPassword] = useState<Record<keyof PasswordData, boolean>>({
-        oldPassword: false,
-        newPassword: false,
-        confirmPassword: false,
-    });
     const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setPasswordData((prev) => ({ ...prev, [name]: value }));
@@ -275,37 +241,29 @@ const EditProfilePage: React.FC = () => {
             validateImageUrl(formData.avatar_url);
         }
     }, [formData.avatar_url]);
-
     // Submit cho Change Password
-    const handleSubmitPassword = async (e: React.FormEvent) => {
-        e.preventDefault();
-
+    const handleSubmitPassword = async (values: any) => {
         // Kiểm tra mật khẩu xác nhận
-        if (passwordData.newPassword !== passwordData.confirmPassword) {
+        if (values.newPassword !== values.confirmPassword) {
             toast.error("Confirm password does not match!");
             return;
         }
 
         try {
-            const response = await changePassword(passwordData.oldPassword, passwordData.newPassword);
+            const response = await changePassword(values.oldPassword, values.newPassword);
             if (response.success) {
                 toast.success("Password changed successfully!");
-                setPasswordData({ oldPassword: "", newPassword: "", confirmPassword: "" }); // Reset form
             } else {
-                toast.error(response.message || "Failed to change password.");
+                toast.error(response.message || "Old password is incorrect!");
             }
         } catch (error) {
             toast.error("An error occurred. Please try again.");
         }
     };
 
-    // Toggle show/hide password cho các field
-    const toggleShowPassword = (field: keyof PasswordData) => {
-        setShowPassword((prev) => ({ ...prev, [field]: !prev[field] }));
-    };
 
     return (
-        <div className="p-6 bg-gray-100 min-h-screen">
+        <div >
             {/* ToastContainer để hiển thị thông báo */}
             <ToastContainer
                 position="top-right"
@@ -400,23 +358,52 @@ const EditProfilePage: React.FC = () => {
                             className="grid grid-cols-2 gap-6 w-full max-w-4xl translate-x-30 p-6 bg-white rounded-lg font-semibold "
                             onSubmitCapture={handleSubmit}
                         >
-                            <Form.Item label="Account">
-                                <Input value={formData.account} onChange={(e) => setFormData({ ...formData, account: e.target.value })} />
-
+                            <Form.Item
+                                label="Account"
+                                name="account" // BẮT BUỘC để Ant Design biết cần validate field này
+                                rules={[{ required: true, message: "Account is required!" }]}
+                            >
+                                <Input
+                                    value={formData.account}
+                                    onChange={(e) => setFormData({ ...formData, account: e.target.value })}
+                                />
                             </Form.Item>
 
-                            <Form.Item label="Full Name ">
-                                <Input value={formData.full_name} onChange={(e) => setFormData({ ...formData, full_name: e.target.value })} />
+                            <Form.Item
+                                label="Full Name"
+                                name="full_name"
+                                rules={[{ required: true, message: "Full Name is required!" }]}
+                            >
+                                <Input
+                                    value={formData.full_name}
+                                    onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                                />
                             </Form.Item>
 
-                            <Form.Item label="Phone Number" >
-                                <Input value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} />
+                            <Form.Item
+                                label="Phone Number"
+                                name="phone"
+                                rules={[
+                                    { required: true, message: "Phone number is required!" },
+                                    { pattern: /^\d+$/, message: "Only numbers are allowed!" }
+                                ]}
+                            >
+                                <Input
+                                    value={formData.phone}
+                                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                />
                             </Form.Item>
 
-                            <Form.Item label="Address">
-                                <Input value={formData.address} onChange={(e) => setFormData({ ...formData, address: e.target.value })} />
+                            <Form.Item
+                                label="Address"
+                                name="address"
+                                rules={[{ required: true, message: "Address is required!" }]}
+                            >
+                                <Input
+                                    value={formData.address}
+                                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                                />
                             </Form.Item>
-
                             <Form.Item label="Job Rank">
                                 <Select value={formData.job_rank} disabled className="w-full">
                                     {jobrank.map((job) => (
@@ -488,36 +475,85 @@ const EditProfilePage: React.FC = () => {
                     )}
 
                     {activeTab === "password" && (
-                        <form onSubmit={handleSubmitPassword} className="grid grid-cols-2 gap-4 p-4 border rounded-lg shadow-md bg-white">
-                            {(["oldPassword", "newPassword", "confirmPassword"] as Array<keyof PasswordData>).map((field) => (
-                                <div key={field} className="relative col-span-2">
-                                    <label className="block text-gray-700 font-medium mb-1">
-                                        {String(field).replace(/([A-Z])/g, " $1").trim()}
-                                    </label>
-                                    <input
-                                        type={showPassword[field] ? "text" : "password"}
-                                        name={field as string} // Ép kiểu về string
-                                        value={passwordData[field]}
-                                        onChange={handlePasswordChange}
-                                        className="w-full p-2 border rounded pr-10"
-                                        placeholder={String(field).replace(/([A-Z])/g, " $1").trim()}
-                                        required
-                                    />
-                                    <div
-                                        className="absolute inset-y-0 right-2 flex items-center cursor-pointer"
-                                        onClick={() => toggleShowPassword(field)}
+                        <div className="w-full flex justify-center"> {/* Căn giữa theo chiều ngang */}
+                            <div className="w-[77%] space-y-20"> {/* Giới hạn chiều rộng + giãn cách giữa các phần tử */}
+                                <Form
+                                    onFinish={handleSubmitPassword}
+                                    layout="vertical"
+                                    className="p-6 shadow-md bg-white w-full"
+                                >
+                                    <Form.Item
+                                        label="Old Password"
+                                        name="oldPassword"
+                                        rules={[{ required: true, message: "Old Password is required!" }]}
+                                        className="mb-6" // Thêm khoảng cách dưới
                                     >
-                                        {showPassword[field] ? <FaEyeSlash /> : <FaEye />}
-                                    </div>
-                                </div>
-                            ))}
+                                        <Input.Password
+                                            name="oldPassword"
+                                            value={passwordData.oldPassword}
+                                            onChange={handlePasswordChange}
+                                            placeholder="Old Password"
+                                            iconRender={(visible) => (visible ? <FaEyeSlash /> : <FaEye />)}
+                                            className="py-5 text-lg" // Tăng padding và font-size cho dễ nhìn
+                                        />
+                                    </Form.Item>
 
-                            <div className="col-span-2 flex justify-start mt-4">
-                                <button type="submit" className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition">
-                                    Change Password
-                                </button>
+                                    <Form.Item
+                                        label="New Password"
+                                        name="newPassword"
+                                        rules={[
+                                            { required: true, message: "New Password is required!" },
+                                            { min: 6, message: "Password must be at least 6 characters" },
+                                        ]}
+                                        className="mb-10" // Thêm khoảng cách dưới
+                                    >
+                                        <Input.Password
+                                            name="newPassword"
+                                            value={passwordData.newPassword}
+                                            onChange={handlePasswordChange}
+                                            placeholder="New Password"
+                                            iconRender={(visible) => (visible ? <FaEyeSlash /> : <FaEye />)}
+                                            className="py-5 text-lg"
+                                        />
+                                    </Form.Item>
+
+                                    <Form.Item
+                                        label="Confirm Password"
+                                        name="confirmPassword"
+                                        dependencies={["newPassword"]}
+                                        rules={[
+                                            { required: true, message: "Confirm Password is required!" },
+                                            ({ getFieldValue }) => ({
+                                                validator(_, value) {
+                                                    if (!value || getFieldValue("newPassword") === value) {
+                                                        return Promise.resolve();
+                                                    }
+                                                    return Promise.reject(new Error("Passwords do not match!"));
+                                                },
+                                            }),
+                                        ]}
+                                        className="mb-10" // Thêm khoảng cách dưới
+                                    >
+                                        <Input.Password
+                                            name="confirmPassword"
+                                            value={passwordData.confirmPassword}
+                                            onChange={handlePasswordChange}
+                                            placeholder="Confirm Password"
+                                            iconRender={(visible) => (visible ? <FaEyeSlash /> : <FaEye />)}
+                                            className="py-5 text-lg"
+                                        />
+                                    </Form.Item>
+
+                                    <Form.Item>
+                                        <Button type="primary" htmlType="submit" className="w-full bg-[#ff8c00] hover:bg-[#e67e22] text-white py-3 text-lg">
+                                            Change Password
+                                        </Button>
+                                    </Form.Item>
+                                </Form>
                             </div>
-                        </form>
+                        </div>
+
+
                     )}
                 </div>
             </div>
