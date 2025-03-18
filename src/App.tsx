@@ -38,6 +38,7 @@ import VerifyEmail from "./pages/VerifyEmailPage/VerifyEmail";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
 import AnimatedBackground from "./components/AnimatedBackground/AnimatedBackground";
 import TableApproval from "./components/ApprovalComponents/TableApproval";
+import TemplateLayout from "./layouts/TemplateLayout/TemplateLayout";
 
 const router = createBrowserRouter([
   {
@@ -45,6 +46,33 @@ const router = createBrowserRouter([
     element: <MainLayout />,
     errorElement: <ErrorPage />,
     children: [{ path: "/", element: <HomePage /> }],
+  },
+  {
+    path: "/template",
+    element: <TemplateLayout />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "",
+        element: <Navigate to="dashboard" replace />,
+      },
+      {
+        path: "dashboard",
+        element: <AdminDashBoard />,
+      },
+      {
+        path: "user",
+        element: <AdminUserManagement />,
+      },
+      {
+        path: "project",
+        element: <AdminProject />,
+      },
+      {
+        path: "edit_profile",
+        element: <EditProfilePage />,
+      },
+    ],
   },
   {
     path: "/admin",
@@ -101,8 +129,7 @@ const router = createBrowserRouter([
       { path: "dashboard", element: <ApprovalDashBoardPage /> },
       { path: "approval-management", element: <ApprovalPage /> },
       { path: "/approval/dashboard", element: <ApprovalDashBoardPage /> },
-      { path: "/approval/table-approval", element: <TableApproval /> }
-
+      { path: "/approval/table-approval", element: <TableApproval /> },
     ],
   },
   {
@@ -170,8 +197,6 @@ const router = createBrowserRouter([
     path: "/verify-email/:token",
     element: <VerifyEmail />,
   },
-
-
 ]);
 
 const App: React.FC = () => {
