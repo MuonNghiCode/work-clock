@@ -304,8 +304,7 @@ const Policy: React.FC<PolicyProps> = ({ refs }) => {
             <li>By email: workclock262@gmail.com</li>
             <li>By phone: +84 1012 3456 789</li>
             <li>
-              By mail: Saigon Hitech Park, Phường Tân Phú, Thủ Đức, Hồ Chí Minh,
-              Việt Nam
+              By address: Saigon Hi-tech Park, Tan Phu District, Thu Duc, HCM City,<strong>VietNam</strong>
             </li>
           </ul>
           <p>
