@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { getClaimDetail, updateClaim } from '../../../services/claimService';
 import { ResponseModel } from '../../../models/ResponseModel';
 import { ClaimItem } from '../../../types/ClaimType';
-import { ConfigProvider, Form, Input, DatePicker, TimePicker, Button } from 'antd';
+import { Form, Input, DatePicker, TimePicker, Button, Modal } from 'antd';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
@@ -43,6 +43,8 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
   const [originalData, setOriginalData] = useState<ClaimItem | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
+  const [initialValues, setInitialValues] = useState<any>(null);
 
   const formatDateForInput = (dateString: string): string => {
     const [day, month, year] = dateString.split('/');
@@ -57,14 +59,17 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
 
   useEffect(() => {
     if (isOpen && editingRecord) {
-      form.setFieldsValue({
+      const initial = {
         claimname: editingRecord.claimname || '',
         startDate: editingRecord.start_date ? dayjs(formatDateForInput(editingRecord.start_date)) : null,
         startTime: editingRecord.timeFrom ? dayjs(editingRecord.timeFrom, 'HH:mm') : null,
         endDate: editingRecord.end_date ? dayjs(formatDateForInput(editingRecord.end_date)) : null,
         endTime: editingRecord.timeTo ? dayjs(editingRecord.timeTo, 'HH:mm') : null,
         totalHours: editingRecord.totalHours || '',
-      });
+      };
+      form.setFieldsValue(initial);
+      setInitialValues(initial);
+      setHasChanges(false);
     }
 
     const fetchClaimDetail = async () => {
@@ -101,8 +106,41 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
   }, [isOpen]);
 
   const handleClose = () => {
-    setIsAnimating(false);
-    setTimeout(() => onCancel(), 300);
+    if (hasChanges) {
+      Modal.confirm({
+        title: 'Are you sure you want to exit?',
+        content: 'Your changes will not be saved.',
+        okText: 'Yes',
+        cancelText: 'No',
+        okButtonProps: {
+          style: {
+            backgroundColor: '#FF9447',
+            borderColor: '#FF9447',
+            color: '#FFFFFF',
+            borderRadius: '6px',
+            padding: '4px 16px',
+            fontWeight: 400,
+          },
+        },
+        cancelButtonProps: {
+          style: {
+            backgroundColor: '#F3F4F6',
+            borderColor: 'transparent',
+            color: '#4B5563',
+            borderRadius: '6px',
+            padding: '4px 16px',
+            fontWeight: 400,
+          },
+        },
+        onOk: () => {
+          setIsAnimating(false);
+          setTimeout(() => onCancel(), 300);
+        },
+      });
+    } else {
+      setIsAnimating(false);
+      setTimeout(() => onCancel(), 300);
+    }
   };
 
   const handleSubmit = async (values: any) => {
@@ -163,133 +201,176 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
     }
   };
 
+  const handleValuesChange = (_: any, allValues: any) => {
+    if (!initialValues) return;
+
+    const hasDiff = Object.keys(allValues).some(key => {
+      const initial = initialValues[key];
+      const current = allValues[key];
+      
+      if (dayjs.isDayjs(initial) && dayjs.isDayjs(current)) {
+        return !initial.isSame(current);
+      }
+      return initial !== current;
+    });
+    
+    setHasChanges(hasDiff);
+  };
+
   if (!isVisible) return null;
 
   return (
-    <ConfigProvider
-      theme={{
-        token: {
-          colorPrimary: '#FF9447',
-          colorText: '#374151', // gray-700 for general text
-          colorTextPlaceholder: '#6B7280', // gray-500
-          fontSize: 14, // matches text-sm (0.875rem = 14px)
-        },
-        components: {
-          Button: {
-            primaryColor: '#FFFFFF',
-            defaultBg: '#F3F4F6', // gray-100
-            defaultColor: '#4B5563', // gray-600
-            defaultHoverBg: '#E5E7EB', // gray-200
-            defaultBorderColor: 'transparent',
-            fontWeight: 400, // normal weight for buttons
-          },
-          Input: {
-            activeBorderColor: '#FF9447',
-            hoverBorderColor: '#FF9447',
-          },
-          DatePicker: {
-            activeBorderColor: '#FF9447',
-            hoverBorderColor: '#FF9447',
-          },
-          Form: {
-            labelFontSize: 14, // matches text-sm
-            labelColor: '#374151', // gray-700
-          },
-        },
-      }}
-    >
-      <div className="fixed inset-0 z-50 overflow-y-auto transition-opacity duration-300 ease-in-out" style={{ opacity: isAnimating ? 1 : 0 }}>
-        <div className="fixed inset-0 bg-black/30 transition-opacity duration-300 ease-in-out" style={{ opacity: isAnimating ? 1 : 0 }} onClick={handleClose}></div>
-        <div className="relative min-h-screen flex items-center justify-center p-4">
-          <div className="relative bg-white rounded-lg w-full max-w-4xl p-6 transition-all duration-300 ease-in-out transform" style={{ opacity: isAnimating ? 1 : 0, transform: isAnimating ? 'scale(1)' : 'scale(0.95)' }}>
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-[#FF9447]">Edit Claim Request</h2>
-              <button onClick={handleClose} className="p-1 hover:bg-gray-100 rounded-full transition-colors">
-                <X className="w-6 h-6 text-gray-500" />
-              </button>
-            </div>
-            <Form
-              form={form}
-              onFinish={handleSubmit}
-              layout="vertical"
-              disabled={loading}
-            >
-              <div className="grid grid-cols-2 gap-6">
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <h3 className="text-lg font-semibold text-gray-700 mb-4">Claim Details</h3>
-                  <div className="space-y-4">
-                    <Form.Item
-                      name="claimname"
-                      label={<span className="text-gray-700 text-sm font-squadaone">Claim Name</span>}
-                      rules={[{ required: true, message: 'Please enter claim name' }]}
-                    >
-                      <Input className="rounded-md py-2" />
-                    </Form.Item>
-                    <Form.Item
-                      name="totalHours"
-                      label={<span className="text-gray-700 text-sm font-squadaone">Total Hours</span>}
-                      rules={[{ required: true, message: 'Please enter total hours' }]}
-                    >
-                      <Input className="rounded-md py-2" />
-                    </Form.Item>
-                  </div>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <h3 className="text-lg font-semibold text-gray-700 mb-4">Time Details</h3>
-                  <div className="space-y-4">
-                    <Form.Item
-                      name="startDate"
-                      label={<span className="text-gray-700 text-sm font-squadaone">Start Date</span>}
-                      rules={[{ required: true, message: 'Please select start date' }]}
-                    >
-                      <DatePicker className="rounded-md py-2" format="YYYY-MM-DD" />
-                    </Form.Item>
-                    <Form.Item
-                      name="endDate"
-                      label={<span className="text-gray-700 text-sm font-squadaone">End Date</span>}
-                      rules={[{ required: true, message: 'Please select end date' }]}
-                    >
-                      <DatePicker className="rounded-md py-2" format="YYYY-MM-DD" />
-                    </Form.Item>
-                    <Form.Item
-                      name="startTime"
-                      label={<span className="text-gray-700 text-sm font-squadaone">Start Time</span>}
-                      rules={[{ required: true, message: 'Please select start time' }]}
-                    >
-                      <TimePicker className="rounded-md py-2" format="HH:mm" />
-                    </Form.Item>
-                    <Form.Item
-                      name="endTime"
-                      label={<span className="text-gray-700 text-sm font-squadaone">End Time</span>}
-                      rules={[{ required: true, message: 'Please select end time' }]}
-                    >
-                      <TimePicker className="rounded-md py-2" format="HH:mm" />
-                    </Form.Item>
-                  </div>
-                </div>
-              </div>
-              <div className="flex justify-end gap-3 mt-6">
-                <Button
-                  onClick={handleClose}
-                  className="px-4 py-2 rounded-md"
-                  disabled={loading}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  className="px-4 py-2 rounded-md hover:!bg-[#FF8347]"
-                  loading={loading}
-                >
-                  Save Changes
-                </Button>
-              </div>
-            </Form>
+    <div className="fixed inset-0 z-50 overflow-y-auto transition-opacity duration-300 ease-in-out" style={{ opacity: isAnimating ? 1 : 0 }}>
+      <div className="fixed inset-0 bg-black/30 transition-opacity duration-300 ease-in-out" style={{ opacity: isAnimating ? 1 : 0 }} onClick={handleClose}></div>
+      <div className="relative min-h-screen flex items-center justify-center p-4">
+        <div className="relative bg-white rounded-lg w-full max-w-4xl p-6 transition-all duration-300 ease-in-out transform" style={{ opacity: isAnimating ? 1 : 0, transform: isAnimating ? 'scale(1)' : 'scale(0.95)' }}>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold text-[#FF9447]">Edit Claim Request</h2>
+            <button onClick={handleClose} className="p-1 hover:bg-gray-100 rounded-full transition-colors">
+              <X className="w-6 h-6 text-gray-500" />
+            </button>
           </div>
+          <Form
+            form={form}
+            onFinish={handleSubmit}
+            onValuesChange={handleValuesChange}
+            layout="vertical"
+            disabled={loading}
+          >
+            <div className="grid grid-cols-2 gap-6">
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h3 className="text-lg font-semibold text-gray-700 mb-4">Claim Details</h3>
+                <div className="space-y-4">
+                  <Form.Item
+                    name="claimname"
+                    label={<span className="text-gray-700 text-sm font-SquadaOne">Claim Name</span>}
+                    rules={[{ required: true, message: 'Please enter claim name' }]}
+                  >
+                    <Input
+                      className="rounded-md py-2 w-full"
+                      style={{
+                        borderColor: '#D1D5DB',
+                        color: '#374151', 
+                      }}
+                      placeholder="Enter claim name"
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    name="totalHours"
+                    label={<span className="text-gray-700 text-sm font-SquadaOne">Total Hours</span>}
+                    rules={[{ required: true, message: 'Please enter total hours' }]}
+                  >
+                    <Input
+                      className="rounded-md py-2 w-full"
+                      style={{
+                        borderColor: '#D1D5DB', 
+                        color: '#374151', 
+                      }}
+                      placeholder="Enter total hours"
+                    />
+                  </Form.Item>
+                </div>
+              </div>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h3 className="text-lg font-semibold text-gray-700 mb-4">Time Details</h3>
+                <div className="space-y-4">
+                  <Form.Item
+                    name="startDate"
+                    label={<span className="text-gray-700 text-sm font-SquadaOne">Start Date</span>}
+                    rules={[{ required: true, message: 'Please select start date' }]}
+                  >
+                    <DatePicker
+                      className="rounded-md py-2 w-full"
+                      format="YYYY-MM-DD"
+                      style={{
+                        borderColor: '#D1D5DB', 
+                        color: '#374151', 
+                      }}
+                      placeholder="Select start date"
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    name="endDate"
+                    label={<span className="text-gray-700 text-sm font-SquadaOne">End Date</span>}
+                    rules={[{ required: true, message: 'Please select end date' }]}
+                  >
+                    <DatePicker
+                      className="rounded-md py-2 w-full"
+                      format="YYYY-MM-DD"
+                      style={{
+                        borderColor: '#D1D5DB', 
+                        color: '#374151', 
+                      }}
+                      placeholder="Select end date"
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    name="startTime"
+                    label={<span className="text-gray-700 text-sm font-SquadaOne">Start Time</span>}
+                    rules={[{ required: true, message: 'Please select start time' }]}
+                  >
+                    <TimePicker
+                      className="rounded-md py-2 w-full"
+                      format="HH:mm"
+                      style={{
+                        borderColor: '#D1D5DB', 
+                        color: '#374151', 
+                      }}
+                      placeholder="Select start time"
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    name="endTime"
+                    label={<span className="text-gray-700 text-sm font-SquadaOne">End Time</span>}
+                    rules={[{ required: true, message: 'Please select end time' }]}
+                  >
+                    <TimePicker
+                      className="rounded-md py-2 w-full"
+                      format="HH:mm"
+                      style={{
+                        borderColor: '#D1D5DB', 
+                        color: '#374151', 
+                      }}
+                      placeholder="Select end time"
+                    />
+                  </Form.Item>
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-end gap-3 mt-6">
+              <Button
+                onClick={handleClose}
+                className="px-4 py-2 rounded-md"
+                style={{
+                  backgroundColor: '#F3F4F6', 
+                  color: '#4B5563', 
+                  border: 'none',
+                  fontWeight: 400,
+                }}
+                disabled={loading}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="primary"
+                htmlType="submit"
+                className={`px-4 py-2 rounded-md ${!hasChanges || loading ? 'cursor-not-allowed' : 'hover:bg-[#FF8347]'}`}
+                style={{
+                  backgroundColor: hasChanges && !loading ? '#FF9447' : '#E5E7EB', 
+                  color: hasChanges && !loading ? '#FFFFFF' : '#A3A3A3', 
+                  border: 'none',
+                  fontWeight: 400,
+                }}
+                loading={loading}
+                disabled={!hasChanges || loading}
+              >
+                Save Changes
+              </Button>
+            </div>
+          </Form>
         </div>
       </div>
-    </ConfigProvider>
+    </div>
   );
 };
 
