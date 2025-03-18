@@ -134,7 +134,7 @@ const Sidebar: React.FC = () => {
     <>
       <div
         ref={sidebarRef}
-        className={`fixed lg:relative top-0 left-0 h-full transition-all duration-300 bg-transparent z-50a
+        className={`fixed lg:relative top-0 left-0 h-full transition-all duration-300  z-50 bg-white
         ${
           isSidebarOpen ? "translate-x-0 w-60" : "-translate-x-full lg:w-20"
         } lg:translate-x-0`}
