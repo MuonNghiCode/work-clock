@@ -47,7 +47,6 @@ const UserDashboardPage = () => {
   return (
     <>
       <div className="flex items-center justify-between w-full">
-        <h1 className="text-[40px] mt-4 font-bold">User Dashboard</h1>
         <Button
           className="w-50 !h-12 !p-4 !bg-[#ff914d] !text-lg !font-semibold !text-white hover:!bg-[#feb78a]"
           onClick={handleOpenModalAddNewClaim}

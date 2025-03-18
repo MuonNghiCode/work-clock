@@ -37,6 +37,7 @@ import WelcomeScreen from "./components/WelcomeScreen/WelcomeScreen";
 import VerifyEmail from "./pages/VerifyEmailPage/VerifyEmail";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
 import AnimatedBackground from "./components/AnimatedBackground/AnimatedBackground";
+import TemplateLayout from "./layouts/TemplateLayout/TemplateLayout";
 
 const router = createBrowserRouter([
   {
@@ -44,6 +45,33 @@ const router = createBrowserRouter([
     element: <MainLayout />,
     errorElement: <ErrorPage />,
     children: [{ path: "/", element: <HomePage /> }],
+  },
+  {
+    path: "/template",
+    element: <TemplateLayout />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "",
+        element: <Navigate to="dashboard" replace />,
+      },
+      {
+        path: "dashboard",
+        element: <AdminDashBoard />,
+      },
+      {
+        path: "user",
+        element: <AdminUserManagement />,
+      },
+      {
+        path: "project",
+        element: <AdminProject />,
+      },
+      {
+        path: "edit_profile",
+        element: <EditProfilePage />,
+      },
+    ],
   },
   {
     path: "/admin",

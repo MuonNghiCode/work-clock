@@ -15,18 +15,7 @@ const AdminDashBoard: React.FC = () => {
       whileHover={{ scale: 1 }}
       className=" min-h-screen flex flex-col gap-8 bg-transparent"
     >
-      {/* Header Section */}
-      <header className="text-center py-6">
-        <h1 className="text-5xl font-extrabold text-gradient-color ">
-          Admin Dashboard
-        </h1>
-        <p className="text-lg text-black mt-2">System analytics at a glance</p>
-      </header>
-
-      {/* Dashboard Content */}
-      <section>
-        <Dashboard />
-      </section>
+      <Dashboard />
     </motion.div>
   );
 };
