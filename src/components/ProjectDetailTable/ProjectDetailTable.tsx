@@ -45,29 +45,23 @@ const ProjectDetailTable: React.FC<ProjectDetailTableProps> = ({ projectDetail, 
     >
       <div className="font-squada flex-col bg-white p-8 -m-2 my-2 rounded-2xl shadow-md w-full">
         <div className="flex-col space-y-4">
-          <div className="flex items-center">
-            <span className="w-1/2 font-medium text-gray-600 text-lg">Project Name: </span>
-            <span className="w-1/2 text-gray-800 truncate text-lg">{project?.project_name || '-'}</span>
+          <div className="flex flex-row items-center justify-between w-full">
+            <span className="font-medium text-gray-600 text-lg w-1/3">Project Name:</span>
+            <span className="text-gray-800 truncate text-lg w-1/3">{project?.project_name || '-'}</span>
+            <span className="font-medium text-gray-600 text-lg w-1/3">Project Code:</span>
+            <span className="text-gray-800 truncate text-lg w-1/3">{project?.project_code || '-'}</span>
           </div>
-          <div className="flex items-center">
-            <span className="w-1/2 font-medium text-gray-600 text-lg">Project Code:</span>
-            <span className="w-1/2 text-gray-800 truncate text-lg"> {project?.project_code || '-'}</span>
+          <div className="flex flex-row items-center justify-between w-full">
+            <span className="font-medium text-gray-600 text-lg w-1/3">Start Date:</span>
+            <span className="text-gray-800 truncate text-lg w-1/3">{formatDate(project?.project_start_date || "")}</span>
+            <span className="font-medium text-gray-600 text-lg w-1/3">End Date:</span>
+            <span className="text-gray-800 truncate text-lg w-1/3">{formatDate(project?.project_end_date || "")}</span>
           </div>
-          <div className="flex items-center">
-            <span className="w-1/2 font-medium text-gray-600 text-lg">Start Date:</span>
-            <span className="w-1/2 text-gray-800 truncate text-lg"> {formatDate(project?.project_start_date || "")}</span>
-          </div>
-          <div className="flex items-center">
-            <span className="w-1/2 font-medium text-gray-600 text-lg">End Date:</span>
-            <span className="w-1/2 text-gray-800 truncate text-lg"> {formatDate(project?.project_end_date || "")}</span>
-          </div>
-          <div className="flex items-center">
-            <span className="w-1/2 font-medium text-gray-600 text-lg">Department:</span>
-            <span className="w-1/2 text-gray-800 truncate text-lg">{project?.project_department || '-'}</span>
-          </div>
-          <div className="flex items-center pb-2">
-            <span className="w-1/2 font-medium text-gray-600 text-lg">Status:</span>
-            <span className="w-1/2 text-gray-800 truncate text-lg">{project?.project_status || '-'}</span>
+          <div className="flex flex-row items-center justify-between w-full">
+            <span className="font-medium text-gray-600 text-lg w-1/3">Department:</span>
+            <span className="text-gray-800 truncate text-lg w-1/3">{project?.project_department || '-'}</span>
+            <span className="font-medium text-gray-600 text-lg w-1/3">Status:</span>
+            <span className="text-gray-800 truncate text-lg w-1/3">{project?.project_status || '-'}</span>
           </div>
           <div className="flex-col mt-4 w-full">
             <h4 className="font-semibold text-xl !text-gradient-color mb-4 border-t pt-4 text-[#FF9447]">Users & Roles:</h4>
