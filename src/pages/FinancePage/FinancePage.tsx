@@ -254,7 +254,7 @@ const FinancePage: React.FC = () => {
             {isDatePickerVisible && (
               <div
                 ref={datePickerRef}
-                className="absolute top-full mt-2 bg-white shadow-lg p-2 rounded-md z-50 left-0 sm:right-0 sm:right-auto"
+                className="absolute top-full mt-2 bg-white shadow-lg p-2 rounded-md z-50 left-0 sm:right-0 "
               >
                 <DateRangePicker
                   ranges={dateRange}
