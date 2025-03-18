@@ -149,7 +149,7 @@ const TableProject: React.FC = () => {
       case "Complete":
         return <span className="text-[#00B087]">Complete</span>;
       default:
-        return <span>{status}</span>;
+        return <span className="text-gray-600">{status}</span>;   
     }
   };
   const handleAddProject = () => {
