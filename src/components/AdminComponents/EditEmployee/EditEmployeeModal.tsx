@@ -102,7 +102,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
       console.log("Setting employee data:", employee);
       setFormData({
         user_id: employee.user_id,
-        job_rank:employee.job_rank,
+        job_rank: employee.job_rank,
         contract_type: employee.contract_type,
         account: employee.account,
         address: employee.address || "",
@@ -112,7 +112,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
         department_code: employee.department_code,
         salary: employee.salary || 0,
         start_date: formatDate(employee.start_date),
-        end_date: formatDate(employee.end_date),
+        end_date: employee.end_date ? formatDate(employee.end_date) : "",
       });
       setPreviewAvatar(employee.avatar_url || ""); // Đồng bộ previewAvatar
     } else {
@@ -430,7 +430,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                     Employment Details
                   </h3>
                   <div className="space-y-4">
-                  {/* Job Rank */}
+                    {/* Job Rank */}
                     <div>
                       <label className="block text-sm font-medium text-gray-600 mb-2">
                         Job Rank

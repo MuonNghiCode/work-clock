@@ -1,5 +1,14 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Modal, Form, Input, Space, DatePicker, Select, Spin } from "antd";
+import {
+  Modal,
+  Form,
+  Input,
+  Space,
+  DatePicker,
+  Select,
+  Spin,
+  ConfigProvider,
+} from "antd";
 // import { ClaimRequest } from "../../types/ClaimRequest";
 import { ProjectInfo } from "../../types/Project";
 import { getAllProject } from "../../services/projectService";
@@ -19,7 +28,7 @@ export interface ClaimRequestDataField {
   claim_name: string;
   claim_start_date: string;
   claim_end_date: string;
-  totalNoOfHours: number;
+  total_work_time: number;
   remark: string;
 }
 
@@ -28,7 +37,9 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
   onClose,
 }) => {
   const [form] = Form.useForm();
+
   const [projects, setProjects] = useState<ProjectInfo[]>([]);
+
   const [approvals, setApprovals] = useState<
     { label: string; value: string }[]
   >([]);
@@ -93,7 +104,7 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
       claim_name: "",
       claim_start_date: "",
       claim_end_date: "",
-      totalNoOfHours: 0,
+      total_work_time: 0,
       remark: "",
     });
 
@@ -126,108 +137,172 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
   };
 
   return (
-    <Modal
-      title="Add New Claim Request"
-      open={isOpen}
-      onOk={onFinish}
-      okText="Submit Claim Request"
-      onCancel={onClose}
-      className=" lg:!w-5/12 md:!w-full !font-squanda !w-full "
+    <ConfigProvider
+      theme={{
+        token: {
+          fontFamily: "Squada One",
+        },
+      }}
     >
-      <Form
-        form={form}
-        layout="vertical"
-        onFinish={onFinish}
-        autoComplete="on"
-        size="large"
-        initialValues={{ claimRequestData }}
+      <Modal
+        title={
+          <span className="text-3xl text-gradient-color">
+            Add New Claim Request
+          </span>
+        }
+        open={isOpen}
+        onOk={onFinish}
+        cancelText={<span className="text-xl font-light">Cancel</span>}
+        okText={
+          <span className="text-xl font-light">Create Claim Request</span>
+        }
+        okButtonProps={{ className: "!py-5 !rounded-xl" }}
+        cancelButtonProps={{ className: "!py-5 !rounded-xl" }}
+        onCancel={onClose}
+        className=" lg:!w-5/12 md:!w-full !font-squanda !w-full "
       >
-        <Form.Item label={<strong>Project Name</strong>} name={"project_id"}>
-          <Select
-            onChange={(value) =>
-              handleClaimRequestDataChange("project_id", value)
-            }
-          >
-            {projects &&
-              projects.map((project, index) => (
-                <Select.Option key={index} value={project._id}>
-                  {project.project_name}
-                </Select.Option>
-              ))}
-          </Select>
-        </Form.Item>
-        <Form.Item label={<strong>Approval Name</strong>} name="approval_id">
-          <Select
-            showSearch
-            labelInValue
-            placeholder="Search and select members"
-            notFoundContent={fetching ? <Spin size="small" /> : null}
-            filterOption={false}
-            onSearch={debounceFetcher}
-            options={approvals}
-            style={{ width: "100%" }}
-            onChange={(value) =>
-              handleClaimRequestDataChange("approval_id", value.value)
-            }
-          />
-        </Form.Item>
-        <Space
-          direction="horizontal"
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={onFinish}
+          autoComplete="on"
           size="large"
-          className="!w-full justify-between !flex-wrap"
+          initialValues={{ claimRequestData }}
+          className="font-squada"
         >
-          <Form.Item label="From" name="claim_start_date">
-            <DatePicker
-              showTime
-              format={"DD-MM-YYYY - HH:mm"}
-              onChange={(value) =>
-                handleClaimRequestDataChange("claim_start_date", value)
-              }
-            />
-          </Form.Item>
-          <Form.Item label="To" name="claim_end_date">
-            <DatePicker
-              showTime
-              format={"DD-MM-YYYY - HH:mm"}
-              onChange={(value) =>
-                handleClaimRequestDataChange("claim_end_date", value)
+          <Form.Item
+            label={<strong className="text-xl font-light">Claim Name</strong>}
+            name="claim_name"
+            rules={[{ required: true, message: "Please enter claim name" }]}
+          >
+            <Input
+              value={claimRequestData.claim_name}
+              onChange={(e) =>
+                handleClaimRequestDataChange("claim_name", e.target.value)
               }
             />
           </Form.Item>
           <Form.Item
-            label={<strong>Total Working Hours</strong>}
-            name="totalNoOfHours"
+            label={<strong className="text-xl font-light">Project Name</strong>}
+            name={"project_id"}
+            rules={[{ required: true, message: "Please select a project" }]}
           >
-            <Input
-              type="number"
-              value={claimRequestData.totalNoOfHours}
-              onChange={(e) =>
-                handleClaimRequestDataChange(
-                  "totalNoOfHours",
-                  Number(e.target.value)
-                )
+            <Select
+              onChange={(value) =>
+                handleClaimRequestDataChange("project_id", value)
+              }
+            >
+              {projects &&
+                projects.map((project, index) => (
+                  <Select.Option key={index} value={project._id}>
+                    {project.project_name}
+                  </Select.Option>
+                ))}
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label={
+              <strong className="text-xl font-light">Approval Name</strong>
+            }
+            name="approval_id"
+            rules={[{ required: true, message: "Please select an approval" }]}
+          >
+            <Select
+              showSearch
+              labelInValue
+              placeholder="Search and select members"
+              notFoundContent={fetching ? <Spin size="small" /> : null}
+              filterOption={false}
+              onSearch={debounceFetcher}
+              options={approvals}
+              style={{ width: "100%" }}
+              onChange={(value) =>
+                handleClaimRequestDataChange("approval_id", value.value)
               }
             />
           </Form.Item>
-        </Space>
-        <Form.Item label={<strong>Remarks</strong>} name="remark">
-          <Input.TextArea
-            value={claimRequestData.remark}
-            onChange={(e) =>
-              handleClaimRequestDataChange("remark", e.target.value)
-            }
-          />
-        </Form.Item>
-        <Form.Item label={<strong>Claim Name</strong>} name="claim_name">
-          <Input
-            value={claimRequestData.claim_name}
-            onChange={(e) =>
-              handleClaimRequestDataChange("claim_name", e.target.value)
-            }
-          />
-        </Form.Item>
-      </Form>
-    </Modal>
+          <Space
+            direction="horizontal"
+            size="large"
+            className="!w-full justify-between !flex-wrap"
+          >
+            <Form.Item
+              label={<strong className="text-xl font-light">From</strong>}
+              name="claim_start_date"
+              rules={[
+                { required: true, message: "Please select a start date" },
+              ]}
+            >
+              <DatePicker
+                format={"DD-MM-YYYY"}
+                onChange={(value) =>
+                  handleClaimRequestDataChange("claim_start_date", value)
+                }
+              />
+            </Form.Item>
+            <Form.Item
+              label={<strong className="text-xl font-light">To</strong>}
+              name="claim_end_date"
+              rules={[
+                {
+                  validator: (_, value) => {
+                    const startDate = form.getFieldValue("claim_start_date");
+                    if (!value || !startDate || value.isAfter(startDate)) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(
+                      new Error("End date must be after start date")
+                    );
+                  },
+                },
+              ]}
+            >
+              <DatePicker
+                format={"DD-MM-YYYY"}
+                onChange={(value) =>
+                  handleClaimRequestDataChange("claim_end_date", value)
+                }
+              />
+            </Form.Item>
+            <Form.Item
+              label={
+                <strong className="text-xl font-light">
+                  Total Working Hours
+                </strong>
+              }
+              name="total_work_time"
+              rules={[
+                { required: true, message: "Please enter total working hours" },
+              ]}
+            >
+              <Input
+                type="number"
+                value={claimRequestData.total_work_time}
+                className="!font-squada"
+                onChange={(e) =>
+                  handleClaimRequestDataChange(
+                    "total_work_time",
+                    Number(e.target.value)
+                  )
+                }
+              />
+            </Form.Item>
+          </Space>
+          <Form.Item
+            label={<strong className="text-xl font-light">Remarks</strong>}
+            name="remark"
+          >
+            <Input.TextArea
+              className="!font-squada"
+              value={claimRequestData.remark}
+              onChange={(e) =>
+                handleClaimRequestDataChange("remark", e.target.value)
+              }
+            />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </ConfigProvider>
   );
 };
 
