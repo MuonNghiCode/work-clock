@@ -65,6 +65,14 @@ html {
   box-shadow: 0 0 2px rgba(255, 145, 77, 0.7) !important;
 }
 
+.ant-pagination .ant-pagination-item-active {
+  border: 2px solid #ff914d !important;
+}
+
+.ant-pagination .ant-pagination-item-active a {
+  color: #ff914d !important;
+}
+
 .ant-select-dropdown
   .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
   background: rgba(255, 145, 77, 0.5) !important;
@@ -144,7 +152,7 @@ html {
     display: flex;
     flex-direction: column;
   }
-  
+
   .event-time {
     font-weight: bold;
   }
