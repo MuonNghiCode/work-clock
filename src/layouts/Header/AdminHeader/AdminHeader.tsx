@@ -12,13 +12,13 @@ const AdminHeader: React.FC = () => {
 
   const userRole =
     APP_CONSTANTS.roleNames[
-      user?.role_code as keyof typeof APP_CONSTANTS.roleNames
+    user?.role_code as keyof typeof APP_CONSTANTS.roleNames
     ] || "Guest";
   const currentTitle =
     APP_CONSTANTS.pageTitles[
-      location.pathname as keyof typeof APP_CONSTANTS.pageTitles
+    location.pathname as keyof typeof APP_CONSTANTS.pageTitles
     ] || "Home";
-  console.log("User data:", user);
+  // console.log("User data:", user);
   return (
     <div className="flex items-center justify-between w-full py-4 px-6">
       <div className="flex items-center gap-4">
@@ -53,7 +53,7 @@ const AdminHeader: React.FC = () => {
           </div>
           <div>
             <p className="font-semibold">
-              {user && user.user_name ? user.user_name : "Guest"}
+              {user?.user_name || "Guest"}
             </p>
             <p className="text-xs text-gray-400">{userRole}</p>
           </div>
