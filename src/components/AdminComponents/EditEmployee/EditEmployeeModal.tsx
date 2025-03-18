@@ -1,13 +1,31 @@
 import React, { useState, useEffect } from "react";
-import { X, User } from "lucide-react";
+import { User } from "lucide-react";
 import { updateEmployee } from "../../../services/userService";
 import { toast } from "react-toastify";
 import axiosInstance from "../../../config/axiosUser";
 import ImageUploader from "../../ImageUploader/ImageUploader";
 import { EmployeeInfo } from "../../../types/Employee";
-import { Form, Input } from "antd";
-import { formatDate } from "../../../utils/formatDate";
+import { ConfigProvider, Form, Input, Select } from "antd";
 
+// export interface Employee {
+//   _id: string;
+//   user_id: string;
+//   job_rank: string;
+//   contract_type: string;
+//   account: string;
+//   address: string;
+//   phone: string;
+//   full_name: string;
+//   avatar_url: string;
+//   department_code: string;
+//   salary: number;npm i
+//   start_date: string | null;
+//   end_date: string | null;
+//   updated_by: string;
+//   created_at: string;
+//   updated_at: string;
+//   is_deleted: boolean;
+// }
 
 export interface Job {
   _id: string;
@@ -39,6 +57,11 @@ interface EditEmployeeModalProps {
   onUpdateSuccess?: (updatedEmployee: EmployeeInfo) => void;
 }
 
+const formatDate = (dateString: string | null | undefined): string => {
+  if (!dateString) return "";
+  return new Date(dateString).toISOString().split("T")[0];
+};
+const { Option } = Select;
 
 const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
   isOpen,
@@ -47,6 +70,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
   isEmbedded = false,
   onUpdateSuccess,
 }) => {
+  const [form] = Form.useForm();
   const [formData, setFormData] = useState<Partial<EmployeeInfo>>({});
   const [previewAvatar, setPreviewAvatar] = useState("");
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -58,26 +82,26 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
   console.log(formData);
 
   // Animation states
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
+  // const [isAnimating, setIsAnimating] = useState(false);
+  // const [modalVisible, setModalVisible] = useState(false);
 
   // Handle modal open/close animations
-  useEffect(() => {
-    if (isOpen) {
-      setModalVisible(true);
-      setTimeout(() => setIsAnimating(true), 10);
-    } else {
-      setIsAnimating(false);
-      const timer = setTimeout(() => setModalVisible(false), 300);
-      return () => clearTimeout(timer);
-    }
-  }, [isOpen]);
+  // useEffect(() => {
+  //   if (isOpen) {
+  //     setModalVisible(true);
+  //     setTimeout(() => setIsAnimating(true), 10);
+  //   } else {
+  //     setIsAnimating(false);
+  //     const timer = setTimeout(() => setModalVisible(false), 300);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [isOpen]);
 
   // Initialize formData and previewAvatar with employee data
   useEffect(() => {
     if (employee) {
       console.log("Setting employee data:", employee);
-      setFormData({
+      const newFormData = {
         user_id: employee.user_id,
         job_rank: employee.job_rank,
         contract_type: employee.contract_type,
@@ -90,12 +114,14 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
         salary: employee.salary || 0,
         start_date: formatDate(employee.start_date),
         end_date: employee.end_date ? formatDate(employee.end_date) : "",
-      });
+      };
+      setFormData(newFormData);
+      form.setFieldsValue(newFormData);
       setPreviewAvatar(employee.avatar_url || ""); // Đồng bộ previewAvatar
     } else {
       console.log("No employee data provided");
     }
-  }, [employee]);
+  }, [employee, form]);
 
   // Fetch dropdown data
   useEffect(() => {
@@ -124,14 +150,12 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
   }, [isOpen]);
 
   // Handle modal close with animation
-  const handleClose = () => {
-    setIsAnimating(false);
-    setTimeout(() => onClose(), 300);
-  };
+  // const handleClose = () => {
+  //   setIsAnimating(false);
+  //   setTimeout(() => onClose(), 300);
+  // };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const handleSubmit = async () => {
     if (!employee?.user_id) {
       console.log("Current employee:", employee);
       toast.error("No employee data available");
@@ -162,9 +186,10 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
         is_deleted: employee?.is_deleted || false,
       };
 
-      await updateEmployee(employee.user_id, updateData);
-      toast.success("Employee updated successfully");
+      const response = await updateEmployee(employee.user_id, updateData);
+      if(response.success){
       onUpdateSuccess?.(updateData);
+      }
       onClose();
     } catch (error) {
       console.error("Failed to update employee:", error);
@@ -176,12 +201,12 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
     }
   };
 
-  const handleInputChange = (field: keyof EmployeeInfo, value: unknown) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
+  // const handleInputChange = (field: keyof EmployeeInfo, value: unknown) => {
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [field]: value,
+  //   }));
+  // };
 
   const validateImageUrl = async (url: string) => {
     try {
@@ -217,29 +242,60 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
     setPreviewAvatar(imageUrl);
     setFormData((prev) => ({ ...prev, avatar_url: imageUrl }));
   };
+  console.log(formData);
 
-  if (!modalVisible && !isEmbedded) return null;
+  if (!isEmbedded) return null;
 
   if (isEmbedded) {
     return (
-      <form
-        onSubmit={handleSubmit}
-        className="h-[600px] flex flex-col bg-white"
+      <ConfigProvider
+        theme={{
+          token: {
+            fontFamily: "Squada One",
+            colorPrimary: "#FF9447",
+            colorBorder: "#E5E7EB",
+            borderRadius: 8,
+            colorBgContainer: "#FFFFFF",
+            colorTextBase: "#374151",
+            fontSize: 14,
+          },
+          components: {
+            Input: {
+              fontFamily: "Squada One",
+            },
+            Select: {
+              fontFamily: "Squada One",
+            },
+            Form: {
+              labelFontSize: 14,
+              fontFamily: "Squada One",
+            },
+          },
+        }}
       >
-        <div className="flex-1 overflow-y-auto p-6">
+        <Form
+          form={form}
+          onValuesChange={(changedValues) =>
+            setFormData((prev) => ({ ...prev, ...changedValues }))
+          }
+          layout="vertical"
+          initialValues={formData}
+          onFinish={handleSubmit}
+          className="bg-white rounded-lg shadow-sm font-['Squada_One']"
+        >
           {error ? (
-            <div className="text-red-500">{error}</div>
+            <div className="text-red-500 p-4 bg-red-50 rounded-lg mb-4 font-['Squada_One']">{error}</div>
           ) : (
-            <div className="space-y-6">
+            <div className="space-y-8 p-6">
               {/* Avatar Section */}
               <div className="mb-8">
-                <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                <h3 className="text-xl font-semibold text-[#FF9447] mb-4 border-b pb-2 font-['Squada_One']">
                   Profile Image
                 </h3>
-                <div className="flex flex-col items-center gap-4">
-                  {/* Avatar Preview với Upload Overlay */}
+                <div className="flex flex-col items-center gap-6">
+                  {/* Avatar Preview with Upload Overlay */}
                   <div className="relative group">
-                    <div className="w-40 h-40 rounded-full border-4 border-gray-200 overflow-hidden">
+                    <div className="w-40 h-40 rounded-full border-4 border-gray-200 overflow-hidden shadow-lg transition-all duration-300 hover:border-[#FF9447]">
                       {previewAvatar ? (
                         <img
                           src={previewAvatar}
@@ -254,30 +310,28 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                     </div>
 
                     {/* Upload Overlay */}
-                    <div className="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <div className="absolute inset-0 bg-black/60 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center cursor-pointer">
                       <ImageUploader onImageUploaded={handleImageUpload} />
                     </div>
                   </div>
 
-                  {/* URL Input và Preview Button */}
+                  {/* URL Input and Preview Button */}
                   <div className="w-full max-w-md">
-                    <label className="block text-sm font-medium text-gray-600 mb-2">
-                      Image URL
+                    <label className="block text-sm font-medium text-gray-700 mb-2 font-['Squada_One']">
+                      Image URL<span className="text-red-500 ml-1">*</span>
                     </label>
                     <div className="flex gap-2">
                       <input
                         type="text"
                         value={formData.avatar_url || ""}
                         onChange={(e) => validateImageUrl(e.target.value)}
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF9447]/20 focus:border-[#FF9447] transition-all duration-200 font-['Squada_One']"
                         placeholder="https://example.com/image.jpg"
                       />
                       <button
                         type="button"
-                        onClick={() =>
-                          validateImageUrl(formData.avatar_url || "")
-                        }
-                        className="px-4 py-2 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200"
+                        onClick={() => validateImageUrl(formData.avatar_url || "")}
+                        className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-['Squada_One']"
                       >
                         Preview
                       </button>
@@ -286,628 +340,227 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                 </div>
               </div>
 
-              {/* Personal Information */}
-              <div className="grid grid-cols-2 gap-6">
-                <div className="bg-gray-50 p-6 rounded-lg">
-                  <h3 className="text-lg font-semibold text-gray-700 mb-4">
+              {/* Personal Information and Employment Details Grid */}
+              <div className="grid grid-cols-2 gap-8">
+                <div className="bg-gray-50/70 p-6 rounded-xl shadow-sm">
+                  <h3 className="text-xl font-semibold text-[#FF9447] mb-6 border-b pb-2 font-['Squada_One']">
                     Personal Information
                   </h3>
-                  <div className="space-y-4">
-                    <div>
-                      {/* <label className="block text-sm font-medium text-gray-600 mb-2">
-                        Full Name
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.full_name || ""}
-                        onChange={(e) =>
-                          handleInputChange("full_name", e.target.value)
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                      /> */}
+                  <div className="space-y-5">
+                    <Form.Item
+                      name="full_name"
+                      label={
+                        <span className="font-medium text-gray-700 font-['Squada_One']">
+                          Full Name<span className="text-red-500 ml-1">*</span>
+                        </span>
+                      }
+                      rules={[{ required: true, message: "Full Name is required" }]}
+                      className="mb-4"
+                    >
+                      <Input className="rounded-lg py-2 font-['Squada_One']" />
+                    </Form.Item>
 
-                      {/* Full Name Employee */}
-                      <Form.Item
-                        name="full_name"
-                        label={
-                          <span>
-                            Full Name<span className="text-red-600">*</span>
-                          </span>
-                        }
-                        rules={[
-                          { required: true, message: "Full Name is required" },
-                        ]}
-                      ></Form.Item>
-                      <Input
-                        type="text"
-                        value={formData.full_name || ""}
-                        onChange={(e) =>
-                          handleInputChange("full_name", e.target.value)
-                        }
-                      />
-                    </div>
+                    <Form.Item
+                      name="phone"
+                      label={
+                        <span className=" font-medium text-gray-700 font-['Squada_One']">
+                          Phone<span className="text-red-500 ml-1">*</span>
+                        </span>
+                      }
+                      rules={[{ required: true, message: "Phone is required" }]}
+                    >
+                      <Input className="rounded-lg py-2 font-['Squada_One']" />
+                    </Form.Item>
 
-                    {/* Phone Employee */}
-                    {/* <div>
-                      <label className="block text-sm font-medium text-gray-600 mb-2">
-                        Phone
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.phone || ""}
-                        onChange={(e) =>
-                          handleInputChange("phone", e.target.value)
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                      />
-                    </div> */}
-                    <div>
-                      <Form.Item
-                        name="phone"
-                        label={
-                          <span>
-                            Phone<span className="text-red-600">*</span>
-                          </span>
-                        }
-                        rules={[
-                          { required: true, message: "Phone is required" },
-                        ]}
-                      ></Form.Item>
-                      <Input
-                        type="text"
-                        value={formData.phone || ""}
-                        onChange={(e) =>
-                          handleInputChange("phone", e.target.value)
-                        }
-                      />
-                    </div>
-
-                    {/* Address Employee */}
-                    {/* <div>
-                      <label className="block text-sm font-medium text-gray-600 mb-2">
-                        Address
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.address || ""}
-                        onChange={(e) =>
-                          handleInputChange("address", e.target.value)
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                      />
-                    </div> */}
-
-                    <div>
-                      <Form.Item
-                        name="address"
-                        label={
-                          <span>
-                            Address<span className="text-red-600">*</span>
-                          </span>
-                        }
-                        rules={[
-                          { required: true, message: "Address is required" },
-                        ]}
-                      ></Form.Item>
-                      <Input
-                        type="text"
-                        value={formData.address || ""}
-                        onChange={(e) =>
-                          handleInputChange("address", e.target.value)
-                        }
-                      />
-                    </div>
+                    <Form.Item
+                      name="address"
+                      label={
+                        <span className="font-medium text-gray-700 font-['Squada_One']">
+                          Address<span className="text-red-500 ml-1">*</span>
+                        </span>
+                      }
+                      rules={[{ required: true, message: "Address is required" }]}
+                    >
+                      <Input className="rounded-lg py-2 font-['Squada_One']" />
+                    </Form.Item>
                   </div>
                 </div>
 
-                {/* Employment Details */}
-                <div className="bg-gray-50 p-6 rounded-lg">
-                  <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                <div className="bg-gray-50/70 p-6 rounded-xl shadow-sm">
+                  <h3 className="text-xl font-semibold text-[#FF9447] mb-6 border-b pb-2 font-['Squada_One']">
                     Employment Details
                   </h3>
-                  <div className="space-y-4">
-                    {/* Job Rank */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-600 mb-2">
-                        Job Rank
-                      </label>
+                  <div className="space-y-5">
+                    <Form.Item
+                      name="job_rank"
+                      label={
+                        <span className="font-medium text-gray-700 font-['Squada_One']">
+                          Job Rank<span className="text-red-500 ml-1">*</span>
+                        </span>
+                      }
+                      rules={[{ required: true, message: "Job Rank is required" }]}
+                    >
                       {isLoading ? (
-                        <div className="text-gray-500">Loading jobs...</div>
+                        <div className="text-gray-500 font-['Squada_One']">Loading jobs...</div>
                       ) : (
-                        <select
-                          value={formData.job_rank || ""}
-                          onChange={(e) =>
-                            handleInputChange("job_rank", e.target.value)
-                          }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                        <Select
+                          className="w-full rounded-lg font-['Squada_One']"
+                          placeholder="Select Job Rank"
+                          dropdownStyle={{ fontFamily: 'Squada One' }}
                         >
-                          <option value="">Select Job Rank</option>
                           {getUniqueJobsByTitle(jobs).map((job) => (
-                            <option key={job._id} value={job.job_rank}>
+                            <Option key={job._id} value={job.job_rank}>
                               {job.job_rank}
-                            </option>
+                            </Option>
                           ))}
-                        </select>
+                        </Select>
                       )}
-                    </div>
+                    </Form.Item>
 
-                    {/* Department */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-600 mb-2">
-                        Department
-                      </label>
+                    <Form.Item
+                      name="department_code"
+                      label={
+                        <span className="font-medium text-gray-700 font-['Squada_One']">
+                          Department<span className="text-red-500 ml-1">*</span>
+                        </span>
+                      }
+                      rules={[{ required: true, message: "Department is required" }]}
+                    >
                       {isLoading ? (
-                        <div className="text-gray-500">
-                          Loading departments...
-                        </div>
+                        <div className="text-gray-500 font-['Squada_One']">Loading departments...</div>
                       ) : (
-                        <select
-                          value={formData.department_code || ""}
-                          onChange={(e) =>
-                            handleInputChange("department_code", e.target.value)
-                          }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                        <Select
+                          className="w-full rounded-lg font-['Squada_One']"
+                          placeholder="Select Department"
+                          dropdownStyle={{ fontFamily: 'Squada One' }}
                         >
-                          <option value="">Select Department</option>
                           {departments.map((dept) => (
-                            <option key={dept._id} value={dept.department_code}>
+                            <Option key={dept._id} value={dept.department_code}>
                               {dept.department_name}
-                            </option>
+                            </Option>
                           ))}
-                        </select>
+                        </Select>
                       )}
-                    </div>
-                    {/* Contract Type */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-600 mb-2">
-                        Contract Type
-                      </label>
+                    </Form.Item>
+
+                    <Form.Item
+                      name="contract_type"
+                      label={
+                        <span className="font-medium text-gray-700 font-['Squada_One']">
+                          Contract Type<span className="text-red-500 ml-1">*</span>
+                        </span>
+                      }
+                      rules={[{ required: true, message: "Contract Type is required" }]}
+                    >
                       {isLoading ? (
-                        <div className="text-gray-500">
-                          Loading contracts...
-                        </div>
+                        <div className="text-gray-500 font-['Squada_One']">Loading contracts...</div>
                       ) : (
-                        <select
-                          value={formData.contract_type || ""}
-                          onChange={(e) =>
-                            handleInputChange("contract_type", e.target.value)
-                          }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                        <Select
+                          className="w-full rounded-lg font-['Squada_One']"
+                          placeholder="Select Contract Type"
+                          dropdownStyle={{ fontFamily: 'Squada One' }}
                         >
-                          <option value="">Select Contract Type</option>
                           {contracts.map((contract) => (
-                            <option
-                              key={contract._id}
-                              value={contract.contract_type}
-                            >
+                            <Option key={contract._id} value={contract.contract_type}>
                               {contract.description}
-                            </option>
+                            </Option>
                           ))}
-                        </select>
+                        </Select>
                       )}
-                    </div>
-                    {/* Salary */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-600 mb-2">
-                        Salary
-                      </label>
-                      <input
-                        type="number"
-                        value={formData.salary || 0}
-                        onChange={(e) =>
-                          handleInputChange("salary", Number(e.target.value))
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                      />
-                    </div>
+                    </Form.Item>
+
+                    <Form.Item
+                      name="salary"
+                      label={
+                        <span className="font-medium text-gray-700 font-['Squada_One']">
+                          Salary<span className="text-red-500 ml-1">*</span>
+                        </span>
+                      }
+                      rules={[{ required: true, message: "Salary is required" }]}
+                    >
+                      <Input type="number" className="rounded-lg py-2 font-['Squada_One']" />
+                    </Form.Item>
                   </div>
                 </div>
               </div>
 
               {/* Contract Period */}
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <h3 className="text-lg font-semibold text-gray-700 mb-4">
+              <div className="bg-gray-50/70 p-6 rounded-xl shadow-sm">
+                <h3 className="text-xl font-semibold text-[#FF9447] mb-6 border-b pb-2 font-['Squada_One']">
                   Contract Period
                 </h3>
-                <div className="grid grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-2">
-                      Start Date
-                    </label>
-                    <input
-                      type="date"
-                      value={formData.start_date || ""}
-                      onChange={(e) =>
-                        handleInputChange("start_date", e.target.value)
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-2">
-                      End Date
-                    </label>
-                    <input
-                      type="date"
-                      value={formData.end_date || ""}
-                      onChange={(e) =>
-                        handleInputChange("end_date", e.target.value)
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                    />
-                  </div>
+                <div className="grid grid-cols-2 gap-8">
+                  <Form.Item
+                    name="start_date"
+                    label={
+                      <span className="font-medium text-gray-700 font-['Squada_One']">
+                        Start Date<span className="text-red-500 ml-1">*</span>
+                      </span>
+                    }
+                    rules={[
+                      { required: true, message: "Start Date is required" },
+                      ({ getFieldValue }) => ({
+                        validator(_, value) {
+                          if (!value || !getFieldValue('end_date') || new Date(value) < new Date(getFieldValue('end_date'))) {
+                            return Promise.resolve();
+                          }
+                          return Promise.reject(new Error('Start Date must be before End Date'));
+                        },
+                      }),
+                    ]}
+                  >
+                    <Input type="date" className="rounded-lg py-2 font-['Squada_One']" />
+                  </Form.Item>
+
+                  <Form.Item
+                    name="end_date"
+                    label={
+                      <span className="font-medium text-gray-700 font-['Squada_One']">
+                        End Date<span className="text-red-500 ml-1">*</span>
+                      </span>
+                    }
+                    rules={[
+                      { required: true, message: "End Date is required" },
+                      ({ getFieldValue }) => ({
+                        validator(_, value) {
+                          if (!value || !getFieldValue('start_date') || new Date(value) > new Date(getFieldValue('start_date'))) {
+                            return Promise.resolve();
+                          }
+                          return Promise.reject(new Error('End Date must be after Start Date'));
+                        },
+                      }),
+                    ]}
+                  >
+                    <Input type="date" className="rounded-lg py-2 font-['Squada_One']" />
+                  </Form.Item>
                 </div>
               </div>
             </div>
           )}
-        </div>
-        <div className="px-6 py-4 border-t bg-white">
-          <div className="flex justify-end gap-3">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-[#FF9447] text-white rounded hover:bg-[#FF8347]"
-              disabled={isSubmitting || isLoading || !!error} // Vô hiệu hóa khi loading hoặc có lỗi
-            >
-              {isSubmitting ? "Saving..." : "Save Changes"}
-            </button>
+
+          {/* Footer */}
+          <div className="px-6 py-4 border-t bg-white rounded-b-lg">
+            <div className="flex justify-end gap-4">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-6 py-2.5 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-['Squada_One']"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-6 py-2.5 bg-[#FF9447] text-white rounded-lg hover:bg-[#FF8347] transition-colors duration-200 font-['Squada_One'] disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isSubmitting || isLoading || !!error}
+              >
+                {isSubmitting ? "Saving..." : "Save Changes"}
+              </button>
+            </div>
           </div>
-        </div>
-      </form>
+        </Form>
+      </ConfigProvider>
     );
   }
-
-  return (
-    <div
-      className="fixed inset-0 z-50 overflow-y-auto transition-opacity duration-300 ease-in-out"
-      style={{ opacity: isAnimating ? 1 : 0 }}
-    >
-      <div
-        className="fixed inset-0 bg-black/30 transition-opacity duration-300 ease-in-out"
-        style={{ opacity: isAnimating ? 1 : 0 }}
-        onClick={handleClose}
-      ></div>
-      <div className="relative min-h-screen flex items-center justify-center p-4">
-        <div
-          className="relative bg-white rounded-lg w-full max-w-4xl p-6 transition-all duration-300 ease-in-out transform"
-          style={{
-            opacity: isAnimating ? 1 : 0,
-            transform: isAnimating ? "scale(1)" : "scale(0.95)",
-          }}
-        >
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-[#FF9447]">Edit Employee</h2>
-            <button
-              onClick={handleClose}
-              className="p-1 hover:bg-gray-100 rounded-full transition-colors"
-            >
-              <X className="w-6 h-6 text-gray-500" />
-            </button>
-          </div>
-          <form
-            onSubmit={handleSubmit}
-            className="h-[600px] flex flex-col bg-white"
-          >
-            <div className="flex-1 overflow-y-auto p-6">
-              {error ? (
-                <div className="text-red-500">{error}</div>
-              ) : (
-                <div className="space-y-6">
-                  {/* Avatar Section */}
-                  <div className="mb-8">
-                    <h3 className="text-lg font-semibold text-gray-700 mb-4">
-                      Profile Image
-                    </h3>
-                    <div className="flex flex-col items-center gap-4">
-                      {/* Avatar Preview với Upload Overlay */}
-                      <div className="relative group">
-                        <div className="w-40 h-40 rounded-full border-4 border-gray-200 overflow-hidden">
-                          {previewAvatar ? (
-                            <img
-                              src={previewAvatar}
-                              alt="Avatar preview"
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full bg-gray-50 flex items-center justify-center">
-                              <User className="w-16 h-16 text-gray-400" />
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Upload Overlay */}
-                        <div className="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <ImageUploader onImageUploaded={handleImageUpload} />
-                        </div>
-                      </div>
-
-                      {/* URL Input và Preview Button */}
-                      <div className="w-full max-w-md">
-                        <label className="block text-sm font-medium text-gray-600 mb-2">
-                          Image URL
-                        </label>
-                        <div className="flex gap-2">
-                          <input
-                            type="text"
-                            value={formData.avatar_url || ""}
-                            onChange={(e) => validateImageUrl(e.target.value)}
-                            className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                            placeholder="https://example.com/image.jpg"
-                          />
-                          <button
-                            type="button"
-                            onClick={() =>
-                              validateImageUrl(formData.avatar_url || "")
-                            }
-                            className="px-4 py-2 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200"
-                          >
-                            Preview
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Personal Information */}
-                  <div className="grid grid-cols-2 gap-6">
-                    <div className="bg-gray-50 p-6 rounded-lg">
-                      <h3 className="text-lg font-semibold text-gray-700 mb-4">
-                        Personal Information
-                      </h3>
-                      <div className="space-y-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-600 mb-2">
-                            Full Name
-                          </label>
-                          <input
-                            type="text"
-                            value={formData.full_name || ""}
-                            onChange={(e) =>
-                              handleInputChange("full_name", e.target.value)
-                            }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-600 mb-2">
-                            Phone
-                          </label>
-                          <input
-                            type="text"
-                            value={formData.phone || ""}
-                            onChange={(e) =>
-                              handleInputChange("phone", e.target.value)
-                            }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-600 mb-2">
-                            Address
-                          </label>
-                          <input
-                            type="text"
-                            value={formData.address || ""}
-                            onChange={(e) =>
-                              handleInputChange("address", e.target.value)
-                            }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Employment Details */}
-                    <div className="bg-gray-50 p-6 rounded-lg">
-                      <h3 className="text-lg font-semibold text-gray-700 mb-4">
-                        Employment Details
-                      </h3>
-                      <div className="space-y-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-600 mb-2">
-                            Job Rank
-                          </label>
-                          {isLoading ? (
-                            <div className="text-gray-500">Loading jobs...</div>
-                          ) : (
-                            <select
-                              value={formData.job_rank || ""}
-                              onChange={(e) =>
-                                handleInputChange("job_rank", e.target.value)
-                              }
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                            >
-                              <option value="">Select Job Rank</option>
-                              {getUniqueJobsByTitle(jobs).map((job) => (
-                                <option key={job._id} value={job.job_rank}>
-                                  {job.job_title}
-                                </option>
-                              ))}
-                            </select>
-                          )}
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-600 mb-2">
-                            Department
-                          </label>
-                          {isLoading ? (
-                            <div className="text-gray-500">
-                              Loading departments...
-                            </div>
-                          ) : (
-                            <select
-                              value={formData.department_code || ""}
-                              onChange={(e) =>
-                                handleInputChange(
-                                  "department_code",
-                                  e.target.value
-                                )
-                              }
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                            >
-                              <option value="">Select Department</option>
-                              {departments.map((dept) => (
-                                <option
-                                  key={dept._id}
-                                  value={dept.department_code}
-                                >
-                                  {dept.department_name}
-                                </option>
-                              ))}
-                            </select>
-                          )}
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-600 mb-2">
-                            Contract Type
-                          </label>
-                          {isLoading ? (
-                            <div className="text-gray-500">
-                              Loading contracts...
-                            </div>
-                          ) : (
-                            <select
-                              value={formData.contract_type || ""}
-                              onChange={(e) =>
-                                handleInputChange(
-                                  "contract_type",
-                                  e.target.value
-                                )
-                              }
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                            >
-                              <option value="">Select Contract Type</option>
-                              {contracts.map((contract) => (
-                                <option
-                                  key={contract._id}
-                                  value={contract.contract_type}
-                                >
-                                  {contract.description}
-                                </option>
-                              ))}
-                            </select>
-                          )}
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-600 mb-2">
-                            Salary
-                          </label>
-                          <input
-                            type="number"
-                            value={formData.salary || 0}
-                            onChange={(e) =>
-                              handleInputChange(
-                                "salary",
-                                Number(e.target.value)
-                              )
-                            }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Contract Period */}
-                  <div className="bg-gray-50 p-6 rounded-lg">
-                    <h3 className="text-lg font-semibold text-gray-700 mb-4">
-                      Contract Period
-                    </h3>
-                    <div className="grid grid-cols-2 gap-6">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-600 mb-2">
-                          Start Date
-                        </label>
-                        <input
-                          type="date"
-                          value={formData.start_date || ""}
-                          onChange={(e) =>
-                            handleInputChange("start_date", e.target.value)
-                          }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-600 mb-2">
-                          End Date
-                        </label>
-                        <input
-                          type="date"
-                          value={formData.end_date || ""}
-                          onChange={(e) =>
-                            handleInputChange("end_date", e.target.value)
-                          }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-            <div className="px-6 py-4 border-t bg-white">
-              <div className="flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={handleClose}
-                  className="px-4 py-2 text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-[#FF9447] text-white rounded hover:bg-[#FF8347]"
-                  disabled={isSubmitting || isLoading || !!error} // Vô hiệu hóa khi loading hoặc có lỗi
-                >
-                  {isSubmitting ? "Saving..." : "Save Changes"}
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-      <style>
-        {`
-          input, select {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.375rem;
-          }
-          
-          input:focus, select:focus {
-            border-color: #FF9447;
-            box-shadow: 0 0 0 2px rgba(255, 148, 71, 0.2);
-          }
-          .ant-form-item-required{
-          font-family: 'Squada-One';
-          }
-          .ant-form-item-required::before {
-            display: none !important;
-          }
-          label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #374151;
-            margin-bottom: 0.25rem;
-          }
-          
-          .error-message {
-            color: #ef4444;
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-          }
-        `}
-      </style>
-    </div>
-  );
 };
 
 export default EditEmployeeModal;
