@@ -4,7 +4,6 @@ import FinanceDashboard from "../../components/FinanceComponents/FinanceDashboar
 const FinanceDashboardPage: React.FC = () => {
   return (
     <div className="mx-auto p-1">
-      f
       <div className="w-full mx-auto">
         <FinanceDashboard />
       </div>
