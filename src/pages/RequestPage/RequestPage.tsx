@@ -30,6 +30,7 @@ interface ClaimRequest {
   timeFrom: string;
   timeTo: string;
   status: string;
+  approval_name: string;
 }
 
 const RequestPage: React.FC = () => {
@@ -76,6 +77,7 @@ const RequestPage: React.FC = () => {
     }),
     totalHours: item.total_work_time?.toString() || "0",
     status: item.claim_status || "Unknown",
+    approval_name: item.approval_info?.user_name || "Not assigned"
   });
 
   const fetchClaims = async () => {
