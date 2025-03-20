@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Pagination } from "antd";
 import { getAllProject } from "../../services/projectService"; // Import the new function
+import { useUser } from "../../contexts/UserContext";
 
 interface ProjectInfo {
   key: string;
@@ -15,7 +16,8 @@ const UserProject = () => {
   const [projectsCount, setProjectsCount] = useState(0); // Add state for projects count
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1); // Add state for current page
-  const pageSize = 5; // Set page size to 5
+  const { user } = useUser();
+  const pageSize = 5;
 
   const fetchProjects = async (pageNum: number, pageSize: number) => {
     try {
@@ -25,7 +27,7 @@ const UserProject = () => {
           project_start_date: "",
           project_end_date: "",
           is_delete: false,
-          user_id: "",
+          user_id: user?._id || "",
         },
         pageInfo: { pageNum, pageSize },
       });
