@@ -154,7 +154,7 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
         onOk={onFinish}
         cancelText={<span className="text-xl font-light">Cancel</span>}
         okText={
-          <span className="text-xl font-light">Create Claim Request</span>
+          <span className="text-xl font-light ">Create Claim Request</span>
         }
         okButtonProps={{ className: "!py-5 !rounded-xl" }}
         cancelButtonProps={{ className: "!py-5 !rounded-xl" }}

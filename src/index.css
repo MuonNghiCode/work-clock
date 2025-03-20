@@ -78,6 +78,21 @@ html {
   background: rgba(255, 145, 77, 0.5) !important;
 }
 
+.ant-btn-variant-solid {
+  background-color: #ff914d !important;
+  color: white !important;
+}
+
+.ant-btn-dashed {
+  border-color: #ff914d !important; /* Đổi màu viền */
+  color: #ff914d !important; /* Đổi màu chữ */
+}
+
+.ant-btn-dashed:hover {
+  border-color: #ff6200 !important; /* Đổi màu viền */
+  color: #ff6200 !important; /* Đổi màu chữ */
+}
+
 @layer theme {
   .font-squada {
     font-family: "Squada One", sans-serif;

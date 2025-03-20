@@ -60,7 +60,6 @@ const UserProject = () => {
   return (
     <div>
       <div className="col-span-4 p-4 rounded-lg mt-8">
-        <h3 className="text-lg font-bold">Project List</h3>
         <table className="min-w-full border-separate border-spacing-y-2.5 border-0 text-black w-full">
           <thead className="bg-brand-gradient h-[70px] text-lg text-white">
             <tr className="bg-[linear-gradient(45deg,#FEB78A,#FF914D)]">
@@ -115,7 +114,7 @@ const UserProject = () => {
             total={projectsCount}
             onChange={handlePageChange}
             showSizeChanger={false}
-          // onShowSizeChange={(current, size) => setPageSize(size)}
+            // onShowSizeChange={(current, size) => setPageSize(size)}
           />
         </div>
       </div>

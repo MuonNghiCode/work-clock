@@ -148,11 +148,15 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({
 
   return (
     <Modal
-    title={
-      <span className={formCheck === "add" ? "text-gradient-color" : "text-gradient-color"}>
-        {formCheck === "add" ? "Create New Project" : "Edit Project"}
-      </span>
-    }
+      title={
+        <span
+          className={
+            formCheck === "add" ? "text-gradient-color" : "text-gradient-color"
+          }
+        >
+          {formCheck === "add" ? "Create New Project" : "Edit Project"}
+        </span>
+      }
       open={isOpen.isOpen}
       onOk={handleSubmit}
       onCancel={handleClose}
@@ -189,7 +193,10 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({
           {formCheck === "edit" && (
             <Form.Item name="project_status" label="Status" className="w-full">
               <Select
-                options={optionStatus.map(status => ({ label: status, value: status }))}
+                options={optionStatus.map((status) => ({
+                  label: status,
+                  value: status,
+                }))}
                 placeholder="Select Status"
               />
             </Form.Item>
@@ -197,10 +204,18 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <Form.Item name="project_start_date" label="Start Date" className="w-full">
+          <Form.Item
+            name="project_start_date"
+            label="Start Date"
+            className="w-full"
+          >
             <DatePicker className="w-full" />
           </Form.Item>
-          <Form.Item name="project_end_date" label="End Date" className="w-full">
+          <Form.Item
+            name="project_end_date"
+            label="End Date"
+            className="w-full"
+          >
             <DatePicker className="w-full" />
           </Form.Item>
         </div>
@@ -241,11 +256,18 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({
                   >
                     <Select placeholder="Select role" options={roleList} />
                   </Form.Item>
-                  <Button type="link" danger onClick={() => remove(name)}>Remove</Button>
+                  <Button type="link" danger onClick={() => remove(name)}>
+                    Remove
+                  </Button>
                 </div>
               ))}
               <Form.Item>
-                <Button type="dashed" onClick={() => add()} block>
+                <Button
+                  className="hover:bg-brand-gradient"
+                  type="dashed"
+                  onClick={() => add()}
+                  block
+                >
                   Add Member
                 </Button>
               </Form.Item>
