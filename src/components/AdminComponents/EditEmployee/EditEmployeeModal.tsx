@@ -366,7 +366,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                         <span className=" font-medium text-gray-700 font-['Squada_One']">
                           Phone<span className="text-red-500 ml-1">*</span>
                         </span>
-                      }
+                      }required
                       rules={[{ required: true, message: "Phone is required" }]}
                     >
                       <Input className="rounded-lg py-2 font-['Squada_One']" />
