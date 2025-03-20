@@ -64,7 +64,7 @@ const Sidebar: React.FC = () => {
       {
         path: "edit_profile",
         icon: <Icons.Settings className="w-8 h-8" />,
-        label: "SETTING",
+        label: "Setting",
       },
     ],
     A003: [
@@ -79,24 +79,24 @@ const Sidebar: React.FC = () => {
         label: "Approval Management",
       },
       {
-        path: "edit_profile",
-        icon: <Icons.Settings className="w-8 h-8" />,
-        label: "SETTING",
-      },
-      {
         path: "calendar",
         icon: <Icons.Calendar className="w-8 h-8" />,
-        label: "CALENDAR",
+        label: "Calendar",
       },
       {
         path: "request",
         icon: <Icons.ChartColumn className="w-8 h-8" />,
-        label: "REPORT",
+        label: "Claim Request",
       },
       {
-        path: "user-project",
+        path: "user_project",
         icon: <Icons.FolderDot className="w-8 h-8" />,
-        label: "User Projects",
+        label: "Projects",
+      },
+      {
+        path: "edit_profile",
+        icon: <Icons.Settings className="w-8 h-8" />,
+        label: "Setting",
       },
     ],
     A002: [
@@ -111,24 +111,24 @@ const Sidebar: React.FC = () => {
         label: "Finance Management",
       },
       {
-        path: "edit_profile",
-        icon: <Icons.Settings className="w-8 h-8" />,
-        label: "SETTING",
-      },
-      {
         path: "calendar",
         icon: <Icons.Calendar className="w-8 h-8" />,
-        label: "CALENDAR",
+        label: "Calendar",
       },
       {
         path: "request",
         icon: <Icons.ChartColumn className="w-8 h-8" />,
-        label: "REPORT",
+        label: "Claim Request",
       },
       {
-        path: "user-project",
+        path: "user_project",
         icon: <Icons.FolderDot className="w-8 h-8" />,
-        label: "User Projects",
+        label: "Projects",
+      },
+      {
+        path: "edit_profile",
+        icon: <Icons.Settings className="w-8 h-8" />,
+        label: "Setting",
       },
     ],
     A004: [
@@ -140,22 +140,22 @@ const Sidebar: React.FC = () => {
       {
         path: "calendar",
         icon: <Icons.Calendar className="w-8 h-8" />,
-        label: "CALENDAR",
+        label: "Calendar",
       },
       {
         path: "request",
         icon: <Icons.ChartColumn className="w-8 h-8" />,
-        label: "REPORT",
+        label: "Claim Request",
       },
       {
-        path: "user-project",
+        path: "user_project",
         icon: <Icons.FolderDot className="w-8 h-8" />,
-        label: "User Projects",
+        label: "Projects",
       },
       {
         path: "edit_profile",
         icon: <Icons.Settings className="w-8 h-8" />,
-        label: "SETTING",
+        label: "Setting",
       },
     ],
   };

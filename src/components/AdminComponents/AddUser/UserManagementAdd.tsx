@@ -97,7 +97,7 @@ const UserManagementAdd: React.FC<UserManagementAddProps> = React.memo(
               { min: 3, message: "Username must be at least 3 characters" },
             ]}
           >
-            <Input className="rounded-lg py-2 font-['Squada_One']"/>
+            <Input className="rounded-lg py-2 font-['Squada_One']" />
           </Form.Item>
 
           <Form.Item
@@ -116,7 +116,7 @@ const UserManagementAdd: React.FC<UserManagementAddProps> = React.memo(
               },
             ]}
           >
-            <Input className="rounded-lg py-2 font-['Squada_One']"/>
+            <Input className="rounded-lg py-2 font-['Squada_One']" />
           </Form.Item>
 
           <Form.Item
@@ -154,7 +154,7 @@ const UserManagementAdd: React.FC<UserManagementAddProps> = React.memo(
               }),
             ]}
           >
-            <Input.Password  />
+            <Input.Password />
           </Form.Item>
 
           <Form.Item
@@ -191,8 +191,8 @@ const UserManagementAdd: React.FC<UserManagementAddProps> = React.memo(
             </button>
           </div>
         </Form>
-            <style>
-                {`
+        <style>
+          {`
                     .ant-form-item-label > label {
                         font-weight: 500;
                         color: #4B5563;
@@ -252,7 +252,7 @@ const UserManagementAdd: React.FC<UserManagementAddProps> = React.memo(
                         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
                     }
                 `}
-            </style>
+        </style>
       </div>
     );
   }

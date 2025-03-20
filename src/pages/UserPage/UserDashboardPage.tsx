@@ -30,6 +30,7 @@ interface ClaimRequest {
   timeFrom: string;
   timeTo: string;
   status: string;
+  approval_name: string;
 }
 
 const StatCard = ({
@@ -96,6 +97,7 @@ const UserDashboardPage = () => {
           hour12: false,
         }),
         status: item.claim_status,
+        approval_name: item.approval_name,
       }));
       setClaimsData(data);
       setClaimsCount(data.length);
