@@ -115,8 +115,12 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
     setClaimRequestData((prevData) => ({
       ...prevData,
       [key]: value,
-      ...(key === "claim_start_date" && { from: value.toISOString() }),
-      ...(key === "claim_end_date" && { to: value.toISOString() }),
+      ...(key === "claim_start_date" && value
+        ? { from: value.toISOString() }
+        : {}),
+      ...(key === "claim_end_date" && value
+        ? { to: value.toISOString() }
+        : {}),
     }));
   };
 
@@ -247,11 +251,11 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
                 {
                   validator: (_, value) => {
                     const startDate = form.getFieldValue("claim_start_date");
-                    if (!value || !startDate || value.isAfter(startDate)) {
+                    if (!value || !startDate || !value.isBefore(startDate)) {
                       return Promise.resolve();
                     }
                     return Promise.reject(
-                      new Error("End date must be after start date")
+                      new Error("End date must be the same or after start date")
                     );
                   },
                 },
