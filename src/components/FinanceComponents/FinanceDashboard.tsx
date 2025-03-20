@@ -173,12 +173,12 @@ const FinanceDashboard: React.FC = () => {
           );
 
           // Tính tổng lương cho từng tháng
-          const monthlySalaries = Array(12).fill(0); // Mảng để lưu tổng lương theo tháng
+          const monthlySalaries = Array(12).fill(0);
           formattedData.forEach((item) => {
             const claimDate = moment(item.claim_start_date).utcOffset(7);
-            const monthIndex = claimDate.month(); // Lấy chỉ số tháng (0-11)
+            const monthIndex = claimDate.month();
             if (item.status === "Paid") {
-              monthlySalaries[monthIndex] += item.employee_info.salary; // Cộng lương vào tháng tương ứng
+              monthlySalaries[monthIndex] += item.employee_info.salary;
             }
           });
 
@@ -188,20 +188,20 @@ const FinanceDashboard: React.FC = () => {
             datasets: [
               {
                 ...prevData.datasets[0],
-                data: monthlySalaries, // Cập nhật dữ liệu với tổng lương theo tháng
+                data: monthlySalaries,
               },
             ],
           }));
 
           // Tính số lượng claim theo tháng cho trạng thái "Approved" và "Paid"
-          const monthlyClaims = Array(12).fill(0); // Mảng để lưu số lượng claim theo tháng
+          const monthlyClaims = Array(12).fill(0);
           formattedData.forEach((item) => {
             const claimDate = moment(item.claim_start_date).utcOffset(7);
-            const monthIndex = claimDate.month(); // Lấy chỉ số tháng (0-11)
+            const monthIndex = claimDate.month();
 
             // Kiểm tra trạng thái và tăng số lượng claim vào tháng tương ứng
             if (item.status === "Approved" || item.status === "Paid") {
-              monthlyClaims[monthIndex] += 1; // Tăng số lượng claim vào tháng tương ứng
+              monthlyClaims[monthIndex] += 1;
             }
           });
 
@@ -267,7 +267,7 @@ const FinanceDashboard: React.FC = () => {
       {loading ? (
         <div className="text-center">Loading...</div>
       ) : (
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard
             icon={<Icons.Dollar className="text-3xl text-blue-600" />}
             label="Total Revenue"
@@ -303,20 +303,24 @@ const FinanceDashboard: React.FC = () => {
           <div
             data-aos="fade-down"
             data-aos-duration="1000"
-            className="col-span-2 bg-gray-100 p-4 rounded-lg"
+            className="col-span-1 md:col-span-2 bg-gray-100 p-4 rounded-lg"
           >
             <h3 className="text-lg font-bold">Money Flow</h3>
-            <Bar data={moneyFlowData} />
+            <div className="">
+              <Bar data={moneyFlowData} />
+            </div>
           </div>
           <div
             data-aos="fade-down"
             data-aos-duration="1000"
-            className="col-span-2 bg-gray-100 p-4 rounded-lg"
+            className="col-span-1 md:col-span-2 bg-gray-100 p-4 rounded-lg"
           >
             <h3 className="text-lg font-bold">Claims Order</h3>
-            <Bar data={claimsOrderData} />
+            <div className="">
+              <Bar data={claimsOrderData} />
+            </div>
           </div>
-          <div className="col-span-4 p-4 rounded-lg">
+          <div className="col-span-1 md:col-span-2 lg:col-span-4 p-4 rounded-lg">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-2xl font-bold text-gray-800">
                 History Transaction
@@ -334,53 +338,63 @@ const FinanceDashboard: React.FC = () => {
                 {showAll ? "Show Recent Only" : "View All"}
               </button>
             </div>
-            <table className="min-w-full border-separate border-spacing-y-2.5 border-0 text-black w-full">
-              <thead className="bg-brand-gradient h-[70px] text-lg text-white !rounded-t-lg">
-                <tr className="bg-[linear-gradient(45deg,#FEB78A,#FF914D)]">
-                  <th className="border-l-2 border-white px-4 py-2 !rounded-tl-2xl">
-                    Claim Name
-                  </th>
-                  <th className="border-l-2 border-white px-4 py-2">Claimer</th>
-                  <th className="border-l-2 border-white px-4 py-2">Salary</th>
-                  <th className="border-l-2 border-white px-4 py-2">Status</th>
-                  <th className="border-l-2 border-white px-4 py-2 !rounded-tr-2xl">
-                    Date
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="w-full">
-                {data
-                  .filter((item) => item.status === "Paid")
-                  .slice(
-                    0,
-                    showAll
-                      ? data.filter((item) => item.status === "Paid").length
-                      : 3
-                  )
-                  .map((item) => (
-                    <tr
-                      key={item._id}
-                      className="h-[70px] bg-white overflow-scroll text-center border-collapse hover:shadow-brand-orange"
-                    >
-                      <td className="px-4 py-2 rounded-l-2xl">
-                        {item.claim_name}
-                      </td>
-                      <td className="px-4 py-2">
-                        {item.employee_info.full_name}
-                      </td>
-                      <td className="px-4 py-2">
-                        {formatCurrency(item.employee_info.salary)}
-                      </td>
-                      <td className="px-4 py-2">{item.status}</td>
-                      <td className="px-4 py-2 rounded-r-2xl">
-                        {new Date(item.claim_start_date).toLocaleDateString(
-                          "vi-VN"
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
+            <div className="overflow-x-auto">
+              <table className="min-w-full border-separate border-spacing-y-2.5 border-0 text-black w-full">
+                <thead className="bg-brand-gradient h-[70px] text-lg text-white !rounded-t-lg">
+                  <tr className="bg-[linear-gradient(45deg,#FEB78A,#FF914D)]">
+                    <th className="border-l-2 border-white px-2 md:px-4 py-2 !rounded-tl-2xl text-sm md:text-base">
+                      Claim Name
+                    </th>
+                    <th className="border-l-2 border-white px-2 md:px-4 py-2 text-sm md:text-base">
+                      Claimer
+                    </th>
+                    <th className="border-l-2 border-white px-2 md:px-4 py-2 text-sm md:text-base">
+                      Salary
+                    </th>
+                    <th className="border-l-2 border-white px-2 md:px-4 py-2 text-sm md:text-base">
+                      Status
+                    </th>
+                    <th className="border-l-2 border-white px-2 md:px-4 py-2 !rounded-tr-2xl text-sm md:text-base">
+                      Date
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="w-full">
+                  {data
+                    .filter((item) => item.status === "Paid")
+                    .slice(
+                      0,
+                      showAll
+                        ? data.filter((item) => item.status === "Paid").length
+                        : 3
+                    )
+                    .map((item) => (
+                      <tr
+                        key={item._id}
+                        className="h-[70px] bg-white overflow-scroll text-center border-collapse hover:shadow-brand-orange"
+                      >
+                        <td className="px-2 md:px-4 py-2 rounded-l-2xl text-sm md:text-base">
+                          {item.claim_name}
+                        </td>
+                        <td className="px-2 md:px-4 py-2 text-sm md:text-base">
+                          {item.employee_info.full_name}
+                        </td>
+                        <td className="px-2 md:px-4 py-2 text-sm md:text-base">
+                          {formatCurrency(item.employee_info.salary)}
+                        </td>
+                        <td className="px-2 md:px-4 py-2 text-sm md:text-base">
+                          {item.status}
+                        </td>
+                        <td className="px-2 md:px-4 py-2 rounded-r-2xl text-sm md:text-base">
+                          {new Date(item.claim_start_date).toLocaleDateString(
+                            "vi-VN"
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}

@@ -36,7 +36,13 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
     message: "",
   });
 
+  const [titleError, setTitleError] = React.useState<string | null>(null);
+
   const handleConfirm = () => {
+    if (!formData.title.trim()) {
+      setTitleError("Title cannot be empty");
+      return;
+    }
     sendEmail(formData);
     updateClaimStatus({
       _id: claimId,
@@ -63,13 +69,17 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
       const numericValue = value.replace(/\./g, "").replace(/[^0-9]/g, "");
       setFormData({
         ...formData,
-        [name]: parseFloat(numericValue) || 0, // Store as number
+        [name]: parseFloat(numericValue) || 0,
       });
     } else {
       setFormData({
         ...formData,
         [name]: value,
       });
+    }
+
+    if (name === "title" && value.trim()) {
+      setTitleError(null);
     }
   };
 
@@ -118,25 +128,31 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
         aria-label="Close modal"
       ></div>
       <div className="bg-white rounded-lg shadow-lg p-6 w-1/2 z-10">
-        <h2 className="text-xl font-bold mb-4 text-orange-500">Payment</h2>
+        <h2 className="text-3xl font-bold mb-4 text-orange-500">Payment</h2>
         <form>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block mb-1">Title</label>
+              <label className="block mb-1">
+                Title <span className="text-red-500">*</span>
+              </label>
               <input
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
                 className="border border-gray-300 rounded-lg p-2 w-full"
                 placeholder="Enter the title..."
+                required
               />
+              {titleError && (
+                <p className="text-red-500 text-sm mt-1">{titleError}</p>
+              )}
             </div>
             <div>
               <label className="block mb-1">Claimer</label>
               <input
                 value={claimer}
                 readOnly
-                className="border border-gray-300 rounded-lg p-2 w-full"
+                className="border-b border-gray-300 rounded-lg p-2 w-full"
               />
             </div>
           </div>
@@ -159,7 +175,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
               <input
                 value={format(date, "dd-MM-yyyy")}
                 readOnly
-                className="border border-gray-300 rounded-lg p-2 w-full"
+                className="border-b border-gray-300 rounded-lg p-2 w-full"
               />
             </div>
           </div>
@@ -199,7 +215,10 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
             <button
               type="button"
               onClick={handleConfirm}
-              className="bg-orange-500 hover:bg-orange-600 text-white rounded-lg px-4 py-2"
+              className={`bg-orange-500 hover:bg-orange-600 text-white rounded-lg px-4 py-2 ${
+                titleError ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+              disabled={!!titleError}
             >
               Confirm
             </button>
