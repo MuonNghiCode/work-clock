@@ -355,12 +355,14 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
               <Button
                 type="primary"
                 htmlType="submit"
-                className={`px-4 py-2 rounded-md ${!hasChanges || loading ? 'cursor-not-allowed' : 'hover:bg-[#FF8347]'}`}
+                className={`px-4 py-2 rounded-md ${!hasChanges || loading ? 'opacity-50' : ''}`}
                 style={{
-                  backgroundColor: hasChanges && !loading ? '#FF9447' : '#E5E7EB', 
-                  color: hasChanges && !loading ? '#FFFFFF' : '#A3A3A3',
+                  backgroundColor: '#FF9447',
+                  color: '#FFFFFF',
                   border: 'none',
                   fontWeight: 400,
+                  opacity: !hasChanges || loading ? 0.5 : 1,
+                  cursor: !hasChanges || loading ? 'not-allowed' : 'pointer'
                 }}
                 loading={loading}
                 disabled={!hasChanges || loading}
