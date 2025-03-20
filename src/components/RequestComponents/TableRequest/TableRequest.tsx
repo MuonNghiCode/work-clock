@@ -26,6 +26,7 @@ interface ClaimRequest {
   timeFrom: string;
   timeTo: string;
   status: string;
+  approval_name: string;
 }
 
 interface TableRequestProps {
@@ -330,6 +331,18 @@ const TableRequest: React.FC<TableRequestProps> = ({
                         </span>
                         <span className="w-2/3 text-gray-800 font-semibold truncate">
                           {selectedClaim.project}
+                        </span>
+                      </div>
+                      <div className="flex items-center">
+                        <UserCheck
+                          size={18}
+                          className="text-[#FF9447] mr-3 flex-shrink-0"
+                        />
+                        <span className="w-1/3 font-medium text-gray-600">
+                          Approval Name:
+                        </span>
+                        <span className="w-2/3 text-gray-800 font-semibold truncate">
+                          {selectedClaim.approval_name || "Not assigned"}
                         </span>
                       </div>
                       <div className="flex items-center">
