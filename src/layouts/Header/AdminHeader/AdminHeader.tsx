@@ -1,23 +1,25 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { useUser } from "../../../contexts/UserContext";
+// import { useUser } from "../../../contexts/UserContext";
 import Icons from "../../../components/icon";
-import { useSidebarStore } from "../../../config/zustand";
+import { useSidebarStore, useUserStore } from "../../../config/zustand";
 import { APP_CONSTANTS } from "../../../constants/appConstants";
 import { toast } from "react-toastify";
 import { logout } from "../../../utils/userUtils";
 import { motion } from "framer-motion";
 const AdminHeader: React.FC = () => {
-  const { user } = useUser();
+  // const { user } = useUser();
   const { toggleSidebar } = useSidebarStore();
   const location = useLocation();
   const [showConfirm, setShowConfirm] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const userData = useUserStore((state) => state.user);
+  console.log(userData);
 
   const userRole =
     APP_CONSTANTS.roleNames[
-    user?.role_code as keyof typeof APP_CONSTANTS.roleNames
+    userData?.role_code as keyof typeof APP_CONSTANTS.roleNames
     ] || "Guest";
   const currentTitle =
     APP_CONSTANTS.pageTitles[
@@ -69,13 +71,25 @@ const AdminHeader: React.FC = () => {
           </button>
 
           <div className="relative" ref={dropdownRef}>
-            <button
-              className="bg-gray-200 p-2 hover:bg-brand-gradient rounded-full group"
-              onClick={() => setDropdownOpen(!dropdownOpen)}
-            >
-              <Icons.User className="text-black group-hover:text-white" />
-            </button>
-
+            {userData?.avatarUrl ? (
+              <button
+                className="bg-gray-200 p-2 hover:bg-brand-gradient rounded-full group"
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+              >
+                <img
+                  src={userData.avatarUrl}
+                  alt="User Avatar"
+                  className="w-10 h-10 rounded-full object-cover"
+                />
+              </button>
+            ) : (
+              <button
+                className="bg-gray-200 p-2 hover:bg-brand-gradient rounded-full group"
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+              >
+                <Icons.User className="text-black group-hover:text-white" />
+              </button>
+            )}
             {dropdownOpen && (
               <motion.div
                 initial={{ opacity: 0, y: -10, scale: 0.95 }}
@@ -86,14 +100,17 @@ const AdminHeader: React.FC = () => {
               >
                 {/* User Info */}
                 <div className="flex items-center gap-3 px-5 py-4 border-b bg-gray-50">
-                  <div className="w-10 h-10 flex-shrink-0 bg-gray-300 rounded-full"></div>
+                  <img
+                    src={userData?.avatarUrl || ""}
+                    alt="User Avatar"
+                    className="w-10 h-10 flex-shrink-0 bg-gray-300 rounded-full" />
                   <div className="flex-1">
                     <p className="font-semibold text-gray-800">
-                      {user?.user_name || "Guest"}
+                      {userData?.username || "Guest"}
                     </p>
                     <p className="text-xs text-gray-500">{userRole}</p>
                     <p className="text-sm text-gray-600">
-                      {user?.email || "NaN"}
+                      {userData?.email || "NaN"}
                     </p>
                   </div>
                 </div>

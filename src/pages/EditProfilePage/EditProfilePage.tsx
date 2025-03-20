@@ -17,6 +17,7 @@ import { EmployeeInfo, JobRank } from "../../types/Employee";
 import { User } from "lucide-react";
 import ImageUploader from "../../components/ImageUploader/ImageUploader";
 import { formatCurrency } from "../../utils/formatCurrency";
+import { useUserStore } from "../../config/zustand";
 export interface Department {
   _id: string;
   department_code: string;
@@ -89,7 +90,8 @@ const EditProfilePage: React.FC = () => {
   // const [showEndCalendar, setShowEndCalendar] = useState(false);
   // Lấy userId từ localStorage sau khi đăng nhập
   useEffect(() => {
-    const storedUserId = localStorage.getItem("userId");
+    const userData = useUserStore.getState().user;
+    const storedUserId = userData?.id;
     if (storedUserId) {
       setUserId(storedUserId);
     }
@@ -149,7 +151,8 @@ const EditProfilePage: React.FC = () => {
   }, []);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const storedUserId = localStorage.getItem("userId");
+    const userData = useUserStore.getState().user;
+    const storedUserId = userData?.id;
 
     if (!storedUserId) {
       toast.error("User ID is missing");
@@ -318,21 +321,19 @@ const EditProfilePage: React.FC = () => {
               <nav className="flex space-x-4">
                 <button
                   onClick={() => setActiveTab("account")}
-                  className={`pb-2 font-semibold ${
-                    activeTab === "account"
-                      ? "border-b-2 border-orange-500 text-orange-500"
-                      : "text-gray-500 hover:text-orange-500"
-                  }`}
+                  className={`pb-2 font-semibold ${activeTab === "account"
+                    ? "border-b-2 border-orange-500 text-orange-500"
+                    : "text-gray-500 hover:text-orange-500"
+                    }`}
                 >
                   Account Settings
                 </button>
                 <button
                   onClick={() => setActiveTab("password")}
-                  className={`pb-2 font-semibold ${
-                    activeTab === "password"
-                      ? "border-b-2 border-orange-500 text-orange-500"
-                      : "text-gray-500 hover:text-orange-500"
-                  }`}
+                  className={`pb-2 font-semibold ${activeTab === "password"
+                    ? "border-b-2 border-orange-500 text-orange-500"
+                    : "text-gray-500 hover:text-orange-500"
+                    }`}
                 >
                   Change Password
                 </button>
