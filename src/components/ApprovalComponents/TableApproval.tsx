@@ -18,7 +18,7 @@ const TableApproval: React.FC = () => {
   const [approvalData, setApprovalData] = useState<ClaimInfo[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
-  const [statusFilter, setStatusFilter] = useState<string>(initialStatusFilter);
+  const [statusFilter] = useState<string>(initialStatusFilter);
   const [showApprovalDetail, setShowApprovalDetail] = useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
@@ -61,7 +61,7 @@ const TableApproval: React.FC = () => {
 
   useEffect(() => {
     fetchApprovalData();
-  }, []);
+  }, [statusFilter]);
 
   useEffect(() => {
     if (
@@ -85,12 +85,14 @@ const TableApproval: React.FC = () => {
     }
   };
 
-  const handleStatusChange = (status: string) => {
-    setStatusFilter(status);
-    setCurrentPage(1);
-  };
+  // const handleStatusChange = (status: string) => {
+  //   setStatusFilter(status);
+  //   setCurrentPage(1);
+  //   fetchApprovalData();
+  // };
 
-  const statusTags = ["Pending Approval", "Approved", "Rejected"];
+  // const statusTags = ["Pending Approval", "Approved", "Rejected"];
+  // const statusTags = ["Pending Approval"];
 
   const handleSearch = useCallback(
     debounce((value: string) => {
@@ -143,7 +145,7 @@ const TableApproval: React.FC = () => {
     <>
       <div className="flex justify-between items-center mb-4 flex-wrap gap-4">
         <div className="flex items-center ">
-          <select
+          {/* <select
             onChange={(value) => handleStatusChange(value.target.value)}
             className="px-3 py-1 border rounded-lg font-squada text-lg"
             value={statusFilter}
@@ -153,7 +155,7 @@ const TableApproval: React.FC = () => {
                 {tag}
               </option>
             ))}
-          </select>
+          </select> */}
         </div>
 
         <div className="relative">
@@ -178,10 +180,11 @@ const TableApproval: React.FC = () => {
               <th className="border-l-2 border-white px-4 py-2">Claimer</th>
               <th className="border-l-2 border-white px-4 py-2">Total Work Time</th>
               <th className="border-l-2 border-white px-4 py-2">Status</th>
-              {statusFilter === "Pending Approval" ? (<>
-                <th className="border-l-2 border-white px-4 py-2">Date Create</th>
-                <th className="border-l-2 border-white px-4 py-2 !rounded-tr-2xl">Action</th>
-              </>
+              {statusFilter === "Pending Approval" ? (
+                <>
+                  <th className="border-l-2 border-white px-4 py-2">Date Create</th>
+                  <th className="border-l-2 border-white px-4 py-2 !rounded-tr-2xl">Action</th>
+                </>
               ) : (
                 <th className="border-l-2 border-white px-4 py-2 !rounded-tr-2xl">Date Create</th>
               )}
@@ -198,43 +201,41 @@ const TableApproval: React.FC = () => {
                 <td className="px-4 py-2">{item.staff_name}</td>
                 <td className="px-4 py-2 text-gradient-color">{item.total_work_time} hours</td>
                 <td className="px-4 py-2">{handleStatusChangeHTML(item.claim_status)}</td>
-                {item.claim_status === "Pending Approval" ? (
-                  <td className="px-4 py-2">{formatDate(item.created_at)}</td>
+                {item.claim_status !== "Pending Approval" ? (
+                  <td className="px-4 py-2 rounded-r-2xl ">{formatDate(item.created_at)}</td>
                 ) : (
-                  <td className="px-4 py-2 rounded-r-2xl">{formatDate(item.created_at)}</td>
-                )}
-                {item.claim_status === "Pending Approval" ? (
-                  <td
-                    className="action px-4 py-2 rounded-r-2xl"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <div className="w-full flex justify-center gap-2 items-center space-x-2">
-                      <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
-                        <Button className="!bg-transparent !border-none !p-2">
-                          <span className="hover:scale-105">
-                            <Icons.CircleCheck
-                              color="green"
-                              onClick={() => handleApprove(item._id)}
-                              className="w-10 h-10"
-                            />
-                          </span>
-                        </Button>
+                  <>
+                    <td className="px-4 py-2">{formatDate(item.created_at)}</td>
+                    <td
+                      className="action px-4 py-2 rounded-r-2xl"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="w-full flex justify-center gap-2 items-center space-x-2">
+                        <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
+                          <Button className="!bg-transparent !border-none !p-2">
+                            <span className="hover:scale-105">
+                              <Icons.CircleCheck
+                                color="green"
+                                onClick={() => handleApprove(item._id)}
+                                className="w-10 h-10"
+                              />
+                            </span>
+                          </Button>
+                        </div>
+                        <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
+                          <Button className="!bg-transparent !border-none !p-2">
+                            <span className="hover:scale-105">
+                              <Icons.CircleReject
+                                color="red"
+                                onClick={() => handleReject(item._id)}
+                                className="w-10 h-10"
+                              />
+                            </span>
+                          </Button>
+                        </div>
                       </div>
-                      <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
-                        <Button className="!bg-transparent !border-none !p-2">
-                          <span className="hover:scale-105">
-                            <Icons.CircleReject
-                              color="red"
-                              onClick={() => handleReject(item._id)}
-                              className="w-10 h-10"
-                            />
-                          </span>
-                        </Button>
-                      </div>
-                    </div>
-                  </td>
-                ) : (
-                  null
+                    </td>
+                  </>
                 )}
               </tr>
             ))}

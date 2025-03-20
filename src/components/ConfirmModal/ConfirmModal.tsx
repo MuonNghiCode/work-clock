@@ -28,7 +28,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   const { message, id } = messageProps;
   const MESSAGE = `Confirm ${message} this claim request?`;
   const [comment, setComment] = useState<string>("");
-  
+
   const handleStatusChange = async () => {
     const response = await updateClaimStatus({ _id: id, claim_status: message, comment: comment });
     if (response.success) {
@@ -47,16 +47,16 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
       title={<h4 className={`${message === "Approved" ? "!text-green-600" : message === "Rejected" ? "!text-red-600" : "!text-blue-600"} text-2xl font-semibold border-b pb-2`}>
         {message} Claim Request</h4>}
       className="flex items-center justify-center rounded-2xl" >
-      <div className="p-4 inline-flex items-center">
+      <div className="p-4 inline-flex items-center gap-2">
         {message === "Approved" ?
           <>
-            <Icons.Approve className="w-20 h-20 mx-auto text-green-600" />
+            <Icons.CircleCheck className="w-16 h-16 mx-auto text-green-600" />
             <p className="my-2 font-semibold text-lg">{MESSAGE}</p>
           </>
           : message === "Rejected" ?
             <div className="flex flex-col items-center">
-              <div className="inline-flex items-center">
-                <Icons.Reject className="w-20 h-20 mx-auto text-red-600" />
+              <div className="inline-flex items-center gap-2">
+                <Icons.CircleReject className="w-16 h-16 mx-auto text-red-600" />
                 <p className="my-2 font-semibold text-lg">{MESSAGE}</p>
               </div>
               <Input.TextArea

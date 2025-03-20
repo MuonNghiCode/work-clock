@@ -26,9 +26,9 @@ const ApprovalChart: React.FC<DataProps> = ({ data }) => {
                     statusCounts['Rejected'] || 0,
                 ],
                 backgroundColor: [
-                    'rgba(192, 192, 192, 0.2)',
-                    'rgba(75, 192, 75, 0.2)',
-                    'rgba(192, 75, 75, 0.2)',
+                    'rgba(160, 160, 160, 0.6)',
+                    'rgba(75, 192, 75, 0.6)',
+                    'rgba(192, 75, 75, 0.6)',
                 ],
                 borderColor: [
                     'rgba(192, 192, 192, 1)',
