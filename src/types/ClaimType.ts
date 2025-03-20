@@ -14,6 +14,7 @@ export interface ClaimItem {
   claim_status: string;
   project_id: string;
   approval_id: string;
+  approval_info: ApprovalInfo;
 }
 export interface SearchCondition {
   keyword: string;
