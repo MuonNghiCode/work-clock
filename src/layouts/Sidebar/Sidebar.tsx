@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useSidebarStore } from "../../config/zustand";
+import { useSidebarStore, useUserStore } from "../../config/zustand";
 import Images from "../../components/images";
 import Icons from "../../components/icon";
 import { NavLink } from "react-router-dom";
@@ -7,8 +7,9 @@ import { toast } from "react-toastify";
 import { logout } from "../../utils/userUtils";
 
 const Sidebar: React.FC = () => {
-  let user = localStorage.getItem("user");
-  let parseUser = JSON.parse(user || "{}");
+  const userData = useUserStore((state) => state.user);
+  let user = userData || '{}';
+  let parseUser = typeof user === "string" ? JSON.parse(user) : user;
   const sidebarRef = useRef<HTMLDivElement>(null);
   const { isSidebarOpen, closeSidebar } = useSidebarStore();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -165,9 +166,8 @@ const Sidebar: React.FC = () => {
       <div
         ref={sidebarRef}
         className={`fixed lg:relative top-0 left-0 h-full transition-all duration-300 z-50 bg-white
-        ${
-          isSidebarOpen ? "translate-x-0 w-60" : "-translate-x-full lg:w-20"
-        } lg:translate-x-0`}
+        ${isSidebarOpen ? "translate-x-0 w-60" : "-translate-x-full lg:w-20"
+          } lg:translate-x-0`}
       >
         <div className="flex flex-col gap-4 mt-4 pl-4">
           <div className="flex items-center justify-center pr-4">
@@ -196,16 +196,14 @@ const Sidebar: React.FC = () => {
                   to={item.path}
                   className={({ isActive }) =>
                     `w-full flex items-center gap-4 px-3 py-2 rounded-l-2xl transition-all duration-300
-                  ${
-                    isActive
+                  ${isActive
                       ? "bg-brand-orange-light text-white"
                       : "text-gray-700 hover:bg-brand-orange-light-1 hover:text-gray-800"
-                  }
-                  ${
-                    hoveredIndex !== null && hoveredIndex !== index
+                    }
+                  ${hoveredIndex !== null && hoveredIndex !== index
                       ? "opacity-50"
                       : "opacity-100"
-                  }`
+                    }`
                   }
                   onMouseEnter={() => setHoveredIndex(index)}
                   onMouseLeave={() => setHoveredIndex(null)}

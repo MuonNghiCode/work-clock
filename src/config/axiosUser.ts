@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { useUserStore } from './zustand';
 
 // Create an instance of axios
 const axiosInstances = axios.create({
@@ -14,7 +15,8 @@ const axiosInstances = axios.create({
 axiosInstances.interceptors.request.use(
   (config) => {
     // Get the token from localStorage
-    const token = localStorage.getItem('token');
+    const userData = useUserStore.getState().user;
+    const token = userData?.token;
     if (token) {
       // Add the token to the Authorization header
       config.headers.Authorization = `Bearer ${token}`;
@@ -38,12 +40,12 @@ axiosInstances.interceptors.response.use(
   },
   async (error) => {
     const { config, response } = error;
-    
+
     // Hiển thị lỗi từ BE nếu có
     if (response?.data?.message) {
       toast.error(response.data.message);
     }
-    
+
     // Retry nếu lỗi network hoặc timeout
     if (!error.code || (error.code !== 'ECONNABORTED' && !error.message.includes('Network Error'))) {
       console.log('Error Response:', {
