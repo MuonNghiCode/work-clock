@@ -194,62 +194,42 @@ const TableRequest: React.FC<TableRequestProps> = ({
                     </td>
                     <td className="request-table-cell px-4 py-2 rounded-r-2xl">
                       <div className="request-table-actions flex justify-center gap-2">
-                        {item.status === "Pending Approval" ? (
-                          <Button
-                            className="!border-none"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleCancelClick(item);
-                            }}
-                            disabled={loading}
-                            title="Cancel Request"
-                          >
-                            <Trash2 size={18} className="text-red-500" />
-                          </Button>
-                        ) : (
-                          item.status !== "Approved" &&
-                          item.status !== "Rejected" &&
-                          item.status !== "Canceled" &&
-                          item.status !== "Paid" && (
-                            <>
-                              <Button
-                                className="!border-none"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  actions.onEdit(item);
-                                }}
-                                disabled={loading}
-                                title="Edit Request"
-                              >
-                                <Edit2 size={18} className="text-blue-500" />
-                              </Button>
-                              <Button
-                                className="!border-none"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  actions.onRequestApproval(item);
-                                }}
-                                disabled={loading || item.status !== "Draft"}
-                                title="Request Approval"
-                              >
-                                <UserCheck
-                                  size={18}
-                                  className="text-green-500"
-                                />
-                              </Button>
-                              <Button
-                                className="!border-none"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleCancelClick(item);
-                                }}
-                                disabled={loading}
-                                title="Cancel Request"
-                              >
-                                <Trash2 size={18} color="red" />
-                              </Button>
-                            </>
-                          )
+                        {item.status === "Draft" && (
+                          <>
+                            <Button
+                              className="!border-none"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                actions.onEdit(item);
+                              }}
+                              disabled={loading}
+                              title="Edit Request"
+                            >
+                              <Edit2 size={18} className="text-blue-500" />
+                            </Button>
+                            <Button
+                              className="!border-none"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                actions.onRequestApproval(item);
+                              }}
+                              disabled={loading}
+                              title="Request Approval"
+                            >
+                              <UserCheck size={18} className="text-green-500" />
+                            </Button>
+                            <Button
+                              className="!border-none"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleCancelClick(item);
+                              }}
+                              disabled={loading}
+                              title="Cancel Request"
+                            >
+                              <Trash2 size={18} color="red" />
+                            </Button>
+                          </>
                         )}
                       </div>
                     </td>
