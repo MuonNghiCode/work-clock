@@ -199,7 +199,7 @@ const router = createBrowserRouter([
         path: "calendar",
         element: <UserCalendarPage />,
       },
-      { path: "user-project", element: <UserProject /> },
+      { path: "user_project", element: <UserProject /> },
     ],
   },
   {
