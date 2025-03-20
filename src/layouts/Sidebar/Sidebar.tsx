@@ -118,6 +118,11 @@ const Sidebar: React.FC = () => {
         label: "REPORT",
       },
       {
+        path: "user-project",
+        icon: <Icons.FolderDot className="w-8 h-8" />,
+        label: "User Projects",
+      },
+      {
         path: "edit_profile",
         icon: <Icons.Settings className="w-8 h-8" />,
         label: "SETTING",
@@ -129,7 +134,7 @@ const Sidebar: React.FC = () => {
     <>
       <div
         ref={sidebarRef}
-        className={`fixed lg:relative top-0 left-0 h-full transition-all duration-300 bg-transparent z-50a
+        className={`fixed lg:relative top-0 left-0 h-full transition-all duration-300  z-50 bg-white
         ${
           isSidebarOpen ? "translate-x-0 w-60" : "-translate-x-full lg:w-20"
         } lg:translate-x-0`}
@@ -183,7 +188,7 @@ const Sidebar: React.FC = () => {
               ))}
             </>
           )}
-          <div className="border-t border-gray-400 my-2"></div>
+          <div className="border-t border-gray-400 my-2 mr-4"></div>
           <NavLink
             to="#"
             onClick={(e) => {

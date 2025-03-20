@@ -210,9 +210,9 @@ const TableApproval: React.FC = () => {
                   >
                     <div className="w-full flex justify-center gap-2 items-center space-x-2">
                       <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
-                        <Button className="!bg-transparent !border-none">
-                          <span className="hover:scale-110">
-                            <Icons.Approve
+                        <Button className="!bg-transparent !border-none !p-2">
+                          <span className="hover:scale-105">
+                            <Icons.CircleCheck
                               color="green"
                               onClick={() => handleApprove(item._id)}
                               className="w-10 h-10"
@@ -221,9 +221,9 @@ const TableApproval: React.FC = () => {
                         </Button>
                       </div>
                       <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
-                        <Button className="!bg-transparent !border-none">
-                          <span className="hover:scale-110">
-                            <Icons.Reject
+                        <Button className="!bg-transparent !border-none !p-2">
+                          <span className="hover:scale-105">
+                            <Icons.CircleReject
                               color="red"
                               onClick={() => handleReject(item._id)}
                               className="w-10 h-10"

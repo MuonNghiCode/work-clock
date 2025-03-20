@@ -38,6 +38,7 @@ import VerifyEmail from "./pages/VerifyEmailPage/VerifyEmail";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
 import AnimatedBackground from "./components/AnimatedBackground/AnimatedBackground";
 import TableApproval from "./components/ApprovalComponents/TableApproval";
+import UserProject from "./components/UserProject/UserProject";
 import TemplateLayout from "./layouts/TemplateLayout/TemplateLayout";
 import PolicyLayout from "./layouts/PolicyLayout/PolicyLayout";
 
@@ -184,6 +185,7 @@ const router = createBrowserRouter([
         path: "calendar",
         element: <UserCalendarPage />,
       },
+      { path: "user-project", element: <UserProject /> },
     ],
   },
   {

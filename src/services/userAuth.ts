@@ -1,7 +1,7 @@
 // userAuth.ts
 import { API_CONSTANTS } from "../constants/apiConstants";
 import { ResponseModel } from "../models/ResponseModel";
-import { post, put, del } from "./apiService";
+import { post, put, del, get } from "./apiService";
 
 // Interface cho user data
 export interface UserData {
@@ -56,6 +56,29 @@ export const createUser = async (
     is_blocked: userData.is_blocked ?? true,
     is_verified: userData.is_verified ?? false,
   });
+};
+
+export const getUserById = async (userId: string): Promise<ResponseModel<UserData>> => {
+  try {
+    if (!userId) {
+      throw new Error("User ID is required");
+    }
+
+      const response = await get<ResponseModel<UserData>>(
+        API_CONSTANTS.USERS.GET_USER_BY_ID.replace("${id}", userId)
+      );
+
+      if (!response.success) {
+        throw new Error(response.message || "Failed to get user");
+      }
+
+      return response.data;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+      throw new Error("Failed to get user");
+  }
 };
 
 // Cập nhật thông tin người dùng
