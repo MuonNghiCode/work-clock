@@ -36,6 +36,7 @@ const LoadingScreen: React.FC = () => {
                 "https://lottie.host/56dcf58a-134b-4677-81dd-3f52a60878a9/Banf4GFCWC.lottie"
               )}
             />
+
             <motion.p
               className="mt-4 text-white text-lg font-semibold tracking-wide"
               initial={{ opacity: 0 }}
