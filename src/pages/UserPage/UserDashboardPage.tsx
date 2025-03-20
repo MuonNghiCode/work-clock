@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import Icons from "../../components/icon";
 import { getAllClaims } from "../../services/claimService";
 import { useNavigate } from "react-router-dom";
-import { Calendar as CalendarIcon } from "lucide-react";
 
 const fadeInScaleUp = {
   hidden: { opacity: 0, scale: 0.8 },
