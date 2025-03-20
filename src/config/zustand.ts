@@ -1,4 +1,6 @@
+import { API_CONSTANTS } from './../constants/apiConstants';
 import { create } from 'zustand';
+
 // import { API_CONTANTS } from '../constants/apiContants';
 
 interface SidebarState {
@@ -24,7 +26,7 @@ type LoadingState = {
 };
 export const useLoadingStore = create<LoadingState>((set) => ({
   isLoading: false,
-  skipUrls: [], // Add any API endpoints you want to exclude from loading
+  skipUrls: [`${API_CONSTANTS.EMPLOYEE.GET_ALL_CONTRACT}`, `${API_CONSTANTS.EMPLOYEE.GET_ALL_DEPARTMENT}`, `${API_CONSTANTS.EMPLOYEE.GET_ALL_JOB}, ${API_CONSTANTS.USERS.GET_ALL}`], // Add any API endpoints you want to exclude from loading
   addRequest: (url) =>
     set((state) => {
       if (state.skipUrls.includes(url)) return state;

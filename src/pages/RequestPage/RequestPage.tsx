@@ -30,6 +30,7 @@ interface ClaimRequest {
   timeFrom: string;
   timeTo: string;
   status: string;
+  approval_name: string;
 }
 
 const RequestPage: React.FC = () => {
@@ -76,6 +77,7 @@ const RequestPage: React.FC = () => {
     }),
     totalHours: item.total_work_time?.toString() || "0",
     status: item.claim_status || "Unknown",
+    approval_name: item.approval_info?.user_name || "Not assigned"
   });
 
   const fetchClaims = async () => {
@@ -97,14 +99,9 @@ const RequestPage: React.FC = () => {
       if (response.success) {
         const claims = response.data.pageData.map(mapClaimToRequest);
         claims.sort((a, b) => {
-          const startDateDiff =
-            new Date(a.start_date.split("/").reverse().join("-")).getTime() -
-            new Date(b.start_date.split("/").reverse().join("-")).getTime();
-          if (startDateDiff !== 0) return startDateDiff;
-          return (
-            new Date(a.end_date.split("/").reverse().join("-")).getTime() -
-            new Date(b.end_date.split("/").reverse().join("-")).getTime()
-          );
+          const claimA = response.data.pageData.find(claim => claim._id === a.key);
+          const claimB = response.data.pageData.find(claim => claim._id === b.key);
+          return new Date(claimB?.created_at || 0).getTime() - new Date(claimA?.created_at || 0).getTime();
         });
         setApiData(claims);
         setTotalItems(response.data.pageInfo.totalItems || 0);

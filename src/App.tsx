@@ -38,6 +38,7 @@ import VerifyEmail from "./pages/VerifyEmailPage/VerifyEmail";
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
 import AnimatedBackground from "./components/AnimatedBackground/AnimatedBackground";
 import TableApproval from "./components/ApprovalComponents/TableApproval";
+import UserProject from "./components/UserProject/UserProject";
 import TemplateLayout from "./layouts/TemplateLayout/TemplateLayout";
 import PolicyLayout from "./layouts/PolicyLayout/PolicyLayout";
 
@@ -123,14 +124,19 @@ const router = createBrowserRouter([
         path: "edit_profile",
         element: <EditProfilePage />,
       },
-      {
-        path: "edit_profile",
-        element: <EditProfilePage />,
-      },
       { path: "dashboard", element: <ApprovalDashBoardPage /> },
       { path: "approval-management", element: <ApprovalPage /> },
       { path: "/approval/dashboard", element: <ApprovalDashBoardPage /> },
       { path: "/approval/table-approval", element: <TableApproval /> },
+      {
+        path: "request",
+        element: <RequestPage />,
+      },
+      {
+        path: "calendar",
+        element: <UserCalendarPage />,
+      },
+      { path: "user_project", element: <UserProject /> },
     ],
   },
   {
@@ -153,6 +159,15 @@ const router = createBrowserRouter([
       },
       { path: "dashboard", element: <FinanceDashBoardPage /> },
       { path: "paid-management", element: <FinancePage /> },
+      {
+        path: "request",
+        element: <RequestPage />,
+      },
+      {
+        path: "calendar",
+        element: <UserCalendarPage />,
+      },
+      { path: "user_project", element: <UserProject /> },
     ],
   },
   {
@@ -184,6 +199,7 @@ const router = createBrowserRouter([
         path: "calendar",
         element: <UserCalendarPage />,
       },
+      { path: "user_project", element: <UserProject /> },
     ],
   },
   {

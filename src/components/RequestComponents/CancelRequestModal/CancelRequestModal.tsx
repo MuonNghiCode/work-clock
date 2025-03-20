@@ -11,6 +11,7 @@ interface ClaimRequest {
   timeFrom: string;
   timeTo: string;
   status: string;
+  approval_name: string;
 }
 
 interface CancelModalProps {

@@ -1,12 +1,12 @@
-export const formatDate = (date: Date | string | number, format: string = 'YYYY-MM-DD', locale: string = 'vi-VN'): string => {
+export const formatDate = (date: Date | string | number, format: string = 'DD-MM-YYYY', locale: string = 'vi-VN'): string => {
     if (!(date instanceof Date)) {
         date = new Date(date);
     }
-    
+
     if (isNaN(date.getTime())) {
         return 'Invalid Date';
     }
-    
+
     const options: Intl.DateTimeFormatOptions = {
         year: 'numeric',
         month: '2-digit',
@@ -18,12 +18,12 @@ export const formatDate = (date: Date | string | number, format: string = 'YYYY-
     };
     const formatter = new Intl.DateTimeFormat(locale, options);
     const parts = formatter.formatToParts(date);
-    
+
     const dateParts: Record<string, string> = {};
     parts.forEach(({ type, value }) => {
         dateParts[type] = value;
     });
-    
+
     return format
         .replace('YYYY', dateParts.year)
         .replace('MM', dateParts.month)

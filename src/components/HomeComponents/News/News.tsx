@@ -67,7 +67,7 @@ const News: React.FC = () => {
           </h1>
 
           {/* Desktop */}
-          <div className="relative items-center justify-center hidden md:flex md:w-full w-6xl mt-7 gap-6">
+          <div className="relative items-center justify-center hidden gap-6 md:flex md:w-full w-6xl mt-7">
             {/* Nút Previous */}
             <button
               className="absolute z-10 p-2 text-white transition-all duration-500 bg-gray-300 rounded-full left-15 hover:bg-neutral-400"
@@ -151,7 +151,7 @@ const News: React.FC = () => {
                 <img
                   src={Images.Logo}
                   alt="News Banner"
-                  className="rounded-lg w-full h-2/3 object-cover mt-6 mb-4"
+                  className="rounded-lg object-cover mt-6 mb-4 mx-auto"
                 />
 
                 {/* Tiêu đề */}

@@ -65,10 +65,7 @@ const UserManagementEdit: React.FC<UserManagementEditProps> = ({
               { min: 3, message: "Username must be at least 3 characters" },
             ]}
           >
-            <Input
-              suffix={<UserOutlined />}
-              placeholder="Enter username"
-            />
+            <Input suffix={<UserOutlined />} placeholder="Enter username" />
           </Form.Item>
         </div>
 
@@ -99,20 +96,13 @@ const UserManagementEdit: React.FC<UserManagementEditProps> = ({
         <hr className="text-gray-400 bg-gray-400 mb-5" />
         {/* Buttons */}
         <div className="edit-form-buttons">
-          <button
-            type="button"
-            onClick={onClose}
-            className="edit-form-cancel"
-          >
+          <button type="button" onClick={onClose} className="edit-form-cancel">
             Cancel
           </button>
           {/* <Button type="primary" htmlType="submit">
             Apply Changes
           </Button> */}
-          <button
-            type="submit"
-            className="edit-form-submit"
-          >
+          <button type="submit" className="edit-form-submit">
             Apply Changes
           </button>
         </div>
