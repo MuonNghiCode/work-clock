@@ -6,6 +6,7 @@ import axiosInstance from "../../../config/axiosUser";
 import ImageUploader from "../../ImageUploader/ImageUploader";
 import { EmployeeInfo } from "../../../types/Employee";
 import { ConfigProvider, Form, Input, Select } from "antd";
+import { formatCurrency } from "../../../utils/formatCurrency";
 
 // export interface Employee {
 //   _id: string;
@@ -187,8 +188,8 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
       };
 
       const response = await updateEmployee(employee.user_id, updateData);
-      if(response.success){
-      onUpdateSuccess?.(updateData);
+      if (response.success) {
+        onUpdateSuccess?.(updateData);
       }
       onClose();
     } catch (error) {
@@ -284,7 +285,9 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
           className="bg-white rounded-lg shadow-sm font-['Squada_One']"
         >
           {error ? (
-            <div className="text-red-500 p-4 bg-red-50 rounded-lg mb-4 font-['Squada_One']">{error}</div>
+            <div className="text-red-500 p-4 bg-red-50 rounded-lg mb-4 font-['Squada_One']">
+              {error}
+            </div>
           ) : (
             <div className="space-y-8 p-6">
               {/* Avatar Section */}
@@ -330,7 +333,9 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                       />
                       <button
                         type="button"
-                        onClick={() => validateImageUrl(formData.avatar_url || "")}
+                        onClick={() =>
+                          validateImageUrl(formData.avatar_url || "")
+                        }
                         className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 font-['Squada_One']"
                       >
                         Preview
@@ -354,7 +359,9 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                           Full Name<span className="text-red-500 ml-1">*</span>
                         </span>
                       }
-                      rules={[{ required: true, message: "Full Name is required" }]}
+                      rules={[
+                        { required: true, message: "Full Name is required" },
+                      ]}
                       className="mb-4"
                     >
                       <Input className="rounded-lg py-2 font-['Squada_One']" />
@@ -366,7 +373,8 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                         <span className=" font-medium text-gray-700 font-['Squada_One']">
                           Phone<span className="text-red-500 ml-1">*</span>
                         </span>
-                      }required
+                      }
+                      required
                       rules={[{ required: true, message: "Phone is required" }]}
                     >
                       <Input className="rounded-lg py-2 font-['Squada_One']" />
@@ -379,7 +387,9 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                           Address<span className="text-red-500 ml-1">*</span>
                         </span>
                       }
-                      rules={[{ required: true, message: "Address is required" }]}
+                      rules={[
+                        { required: true, message: "Address is required" },
+                      ]}
                     >
                       <Input className="rounded-lg py-2 font-['Squada_One']" />
                     </Form.Item>
@@ -398,15 +408,19 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                           Job Rank<span className="text-red-500 ml-1">*</span>
                         </span>
                       }
-                      rules={[{ required: true, message: "Job Rank is required" }]}
+                      rules={[
+                        { required: true, message: "Job Rank is required" },
+                      ]}
                     >
                       {isLoading ? (
-                        <div className="text-gray-500 font-['Squada_One']">Loading jobs...</div>
+                        <div className="text-gray-500 font-['Squada_One']">
+                          Loading jobs...
+                        </div>
                       ) : (
                         <Select
                           className="w-full rounded-lg font-['Squada_One']"
                           placeholder="Select Job Rank"
-                          dropdownStyle={{ fontFamily: 'Squada One' }}
+                          dropdownStyle={{ fontFamily: "Squada One" }}
                         >
                           {getUniqueJobsByTitle(jobs).map((job) => (
                             <Option key={job._id} value={job.job_rank}>
@@ -424,15 +438,19 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                           Department<span className="text-red-500 ml-1">*</span>
                         </span>
                       }
-                      rules={[{ required: true, message: "Department is required" }]}
+                      rules={[
+                        { required: true, message: "Department is required" },
+                      ]}
                     >
                       {isLoading ? (
-                        <div className="text-gray-500 font-['Squada_One']">Loading departments...</div>
+                        <div className="text-gray-500 font-['Squada_One']">
+                          Loading departments...
+                        </div>
                       ) : (
                         <Select
                           className="w-full rounded-lg font-['Squada_One']"
                           placeholder="Select Department"
-                          dropdownStyle={{ fontFamily: 'Squada One' }}
+                          dropdownStyle={{ fontFamily: "Squada One" }}
                         >
                           {departments.map((dept) => (
                             <Option key={dept._id} value={dept.department_code}>
@@ -447,21 +465,32 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                       name="contract_type"
                       label={
                         <span className="font-medium text-gray-700 font-['Squada_One']">
-                          Contract Type<span className="text-red-500 ml-1">*</span>
+                          Contract Type
+                          <span className="text-red-500 ml-1">*</span>
                         </span>
                       }
-                      rules={[{ required: true, message: "Contract Type is required" }]}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Contract Type is required",
+                        },
+                      ]}
                     >
                       {isLoading ? (
-                        <div className="text-gray-500 font-['Squada_One']">Loading contracts...</div>
+                        <div className="text-gray-500 font-['Squada_One']">
+                          Loading contracts...
+                        </div>
                       ) : (
                         <Select
                           className="w-full rounded-lg font-['Squada_One']"
                           placeholder="Select Contract Type"
-                          dropdownStyle={{ fontFamily: 'Squada One' }}
+                          dropdownStyle={{ fontFamily: "Squada One" }}
                         >
                           {contracts.map((contract) => (
-                            <Option key={contract._id} value={contract.contract_type}>
+                            <Option
+                              key={contract._id}
+                              value={contract.contract_type}
+                            >
                               {contract.description}
                             </Option>
                           ))}
@@ -476,9 +505,24 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                           Salary<span className="text-red-500 ml-1">*</span>
                         </span>
                       }
-                      rules={[{ required: true, message: "Salary is required" }]}
+                      rules={[
+                        { required: true, message: "Salary is required" },
+                      ]}
                     >
-                      <Input type="number" className="rounded-lg py-2 font-['Squada_One']" />
+                      <Input
+                        type="number"
+                        className="rounded-lg py-2 font-['Squada_One']"
+                        value={formData.salary}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            salary: Number(e.target.value),
+                          }))
+                        }
+                        addonAfter={formatCurrency(
+                          Number(formData.salary || 0)
+                        )}
+                      />
                     </Form.Item>
                   </div>
                 </div>
@@ -501,15 +545,25 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                       { required: true, message: "Start Date is required" },
                       ({ getFieldValue }) => ({
                         validator(_, value) {
-                          if (!value || !getFieldValue('end_date') || new Date(value) < new Date(getFieldValue('end_date'))) {
+                          if (
+                            !value ||
+                            !getFieldValue("end_date") ||
+                            new Date(value) <
+                              new Date(getFieldValue("end_date"))
+                          ) {
                             return Promise.resolve();
                           }
-                          return Promise.reject(new Error('Start Date must be before End Date'));
+                          return Promise.reject(
+                            new Error("Start Date must be before End Date")
+                          );
                         },
                       }),
                     ]}
                   >
-                    <Input type="date" className="rounded-lg py-2 font-['Squada_One']" />
+                    <Input
+                      type="date"
+                      className="rounded-lg py-2 font-['Squada_One']"
+                    />
                   </Form.Item>
 
                   <Form.Item
@@ -523,15 +577,25 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                       { required: true, message: "End Date is required" },
                       ({ getFieldValue }) => ({
                         validator(_, value) {
-                          if (!value || !getFieldValue('start_date') || new Date(value) > new Date(getFieldValue('start_date'))) {
+                          if (
+                            !value ||
+                            !getFieldValue("start_date") ||
+                            new Date(value) >
+                              new Date(getFieldValue("start_date"))
+                          ) {
                             return Promise.resolve();
                           }
-                          return Promise.reject(new Error('End Date must be after Start Date'));
+                          return Promise.reject(
+                            new Error("End Date must be after Start Date")
+                          );
                         },
                       }),
                     ]}
                   >
-                    <Input type="date" className="rounded-lg py-2 font-['Squada_One']" />
+                    <Input
+                      type="date"
+                      className="rounded-lg py-2 font-['Squada_One']"
+                    />
                   </Form.Item>
                 </div>
               </div>
