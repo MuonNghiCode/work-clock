@@ -164,7 +164,7 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({
             label="Project Name"
             rules={[{ required: true, message: "Enter project name" }]}
             className="w-full"
-          >
+          > 
             <Input placeholder="Enter project name" />
           </Form.Item>
           <Form.Item
