@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { useUserStore } from "../config/zustand";
 
 interface User {
   _id: string;
@@ -31,7 +32,8 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
+    const userData = useUserStore.getState().user;
+    const storedUser = userData?.token;
     // console.log("Stored user:", storedUser);
     if (storedUser) {
       try {

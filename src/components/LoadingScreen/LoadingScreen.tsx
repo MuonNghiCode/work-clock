@@ -18,7 +18,7 @@ const LoadingScreen: React.FC = () => {
     <AnimatePresence>
       {isLoading && (
         <motion.div
-          className="fixed inset-0 z-99 flex items-center justify-center h-screen overflow-hidden backdrop-blur-lg bg-black/30"
+          className="fixed inset-0 z-[9999] flex items-center justify-center h-screen overflow-hidden backdrop-blur-lg bg-black/30"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -36,6 +36,7 @@ const LoadingScreen: React.FC = () => {
                 "https://lottie.host/56dcf58a-134b-4677-81dd-3f52a60878a9/Banf4GFCWC.lottie"
               )}
             />
+
             <motion.p
               className="mt-4 text-white text-lg font-semibold tracking-wide"
               initial={{ opacity: 0 }}

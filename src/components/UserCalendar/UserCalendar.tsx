@@ -55,20 +55,18 @@ const UserCalendar: React.FC = () => {
 
   return (
     <div className="relative h-screen overflow-y-auto">
-      <div className="h-full p-8 rounded-2xl shadow-lg border border-gray-300 bg-white">
-        <Calendar
-          localizer={localizer}
-          events={events}
-          startAccessor="start"
-          endAccessor="end"
-          defaultView={Views.WEEK}
-          views={["month", "week", "day"]}
-          date={date}
-          onNavigate={setDate}
-          className="h-[75vh] border border-gray-400 rounded-xl bg-white p-4 shadow-md"
-          components={{ event: EventComponent }}
-        />
-      </div>
+      <Calendar
+        localizer={localizer}
+        events={events}
+        startAccessor="start"
+        endAccessor="end"
+        defaultView={Views.WEEK}
+        views={["month", "week", "day"]}
+        date={date}
+        onNavigate={setDate}
+        className="h-[75vh] border border-gray-400 rounded-xl bg-white p-4 shadow-md"
+        components={{ event: EventComponent }}
+      />
     </div>
   );
 };

@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { Pagination } from "antd";
 import { getAllProject } from "../../services/projectService"; // Import the new function
+import { useUser } from "../../contexts/UserContext";
+import { formatDate } from "../../utils/formatDate";
+import { useUserStore } from "../../config/zustand";
 
 interface ProjectInfo {
   key: string;
@@ -15,7 +18,9 @@ const UserProject = () => {
   const [projectsCount, setProjectsCount] = useState(0); // Add state for projects count
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1); // Add state for current page
-  const pageSize = 5; // Set page size to 5
+  // const { user } = useUser();
+  const {user} = useUserStore();
+  const pageSize = 5;
 
   const fetchProjects = async (pageNum: number, pageSize: number) => {
     try {
@@ -25,17 +30,15 @@ const UserProject = () => {
           project_start_date: "",
           project_end_date: "",
           is_delete: false,
-          user_id: "",
+          user_id: user?.id || "",
         },
         pageInfo: { pageNum, pageSize },
       });
       const data = response.data.pageData.map((item: any) => ({
         key: item._id,
         projectName: item.project_name,
-        startDate: new Date(item.project_start_date).toLocaleDateString(
-          "en-US"
-        ),
-        endDate: new Date(item.project_end_date).toLocaleDateString("en-US"),
+        startDate: formatDate(new Date(item.project_start_date), "DD/MM/YYYY"),
+        endDate: formatDate(new Date(item.project_end_date), "DD/MM/YYYY"),
         status: item.project_status,
       }));
       setProjectsData(data);
@@ -60,7 +63,6 @@ const UserProject = () => {
   return (
     <div>
       <div className="col-span-4 p-4 rounded-lg mt-8">
-        <h3 className="text-lg font-bold">Project List</h3>
         <table className="min-w-full border-separate border-spacing-y-2.5 border-0 text-black w-full">
           <thead className="bg-brand-gradient h-[70px] text-lg text-white">
             <tr className="bg-[linear-gradient(45deg,#FEB78A,#FF914D)]">
@@ -115,7 +117,7 @@ const UserProject = () => {
             total={projectsCount}
             onChange={handlePageChange}
             showSizeChanger={false}
-          // onShowSizeChange={(current, size) => setPageSize(size)}
+            // onShowSizeChange={(current, size) => setPageSize(size)}
           />
         </div>
       </div>
