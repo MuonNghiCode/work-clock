@@ -1,5 +1,5 @@
 import axios, { InternalAxiosRequestConfig } from "axios";
-import { useLoadingStore } from "./zustand"; // Adjust path
+import { useLoadingStore, useUserStore } from "./zustand"; // Adjust path
 import { toast } from "react-toastify";
 
 interface CustomInternalAxiosRequestConfig extends InternalAxiosRequestConfig {
@@ -23,7 +23,7 @@ axiosInstance.interceptors.request.use(
     }
 
     // Attach token if available
-    const token = localStorage.getItem("token");
+    const token = useUserStore.getState().getToken(); // Use getToken instead of the hook
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -47,7 +47,7 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (error.response.data.errors) {
+    if (error.response?.data?.errors) {
       error.response.data.errors.forEach((err: any) => {
         toast.error(err.message);
       });

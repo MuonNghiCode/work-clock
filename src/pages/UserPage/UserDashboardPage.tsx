@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import Icons from "../../components/icon";
 import { getAllClaims } from "../../services/claimService";
 import { useNavigate } from "react-router-dom";
-import { Calendar as CalendarIcon } from "lucide-react";
 
 const fadeInScaleUp = {
   hidden: { opacity: 0, scale: 0.8 },
@@ -30,6 +29,7 @@ interface ClaimRequest {
   timeFrom: string;
   timeTo: string;
   status: string;
+  approval_name: string;
 }
 
 const StatCard = ({
@@ -96,6 +96,7 @@ const UserDashboardPage = () => {
           hour12: false,
         }),
         status: item.claim_status,
+        approval_name: item.approval_name,
       }));
       setClaimsData(data);
       setClaimsCount(data.length);
@@ -169,7 +170,7 @@ const UserDashboardPage = () => {
 
   return (
     <>
-      <div className="flex items-center justify-between w-full">
+      <div className="flex items-center justify-end w-full mb-10">
         <button
           className="bg-[#FFB17A] text-white px-6 py-2 rounded-full hover:bg-[#FF9147] flex items-center gap-2 text-sm"
           onClick={handleOpenModalAddNewClaim}
@@ -178,7 +179,6 @@ const UserDashboardPage = () => {
           Add New Claim
         </button>
       </div>
-
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <StatCard
           icon={<Icons.FormIcon className="text-3xl text-blue-600" />}
@@ -266,10 +266,26 @@ const UserDashboardPage = () => {
                       <div className="request-table-actions flex justify-center gap-2">
                         <Button
                           className="!border-none"
-                          onClick={() => navigate("/user/calendar")}
+                          onClick={() => navigate("/user/request")}
                           title="View Calendar"
                         >
-                          <CalendarIcon size={18} color="#FF914D" />
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#FF914D"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="lucide lucide-chart-column"
+                          >
+                            <path d="M3 3v16a2 2 0 0 0 2 2h16"></path>
+                            <path d="M18 17V9"></path>
+                            <path d="M13 17V5"></path>
+                            <path d="M8 17v-3"></path>
+                          </svg>
                         </Button>
                       </div>
                     </td>

@@ -16,6 +16,7 @@ import { getUsers } from "../../services/userAuth";
 import { debounce } from "lodash";
 import { createClaimRequest } from "../../services/claimService";
 import { toast } from "react-toastify";
+import { useUserStore } from "../../config/zustand";
 
 interface ModalAddNewClaimProps {
   isOpen: boolean;
@@ -32,6 +33,16 @@ export interface ClaimRequestDataField {
   remark: string;
 }
 
+const initialClaimRequestData: ClaimRequestDataField = {
+  project_id: "",
+  approval_id: "",
+  claim_name: "",
+  claim_start_date: "",
+  claim_end_date: "",
+  total_work_time: 0,
+  remark: "",
+};
+
 const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
   isOpen,
   onClose,
@@ -44,7 +55,16 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
     { label: string; value: string }[]
   >([]);
   const [fetching, setFetching] = useState(false);
-  const userId = JSON.parse(localStorage.getItem("user") || "{}")._id;
+  const userData = useUserStore((state) => state.user);
+  const userId = userData?.id || "";
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+
+  const [claimRequestData, setClaimRequestData] = useState<ClaimRequestDataField>(initialClaimRequestData);
+
+  useEffect(() => {
+    const isUnchanged = JSON.stringify(claimRequestData) === JSON.stringify(initialClaimRequestData);
+    setIsButtonDisabled(isUnchanged);
+  }, [claimRequestData]);
 
   const fetchProjects = async () => {
     try {
@@ -97,16 +117,6 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
 
   const debounceFetcher = useMemo(() => debounce(fetchUserList, 300), []);
 
-  const [claimRequestData, setClaimRequestData] =
-    useState<ClaimRequestDataField>({
-      project_id: "",
-      approval_id: "",
-      claim_name: "",
-      claim_start_date: "",
-      claim_end_date: "",
-      total_work_time: 0,
-      remark: "",
-    });
 
   const handleClaimRequestDataChange = (
     key: keyof ClaimRequestDataField,
@@ -115,10 +125,15 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
     setClaimRequestData((prevData) => ({
       ...prevData,
       [key]: value,
-      ...(key === "claim_start_date" && { from: value.toISOString() }),
-      ...(key === "claim_end_date" && { to: value.toISOString() }),
+      ...(key === "claim_start_date" && value
+        ? { from: value.toISOString() }
+        : {}),
+      ...(key === "claim_end_date" && value
+        ? { to: value.toISOString() }
+        : {}),
     }));
   };
+
 
   const onFinish = async () => {
     form.validateFields().then(async (values) => {
@@ -154,9 +169,13 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
         onOk={onFinish}
         cancelText={<span className="text-xl font-light">Cancel</span>}
         okText={
-          <span className="text-xl font-light">Create Claim Request</span>
+          <span className="text-xl font-light ">Create Claim Request</span>
         }
-        okButtonProps={{ className: "!py-5 !rounded-xl" }}
+        okButtonProps={{
+          className: `!py-5 !rounded-xl ${isButtonDisabled ? "!bg-gray-300" : ""
+            }`,
+          disabled: isButtonDisabled,
+        }}
         cancelButtonProps={{ className: "!py-5 !rounded-xl" }}
         onCancel={onClose}
         className=" lg:!w-5/12 md:!w-full !font-squanda !w-full "
@@ -247,11 +266,11 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
                 {
                   validator: (_, value) => {
                     const startDate = form.getFieldValue("claim_start_date");
-                    if (!value || !startDate || value.isAfter(startDate)) {
+                    if (!value || !startDate || !value.isBefore(startDate)) {
                       return Promise.resolve();
                     }
                     return Promise.reject(
-                      new Error("End date must be after start date")
+                      new Error("End date must be the same or after start date")
                     );
                   },
                 },

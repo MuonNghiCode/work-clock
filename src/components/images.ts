@@ -12,16 +12,15 @@ import Auther1 from "../assets/images/auther-1.png";
 import Auther2 from "../assets/images/auther-2.png";
 import Auther3 from "../assets/images/auther-3.png";
 import Error from "../assets/images/404.png";
-import BackgroundLayout from "../assets/images/backgroundlayout.jpg";
+import BackgroundLayout from "../assets/images/backgroundlayout.png";
 import Background4 from "../assets/images/background4.png";
 import Background5 from "../assets/images/background-large.png";
 import Background6 from "../assets/images/bg-5.png";
 import Background7 from "../assets/images/background6.png";
 import auth from "../assets/images/auth.png";
 import auth1 from "../assets/images/auth1.png";
-import news1 from "../assets/images/NewsBackground.jpg";
 import group from "../assets/images/class.jpg";
-import news2 from "../assets/images/8-3.jpg";
+import news2 from "../assets/images/8-3.png";
 import changelog from "../assets/images/changelog.png";
 import Logo3 from "../assets/images/logo3.png";
 const Images = {
@@ -46,7 +45,6 @@ const Images = {
   Background7,
   auth,
   auth1,
-  news1,
   group,
   news2,
   changelog,

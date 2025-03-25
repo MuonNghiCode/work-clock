@@ -3,6 +3,8 @@ import { Pagination } from "antd";
 import { getAllProject } from "../../services/projectService"; // Import the new function
 import { useUser } from "../../contexts/UserContext";
 import { formatDate } from "../../utils/formatDate";
+import { useUser } from "../../contexts/UserContext";
+import { formatDate } from "../../utils/formatDate";
 
 interface ProjectInfo {
   key: string;
@@ -30,6 +32,7 @@ const UserProject = () => {
           project_end_date: "",
           is_delete: false,
           user_id: user?._id || "",
+          user_id: user?._id || "",
         },
         pageInfo: { pageNum, pageSize },
       });
@@ -38,6 +41,8 @@ const UserProject = () => {
       let data = response.data.pageData.map((item: any) => ({
         key: item._id,
         projectName: item.project_name,
+        startDate: formatDate(new Date(item.project_start_date), "DD/MM/YYYY"),
+        endDate: formatDate(new Date(item.project_end_date), "DD/MM/YYYY"),
         startDate: formatDate(new Date(item.project_start_date), "DD/MM/YYYY"),
         endDate: formatDate(new Date(item.project_end_date), "DD/MM/YYYY"),
         status: item.project_status,
