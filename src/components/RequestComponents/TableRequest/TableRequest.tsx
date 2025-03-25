@@ -445,7 +445,7 @@ const TableRequest: React.FC<TableRequestProps> = ({
                       {claimLogs.map((log) => (
                         <div
                           key={log._id}
-                          className="flex items-center justify-between border-b pb-2"
+                          className="flex items-center justify-between pb-2" 
                         >
                           <div className="flex items-center space-x-4">
                             <div className="flex flex-col">
