@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Pagination } from "antd";
 import { getAllProject } from "../../services/projectService"; // Import the new function
+import { useUser } from "../../contexts/UserContext";
+import { formatDate } from "../../utils/formatDate";
 
 interface ProjectInfo {
   key: string;
@@ -15,7 +17,9 @@ const UserProject = () => {
   const [projectsCount, setProjectsCount] = useState(0); // Add state for projects count
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1); // Add state for current page
-  const pageSize = 5; // Set page size to 5
+  const [pageSize, setPageSize] = useState(5);
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const { user } = useUser();
 
   const fetchProjects = async (pageNum: number, pageSize: number) => {
     try {
@@ -25,21 +29,29 @@ const UserProject = () => {
           project_start_date: "",
           project_end_date: "",
           is_delete: false,
-          user_id: "",
+          user_id: user?._id || "",
         },
         pageInfo: { pageNum, pageSize },
       });
-      const data = response.data.pageData.map((item: any) => ({
+
+      // Map dữ liệu từ API
+      let data = response.data.pageData.map((item: any) => ({
         key: item._id,
         projectName: item.project_name,
-        startDate: new Date(item.project_start_date).toLocaleDateString(
-          "en-US"
-        ),
-        endDate: new Date(item.project_end_date).toLocaleDateString("en-US"),
+        startDate: formatDate(new Date(item.project_start_date), "DD/MM/YYYY"),
+        endDate: formatDate(new Date(item.project_end_date), "DD/MM/YYYY"),
         status: item.project_status,
       }));
+
+      // Lọc dữ liệu theo statusFilter
+      if (statusFilter !== "all") {
+        data = data.filter((item) => item.status === statusFilter);
+      }
+
       setProjectsData(data);
-      setProjectsCount(response.data.pageInfo.totalItems || 0); // Assuming the API returns total count
+
+      // Cập nhật tổng số lượng dự án (sau khi lọc)
+      setProjectsCount(data.length);
     } catch (error) {
       console.log(error);
     } finally {
@@ -49,18 +61,37 @@ const UserProject = () => {
 
   useEffect(() => {
     fetchProjects(currentPage, pageSize); // Fetch projects data
-  }, [currentPage, pageSize]);
+  }, [currentPage, pageSize, statusFilter]);
 
-  const handlePageChange = (page: number, pageSize?: number) => {
-    setCurrentPage(page);
-    setLoading(true);
-    fetchProjects(page, pageSize || 5);
+  const handlePageChange = (page: number, newPageSize?: number) => {
+    if (newPageSize && newPageSize !== pageSize) {
+      setPageSize(newPageSize);
+      setCurrentPage(1);
+    } else {
+      setCurrentPage(page);
+    }
   };
 
+  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setStatusFilter(e.target.value);
+    setCurrentPage(1);
+  };
   return (
-    <div>
+    <div className="p-6">
+      <div>
+        <select
+          value={statusFilter}
+          onChange={handleStatusChange}
+          className="px-3 py-1 border rounded-lg font-squada text-lg"
+        >
+          <option value="all">All Status</option>
+          <option value="Active">Active</option>
+          <option value="New">New</option>
+          <option value="Pending">Pending</option>
+          <option value="Closed">Closed</option>
+        </select>
+      </div>
       <div className="col-span-4 p-4 rounded-lg mt-8">
-        <h3 className="text-lg font-bold">Project List</h3>
         <table className="min-w-full border-separate border-spacing-y-2.5 border-0 text-black w-full">
           <thead className="bg-brand-gradient h-[70px] text-lg text-white">
             <tr className="bg-[linear-gradient(45deg,#FEB78A,#FF914D)]">
