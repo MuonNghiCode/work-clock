@@ -66,6 +66,9 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
               />
+              {message === "Rejected" && !comment && (
+                <p className="text-red-600 mt-1">Please enter your rejected reason!</p>
+              )}
             </div>
             : null}
       </div>
