@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Pagination } from "antd";
 import { getAllProject } from "../../services/projectService"; // Import the new function
-import { useUser } from "../../contexts/UserContext";
 import { formatDate } from "../../utils/formatDate";
 import { useUserStore } from "../../config/zustand";
 
