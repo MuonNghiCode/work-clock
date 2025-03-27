@@ -144,7 +144,7 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({
     if (formCheck === "edit") setFormCheck(undefined);
     onClose();
   };
-  const optionStatus = ["New", "Processing", "Pending", "Complete"];
+  const optionStatus = ["New", "Active", "Pending", "Closed"];
 
   return (
     <Modal
