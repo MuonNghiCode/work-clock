@@ -15,6 +15,7 @@ import {
 import CancelRequestModal from "../CancelRequestModal/CancelRequestModal";
 import { getClaimLog } from "../../../services/claimService";
 import { ClaimLog } from "../../../types/ClaimType";
+import { motion } from "framer-motion";
 
 interface ClaimRequest {
   key: string;
@@ -126,8 +127,18 @@ const TableRequest: React.FC<TableRequestProps> = ({
   return (
     <div className="request-container">
       <div className="request-content flex flex-col">
-        <div className="request-header mb-4">
-          <table className="request-table min-w-full border-separate border-spacing-y-2.5">
+        <motion.div
+          className="request-header mb-4"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <motion.table
+            className="request-table min-w-full border-separate border-spacing-y-2.5"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
             <thead className="request-table-header bg-gradient-to-r from-[#FEB78A] to-[#FF914D] h-[70px] text-lg text-white rounded-t-lg">
               <tr>
                 <th className="request-table-header-cell px-4 py-2 rounded-tl-2xl">
@@ -150,7 +161,14 @@ const TableRequest: React.FC<TableRequestProps> = ({
                 </th>
               </tr>
             </thead>
-            <tbody>
+            <motion.tbody
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: { opacity: 0 },
+                visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
+              }}
+            >
               {loading ? (
                 <tr>
                   <td
@@ -162,10 +180,14 @@ const TableRequest: React.FC<TableRequestProps> = ({
                 </tr>
               ) : apiData.length > 0 ? (
                 apiData.map((item) => (
-                  <tr
+                  <motion.tr
                     key={item.key}
                     className="request-table-row h-[70px] bg-white text-center hover:shadow-brand-orange rounded-2xl cursor-pointer"
                     onClick={() => handleRowClick(item)}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    whileHover={{ scale: 1.02 }}
+                    transition={{ duration: 0.3 }}
                   >
                     <td className="request-table-cell px-4 py-2 rounded-l-2xl">
                       {item.claimname}
@@ -233,7 +255,7 @@ const TableRequest: React.FC<TableRequestProps> = ({
                         )}
                       </div>
                     </td>
-                  </tr>
+                  </motion.tr>
                 ))
               ) : (
                 <tr>
@@ -245,8 +267,8 @@ const TableRequest: React.FC<TableRequestProps> = ({
                   </td>
                 </tr>
               )}
-            </tbody>
-          </table>
+            </motion.tbody>
+          </motion.table>
 
           {/* Chỉ hiển thị phân trang khi pagination được truyền vào (tức là khi có dữ liệu) */}
           {pagination && (
@@ -262,7 +284,7 @@ const TableRequest: React.FC<TableRequestProps> = ({
               />
             </div>
           )}
-        </div>
+        </motion.div>
 
         <Modal
           title=""
@@ -274,7 +296,12 @@ const TableRequest: React.FC<TableRequestProps> = ({
           width={800}
         >
           {selectedClaim ? (
-            <div className="p-8 bg-gray-50 rounded-xl">
+            <motion.div
+              className="p-8 bg-gray-50 rounded-xl"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-3xl font-bold text-[#FF9447]">
                   Claim Details
@@ -514,7 +541,7 @@ const TableRequest: React.FC<TableRequestProps> = ({
                   Close
                 </button>
               </div>
-            </div>
+            </motion.div>
           ) : (
             <p className="request-modal-no-data">No data available</p>
           )}

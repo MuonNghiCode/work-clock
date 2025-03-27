@@ -1,5 +1,6 @@
 import React from 'react';
 import { Modal, Input, Button } from 'antd';
+import { motion } from "framer-motion";
 
 interface ClaimRequest {
   key: string;
@@ -52,7 +53,13 @@ const RequestApprovalModal: React.FC<RequestApprovalModalProps> = ({
       width={500}
       className="request-approval-modal"
     >
-      <div className="p-6 bg-gray-50 rounded-xl">
+      <motion.div
+        className="p-6 bg-gray-50 rounded-xl"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.8 }}
+        transition={{ duration: 0.4 }}
+      >
         <h3 className="text-lg font-bold text-[#FF9447] mb-4">
           Request Approval for: {approvingRecord?.claimname || 'N/A'}
         </h3>
@@ -97,7 +104,7 @@ const RequestApprovalModal: React.FC<RequestApprovalModalProps> = ({
             Confirm
           </Button>
         </div>
-      </div>
+      </motion.div>
     </Modal>
   );
 };
