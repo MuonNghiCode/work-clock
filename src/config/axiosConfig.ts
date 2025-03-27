@@ -1,5 +1,5 @@
 import axios, { InternalAxiosRequestConfig } from "axios";
-import { useLoadingStore, useUserStore } from "./zustand"; // Adjust path
+import { useLoadingStore } from "./zustand"; // Adjust path
 import { toast } from "react-toastify";
 
 interface CustomInternalAxiosRequestConfig extends InternalAxiosRequestConfig {
@@ -21,9 +21,8 @@ axiosInstance.interceptors.request.use(
     if (config.showLoading !== false && !skipUrls.includes(config.url ?? "")) {
       addRequest(config.url ?? "");
     }
-
     // Attach token if available
-    const token = useUserStore.getState().getToken(); // Use getToken instead of the hook
+    const token = localStorage.getItem("token"); // Use getToken instead of the hook
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

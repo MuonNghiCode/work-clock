@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { useUserStore } from './zustand';
 
 // Create an instance of axios
 const axiosInstances = axios.create({
@@ -15,8 +14,7 @@ const axiosInstances = axios.create({
 axiosInstances.interceptors.request.use(
   (config) => {
     // Get the token from localStorage
-    const userData = useUserStore.getState().user;
-    const token = userData?.token;
+    const token = localStorage.getItem('token');
     if (token) {
       // Add the token to the Authorization header
       config.headers.Authorization = `Bearer ${token}`;
