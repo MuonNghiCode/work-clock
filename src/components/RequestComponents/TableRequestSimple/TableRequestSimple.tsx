@@ -23,19 +23,19 @@ const TableRequestSimple: React.FC<TableRequestSimpleProps> = ({
   loading,
 }) => {
   const getStatusColor = (status: string) =>
-    ({
-      Approved: "text-green-600",
-      Rejected: "text-red-600",
-      Draft: "text-gray-600",
-      "Pending Approval": "text-yellow-600",
-      Canceled: "text-purple-600",
-      Paid: "text-blue-600",
-    }[status] || "text-gray-600");
+  ({
+    Approved: "text-green-600",
+    Rejected: "text-red-600",
+    Draft: "text-gray-600",
+    "Pending Approval": "text-yellow-600",
+    Canceled: "text-purple-600",
+    Paid: "text-blue-600",
+  }[status] || "text-gray-600");
 
   return (
     <div className="request-container">
       <div className="request-content flex flex-col">
-        <div className="request-header mb-4">
+        <div className="request-header mb-4 overflow-x-auto max-w-screen">
           <table className="request-table min-w-full border-separate border-spacing-y-2.5">
             <thead className="request-table-header bg-gradient-to-r from-[#FEB78A] to-[#FF914D] h-[70px] text-lg text-white rounded-t-lg">
               <tr>
