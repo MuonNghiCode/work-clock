@@ -243,9 +243,9 @@ const EditProject: React.FC<EditProjectProps> = ({
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-300 bg-white text-xl"
             >
               <option value="New">New</option>
-              <option value="Processing">Processing</option>
+              <option value="Active">Active</option>
               <option value="Pending">Pending</option>
-              <option value="Complete">Complete</option>
+              <option value="Closed">Closed</option>
             </select>
           </div>
 

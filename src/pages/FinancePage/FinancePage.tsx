@@ -375,7 +375,7 @@ const FinancePage: React.FC = () => {
             total={dataFinance.length}
             pageSize={pageSize}
             onChange={handlePageChange}
-            showSizeChanger
+            showSizeChanger = {false}
             onShowSizeChange={handlePageChange}
           />
         )}
