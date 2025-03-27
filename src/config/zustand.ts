@@ -54,10 +54,20 @@ interface UserState {
   getToken: () => string | null; // Add this function to get the token
 }
 
-export const useUserStore = create<UserState>((set, get) => ({
-  user: null,
-  setUser: (user) => set({ user }),
-  clearUser: () => set({ user: null }),
-  getToken: () => get().user?.token ?? null, // Add this function to get the token
+export const useUserStore = create<UserState>((set) => ({
+  user: JSON.parse(localStorage.getItem("user") || "null"),
+  setUser: (user) => {
+    localStorage.setItem("user", JSON.stringify(user));
+    set({ user });
+  },
+  clearUser: () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    set({ user: null });
+  },
+  getToken: () => {
+    const user = JSON.parse(localStorage.getItem("user") || "null");
+    return user?.token || null;
+  },
 }));
 
