@@ -290,7 +290,7 @@ const TableRequest: React.FC<TableRequestProps> = ({
                 pageSize={pagination.pageSize}
                 total={totalItems}
                 onChange={pagination.onPageChange}
-                showSizeChanger
+                showSizeChanger = {false}
                 pageSizeOptions={["5", "10", "20", "50"]}
                 disabled={loading}
               />
