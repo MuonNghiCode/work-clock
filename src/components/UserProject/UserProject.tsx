@@ -161,7 +161,7 @@ const UserProject = () => {
               pageSize={pageSize}
               total={projectsCount}
               onChange={handlePageChange}
-              showSizeChanger
+              showSizeChanger = {false}
             />
           )}
         </div>

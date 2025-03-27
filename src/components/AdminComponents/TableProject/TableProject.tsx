@@ -278,7 +278,7 @@ const TableProject: React.FC = () => {
           pageSize={pageSize}
           total={totalItems}
           onChange={handlePageChange}
-          showSizeChanger
+          showSizeChanger = {false} 
           onShowSizeChange={handlePageChange}
           pageSizeOptions={["5", "10", "20", "50"]}
         />
