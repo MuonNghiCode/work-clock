@@ -1,4 +1,5 @@
 // userAuth.ts
+import { useUserStore } from "../config/zustand";
 import { API_CONSTANTS } from "../constants/apiConstants";
 import { ResponseModel } from "../models/ResponseModel";
 import { post, put, del, get } from "./apiService";
@@ -64,20 +65,20 @@ export const getUserById = async (userId: string): Promise<ResponseModel<UserDat
       throw new Error("User ID is required");
     }
 
-      const response = await get<ResponseModel<UserData>>(
-        API_CONSTANTS.USERS.GET_USER_BY_ID.replace("${id}", userId)
-      );
+    const response = await get<ResponseModel<UserData>>(
+      API_CONSTANTS.USERS.GET_USER_BY_ID.replace("${id}", userId)
+    );
 
-      if (!response.success) {
-        throw new Error(response.message || "Failed to get user");
-      }
+    if (!response.success) {
+      throw new Error(response.message || "Failed to get user");
+    }
 
-      return response.data;
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(error.message);
-      }
-      throw new Error("Failed to get user");
+    return response.data;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
+    throw new Error("Failed to get user");
   }
 };
 
@@ -169,7 +170,8 @@ export const changePassword = async (
   newPassword: string
 ): Promise<ResponseModel<null>> => {
   try {
-    const user = localStorage.getItem("user");
+    const userDataZustand = useUserStore.getState().user;
+    const user = userDataZustand ? JSON.stringify(userDataZustand) : null;
     if (!user) {
       throw new Error("User information not found");
     }
@@ -205,10 +207,10 @@ export const updateUserRole = async (userId: string, roleCode: string): Promise<
     if (!userId) {
       throw new Error("User ID is required");
     }
-    
+
     const response = await put<any>(
       API_CONSTANTS.USERS.CHANGE_ROLE,
-      { 
+      {
         user_id: userId,
         role_code: roleCode,
       }
@@ -225,12 +227,12 @@ export const updateUserStatus = async (userId: string, isBlocked: boolean): Prom
     if (!userId) {
       throw new Error("User ID is required");
     }
-    
+
     const response = await put<any>(
       API_CONSTANTS.USERS.CHANGE_STATUS,
-      { 
+      {
         user_id: userId,
-        is_blocked: isBlocked 
+        is_blocked: isBlocked
       }
     );
     return response;
