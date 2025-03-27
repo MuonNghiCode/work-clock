@@ -190,7 +190,6 @@ const TableProject: React.FC = () => {
           />
         </div>
       </div>
-
       <table className="min-w-full !border-separate border-spacing-y-2.5 text-black border-0">
         <thead className="bg-brand-grandient h-[70px] text-lg text-white !rounded-t-lg">
           <tr className="bg-gradient from-[FEB78A] to-[FF914D]">
@@ -270,7 +269,6 @@ const TableProject: React.FC = () => {
           ))}
         </tbody>
       </table>
-
       <div className="flex justify-end mt-4">
         <Pagination
           className="!font-squada flex justify-end"

@@ -15,6 +15,7 @@ interface User {
   updated_at: string;
   is_deleted: boolean;
   __v: number;
+  avatarUrl: string;
 }
 
 interface UserContextType {
@@ -35,7 +36,8 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     const userData = useUserStore.getState().user;
     const storedUser = userData?.token;
     // console.log("Stored user:", storedUser);
-    if (storedUser) {
+    const token = localStorage.getItem("token");
+    if (token && storedUser) {
       try {
         const parsedUser: User = JSON.parse(storedUser);
         setUser(parsedUser);

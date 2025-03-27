@@ -73,61 +73,63 @@ const TableUserDashboard: React.FC<DataProps> = ({ data }) => {
               </Tag>
             ))}
           </div>
-          <table className="w-[750px] !border-separate border-spacing-y-2.5  border-gray-300 text-black border-0">
-            <thead className="bg-brand-gradient h-[100px] text-2xl">
-              <tr className="bg-gradient from-[FEB78A] to-[FF914D]">
-                <th className="px-4 py-2 border-white">Project</th>
-                <th className="px-4 py-2 border-l-2 border-white">
-                  Date Create
-                </th>
-                <th className="px-4 py-2 border-l-2 border-white">Day</th>
-                <th className="px-4 py-2 border-l-2 border-white">Status</th>
-                <th className="px-4 py-2 border-l-2 border-white">
-                  Total No. of Hours
-                </th>
-              </tr>
-            </thead>
-            <tbody className="w-full text-[20px]">
-              {currentData.map((item, index) => (
-                <tr
-                  onClick={() => handleShowApprovalDetail(item)}
-                  key={index}
-                  className="h-[100px] bg-white border-black !border-2 !rounded-lg text-center border-collapse shadow-lg hover:shadow-2xl"
-                >
-                  <td className="px-4 py-2 border-t-2 border-b-2 border-l-2 rounded-l-lg">
-                    {item.project_info.project_name}
-                  </td>
-                  <td className="px-4 py-2 border-t-2 border-b-2">
-                    {new Date(item.created_at).toLocaleDateString()}
-                  </td>
-                  <td className={`px-4 py-2 border-t-2 border-b-2`}>
-                    {item.claim_start_date}
-                  </td>
-                  <td className={`px-4 py-2 border-t-2 border-b-2 `}>
-                    <span
-                      className={`${item.claim_status === "Approved"
-                        ? "text-green-500"
-                        : item.claim_status === "Rejected"
-                          ? "text-red-500"
-                          : item.claim_status === "Pending Approval"
-                            ? "text-yellow-500"
-                            : item.claim_status === "Canceled"
-                              ? "text-purple-500"
-                              : item.claim_status === "Paid"
-                                ? "text-blue-500"
-                                : ""
-                        }`}
-                    >
-                      {item.claim_status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-2 border-t-2 border-b-2 border-r-2 rounded-r-lg">
-                    {/* {item.totalNoOfHours} */}
-                  </td>
+          <div className="overflow-x-auto max-w-screen">
+            <table className="w-[750px] !border-separate border-spacing-y-2.5  border-gray-300 text-black border-0">
+              <thead className="bg-brand-gradient h-[100px] text-2xl">
+                <tr className="bg-gradient from-[FEB78A] to-[FF914D]">
+                  <th className="px-4 py-2 border-white">Project</th>
+                  <th className="px-4 py-2 border-l-2 border-white">
+                    Date Create
+                  </th>
+                  <th className="px-4 py-2 border-l-2 border-white">Day</th>
+                  <th className="px-4 py-2 border-l-2 border-white">Status</th>
+                  <th className="px-4 py-2 border-l-2 border-white">
+                    Total No. of Hours
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="w-full text-[20px]">
+                {currentData.map((item, index) => (
+                  <tr
+                    onClick={() => handleShowApprovalDetail(item)}
+                    key={index}
+                    className="h-[100px] bg-white border-black !border-2 !rounded-lg text-center border-collapse shadow-lg hover:shadow-2xl"
+                  >
+                    <td className="px-4 py-2 border-t-2 border-b-2 border-l-2 rounded-l-lg">
+                      {item.project_info.project_name}
+                    </td>
+                    <td className="px-4 py-2 border-t-2 border-b-2">
+                      {new Date(item.created_at).toLocaleDateString()}
+                    </td>
+                    <td className={`px-4 py-2 border-t-2 border-b-2`}>
+                      {item.claim_start_date}
+                    </td>
+                    <td className={`px-4 py-2 border-t-2 border-b-2 `}>
+                      <span
+                        className={`${item.claim_status === "Approved"
+                          ? "text-green-500"
+                          : item.claim_status === "Rejected"
+                            ? "text-red-500"
+                            : item.claim_status === "Pending Approval"
+                              ? "text-yellow-500"
+                              : item.claim_status === "Canceled"
+                                ? "text-purple-500"
+                                : item.claim_status === "Paid"
+                                  ? "text-blue-500"
+                                  : ""
+                          }`}
+                      >
+                        {item.claim_status}
+                      </span>
+                    </td>
+                    <td className="px-4 py-2 border-t-2 border-b-2 border-r-2 rounded-r-lg">
+                      {/* {item.totalNoOfHours} */}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
           <div className="flex justify-center mt-4">
             <Pagination
               current={currentPage}

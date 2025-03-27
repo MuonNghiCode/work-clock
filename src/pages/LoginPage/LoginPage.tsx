@@ -48,6 +48,7 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     if (validate()) {
       const response = await login(email, password);
+      localStorage.setItem("token", response.data.token);
       if (response.success) {
         const user = await getUserInfobyToken();
         console.log(user.data._id);
@@ -81,6 +82,7 @@ const LoginPage: React.FC = () => {
             username: employee.data.full_name,
             avatarUrl: employee.data.avatar_url,
           });
+
         }
       }
     }
