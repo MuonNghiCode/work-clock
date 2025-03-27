@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { User } from "lucide-react";
-import { updateEmployee } from "../../../services/userService";
+import { getAllContracts, getAllDepartments, getAllJobs, updateEmployee } from "../../../services/userService";
 import { toast } from "react-toastify";
-import axiosInstance from "../../../config/axiosUser";
+// import axiosInstance from "../../../config/axiosConfig";
 import ImageUploader from "../../ImageUploader/ImageUploader";
 import { EmployeeInfo } from "../../../types/Employee";
 import { ConfigProvider, Form, Input, Select } from "antd";
@@ -35,7 +35,7 @@ export interface Job {
   is_deleted: boolean;
 }
 
-interface Department {
+export interface Department {
   _id: string;
   department_code: string;
   department_name: string;
@@ -130,15 +130,45 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
       try {
         setIsLoading(true);
         setError(null);
+        // const [jobsRes, deptsRes, contractsRes] = await Promise.all([
+        //   axiosInstance.get("/jobs/get-all"),
+        //   axiosInstance.get("/departments/get-all"),
+        //   axiosInstance.get("/contracts/get-all"),
+        // ]);
         const [jobsRes, deptsRes, contractsRes] = await Promise.all([
-          axiosInstance.get("/jobs/get-all"),
-          axiosInstance.get("/departments/get-all"),
-          axiosInstance.get("/contracts/get-all"),
+          getAllJobs(),
+          getAllDepartments(),
+          getAllContracts(true),
         ]);
 
-        if (jobsRes.data?.data) setJobs(jobsRes.data.data);
-        if (deptsRes.data?.data) setDepartments(deptsRes.data.data);
-        if (contractsRes.data?.data) setContracts(contractsRes.data.data);
+        if (jobsRes.data) {
+          const mappedJobs = jobsRes.data.map((job: any) => ({
+            _id: job._id || "",
+            job_rank: job.job_rank || "",
+            job_title: job.job_title || "",
+            is_deleted: job.is_deleted || false,
+          }));
+          setJobs(mappedJobs);
+        }
+        if (deptsRes.data) {
+          const mappedDepartments = deptsRes.data.map((dept: any) => ({
+            _id: dept._id || "",
+            department_code: dept.department_code || "",
+            department_name: dept.department_name || "",
+            description: dept.description || "",
+            is_deleted: dept.is_deleted || false,
+          }));
+          setDepartments(mappedDepartments);
+        }
+        if (contractsRes.data) {
+          const mappedContracts = contractsRes.data.map((contract: any) => ({
+            _id: contract._id || "",
+            contract_type: contract.contract_type || "",
+            description: contract.description || "",
+            is_deleted: contract.is_deleted || false,
+          }));
+          setContracts(mappedContracts);
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
         setError("Failed to load form data");
@@ -549,7 +579,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                             !value ||
                             !getFieldValue("end_date") ||
                             new Date(value) <
-                              new Date(getFieldValue("end_date"))
+                            new Date(getFieldValue("end_date"))
                           ) {
                             return Promise.resolve();
                           }
@@ -581,7 +611,7 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
                             !value ||
                             !getFieldValue("start_date") ||
                             new Date(value) >
-                              new Date(getFieldValue("start_date"))
+                            new Date(getFieldValue("start_date"))
                           ) {
                             return Promise.resolve();
                           }

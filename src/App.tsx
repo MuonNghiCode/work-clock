@@ -222,18 +222,18 @@ const router = createBrowserRouter([
 ]);
 
 const App: React.FC = () => {
-  const [loading, setLoading] = useState(true);
-  const isLoading = useLoadingStore((state) => state.isLoading);
+  const [loadingFirstTime, setLoadingFirstTime] = useState(true);
+  const loading = useLoadingStore((state) => state.loading);
 
   useEffect(() => {
     const hasVisited = sessionStorage.getItem("visited");
     if (!hasVisited) {
       setTimeout(() => {
-        setLoading(false);
+        setLoadingFirstTime(false);
         sessionStorage.setItem("visited", "true");
       }, 3000);
     } else {
-      setLoading(false);
+      setLoadingFirstTime(false);
     }
   }, []);
 
@@ -243,8 +243,8 @@ const App: React.FC = () => {
     <>
       <UserProvider>
         <AnimatedBackground />
-        {isLoading && <LoadingScreen />}
-        {loading ? <WelcomeScreen /> : <RouterProvider router={router} />}
+        {loading && <LoadingScreen />}
+        {loadingFirstTime ? <WelcomeScreen /> : <RouterProvider router={router} />}
         <ToastContainer />
       </UserProvider>
     </>

@@ -101,11 +101,12 @@ export const getClaimDetail = async (
 
 export const updateClaim = async (
   id: string,
-  data: Partial<ClaimItem>
+  data: Partial<ClaimItem>,
+  loading?: boolean
 ): Promise<ResponseModel<ClaimItem>> => {
   const response = await put<ClaimItem>(
     `${API_CONSTANTS.CLAIMS.UPDATE_CLAIM}/${id}`,
-    data
+    data, loading
   );
   return response;
 };

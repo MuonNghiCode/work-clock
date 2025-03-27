@@ -47,14 +47,15 @@ const LoginPage: React.FC = () => {
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validate()) {
+
       const response = await login(email, password);
       localStorage.setItem("token", response.data.token);
       if (response.success) {
-        const user = await getUserInfobyToken();
+        const user = await getUserInfobyToken(false);
         console.log(user.data._id);
         let role = user.data.role_code;
         if (user && user.data) {
-          const employee = await getEmployeeByUserId(user.data._id);
+          const employee = await getEmployeeByUserId(user.data._id, false);
           toast.success("Login successful!");
           setTimeout(() => {
             switch (role) {

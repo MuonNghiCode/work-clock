@@ -184,13 +184,13 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
         return;
       }
 
-      const response = await updateClaim(claimId, updatedClaim);
+      const response = await updateClaim(claimId, updatedClaim, false);
       if (response.success) {
         await onOk();
         toast.success('Claim request updated successfully');
         refreshData();
-        setIsAnimating(false); 
-        setTimeout(() => setIsVisible(false), 300); 
+        setIsAnimating(false);
+        setTimeout(() => setIsVisible(false), 300);
       } else {
         throw new Error(response.message || 'Failed to update claim');
       }
@@ -208,13 +208,13 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
     const hasDiff = Object.keys(allValues).some(key => {
       const initial = initialValues[key];
       const current = allValues[key];
-      
+
       if (dayjs.isDayjs(initial) && dayjs.isDayjs(current)) {
         return !initial.isSame(current);
       }
       return initial !== current;
     });
-    
+
     setHasChanges(hasDiff);
   };
 
@@ -250,8 +250,8 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
                     <Input
                       className="rounded-md py-2 w-full"
                       style={{
-                        borderColor: '#D1D5DB', 
-                        color: '#374151', 
+                        borderColor: '#D1D5DB',
+                        color: '#374151',
                       }}
                       placeholder="Enter claim name"
                     />
@@ -264,8 +264,8 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
                     <Input
                       className="rounded-md py-2 w-full"
                       style={{
-                        borderColor: '#D1D5DB', 
-                        color: '#374151', 
+                        borderColor: '#D1D5DB',
+                        color: '#374151',
                       }}
                       placeholder="Enter total hours"
                     />
@@ -284,8 +284,8 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
                       className="rounded-md py-2 w-full"
                       format="YYYY-MM-DD"
                       style={{
-                        borderColor: '#D1D5DB', 
-                        color: '#374151', 
+                        borderColor: '#D1D5DB',
+                        color: '#374151',
                       }}
                       placeholder="Select start date"
                     />
@@ -299,8 +299,8 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
                       className="rounded-md py-2 w-full"
                       format="YYYY-MM-DD"
                       style={{
-                        borderColor: '#D1D5DB', 
-                        color: '#374151', 
+                        borderColor: '#D1D5DB',
+                        color: '#374151',
                       }}
                       placeholder="Select end date"
                     />
@@ -314,8 +314,8 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
                       className="rounded-md py-2 w-full"
                       format="HH:mm"
                       style={{
-                        borderColor: '#D1D5DB', 
-                        color: '#374151', 
+                        borderColor: '#D1D5DB',
+                        color: '#374151',
                       }}
                       placeholder="Select start time"
                     />
@@ -329,8 +329,8 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
                       className="rounded-md py-2 w-full"
                       format="HH:mm"
                       style={{
-                        borderColor: '#D1D5DB', 
-                        color: '#374151', 
+                        borderColor: '#D1D5DB',
+                        color: '#374151',
                       }}
                       placeholder="Select end time"
                     />
@@ -343,8 +343,8 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
                 onClick={handleClose}
                 className="px-4 py-2 rounded-md"
                 style={{
-                  backgroundColor: '#F3F4F6', 
-                  color: '#4B5563', 
+                  backgroundColor: '#F3F4F6',
+                  color: '#4B5563',
                   border: 'none',
                   fontWeight: 400,
                 }}
