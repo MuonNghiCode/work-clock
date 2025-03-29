@@ -185,12 +185,7 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
         await onOk();
         toast.success('Claim request updated successfully');
         refreshData();
-        setTimeout(() => setIsVisible(false), 300);
-        throw new Error(response.message || 'Failed to update claim');
       }
-    } catch (error: any) {
-      console.error('Failed to update claim request:', error);
-      toast.error(error.message || 'Failed to update claim request');
     } finally {
       setLoading(false);
     }
