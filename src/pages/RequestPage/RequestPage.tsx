@@ -196,7 +196,7 @@ const RequestPage: React.FC = () => {
         claim_status: "Pending Approval",
         comment: comment || "",
       };
-      const response = await updateClaimStatus(payload);
+      const response = await updateClaimStatus(payload,false);
       if (response.success) {
         toast.success("Request approval sent successfully");
         fetchClaims();
@@ -226,7 +226,7 @@ const RequestPage: React.FC = () => {
         claim_status: "Canceled",
         comment: "",
       };
-      const response = await updateClaimStatus(payload);
+      const response = await updateClaimStatus(payload,loading);
       if (response.success) {
         toast.success("Claim canceled successfully");
         fetchClaims();
@@ -234,7 +234,6 @@ const RequestPage: React.FC = () => {
         throw new Error(response.message || "Failed to cancel claim");
       }
     } catch (error: any) {
-      console.error("Failed to cancel claim:", error);
       toast.error(error.message || "Failed to cancel claim");
     } finally {
       setLoading(false);

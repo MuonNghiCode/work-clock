@@ -112,9 +112,10 @@ export const updateClaim = async (
 };
 
 export const updateClaimStatus = async (
-  payload: UpdateClaimStatusPayload
+  payload: UpdateClaimStatusPayload,
+  loading?: boolean
 ): Promise<ResponseModel<null>> => {
-  const response = await put<null>(API_CONSTANTS.CLAIMS.UPDATE_STATUS, payload);
+  const response = await put<null>(API_CONSTANTS.CLAIMS.UPDATE_STATUS, payload,loading);
   return response;
 };
 
