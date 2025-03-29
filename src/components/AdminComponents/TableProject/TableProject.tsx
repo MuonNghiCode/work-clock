@@ -142,12 +142,12 @@ const TableProject: React.FC = () => {
 
   const handleStatusChangeHTML = (status: string) => {
     switch (status) {
-      case "Processing":
-        return <span className="text-[#7B2CBF]">Processing</span>;
+      case "Active":
+        return <span className="text-[#00B087]">Active</span>;
       case "Pending":
-        return <span className="text-[#FF0420]">Pending</span>;
-      case "Complete":
-        return <span className="text-[#00B087]">Complete</span>;
+        return <span className="text-[#FFBF00]">Pending</span>;
+      case "Closed":
+        return <span className="text-[#FF0420]">Closed</span>;
       default:
         return <span className="text-gray-600">{status}</span>;
     }
@@ -276,7 +276,7 @@ const TableProject: React.FC = () => {
           pageSize={pageSize}
           total={totalItems}
           onChange={handlePageChange}
-          showSizeChanger
+          showSizeChanger = {false} 
           onShowSizeChange={handlePageChange}
           pageSizeOptions={["5", "10", "20", "50"]}
         />

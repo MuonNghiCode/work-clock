@@ -8,6 +8,7 @@ import { Form, Input, DatePicker, TimePicker, Button, Modal } from 'antd';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import { motion } from "framer-motion";
 
 dayjs.extend(customParseFormat);
 dayjs.extend(isSameOrBefore);
@@ -41,7 +42,6 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [originalData, setOriginalData] = useState<ClaimItem | null>(null);
-  const [isAnimating, setIsAnimating] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
   const [initialValues, setInitialValues] = useState<any>(null);
@@ -97,9 +97,7 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
   useEffect(() => {
     if (isOpen) {
       setIsVisible(true);
-      setTimeout(() => setIsAnimating(true), 10);
     } else {
-      setIsAnimating(false);
       const timer = setTimeout(() => setIsVisible(false), 300);
       return () => clearTimeout(timer);
     }
@@ -133,12 +131,10 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
           },
         },
         onOk: () => {
-          setIsAnimating(false);
           setTimeout(() => onCancel(), 300);
         },
       });
     } else {
-      setIsAnimating(false);
       setTimeout(() => onCancel(), 300);
     }
   };
@@ -189,9 +185,7 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
         await onOk();
         toast.success('Claim request updated successfully');
         refreshData();
-        setIsAnimating(false);
         setTimeout(() => setIsVisible(false), 300);
-      } else {
         throw new Error(response.message || 'Failed to update claim');
       }
     } catch (error: any) {
@@ -221,10 +215,33 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto transition-opacity duration-300 ease-in-out" style={{ opacity: isAnimating ? 1 : 0 }}>
-      <div className="fixed inset-0 bg-black/30 transition-opacity duration-300 ease-in-out" style={{ opacity: isAnimating ? 1 : 0 }} onClick={handleClose}></div>
-      <div className="relative min-h-screen flex items-center justify-center p-4">
-        <div className="relative bg-white rounded-lg w-full max-w-4xl p-6 transition-all duration-300 ease-in-out transform" style={{ opacity: isAnimating ? 1 : 0, transform: isAnimating ? 'scale(1)' : 'scale(0.95)' }}>
+    <motion.div
+      className="fixed inset-0 z-50 overflow-y-auto"
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.9 }}
+      transition={{ duration: 0.3 }}
+    >
+      <div className="fixed inset-0 bg-black/30" onClick={handleClose}></div>
+      <motion.div
+        className="relative min-h-screen flex items-center justify-center p-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.3 }}
+      >
+        <motion.div
+          className="relative bg-white rounded-lg w-full max-w-4xl p-6"
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: { staggerChildren: 0.2 },
+            },
+          }}
+        >
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-[#FF9447]">Edit Claim Request</h2>
             <button onClick={handleClose} className="p-1 hover:bg-gray-100 rounded-full transition-colors">
@@ -239,7 +256,7 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
             disabled={loading}
           >
             <div className="grid grid-cols-2 gap-6">
-              <div className="bg-gray-50 p-4 rounded-lg">
+              <motion.div className="bg-gray-50 p-4 rounded-lg" variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}>
                 <h3 className="text-lg font-semibold text-gray-700 mb-4">Claim Details</h3>
                 <div className="space-y-4">
                   <Form.Item
@@ -271,8 +288,8 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
                     />
                   </Form.Item>
                 </div>
-              </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
+              </motion.div>
+              <motion.div className="bg-gray-50 p-4 rounded-lg" variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}>
                 <h3 className="text-lg font-semibold text-gray-700 mb-4">Time Details</h3>
                 <div className="space-y-4">
                   <Form.Item
@@ -336,7 +353,7 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
                     />
                   </Form.Item>
                 </div>
-              </div>
+              </motion.div>
             </div>
             <div className="flex justify-end gap-3 mt-6">
               <Button
@@ -371,9 +388,9 @@ const EditRequestModal: React.FC<EditRequestModalProps> = ({ isOpen, onCancel, o
               </Button>
             </div>
           </Form>
-        </div>
-      </div>
-    </div>
+        </motion.div>
+      </motion.div>
+    </motion.div>
   );
 };
 

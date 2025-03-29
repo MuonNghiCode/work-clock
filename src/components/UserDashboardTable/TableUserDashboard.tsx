@@ -136,7 +136,7 @@ const TableUserDashboard: React.FC<DataProps> = ({ data }) => {
               pageSize={pageSize}
               total={filteredData.length}
               onChange={handlePageChange}
-            // showSizeChanger
+            // showSizeChanger = {false}
             // onShowSizeChange={handlePageChange}
             />
           </div>

@@ -847,7 +847,7 @@ const AdminUserManagement: React.FC = () => {
             onChange={(page) => {
               setCurrentPage(page);
             }}
-            showSizeChanger={true}
+            showSizeChanger = {false}
             pageSizeOptions={["5", "10", "20"]}
             onShowSizeChange={(_, size) => {
               setUsersPerPage(size);

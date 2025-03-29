@@ -15,6 +15,7 @@ import {
 import CancelRequestModal from "../CancelRequestModal/CancelRequestModal";
 import { getClaimLog } from "../../../services/claimService";
 import { ClaimLog } from "../../../types/ClaimType";
+import { motion } from "framer-motion";
 
 interface ClaimRequest {
   key: string;
@@ -126,10 +127,49 @@ const TableRequest: React.FC<TableRequestProps> = ({
   return (
     <div className="request-container">
       <div className="request-content flex flex-col">
-        <div className="request-header mb-4">
-          <div className="overflow-x-auto max-w-screen">
-            <table className="request-table min-w-full border-separate border-spacing-y-2.5">
-              <thead className="request-table-header bg-gradient-to-r from-[#FEB78A] to-[#FF914D] h-[70px] text-lg text-white rounded-t-lg">
+        <motion.div
+          className="request-header mb-4"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <motion.table
+            className="request-table min-w-full border-separate border-spacing-y-2.5"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <thead className="request-table-header bg-gradient-to-r from-[#FEB78A] to-[#FF914D] h-[70px] text-lg text-white rounded-t-lg">
+              <tr>
+                <th className="request-table-header-cell px-4 py-2 rounded-tl-2xl">
+                  Claim Name
+                </th>
+                <th className="request-table-header-cell px-4 py-2 border-l-2 border-white">
+                  Start Date
+                </th>
+                <th className="request-table-header-cell px-4 py-2 border-l-2 border-white">
+                  End Date
+                </th>
+                <th className="request-table-header-cell px-4 py-2 border-l-2 border-white">
+                  Total Hours
+                </th>
+                <th className="request-table-header-cell px-4 py-2 border-l-2 border-white">
+                  Status
+                </th>
+                <th className="request-table-header-cell px-4 py-2 border-l-2 border-white rounded-tr-2xl">
+                  Action
+                </th>
+              </tr>
+            </thead>
+            <motion.tbody
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: { opacity: 0 },
+                visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
+              }}
+            >
+              {loading ? (
                 <tr>
                   <th className="request-table-header-cell px-4 py-2 rounded-tl-2xl">
                     Claim Name
@@ -150,105 +190,97 @@ const TableRequest: React.FC<TableRequestProps> = ({
                     Action
                   </th>
                 </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  <tr>
-                    <td
-                      colSpan={6}
-                      className="request-table-loading text-center py-4"
-                    >
-                      Loading...
+              ) : apiData.length > 0 ? (
+                apiData.map((item) => (
+                  <motion.tr
+                    key={item.key}
+                    className="request-table-row h-[70px] bg-white text-center hover:shadow-brand-orange rounded-2xl cursor-pointer"
+                    onClick={() => handleRowClick(item)}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    whileHover={{ scale: 1.02 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <td className="request-table-cell px-4 py-2 rounded-l-2xl">
+                      {item.claimname}
                     </td>
-                  </tr>
-                ) : apiData.length > 0 ? (
-                  apiData.map((item) => (
-                    <tr
-                      key={item.key}
-                      className="request-table-row h-[70px] bg-white text-center hover:shadow-brand-orange rounded-2xl cursor-pointer"
-                      onClick={() => handleRowClick(item)}
-                    >
-                      <td className="request-table-cell px-4 py-2 rounded-l-2xl">
-                        {item.claimname}
-                      </td>
-                      <td className="request-table-cell px-4 py-2">
-                        {item.start_date}
-                      </td>
-                      <td className="request-table-cell px-4 py-2">
-                        {item.end_date}
-                      </td>
-                      <td className="request-table-cell px-4 py-2">
-                        <div className="request-table-hours flex flex-col items-center">
-                          <span className="font-semibold text-[#FF914D]">
-                            {item.totalHours} hours
-                          </span>
-                        </div>
-                      </td>
-                      <td className="request-table-cell px-4 py-2">
-                        <span
-                          className={`font-semibold ${getStatusColor(
-                            item.status
-                          )}`}
-                        >
-                          {item.status}
+                    <td className="request-table-cell px-4 py-2">
+                      {item.start_date}
+                    </td>
+                    <td className="request-table-cell px-4 py-2">
+                      {item.end_date}
+                    </td>
+                    <td className="request-table-cell px-4 py-2">
+                      <div className="request-table-hours flex flex-col items-center">
+                        <span className="font-semibold text-[#FF914D]">
+                          {item.totalHours} hours
                         </span>
-                      </td>
-                      <td className="request-table-cell px-4 py-2 rounded-r-2xl">
-                        <div className="request-table-actions flex justify-center gap-2">
-                          {item.status === "Draft" && (
-                            <>
-                              <Button
-                                className="!border-none"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  actions.onEdit(item);
-                                }}
-                                disabled={loading}
-                                title="Edit Request"
-                              >
-                                <Edit2 size={18} className="text-blue-500" />
-                              </Button>
-                              <Button
-                                className="!border-none"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  actions.onRequestApproval(item);
-                                }}
-                                disabled={loading}
-                                title="Request Approval"
-                              >
-                                <UserCheck size={18} className="text-green-500" />
-                              </Button>
-                              <Button
-                                className="!border-none"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleCancelClick(item);
-                                }}
-                                disabled={loading}
-                                title="Cancel Request"
-                              >
-                                <Trash2 size={18} color="red" />
-                              </Button>
-                            </>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td
-                      colSpan={6}
-                      className="request-table-no-data text-center py-4"
-                    >
-                      No data available
+                      </div>
                     </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                    <td className="request-table-cell px-4 py-2">
+                      <span
+                        className={`font-semibold ${getStatusColor(
+                          item.status
+                        )}`}
+                      >
+                        {item.status}
+                      </span>
+                    </td>
+                    <td className="request-table-cell px-4 py-2 rounded-r-2xl">
+                      <div className="request-table-actions flex justify-center gap-2">
+                        {item.status === "Draft" && (
+                          <>
+                            <Button
+                              className="!border-none"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                actions.onEdit(item);
+                              }}
+                              disabled={loading}
+                              title="Edit Request"
+                            >
+                              <Edit2 size={18} className="text-blue-500" />
+                            </Button>
+                            <Button
+                              className="!border-none"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                actions.onRequestApproval(item);
+                              }}
+                              disabled={loading}
+                              title="Request Approval"
+                            >
+                              <UserCheck size={18} className="text-green-500" />
+                            </Button>
+                            <Button
+                              className="!border-none"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleCancelClick(item);
+                              }}
+                              disabled={loading}
+                              title="Cancel Request"
+                            >
+                              <Trash2 size={18} color="red" />
+                            </Button>
+                          </>
+                        )}
+                      </div>
+                    </td>
+                  </motion.tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan={6}
+                    className="request-table-no-data text-center py-4"
+                  >
+                    No data available
+                  </td>
+                </tr>
+              )}
+            </motion.tbody>
+          </motion.table>
 
           {/* Chỉ hiển thị phân trang khi pagination được truyền vào (tức là khi có dữ liệu) */}
           {pagination && (
@@ -258,13 +290,13 @@ const TableRequest: React.FC<TableRequestProps> = ({
                 pageSize={pagination.pageSize}
                 total={totalItems}
                 onChange={pagination.onPageChange}
-                showSizeChanger
+                showSizeChanger = {false}
                 pageSizeOptions={["5", "10", "20", "50"]}
                 disabled={loading}
               />
             </div>
           )}
-        </div>
+        </motion.div>
 
         <Modal
           title=""
@@ -276,7 +308,12 @@ const TableRequest: React.FC<TableRequestProps> = ({
           width={800}
         >
           {selectedClaim ? (
-            <div className="p-8 bg-gray-50 rounded-xl">
+            <motion.div
+              className="p-8 bg-gray-50 rounded-xl"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-3xl font-bold text-[#FF9447]">
                   Claim Details
@@ -513,7 +550,7 @@ const TableRequest: React.FC<TableRequestProps> = ({
                   Close
                 </button>
               </div>
-            </div>
+            </motion.div>
           ) : (
             <p className="request-modal-no-data">No data available</p>
           )}

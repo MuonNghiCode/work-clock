@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Pagination, Modal } from "antd"; // Import Modal from antd
 import { getAllProject } from "../../services/projectService"; // Import the new function
-import { useUser } from "../../contexts/UserContext";
 import { formatDate } from "../../utils/formatDate";
 import { BookOpen, Calendar, CheckCircle, User, X } from "lucide-react";
+import { useUser } from "../../contexts/UserContext";
 
 interface ProjectInfo {
   key: string;
@@ -161,7 +161,7 @@ const UserProject = () => {
               pageSize={pageSize}
               total={projectsCount}
               onChange={handlePageChange}
-              showSizeChanger
+              showSizeChanger = {false}
             />
           )}
         </div>

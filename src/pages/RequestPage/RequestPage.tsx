@@ -19,6 +19,7 @@ import { toast } from "react-toastify";
 import { Search } from "lucide-react";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { motion } from "framer-motion";
 
 interface ClaimRequest {
   key: string;
@@ -241,11 +242,27 @@ const RequestPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 rounded-lg">
-      <div
+    <motion.div
+      className="p-6 rounded-lg"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.5 }}
+    >
+      <motion.div
         className="flex justify-between items-center mb-4"
         data-aos="fade-down"
         data-aos-duration="1000"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: { opacity: 0, x: -50 },
+          visible: {
+            opacity: 1,
+            x: 0,
+            transition: { staggerChildren: 0.2 },
+          },
+        }}
       >
         <div>
           <select
@@ -274,8 +291,14 @@ const RequestPage: React.FC = () => {
             size={20}
           />
         </div>
-      </div>
-      <div data-aos="fade-up" data-aos-duration="1000">
+      </motion.div>
+      <motion.div
+        data-aos="fade-up"
+        data-aos-duration="1000"
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+      >
         <TableRequest
           apiData={apiData}
           totalItems={totalItems}
@@ -292,7 +315,7 @@ const RequestPage: React.FC = () => {
             onCancel: handleCancelRequest,
           }}
         />
-      </div>
+      </motion.div>
       <EditRequestModal
         isOpen={isEditModalOpen}
         onCancel={handleEditModalCancel}
@@ -314,7 +337,7 @@ const RequestPage: React.FC = () => {
         approvingRecord={approvingRecord}
         loading={loading}
       />
-    </div>
+    </motion.div>
   );
 };
 
