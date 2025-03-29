@@ -52,7 +52,8 @@ axiosInstance.interceptors.response.use(
       setLoading(false);
     }
 
-    if (response.data.errors) {
+    // Only show error toast if there are errors and response is not successful
+    if (response.data.errors && !response.data.success) {
       toast.error(response.data.errors[0].message);
     }
     return response;
@@ -63,15 +64,29 @@ axiosInstance.interceptors.response.use(
       setLoading(false);
     }
 
-    if (error.response?.data?.errors) {
-      error.response.data.errors.forEach((err: any) => {
-        toast.error(err.message);
-      });
+    // Handle error response
+    if (error.response) {
+      // Don't show error toast for 400 status - let the component handle it
+      if (error.response.status !== 400) {
+        if (error.response.data?.message) {
+          toast.error(error.response.data.message);
+        } else if (error.response.data?.errors) {
+          error.response.data.errors.forEach((err: any) => {
+            toast.error(err.message);
+          });
+        } else {
+          toast.error("An error occurred");
+        }
+      }
+    } else if (error.request) {
+      // Request was made but no response received
+      toast.error("No response from server");
+    } else {
+      // Something else happened
+      toast.error("An error occurred");
     }
-    toast.error(error.response?.data?.message || error.message || "An error occurred");
-    return Promise.reject(
-      new Error(error.response?.data?.message || error.message || "An error occurred")
-    );
+
+    return Promise.reject(error);
   }
 );
 
