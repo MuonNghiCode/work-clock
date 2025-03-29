@@ -231,9 +231,7 @@ const AdminUserManagement: React.FC = () => {
   const [employeeCache, setEmployeeCache] = useState<
     Record<string, EmployeeInfo>
   >({});
-  const [openRoleDropdowns, setOpenRoleDropdowns] = useState<
-    Record<string, boolean>
-  >({});
+  const [openRoleDropdowns, setOpenRoleDropdowns] = useState<Record<string, boolean>>({});
   const [showUserId, setShowUserId] = useState(false);
   const [showRoleConfirm, setShowRoleConfirm] = useState(false);
   const [pendingRoleChange, setPendingRoleChange] = useState<{
@@ -678,162 +676,169 @@ const AdminUserManagement: React.FC = () => {
             </tr>
           </thead>
           <tbody className="w-full">
-            {users.map((user, index) => (
-              <tr
-                onClick={() => handleViewUserDetails(user)}
-                key={`${user.id}-${index}`}
-                className="h-[70px] bg-white overflow-hidden text-center border-collapse hover:shadow-brand-orange !rounded-2xl"
-              >
-                <td className="px-4 py-2 rounded-l-2xl">
-                  <div className="flex items-center justify-center">
-                    <span className="font-medium">{user.user_name}</span>
-                  </div>
-                </td>
-                <td className="px-4 py-2">{user.email}</td>
-                <td className="px-4 py-2" onClick={(e) => {
-                  e.stopPropagation();
-                }}>
-                  <div className="relative">
-                    <div
-                      className="flex items-center justify-center cursor-pointer"
-                      onClick={() => {
-                        const newOpenDropdowns = { ...openRoleDropdowns };
-                        newOpenDropdowns[user.id] = !openRoleDropdowns[user.id];
-                        setOpenRoleDropdowns(newOpenDropdowns);
-                      }}
-                    >
-                      <StatusBadge type="role" value={user.role_code} />
-                      <Shield size={16} className="ml-1 text-gray-400" />
-                    </div>
-
-                    {openRoleDropdowns[user.id] && (
-                      <div
-                        className="absolute z-10 bg-white shadow-lg rounded-md p-2 mt-1 left-1/2 transform -translate-x-1/2"
-                        style={{ minWidth: "120px" }}
-                      >
-                        <div className="flex flex-col space-y-2">
-                          <button
-                            onClick={() => {
-                              handleRoleChange(user.id, "A001");
-                              const newOpenDropdowns = {
-                                ...openRoleDropdowns,
-                              };
-                              newOpenDropdowns[user.id] = false;
-                              setOpenRoleDropdowns(newOpenDropdowns);
-                            }}
-                            className="px-3 py-1 text-left hover:bg-gray-100 rounded text-sm"
-                          >
-                            Admin
-                          </button>
-                          <button
-                            onClick={() => {
-                              handleRoleChange(user.id, "A002");
-                              const newOpenDropdowns = {
-                                ...openRoleDropdowns,
-                              };
-                              newOpenDropdowns[user.id] = false;
-                              setOpenRoleDropdowns(newOpenDropdowns);
-                            }}
-                            className="px-3 py-1 text-left hover:bg-gray-100 rounded text-sm"
-                          >
-                            Finance
-                          </button>
-                          <button
-                            onClick={() => {
-                              handleRoleChange(user.id, "A003");
-                              const newOpenDropdowns = {
-                                ...openRoleDropdowns,
-                              };
-                              newOpenDropdowns[user.id] = false;
-                              setOpenRoleDropdowns(newOpenDropdowns);
-                            }}
-                            className="px-3 py-1 text-left hover:bg-gray-100 rounded text-sm"
-                          >
-                            Approval
-                          </button>
-                          <button
-                            onClick={() => {
-                              handleRoleChange(user.id, "A004");
-                              const newOpenDropdowns = {
-                                ...openRoleDropdowns,
-                              };
-                              newOpenDropdowns[user.id] = false;
-                              setOpenRoleDropdowns(newOpenDropdowns);
-                            }}
-                            className="px-3 py-1 text-left hover:bg-gray-100 rounded text-sm"
-                          >
-                            Claimer
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </td>
-                <td className="px-4 py-2"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}>
-                  <div
-                    className="cursor-pointer justify-center flex items-center"
-                    onClick={() => {
-                      handleToggleStatus(user)
-                    }}
-                  >
-                    {user.is_blocked ? (
-                      <div className="flex items-center text-red-500 hover:text-red-600">
-                        <Lock size={16} className="mr-1" />
-                        <span>Locked</span>
-                      </div>
-                    ) : (
-                      <div className="flex items-center text-green-500 hover:text-green-600">
-                        <Unlock size={16} className="mr-1" />
-                        <span>Unlocked</span>
-                      </div>
-                    )}
-                  </div>
-                </td>
-                <td className="px-4 py-2 rounded-r-2xl"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                  }}>
-                  <div className="flex justify-center gap-4">
-                    {!user.is_deleted && (
-                      <>
-                        <button
-                          className="text-blue-500 hover:text-blue-600"
-                          onClick={() => {
-                            handleEdit(user);
-                          }}
-                        >
-                          <Edit2 size={20} />
-                        </button>
-
-                        <button
-                          className="text-green-500 hover:text-green-600"
-                          onClick={() => handleViewUserDetails(user)}
-                        >
-                          <Eye size={20} />
-                        </button>
-
-                        <button
-                          className="text-red-500 hover:text-red-600"
-                          onClick={() => handleDeleteUser(user)}
-                          style={{
-                            display:
-                              user.email === "admin@gmail.com" ||
-                                user.id === currentAdmin._id
-                                ? "none"
-                                : "inline",
-                          }}
-                        >
-                          <Trash2 size={20} />
-                        </button>
-                      </>
-                    )}
+            {users.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="px-4 py-8 text-center text-gray-500">
+                  <div className="flex flex-col items-center justify-center">
+                    <User size={40} className="text-gray-400 mb-2" />
+                    <p className="text-lg">No users found</p>
+                    <p className="text-sm">Try adjusting your search or filters</p>
                   </div>
                 </td>
               </tr>
-            ))}
+            ) : (
+              users.map((user, index) => (
+                <tr
+                  onClick={() => handleViewUserDetails(user)}
+                  key={`${user.id}-${index}`}
+                  className="h-[70px] bg-white overflow-hidden text-center border-collapse hover:shadow-brand-orange !rounded-2xl"
+                >
+                  <td className="px-4 py-2 rounded-l-2xl">
+                    <div className="flex items-center justify-center">
+                      <span className="font-medium">{user.user_name}</span>
+                    </div>
+                  </td>
+                  <td className="px-4 py-2">{user.email}</td>
+                  <td className="px-4 py-2" onClick={(e) => {
+                    e.stopPropagation();
+                  }}>
+                    <div className="relative">
+                      <div
+                        className="flex items-center justify-center cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          // Close all other dropdowns and toggle this one
+                          setOpenRoleDropdowns((prev) => {
+                            const newState: Record<string, boolean> = {};
+                            Object.keys(prev).forEach(key => {
+                              newState[key] = false;
+                            });
+                            newState[user.id] = !prev[user.id];
+                            return newState;
+                          });
+                        }}
+                      >
+                        <StatusBadge type="role" value={user.role_code} />
+                        <Shield size={16} className="ml-1 text-gray-400" />
+                      </div>
+
+                      {openRoleDropdowns[user.id] && (
+                        <div
+                          className="absolute z-10 bg-white shadow-lg rounded-md p-2 mt-1 left-1/2 transform -translate-x-1/2"
+                          style={{ minWidth: "120px" }}
+                        >
+                          <div className="flex flex-col space-y-2">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleRoleChange(user.id, "A001");
+                                setOpenRoleDropdowns({});
+                              }}
+                              className="px-3 py-1 text-left hover:bg-gray-100 rounded text-sm"
+                            >
+                              Admin
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleRoleChange(user.id, "A002");
+                                setOpenRoleDropdowns({});
+                              }}
+                              className="px-3 py-1 text-left hover:bg-gray-100 rounded text-sm"
+                            >
+                              Finance
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleRoleChange(user.id, "A003");
+                                setOpenRoleDropdowns({});
+                              }}
+                              className="px-3 py-1 text-left hover:bg-gray-100 rounded text-sm"
+                            >
+                              Approval
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleRoleChange(user.id, "A004");
+                                setOpenRoleDropdowns({});
+                              }}
+                              className="px-3 py-1 text-left hover:bg-gray-100 rounded text-sm"
+                            >
+                              Claimer
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-4 py-2"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}>
+                    <div
+                      className="cursor-pointer justify-center flex items-center"
+                      onClick={() => {
+                        handleToggleStatus(user)
+                      }}
+                    >
+                      {user.is_blocked ? (
+                        <div className="flex items-center text-red-500 hover:text-red-600">
+                          <Lock size={16} className="mr-1" />
+                          <span>Locked</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center text-green-500 hover:text-green-600">
+                          <Unlock size={16} className="mr-1" />
+                          <span>Unlocked</span>
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-4 py-2 rounded-r-2xl"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                    }}>
+                    <div className="flex justify-center gap-4">
+                      {!user.is_deleted && (
+                        <>
+                          <button
+                            className="text-blue-500 hover:text-blue-600"
+                            onClick={() => {
+                              handleEdit(user);
+                            }}
+                          >
+                            <Edit2 size={20} />
+                          </button>
+
+                          <button
+                            className="text-green-500 hover:text-green-600"
+                            onClick={() => handleViewUserDetails(user)}
+                          >
+                            <Eye size={20} />
+                          </button>
+
+                          <button
+                            className="text-red-500 hover:text-red-600"
+                            onClick={() => handleDeleteUser(user)}
+                            style={{
+                              display:
+                                user.email === "admin@gmail.com" ||
+                                  user.id === currentAdmin._id
+                                  ? "none"
+                                  : "inline",
+                            }}
+                          >
+                            <Trash2 size={20} />
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
         {/* </div> */}

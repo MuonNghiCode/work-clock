@@ -35,7 +35,6 @@ const UserManagementAdd: React.FC<UserManagementAddProps> = React.memo(
           ...userData,
           is_blocked: false,
           is_verified: false,
-          // is_deleted: false
         });
 
         if (response.success) {
@@ -52,14 +51,13 @@ const UserManagementAdd: React.FC<UserManagementAddProps> = React.memo(
           setTimeout(() => {
             onClose();
           }, 1000);
-        } else {
-          toast.error(response.message || "Failed to create user");
         }
-      } catch (error: unknown) {
+      } catch (error: any) {
         console.error("Error creating user:", error);
-        toast.error(
-          error instanceof Error ? error.message : "Error creating user"
-        );
+        // Handle 400 error specifically
+        if (error.response?.status === 400) {
+          toast.error(error.response.data.message || "Username already exists");
+        }
       } finally {
         setIsSubmitting(false);
       }
