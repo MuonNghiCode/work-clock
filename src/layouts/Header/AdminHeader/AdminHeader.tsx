@@ -15,7 +15,6 @@ const AdminHeader: React.FC = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const userData = useUserStore((state) => state.user);
-  console.log(userData);
 
   const userRole =
     APP_CONSTANTS.roleNames[

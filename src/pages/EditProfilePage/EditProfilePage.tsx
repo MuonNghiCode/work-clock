@@ -137,9 +137,9 @@ const EditProfilePage: React.FC = () => {
   useEffect(() => {
     const fetchDropdownData = async () => {
       try {
-        const deptData = await getAllDepartments();
-        const contractData = await getAllContracts();
-        const jobRankData = await getAllJobs();
+        const deptData = await getAllDepartments(false);
+        const contractData = await getAllContracts(false);
+        const jobRankData = await getAllJobs(false);
         setJobRank(jobRankData.data);
         setDepartments(deptData.data);
         setContracts(contractData.data);
