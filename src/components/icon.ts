@@ -8,7 +8,8 @@ import {
   Bell,
   CircleHelp,
   Grip,
-  X, RotateCcw, Check, UserRound,
+  X, Check, UserRound,
+  History,
   FolderDot,
   User,
   Wallet,
@@ -39,7 +40,7 @@ import {
 
 import { BiMenuAltLeft } from "react-icons/bi";
 import { GoArrowUpRight } from "react-icons/go";
-import { FaArrowRight } from "react-icons/fa6";
+import { FaArrowRight, FaCircleLeft } from "react-icons/fa6";
 import { MdOutlineEmail, MdApproval, MdCancel } from "react-icons/md";
 import { CiLock, CiUnlock } from "react-icons/ci";
 
@@ -65,7 +66,7 @@ const Icons: IconType = {
   Unlock: CiUnlock,
   Approve: Check,
   Reject: X,
-  Return: RotateCcw,
+  // Return: RotateCcw,
   Check: Check,
   // CircleUser: CircleUser,
   ChevronRight: ChevronRight,
@@ -77,7 +78,7 @@ const Icons: IconType = {
   MdApproval: MdApproval,
   FormIcon: Newspaper,
   Cancel: MdCancel,
-  // Return: FaArrowRotateLeft,
+  Return: FaCircleLeft,
   Pending: Hourglass,
   Project: FaProjectDiagram,
   UserCount: FaUsers,
@@ -97,6 +98,7 @@ const Icons: IconType = {
   Instagram: Instagram,
   SearchIcon: Search,
   Menu3: BiMenuAltLeft,
+  History: History,
 };
 
 export default Icons;
