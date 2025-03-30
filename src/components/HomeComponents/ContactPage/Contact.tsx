@@ -89,7 +89,7 @@ const ContactForm = () => {
     <form className="space-y-4" onSubmit={handleSubmit}>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
-          <label className="block text-gray-700">First Name</label>
+          <label className="block text-gray-700">First Name <span className="text-red-600">*</span></label>
           <div className="flex items-center space-x-2">
             <Icons.User className="text-gray-500" />
             <input
@@ -104,7 +104,7 @@ const ContactForm = () => {
           </div>
         </div>
         <div>
-          <label className="block text-gray-700">Last Name</label>
+          <label className="block text-gray-700">Last Name <span className="text-red-600">*</span></label>
           <div className="flex items-center space-x-2">
             <input
               type="text"
@@ -120,7 +120,7 @@ const ContactForm = () => {
       </div>
 
       <div>
-        <label className="block text-gray-700">Email</label>
+        <label className="block text-gray-700">Email <span className="text-red-600">*</span></label>
         <div className="flex items-center space-x-2">
           <Icons.Mail className="text-gray-500" />
           <input
@@ -136,7 +136,7 @@ const ContactForm = () => {
       </div>
 
       <div>
-        <label className="block text-gray-700">Phone Number</label>
+        <label className="block text-gray-700">Phone Number <span className="text-red-600">*</span></label>
         <div className="flex items-center space-x-2">
           <Icons.Phone className="text-gray-500" />
           <input
@@ -152,7 +152,7 @@ const ContactForm = () => {
       </div>
 
       <div>
-        <label className="block text-gray-700">Message</label>
+        <label className="block text-gray-700">Message <span className="text-red-600">*</span></label>
         <div className="flex items-center space-x-2">
           <textarea
             name="message"

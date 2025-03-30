@@ -51,10 +51,10 @@ axiosInstance.interceptors.response.use(
     if (isLoadingFlag) {
       setLoading(false);
     }
-
-    // Only show error toast if there are errors and response is not successful
-    if (response.data.errors && !response.data.success) {
-      toast.error(response.data.errors[0].message);
+    if (response.data.success) {
+      toast.success(response.data.message);
+    } else {
+      toast.error(response.data.message);
     }
     return response;
   },
@@ -63,17 +63,10 @@ axiosInstance.interceptors.response.use(
     if (isLoadingFlag) {
       setLoading(false);
     }
-
-    // Handle error response
     if (error.response) {
-      // Don't show error toast for 400 status - let the component handle it
-      if (error.response.status !== 400) {
+      if (error.response.status == 400) {
         if (error.response.data?.message) {
           toast.error(error.response.data.message);
-        } else if (error.response.data?.errors) {
-          error.response.data.errors.forEach((err: any) => {
-            toast.error(err.message);
-          });
         } else {
           toast.error("An error occurred");
         }
