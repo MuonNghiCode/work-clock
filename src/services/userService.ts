@@ -15,7 +15,6 @@ export const changePassword = async (old_password: string, new_password: string)
     if (response.success) {
         localStorage.setItem("lastChangedPassword", JSON.stringify({ old_password, new_password }));
     }
-
     return response;
 };
 

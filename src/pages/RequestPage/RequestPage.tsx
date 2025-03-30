@@ -20,6 +20,7 @@ import { Search } from "lucide-react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { motion } from "framer-motion";
+import ModalAddNewClaim from "../../components/UserComponents/ModalAddNewClaim";
 
 interface ClaimRequest {
   key: string;
@@ -53,6 +54,14 @@ const RequestPage: React.FC = () => {
   const [apiData, setApiData] = useState<ClaimRequest[]>([]);
   const [totalItems, setTotalItems] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [isOpenModalAddNewClaim, setIsOpenModalAddNewClaim] = useState(false);
+
+  const handleOpenModalAddNewClaim = () => {
+    setIsOpenModalAddNewClaim(true);
+  };
+  const handleCloseModalAddNewClaim = () => {
+    setIsOpenModalAddNewClaim(false);
+  };
 
   useEffect(() => {
     AOS.init({
@@ -196,7 +205,7 @@ const RequestPage: React.FC = () => {
         claim_status: "Pending Approval",
         comment: comment || "",
       };
-      const response = await updateClaimStatus(payload,false);
+      const response = await updateClaimStatus(payload, false);
       if (response.success) {
         toast.success("Request approval sent successfully");
         fetchClaims();
@@ -226,7 +235,7 @@ const RequestPage: React.FC = () => {
         claim_status: "Canceled",
         comment: "",
       };
-      const response = await updateClaimStatus(payload,loading);
+      const response = await updateClaimStatus(payload, loading);
       if (response.success) {
         toast.success("Claim canceled successfully");
         fetchClaims();
@@ -263,7 +272,14 @@ const RequestPage: React.FC = () => {
           },
         }}
       >
-        <div>
+        <div className="gap-2 flex items-center">
+          <button
+            onClick={handleOpenModalAddNewClaim}
+            className="bg-[#FFB17A] text-white px-6 py-2 rounded-full hover:bg-[#FF9147] flex items-center gap-2 text-lg"
+          >
+            <span>+</span>
+            Add New Claim
+          </button>
           <select
             value={statusFilter}
             onChange={handleStatusChange}
@@ -335,6 +351,10 @@ const RequestPage: React.FC = () => {
         onConfirm={handleApprovalConfirm}
         approvingRecord={approvingRecord}
         loading={loading}
+      />
+      <ModalAddNewClaim
+        isOpen={isOpenModalAddNewClaim}
+        onClose={handleCloseModalAddNewClaim}
       />
     </motion.div>
   );

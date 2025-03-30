@@ -256,19 +256,12 @@ const EditProfilePage: React.FC = () => {
       toast.error("Confirm password does not match!");
       return;
     }
-
-    try {
-      const response = await changePassword(
-        values.oldPassword,
-        values.newPassword
-      );
-      if (response.success) {
-        toast.success("Password changed successfully!");
-      } else {
-        toast.error(response.message || "Old password is incorrect!");
-      }
-    } catch (error) {
-      toast.error("An error occurred. Please try again.");
+    const response = await changePassword(
+      values.oldPassword,
+      values.newPassword
+    );
+    if (response.success) {
+      toast.success("Password changed successfully!");
     }
   };
 
@@ -348,7 +341,7 @@ const EditProfilePage: React.FC = () => {
                 onSubmitCapture={handleSubmit}
               >
                 <Form.Item
-                  label="Account"
+                  label={<span>Account <span className="text-red-600">*</span></span>}
                   name="account"
                   rules={[{ required: true, message: "Account is required!" }]}
                 >
@@ -361,7 +354,7 @@ const EditProfilePage: React.FC = () => {
                 </Form.Item>
 
                 <Form.Item
-                  label="Full Name"
+                  label={<span>Full Name<span className="text-red-600">*</span></span>}
                   name="full_name"
                   rules={[
                     { required: true, message: "Full Name is required!" },
@@ -376,7 +369,7 @@ const EditProfilePage: React.FC = () => {
                 </Form.Item>
 
                 <Form.Item
-                  label="Phone Number"
+                  label={<span>Phone Number<span className="text-red-600">*</span></span>}
                   name="phone"
                   rules={[
                     { required: true, message: "Phone number is required!" },
@@ -392,7 +385,7 @@ const EditProfilePage: React.FC = () => {
                 </Form.Item>
 
                 <Form.Item
-                  label="Address"
+                  label={<span>Address<span className="text-red-600">*</span></span>}
                   name="address"
                   rules={[{ required: true, message: "Address is required!" }]}
                 >
@@ -490,19 +483,23 @@ const EditProfilePage: React.FC = () => {
 
             {activeTab === "password" && (
               <div className="w-full flex justify-center">
-                <div className="w-full max-w-md">
+                <div className="w-full max-w-md !p-2">
                   <Form
                     onFinish={handleSubmitPassword}
                     layout="vertical"
-                    className="p-6 shadow-md bg-white w-full"
+                    className="!p-6 shadow-md bg-white w-full rounded-2xl"
                   >
                     <Form.Item
-                      label="Old Password"
+                      label={<span>Old Password <span>*</span></span>}
                       name="oldPassword"
                       rules={[
                         {
                           required: true,
                           message: "Old Password is required!",
+                        },
+                        {
+                          min: 6,
+                          message: "Password must be at least 6 characters",
                         },
                       ]}
                     >
@@ -518,7 +515,7 @@ const EditProfilePage: React.FC = () => {
                     </Form.Item>
 
                     <Form.Item
-                      label="New Password"
+                      label={<span>New Password<span>*</span></span>}
                       name="newPassword"
                       rules={[
                         {
@@ -543,7 +540,7 @@ const EditProfilePage: React.FC = () => {
                     </Form.Item>
 
                     <Form.Item
-                      label="Confirm Password"
+                      label={<span>Confirm Password <span>*</span></span>}
                       name="confirmPassword"
                       dependencies={["newPassword"]}
                       rules={[
