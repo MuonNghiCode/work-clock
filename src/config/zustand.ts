@@ -1,4 +1,3 @@
-import { API_CONSTANTS } from './../constants/apiConstants';
 import { create } from 'zustand';
 
 // import { API_CONTANTS } from '../constants/apiContants';
@@ -20,25 +19,17 @@ export const useSidebarStore = create<SidebarState>((set, get) => ({
 
 
 type LoadingState = {
-  isLoading: boolean;
-  addRequest: (url: string) => void;
-  removeRequest: (url: string) => void;
-  skipUrls: string[];
+  isLoadingFlag: boolean;
+  setIsLoadingFlag: (isLoadingFlag: boolean) => void;
+  loading: boolean;
+  setLoading: (loading: boolean) => void;
 };
 
 export const useLoadingStore = create<LoadingState>((set) => ({
-  isLoading: false,
-  skipUrls: [`${API_CONSTANTS.EMPLOYEE.GET_ALL_CONTRACT}`, `${API_CONSTANTS.EMPLOYEE.GET_ALL_DEPARTMENT}`, `${API_CONSTANTS.EMPLOYEE.GET_ALL_JOB}, ${API_CONSTANTS.USERS.GET_ALL}`], // Add any API endpoints you want to exclude from loading
-  addRequest: (url) =>
-    set((state) => {
-      if (state.skipUrls.includes(url)) return state;
-      return { isLoading: true };
-    }),
-  removeRequest: (url) =>
-    set((state) => {
-      if (state.skipUrls.includes(url)) return state;
-      return { isLoading: false };
-    }),
+  isLoadingFlag: false,
+  setIsLoadingFlag: (isLoadingFlag) => set({ isLoadingFlag }),
+  loading: false,
+  setLoading: (loading) => set({ loading }),
 }));
 interface UserState {
   user: {

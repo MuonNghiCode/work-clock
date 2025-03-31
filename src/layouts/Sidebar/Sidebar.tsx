@@ -70,11 +70,6 @@ const Sidebar: React.FC = () => {
     ],
     A003: [
       {
-        path: "dashboard",
-        icon: <Icons.Dashboard className="w-8 h-8" />,
-        label: "Dashboard",
-      },
-      {
         path: "approval-management",
         icon: <Icons.MdApproval className="w-8 h-8" />,
         label: "Approval Management",

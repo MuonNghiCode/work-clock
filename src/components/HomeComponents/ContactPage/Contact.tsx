@@ -3,7 +3,7 @@ import emailjs from "@emailjs/browser";
 import Icons from "../../icon";
 import { toast } from "react-toastify";
 import ReCAPTCHA from "react-google-recaptcha";
-
+import "./Contact.css";
 // Component Form riêng với ReCaptcha
 const ContactForm = () => {
   const recaptchaRef = useRef<ReCAPTCHA>(null);
@@ -89,7 +89,9 @@ const ContactForm = () => {
     <form className="space-y-4" onSubmit={handleSubmit}>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
-          <label className="block text-gray-700">First Name</label>
+          <label className="block text-gray-700">
+            First Name <span className="text-red-600">*</span>
+          </label>
           <div className="flex items-center space-x-2">
             <Icons.User className="text-gray-500" />
             <input
@@ -104,7 +106,9 @@ const ContactForm = () => {
           </div>
         </div>
         <div>
-          <label className="block text-gray-700">Last Name</label>
+          <label className="block text-gray-700">
+            Last Name <span className="text-red-600">*</span>
+          </label>
           <div className="flex items-center space-x-2">
             <input
               type="text"
@@ -120,7 +124,9 @@ const ContactForm = () => {
       </div>
 
       <div>
-        <label className="block text-gray-700">Email</label>
+        <label className="block text-gray-700">
+          Email <span className="text-red-600">*</span>
+        </label>
         <div className="flex items-center space-x-2">
           <Icons.Mail className="text-gray-500" />
           <input
@@ -136,7 +142,9 @@ const ContactForm = () => {
       </div>
 
       <div>
-        <label className="block text-gray-700">Phone Number</label>
+        <label className="block text-gray-700">
+          Phone Number <span className="text-red-600">*</span>
+        </label>
         <div className="flex items-center space-x-2">
           <Icons.Phone className="text-gray-500" />
           <input
@@ -152,7 +160,9 @@ const ContactForm = () => {
       </div>
 
       <div>
-        <label className="block text-gray-700">Message</label>
+        <label className="block text-gray-700">
+          Message <span className="text-red-600">*</span>
+        </label>
         <div className="flex items-center space-x-2">
           <textarea
             name="message"
@@ -167,14 +177,16 @@ const ContactForm = () => {
       </div>
 
       <div className="flex justify-center">
-        <ReCAPTCHA
-          ref={recaptchaRef}
-          sitekey={
-            import.meta.env.VITE_RECAPTCHA_SITE_KEY ||
-            "6LdZXgErAAAAAJb7fOPM8XeojiNLQV7Ih-MKVKHy"
-          }
-          theme="light"
-        />
+        <div className="recaptcha-wrapper">
+          <ReCAPTCHA
+            ref={recaptchaRef}
+            sitekey={
+              import.meta.env.VITE_RECAPTCHA_SITE_KEY ||
+              "6LdZXgErAAAAAJb7fOPM8XeojiNLQV7Ih-MKVKHy"
+            }
+            theme="light"
+          />
+        </div>
       </div>
 
       <div className="flex justify-center md:justify-end">

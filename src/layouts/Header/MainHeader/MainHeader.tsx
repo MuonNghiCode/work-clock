@@ -109,7 +109,7 @@ const MainHeader: React.FC = () => {
   return (
     <div
       className={`flex justify-between items-center p-4 md:p-6 transition-all duration-300 ${
-        scrolled ? "bg-transparent backdrop-blur-sm" : "bg-transparent"
+        scrolled ? "bg-transparent" : "bg-transparent"
       }`}
     >
       <div className="flex items-center">
