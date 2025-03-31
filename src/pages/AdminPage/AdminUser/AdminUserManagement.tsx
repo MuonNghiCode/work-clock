@@ -618,9 +618,9 @@ const AdminUserManagement: React.FC = () => {
             >
               <option value="all">All Roles</option>
               <option value="A001">Admin</option>
-              <option value="A002">User</option>
-              <option value="A003">Staff</option>
-              <option value="A004">Paid</option>
+              <option value="A002">Finance</option>
+              <option value="A003">Approval</option>
+              <option value="A004">Member Orther</option>
             </select>
 
             <select
