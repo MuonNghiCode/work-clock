@@ -623,7 +623,7 @@ const AdminUserManagement: React.FC = () => {
               <option value="A001">Admin</option>
               <option value="A002">Finance</option>
               <option value="A003">Approval</option>
-              <option value="A004">Member Orther</option>
+              <option value="A004">Member Other</option>
             </select>
 
             <select
