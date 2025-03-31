@@ -27,7 +27,10 @@ import {
   Menu,
   Facebook,
   Instagram,
-  Search
+  Search,
+  Medal, 
+  Building, 
+  FileText
 } from "lucide-react";
 import {
   FaUsers,
@@ -99,6 +102,9 @@ const Icons: IconType = {
   SearchIcon: Search,
   Menu3: BiMenuAltLeft,
   History: History,
+  Medal: Medal,
+  Building: Building,
+  FileText: FileText,
 };
 
 export default Icons;

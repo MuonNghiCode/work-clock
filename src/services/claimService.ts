@@ -73,15 +73,21 @@ export const getClaimerSearch = async (
   });
   return response;
 };
-//                 //
+
 export const getAllClaims = async ({
   searchCondition,
   pageInfo,
 }: ClaimSearchRequest): Promise<
   ResponseModel<{ pageData: ClaimInfo[]; pageInfo: PageInfo }>
 > => {
-  const response = await post(API_CONSTANTS.CLAIMS.CLAIMERS_SEARCH, {
-    searchCondition,
+  
+  const filteredSearchCondition = {
+    ...searchCondition,
+    claim_status: searchCondition.claim_status || "", 
+  };
+
+  const response = await post(API_CONSTANTS.CLAIMS.CLAIMS_SEARCH, {
+    searchCondition: filteredSearchCondition,
     pageInfo,
   });
   return response as ResponseModel<{

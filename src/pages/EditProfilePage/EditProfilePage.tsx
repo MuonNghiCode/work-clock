@@ -1,29 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Form, Input, Select, Button, DatePicker } from "antd";
-import { CalendarOutlined } from "@ant-design/icons";
+import { Form, Input, Button } from "antd";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import {
   changePassword,
-  getAllJobs,
   getEmployeeByUserId,
   updateEmployee,
 } from "../../services/userService";
-import { getAllDepartments } from "../../services/userService";
-import { getAllContracts } from "../../services/userService";
-import dayjs from "dayjs";
-import { EmployeeInfo, JobRank } from "../../types/Employee";
+import { EmployeeInfo } from "../../types/Employee";
 import { User } from "lucide-react";
 import ImageUploader from "../../components/ImageUploader/ImageUploader";
 import { formatCurrency } from "../../utils/formatCurrency";
 import { useUserStore } from "../../config/zustand";
+import Icons from "../../components/icon";
+// import { logout } from "../../utils/userUtils";
+import { logoutApi } from "../../services/authService";
+
 export interface Department {
   _id: string;
   department_code: string;
   description: string;
 }
-// const { Option } = Select;
+
 export interface Contract {
   _id: string;
   contract_type: string;
@@ -72,8 +71,6 @@ const EditProfilePage: React.FC = () => {
     updated_by: "",
   });
 
-  const [activeTab, setActiveTab] = useState<"account" | "password">("account");
-
   const [passwordData, setPasswordData] = useState<PasswordData>({
     oldPassword: "",
     newPassword: "",
@@ -81,14 +78,8 @@ const EditProfilePage: React.FC = () => {
   });
   const [form] = Form.useForm();
   const [userId, setUserId] = useState<string | null>(null);
-  const [departments, setDepartments] = useState<Department[]>([]);
-  const [contracts, setContracts] = useState<Contract[]>([]);
-  const [jobrank, setJobRank] = useState<JobRank[]>([]);
   const [previewAvatar, setPreviewAvatar] = useState("");
 
-  // const [showStartCalendar, setShowStartCalendar] = useState(false);
-  // const [showEndCalendar, setShowEndCalendar] = useState(false);
-  // Lấy userId từ localStorage sau khi đăng nhập
   useEffect(() => {
     const userData = useUserStore.getState().user;
     const storedUserId = userData?.id;
@@ -97,7 +88,6 @@ const EditProfilePage: React.FC = () => {
     }
   }, []);
 
-  // Gọi API lấy thông tin nhân viên khi có userId
   useEffect(() => {
     if (userId) {
       getEmployeeByUserId(userId)
@@ -122,8 +112,8 @@ const EditProfilePage: React.FC = () => {
               end_date: data.end_date ? new Date(data.end_date) : null,
             };
 
-            setFormData(updatedData); // Cập nhật state
-            form.setFieldsValue(updatedData); // Cập nhật form
+            setFormData(updatedData);
+            form.setFieldsValue(updatedData);
           } else {
             console.error("Error fetching employee data:", response.message);
           }
@@ -132,25 +122,9 @@ const EditProfilePage: React.FC = () => {
           console.error("Error fetching employee data:", error)
         );
     }
-  }, [userId, form]); // Thêm `form` vào dependency để tránh lỗi form không cập nhật
+  }, [userId, form]);
 
-  useEffect(() => {
-    const fetchDropdownData = async () => {
-      try {
-        const deptData = await getAllDepartments(false);
-        const contractData = await getAllContracts(false);
-        const jobRankData = await getAllJobs(false);
-        setJobRank(jobRankData.data);
-        setDepartments(deptData.data);
-        setContracts(contractData.data);
-      } catch (error) {
-        console.error("Error fetching dropdown data:", error);
-      }
-    };
-    fetchDropdownData();
-  }, []);
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     const userData = useUserStore.getState().user;
     const storedUserId = userData?.id;
 
@@ -167,10 +141,10 @@ const EditProfilePage: React.FC = () => {
 
     try {
       await updateEmployee(storedUserId, formattedData);
+
       localStorage.setItem("accountData", JSON.stringify(formattedData));
       toast.success("Employee updated successfully!");
 
-      // Refresh the employee data
       const updatedEmployeeData = await getEmployeeByUserId(storedUserId);
       setFormData({
         job_rank: updatedEmployeeData.data.job_rank,
@@ -197,17 +171,6 @@ const EditProfilePage: React.FC = () => {
       console.error("Error updating employee:", error);
       toast.error("Error updating employee");
     }
-    let newErrors: { phone?: string } = {};
-
-    // Kiểm tra Phone Number
-    if (!formData.phone) {
-      newErrors.phone = "Empty field! Please enter your phone number";
-    } else if (!/^\d+$/.test(formData.phone)) {
-      newErrors.phone = "Only numbers are allowed!";
-    }
-
-    // Nếu không có lỗi, tiến hành submit form
-    console.log("Form submitted:", formData);
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -249,34 +212,20 @@ const EditProfilePage: React.FC = () => {
       validateImageUrl(formData.avatar_url);
     }
   }, [formData.avatar_url]);
-  // Submit cho Change Password
-  const handleSubmitPassword = async (values: any) => {
-    // Kiểm tra mật khẩu xác nhận
-    if (values.newPassword !== values.confirmPassword) {
-      toast.error("Confirm password does not match!");
-      return;
-    }
-    const response = await changePassword(
-      values.oldPassword,
-      values.newPassword
-    );
-    if (response.success) {
-      toast.success("Password changed successfully!");
-    }
-  };
 
   return (
     <div className="flex justify-center bg-transparent">
-      <div className="w-full  bg-white shadow rounded-lg p-6">
-        <div className="flex flex-col lg:flex-row gap-6">
+      <div className="w-full bg-white shadow rounded-lg p-6 flex flex-col lg:flex-row gap-6">
+        {/* Left Column: Avatar and Info Cards */}
+        <div className="lg:w-1/3 flex flex-col gap-6">
           {/* Avatar Section */}
-          <div className="mb-8 lg:mb-0 lg:w-1/3">
+          <div>
             <h3 className="text-lg font-semibold text-gray-700 mb-4">
               Profile Image
             </h3>
             <div className="flex flex-col items-center gap-4">
               <div className="relative group">
-                <div className="w-40 h-40 rounded-full border-4 border-gray-200 overflow-hidden">
+                <div className="w-40 h-40 rounded-full border-4 border-[#ff914d]/60 overflow-hidden">
                   {previewAvatar ? (
                     <img
                       src={previewAvatar}
@@ -301,293 +250,270 @@ const EditProfilePage: React.FC = () => {
                   type="text"
                   value={formData.avatar_url || ""}
                   onChange={handleImageUrlChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF9447] focus:border-[#FF9447]"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#FF914d] focus:border-[#FF914d]"
                   placeholder="https://example.com/image.jpg"
                 />
               </div>
             </div>
           </div>
 
-          {/* Form Section */}
-          <div className="lg:w-2/3">
-            <div className="mb-4 border-b">
-              <nav className="flex space-x-4">
-                <button
-                  onClick={() => setActiveTab("account")}
-                  className={`pb-2 font-semibold ${activeTab === "account"
-                    ? "border-b-2 border-orange-500 text-orange-500"
-                    : "text-gray-500 hover:text-orange-500"
-                    }`}
-                >
-                  Account Settings
-                </button>
-                <button
-                  onClick={() => setActiveTab("password")}
-                  className={`pb-2 font-semibold ${activeTab === "password"
-                    ? "border-b-2 border-orange-500 text-orange-500"
-                    : "text-gray-500 hover:text-orange-500"
-                    }`}
-                >
-                  Change Password
-                </button>
-              </nav>
-            </div>
-
-            {activeTab === "account" && (
-              <Form
-                form={form}
-                layout="vertical"
-                className="grid grid-cols-1 md:grid-cols-2 gap-6"
-                onSubmitCapture={handleSubmit}
+          {/* Info Cards - Job Details */}
+          <div className="space-y-4 p-4 bg-white rounded-lg shadow-lg">
+            {[
+              {
+                label: "Job Rank",
+                value: formData.job_rank || "N/A",
+                color: "text-orange-500",
+                icon: Icons.Medal,
+              },
+              {
+                label: "Department Code",
+                value: formData.department_code || "N/A",
+                color: "text-blue-500",
+                icon: Icons.Building,
+              },
+              {
+                label: "Contract Type",
+                value: formData.contract_type || "N/A",
+                color: "text-purple-500",
+                icon: Icons.FileText,
+              },
+              {
+                label: "Salary",
+                value: formatCurrency(formData.salary),
+                color: "text-green-500",
+                icon: Icons.Dollar,
+              },
+            ].map((item, index) => (
+              <div
+                key={index}
+                className="flex justify-between items-center p-4 bg-gray-50 rounded-md shadow-sm hover:bg-gray-100 transition-all duration-300"
               >
-                <Form.Item
-                  label={<span>Account <span className="text-red-600">*</span></span>}
-                  name="account"
-                  rules={[{ required: true, message: "Account is required!" }]}
-                >
-                  <Input
-                    value={formData.account}
-                    onChange={(e) =>
-                      setFormData({ ...formData, account: e.target.value })
-                    }
-                  />
-                </Form.Item>
-
-                <Form.Item
-                  label={<span>Full Name<span className="text-red-600">*</span></span>}
-                  name="full_name"
-                  rules={[
-                    { required: true, message: "Full Name is required!" },
-                  ]}
-                >
-                  <Input
-                    value={formData.full_name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, full_name: e.target.value })
-                    }
-                  />
-                </Form.Item>
-
-                <Form.Item
-                  label={<span>Phone Number<span className="text-red-600">*</span></span>}
-                  name="phone"
-                  rules={[
-                    { required: true, message: "Phone number is required!" },
-                    { pattern: /^\d+$/, message: "Only numbers are allowed!" },
-                  ]}
-                >
-                  <Input
-                    value={formData.phone}
-                    onChange={(e) =>
-                      setFormData({ ...formData, phone: e.target.value })
-                    }
-                  />
-                </Form.Item>
-
-                <Form.Item
-                  label={<span>Address<span className="text-red-600">*</span></span>}
-                  name="address"
-                  rules={[{ required: true, message: "Address is required!" }]}
-                >
-                  <Input
-                    value={formData.address}
-                    onChange={(e) =>
-                      setFormData({ ...formData, address: e.target.value })
-                    }
-                  />
-                </Form.Item>
-
-                <Form.Item label="Job Rank">
-                  <Select value={formData.job_rank} disabled className="w-full">
-                    {jobrank.map((job) => (
-                      <Select.Option key={job.id} value={job.job_rank}>
-                        {job.job_rank}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-
-                <Form.Item label="Department Code">
-                  <Select
-                    value={formData.department_code}
-                    disabled
-                    className="w-full"
-                  >
-                    {departments.map((dept) => (
-                      <Select.Option
-                        key={dept._id}
-                        value={dept.department_code}
-                      >
-                        {dept.description}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-
-                <Form.Item label="Contract Type">
-                  <Select
-                    value={formData.contract_type}
-                    disabled
-                    className="w-full"
-                  >
-                    {contracts.map((contract) => (
-                      <Select.Option
-                        key={contract._id}
-                        value={contract.contract_type}
-                      >
-                        {contract.description}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-
-                <Form.Item label="Salary">
-                  <Input
-                    value={formatCurrency(formData.salary)}
-                    disabled
-                    className="w-full"
-                  />
-                </Form.Item>
-
-                <Form.Item label="Start Date" className="w-full">
-                  <DatePicker
-                    value={
-                      formData.start_date ? dayjs(formData.start_date) : null
-                    }
-                    disabled
-                    suffixIcon={<CalendarOutlined />}
-                    className="w-full"
-                  />
-                </Form.Item>
-
-                <Form.Item label="End Date" className="w-full">
-                  <DatePicker
-                    value={formData.end_date ? dayjs(formData.end_date) : null}
-                    disabled
-                    suffixIcon={<CalendarOutlined />}
-                    className="w-full"
-                  />
-                </Form.Item>
-
-                <Form.Item className="col-span-2 flex justify-start mt-4">
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    className="!bg-[#ff8c00] !hover:bg-[#e67e22] text-white font-semibold px-6 py-2 rounded-lg"
-                  >
-                    Update
-                  </Button>
-                </Form.Item>
-              </Form>
-            )}
-
-            {activeTab === "password" && (
-              <div className="w-full flex justify-center">
-                <div className="w-full max-w-md !p-2">
-                  <Form
-                    onFinish={handleSubmitPassword}
-                    layout="vertical"
-                    className="!p-6 shadow-md bg-white w-full rounded-2xl"
-                  >
-                    <Form.Item
-                      label={<span>Old Password <span>*</span></span>}
-                      name="oldPassword"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Old Password is required!",
-                        },
-                        {
-                          min: 6,
-                          message: "Password must be at least 6 characters",
-                        },
-                      ]}
-                    >
-                      <Input.Password
-                        name="oldPassword"
-                        value={passwordData.oldPassword}
-                        onChange={handlePasswordChange}
-                        placeholder="Old Password"
-                        iconRender={(visible) =>
-                          visible ? <FaEyeSlash /> : <FaEye />
-                        }
-                      />
-                    </Form.Item>
-
-                    <Form.Item
-                      label={<span>New Password<span>*</span></span>}
-                      name="newPassword"
-                      rules={[
-                        {
-                          required: true,
-                          message: "New Password is required!",
-                        },
-                        {
-                          min: 6,
-                          message: "Password must be at least 6 characters",
-                        },
-                      ]}
-                    >
-                      <Input.Password
-                        name="newPassword"
-                        value={passwordData.newPassword}
-                        onChange={handlePasswordChange}
-                        placeholder="New Password"
-                        iconRender={(visible) =>
-                          visible ? <FaEyeSlash /> : <FaEye />
-                        }
-                      />
-                    </Form.Item>
-
-                    <Form.Item
-                      label={<span>Confirm Password <span>*</span></span>}
-                      name="confirmPassword"
-                      dependencies={["newPassword"]}
-                      rules={[
-                        {
-                          required: true,
-                          message: "Confirm Password is required!",
-                        },
-                        ({ getFieldValue }) => ({
-                          validator(_, value) {
-                            if (
-                              !value ||
-                              getFieldValue("newPassword") === value
-                            ) {
-                              return Promise.resolve();
-                            }
-                            return Promise.reject(
-                              new Error("Passwords do not match!")
-                            );
-                          },
-                        }),
-                      ]}
-                    >
-                      <Input.Password
-                        name="confirmPassword"
-                        value={passwordData.confirmPassword}
-                        onChange={handlePasswordChange}
-                        placeholder="Confirm Password"
-                        iconRender={(visible) =>
-                          visible ? <FaEyeSlash /> : <FaEye />
-                        }
-                      />
-                    </Form.Item>
-
-                    <Form.Item>
-                      <Button
-                        type="primary"
-                        htmlType="submit"
-                        className="w-full bg-[#ff8c00] hover:bg-[#e67e22] text-white py-3 text-lg"
-                      >
-                        Change Password
-                      </Button>
-                    </Form.Item>
-                  </Form>
+                <div className="flex items-center space-x-2">
+                  <span className="text-2xl">
+                    <item.icon className="w-6 h-6 text-gray-700" />
+                  </span>
+                  <span className="text-base font-semibold text-gray-700">
+                    {item.label}
+                  </span>
                 </div>
+                <span className={`text-xl font-bold ${item.color}`}>
+                  {item.value}
+                </span>
               </div>
-            )}
+            ))}
           </div>
+        </div>
+
+        {/* Right Column: Form Section */}
+        <div className="lg:w-2/3">
+          {/* Account Settings Form */}
+          <div className="mb-4 border-b">
+            <h2 className="text-lg font-semibold text-gray-700">
+              Account Settings
+            </h2>
+          </div>
+          <Form
+            form={form}
+            layout="vertical"
+            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+            onFinish={handleSubmit}
+          >
+            <Form.Item
+              label={
+                <span>
+                  Account <span className="text-red-600">*</span>
+                </span>
+              }
+              name="account"
+              rules={[{ required: true, message: "Account is required!" }]}
+            >
+              <Input
+                value={formData.account}
+                onChange={(e) =>
+                  setFormData({ ...formData, account: e.target.value })
+                }
+              />
+            </Form.Item>
+
+            <Form.Item
+              label={
+                <span>
+                  Full Name<span className="text-red-600">*</span>
+                </span>
+              }
+              name="full_name"
+              rules={[{ required: true, message: "Full Name is required!" }]}
+            >
+              <Input
+                value={formData.full_name}
+                onChange={(e) =>
+                  setFormData({ ...formData, full_name: e.target.value })
+                }
+              />
+            </Form.Item>
+
+            <Form.Item
+              label={
+                <span>
+                  Phone Number<span className="text-red-600">*</span>
+                </span>
+              }
+              name="phone"
+              rules={[
+                { required: true, message: "Phone number is required!" },
+                { pattern: /^\d+$/, message: "Only numbers are allowed!" },
+              ]}
+            >
+              <Input
+                value={formData.phone}
+                onChange={(e) =>
+                  setFormData({ ...formData, phone: e.target.value })
+                }
+              />
+            </Form.Item>
+
+            <Form.Item
+              label={
+                <span>
+                  Address<span className="text-red-600">*</span>
+                </span>
+              }
+              name="address"
+              rules={[{ required: true, message: "Address is required!" }]}
+            >
+              <Input
+                value={formData.address}
+                onChange={(e) =>
+                  setFormData({ ...formData, address: e.target.value })
+                }
+              />
+            </Form.Item>
+
+            <Form.Item className="col-span-2 flex justify-end mt-4">
+              <Button
+                type="primary"
+                htmlType="submit"
+                className="!bg-brand-gradient !hover:bg-[#e67e22] text-white font-semibold px-6 py-2 rounded-lg"
+              >
+                Update Account
+              </Button>
+            </Form.Item>
+          </Form>
+
+          {/* Change Password Form */}
+          <div className="mt-8 mb-4 border-b">
+            <h2 className="text-lg font-semibold text-gray-700">
+              Change Password
+            </h2>
+          </div>
+          <Form
+            layout="vertical"
+            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+            onFinish={async () => {
+              if (
+                passwordData.newPassword &&
+                passwordData.newPassword !== passwordData.confirmPassword
+              ) {
+                toast.error("Confirm password does not match!");
+                return;
+              }
+              try {
+                await changePassword(
+                  passwordData.oldPassword,
+                  passwordData.newPassword
+                );
+                toast.success("Password changed successfully!");
+                await logoutApi();
+                window.location.href = "/login";
+              } catch (error) {
+                console.error("Error changing password:", error);
+                toast.error("Error changing password");
+              }
+            }}
+          >
+            <Form.Item
+              label={
+                <span>
+                  Old Password <span className="text-red-600">*</span>
+                </span>
+              }
+              name="oldPassword"
+              rules={[
+                { required: true, message: "Old Password is required!" },
+                { min: 6, message: "Password must be at least 6 characters" },
+              ]}
+            >
+              <Input.Password
+                name="oldPassword"
+                value={passwordData.oldPassword}
+                onChange={handlePasswordChange}
+                placeholder="Old Password"
+                iconRender={(visible) => (visible ? <FaEyeSlash /> : <FaEye />)}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label={
+                <span>
+                  New Password <span className="text-red-600">*</span>
+                </span>
+              }
+              name="newPassword"
+              rules={[
+                { required: true, message: "New Password is required!" },
+                { min: 6, message: "Password must be at least 6 characters" },
+              ]}
+            >
+              <Input.Password
+                name="newPassword"
+                value={passwordData.newPassword}
+                onChange={handlePasswordChange}
+                placeholder="New Password"
+                iconRender={(visible) => (visible ? <FaEyeSlash /> : <FaEye />)}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label={
+                <span>
+                  Confirm Password <span className="text-red-600">*</span>
+                </span>
+              }
+              name="confirmPassword"
+              dependencies={["newPassword"]}
+              className="col-span-2"
+              rules={[
+                { required: true, message: "Confirm Password is required!" },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue("newPassword") === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(new Error("Passwords do not match!"));
+                  },
+                }),
+              ]}
+            >
+              <Input.Password
+                name="confirmPassword"
+                value={passwordData.confirmPassword}
+                onChange={handlePasswordChange}
+                placeholder="Confirm Password"
+                iconRender={(visible) => (visible ? <FaEyeSlash /> : <FaEye />)}
+              />
+            </Form.Item>
+
+            <Form.Item className="col-span-2 flex justify-end mt-4">
+              <Button
+                type="primary"
+                htmlType="submit"
+                className="!bg-brand-gradient !hover:bg-[#e67e22] text-white font-semibold px-6 py-2 rounded-lg"
+              >
+                Change Password
+              </Button>
+            </Form.Item>
+          </Form>
         </div>
       </div>
     </div>

@@ -185,8 +185,9 @@ const StatusBadge: React.FC<{ type: "role" | "status"; value: string }> = ({
 
     return (
       <span
-        className={`px-3 py-1 rounded-full font-medium ${roleColors[value] || roleColors.default
-          }`}
+        className={`px-3 py-1 rounded-full font-medium ${
+          roleColors[value] || roleColors.default
+        }`}
       >
         {getRoleName(value)}
       </span>
@@ -231,7 +232,9 @@ const AdminUserManagement: React.FC = () => {
   const [employeeCache, setEmployeeCache] = useState<
     Record<string, EmployeeInfo>
   >({});
-  const [openRoleDropdowns, setOpenRoleDropdowns] = useState<Record<string, boolean>>({});
+  const [openRoleDropdowns, setOpenRoleDropdowns] = useState<
+    Record<string, boolean>
+  >({});
   const [showUserId, setShowUserId] = useState(false);
   const [showRoleConfirm, setShowRoleConfirm] = useState(false);
   const [pendingRoleChange, setPendingRoleChange] = useState<{
@@ -269,14 +272,14 @@ const AdminUserManagement: React.FC = () => {
             statusFilter === "locked"
               ? true
               : statusFilter === "unlocked"
-                ? false
-                : undefined,
+              ? false
+              : undefined,
           is_verified:
             statusFilter === "verified"
               ? true
               : statusFilter === "unverified"
-                ? false
-                : undefined,
+              ? false
+              : undefined,
           search_by: "username" as const,
         };
         const pageInfo = {
@@ -618,9 +621,9 @@ const AdminUserManagement: React.FC = () => {
             >
               <option value="all">All Roles</option>
               <option value="A001">Admin</option>
-              <option value="A002">User</option>
-              <option value="A003">Staff</option>
-              <option value="A004">Paid</option>
+              <option value="A002">Finance</option>
+              <option value="A003">Approval</option>
+              <option value="A004">Member Other</option>
             </select>
 
             <select
@@ -682,7 +685,9 @@ const AdminUserManagement: React.FC = () => {
                   <div className="flex flex-col items-center justify-center">
                     <User size={40} className="text-gray-400 mb-2" />
                     <p className="text-lg">No users found</p>
-                    <p className="text-sm">Try adjusting your search or filters</p>
+                    <p className="text-sm">
+                      Try adjusting your search or filters
+                    </p>
                   </div>
                 </td>
               </tr>
@@ -699,9 +704,12 @@ const AdminUserManagement: React.FC = () => {
                     </div>
                   </td>
                   <td className="px-4 py-2">{user.email}</td>
-                  <td className="px-4 py-2" onClick={(e) => {
-                    e.stopPropagation();
-                  }}>
+                  <td
+                    className="px-4 py-2"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                  >
                     <div className="relative">
                       <div
                         className="flex items-center justify-center cursor-pointer"
@@ -710,7 +718,7 @@ const AdminUserManagement: React.FC = () => {
                           // Close all other dropdowns and toggle this one
                           setOpenRoleDropdowns((prev) => {
                             const newState: Record<string, boolean> = {};
-                            Object.keys(prev).forEach(key => {
+                            Object.keys(prev).forEach((key) => {
                               newState[key] = false;
                             });
                             newState[user.id] = !prev[user.id];
@@ -773,14 +781,16 @@ const AdminUserManagement: React.FC = () => {
                       )}
                     </div>
                   </td>
-                  <td className="px-4 py-2"
+                  <td
+                    className="px-4 py-2"
                     onClick={(e) => {
                       e.stopPropagation();
-                    }}>
+                    }}
+                  >
                     <div
                       className="cursor-pointer justify-center flex items-center"
                       onClick={() => {
-                        handleToggleStatus(user)
+                        handleToggleStatus(user);
                       }}
                     >
                       {user.is_blocked ? (
@@ -796,10 +806,12 @@ const AdminUserManagement: React.FC = () => {
                       )}
                     </div>
                   </td>
-                  <td className="px-4 py-2 rounded-r-2xl"
+                  <td
+                    className="px-4 py-2 rounded-r-2xl"
                     onClick={(e) => {
-                      e.stopPropagation()
-                    }}>
+                      e.stopPropagation();
+                    }}
+                  >
                     <div className="flex justify-center gap-4">
                       {!user.is_deleted && (
                         <>
@@ -825,7 +837,7 @@ const AdminUserManagement: React.FC = () => {
                             style={{
                               display:
                                 user.email === "admin@gmail.com" ||
-                                  user.id === currentAdmin._id
+                                user.id === currentAdmin._id
                                   ? "none"
                                   : "inline",
                             }}
@@ -852,7 +864,7 @@ const AdminUserManagement: React.FC = () => {
             onChange={(page) => {
               setCurrentPage(page);
             }}
-            showSizeChanger = {false}
+            showSizeChanger={false}
             pageSizeOptions={["5", "10", "20"]}
             onShowSizeChange={(_, size) => {
               setUsersPerPage(size);
@@ -995,10 +1007,11 @@ const AdminUserManagement: React.FC = () => {
                         </span>
                         <span className="w-2/3">
                           <span
-                            className={`px-3 py-1 rounded-full text-sm ${selectedUser.is_verified
-                              ? "bg-green-50 text-green-600"
-                              : "bg-yellow-50 text-yellow-600"
-                              }`}
+                            className={`px-3 py-1 rounded-full text-sm ${
+                              selectedUser.is_verified
+                                ? "bg-green-50 text-green-600"
+                                : "bg-yellow-50 text-yellow-600"
+                            }`}
                           >
                             {selectedUser.is_verified
                               ? "Verified"
@@ -1016,10 +1029,11 @@ const AdminUserManagement: React.FC = () => {
                         </span>
                         <span className="w-2/3">
                           <span
-                            className={`px-3 py-1 rounded-full text-sm ${selectedUser.is_blocked
-                              ? "bg-red-50 text-red-600"
-                              : "bg-green-50 text-green-600"
-                              }`}
+                            className={`px-3 py-1 rounded-full text-sm ${
+                              selectedUser.is_blocked
+                                ? "bg-red-50 text-red-600"
+                                : "bg-green-50 text-green-600"
+                            }`}
                           >
                             {selectedUser.is_blocked ? "Blocked" : "Unlocked"}
                           </span>
@@ -1095,8 +1109,8 @@ const AdminUserManagement: React.FC = () => {
                         <span className="w-2/3 text-gray-800">
                           {selectedEmployee?.start_date
                             ? new Date(
-                              selectedEmployee.start_date
-                            ).toLocaleDateString()
+                                selectedEmployee.start_date
+                              ).toLocaleDateString()
                             : ""}
                         </span>
                       </div>
@@ -1111,8 +1125,8 @@ const AdminUserManagement: React.FC = () => {
                         <span className="w-2/3 text-gray-800">
                           {selectedEmployee?.end_date
                             ? new Date(
-                              selectedEmployee.end_date
-                            ).toLocaleDateString()
+                                selectedEmployee.end_date
+                              ).toLocaleDateString()
                             : ""}
                         </span>
                       </div>
@@ -1175,10 +1189,11 @@ const AdminUserManagement: React.FC = () => {
                       : "Edit Information"}
                   </h2>
                   <button
-                    className={`p-2 rounded-full transition-all duration-300 transform hover:scale-110 ${activeEditTab === "account"
-                      ? "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                      : "bg-[#FF9447] text-white hover:bg-[#FF8347]"
-                      }`}
+                    className={`p-2 rounded-full transition-all duration-300 transform hover:scale-110 ${
+                      activeEditTab === "account"
+                        ? "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                        : "bg-[#FF9447] text-white hover:bg-[#FF8347]"
+                    }`}
                     onClick={() =>
                       setActiveEditTab(
                         activeEditTab === "account" ? "information" : "account"
@@ -1205,10 +1220,11 @@ const AdminUserManagement: React.FC = () => {
 
               <div className="relative">
                 <div
-                  className={`transition-all duration-300 transform ${activeEditTab === "account"
-                    ? "translate-x-0 opacity-100"
-                    : "-translate-x-full opacity-0 absolute inset-0"
-                    }`}
+                  className={`transition-all duration-300 transform ${
+                    activeEditTab === "account"
+                      ? "translate-x-0 opacity-100"
+                      : "-translate-x-full opacity-0 absolute inset-0"
+                  }`}
                 >
                   {activeEditTab === "account" && (
                     <UserManagementEdit
@@ -1222,10 +1238,11 @@ const AdminUserManagement: React.FC = () => {
                   )}
                 </div>
                 <div
-                  className={`transition-all duration-300 transform ${activeEditTab === "information"
-                    ? "translate-x-0 opacity-100"
-                    : "translate-x-full opacity-0 absolute inset-0"
-                    }`}
+                  className={`transition-all duration-300 transform ${
+                    activeEditTab === "information"
+                      ? "translate-x-0 opacity-100"
+                      : "translate-x-full opacity-0 absolute inset-0"
+                  }`}
                 >
                   {activeEditTab === "information" && (
                     <EditEmployeeModal
@@ -1336,7 +1353,7 @@ const AdminUserManagement: React.FC = () => {
           </div>
         )}
       </div>
-    </div >
+    </div>
   );
 };
 
