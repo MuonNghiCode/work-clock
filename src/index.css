@@ -244,12 +244,31 @@ html {
   margin-bottom: 24px !important;
 }
 
-.ant-input-affix-wrapper {
+.ant-input {
   padding: 8px 12px !important;
   border-radius: 8px !important;
   border: 2px solid rgba(255, 145, 77, 0.2) !important;
   background: rgba(255, 255, 255, 0.8) !important;
   transition: all 0.3s ease !important;
+}
+
+.ant-input-affix-wrapper {
+  border-radius: 8px !important;
+  border: 2px solid rgba(255, 145, 77, 0.2) !important;
+  background: rgba(255, 255, 255, 0.8) !important;
+  transition: all 0.3s ease !important;
+}
+
+.ant-input-affix-wrapper input {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+.ant-input:hover,
+.ant-input:focus {
+  border-color: #ff914d !important;
+  box-shadow: none !important;
 }
 
 .ant-input-affix-wrapper:hover,

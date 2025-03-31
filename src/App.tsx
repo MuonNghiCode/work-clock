@@ -124,7 +124,7 @@ const router = createBrowserRouter([
         path: "edit_profile",
         element: <EditProfilePage />,
       },
-      { path: "dashboard", element: <ApprovalDashBoardPage /> },
+      { path: "dashboard", element: <UserDashboardPage /> },
       { path: "approval-management", element: <ApprovalPage /> },
       { path: "/approval/dashboard", element: <ApprovalDashBoardPage /> },
       { path: "/approval/table-approval", element: <TableApproval /> },
@@ -157,7 +157,7 @@ const router = createBrowserRouter([
         path: "edit_profile",
         element: <EditProfilePage />,
       },
-      { path: "dashboard", element: <FinanceDashBoardPage /> },
+      { path: "dashboard", element: <UserDashboardPage /> },
       { path: "paid-management", element: <FinancePage /> },
       {
         path: "request",
@@ -244,7 +244,11 @@ const App: React.FC = () => {
       <UserProvider>
         <AnimatedBackground />
         {loading && <LoadingScreen />}
-        {loadingFirstTime ? <WelcomeScreen /> : <RouterProvider router={router} />}
+        {loadingFirstTime ? (
+          <WelcomeScreen />
+        ) : (
+          <RouterProvider router={router} />
+        )}
         <ToastContainer />
       </UserProvider>
     </>
