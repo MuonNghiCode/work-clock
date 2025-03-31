@@ -14,6 +14,8 @@ import ImageUploader from "../../components/ImageUploader/ImageUploader";
 import { formatCurrency } from "../../utils/formatCurrency";
 import { useUserStore } from "../../config/zustand";
 import Icons from "../../components/icon";
+// import { logout } from "../../utils/userUtils";
+import { logoutApi } from "../../services/authService";
 
 export interface Department {
   _id: string;
@@ -422,6 +424,8 @@ const EditProfilePage: React.FC = () => {
                   passwordData.newPassword
                 );
                 toast.success("Password changed successfully!");
+                await logoutApi();
+                window.location.href = "/login";
               } catch (error) {
                 console.error("Error changing password:", error);
                 toast.error("Error changing password");

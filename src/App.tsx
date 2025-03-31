@@ -14,7 +14,7 @@ import LoginPage from "./pages/LoginPage/LoginPage";
 // import AdminProject from "./pages/AdminPage/AdminProject";
 import AdminProject from "./pages/AdminPage/AdminProject/AdminProject";
 import FinancePage from "./pages/FinancePage/FinancePage";
-import FinanceDashBoardPage from "./pages/FinanceDashBoardPage/FinanceDashBoardPage";
+// import FinanceDashBoardPage from "./pages/FinanceDashBoardPage/FinanceDashBoardPage";
 import UserLayout from "./layouts/UserLayout/UserLayout";
 import AdminUserManagement from "./pages/AdminPage/AdminUser/AdminUserManagement";
 import HomePage from "./pages/HomePage/HomePage";

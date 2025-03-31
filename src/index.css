@@ -12,6 +12,12 @@
   background-color: white;
 }
 
+.cursor-pointer {
+  cursor: url("/Pointer.png"), pointer;
+}
+.cursor-default {
+  cursor: url("/Default.png"), auto;
+}
 a,
 button {
   cursor: url("/Pointer.png"), pointer;
