@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Modal,
   Form,
@@ -6,14 +6,13 @@ import {
   Space,
   DatePicker,
   Select,
-  Spin,
   ConfigProvider,
 } from "antd";
 // import { ClaimRequest } from "../../types/ClaimRequest";
-import { ProjectInfo } from "../../types/Project";
-import { getAllProject } from "../../services/projectService";
+import { project_members } from "../../types/Project";
+import { searchProject } from "../../services/projectService";
 import { getUsers } from "../../services/userAuth";
-import { debounce } from "lodash";
+import { debounce, values } from "lodash";
 import { createClaimRequest } from "../../services/claimService";
 import { toast } from "react-toastify";
 import { useUserStore } from "../../config/zustand";
@@ -32,6 +31,21 @@ export interface ClaimRequestDataField {
   total_work_time: number;
   remark: string;
 }
+export interface ProjectSearch {
+  created_at?: string;
+  is_deleted: boolean;
+  project_code: string; //
+  project_department: string; //
+  project_description: string; //
+  project_end_date: string; //
+  project_members: project_members[];
+  project_name: string; //
+  project_start_date: string; //
+  project_status: string; //
+  updated_at?: string;
+  updated_by: string;
+  _id: string;
+}
 
 const initialClaimRequestData: ClaimRequestDataField = {
   project_id: "",
@@ -49,12 +63,8 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
 }) => {
   const [form] = Form.useForm();
 
-  const [projects, setProjects] = useState<ProjectInfo[]>([]);
-
-  const [approvals, setApprovals] = useState<
-    { label: string; value: string }[]
-  >([]);
-  const [fetching, setFetching] = useState(false);
+  const [approvals, setApprovals] = useState<{ label: string; value: string }[]>([]);
+  const [projects, setProjects] = useState<{ label: string; value: string }[]>([]);
   const userData = useUserStore((state) => state.user);
   const userId = userData?.id || "";
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
@@ -66,11 +76,11 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
     setIsButtonDisabled(isUnchanged);
   }, [claimRequestData]);
 
-  const fetchProjects = async () => {
+  const fetchProjects = async (search: string) => {
     try {
-      const response = await getAllProject({
+      const response = await searchProject({
         searchCondition: {
-          keyword: "",
+          keyword: search,
           project_start_date: "",
           project_end_date: "",
           user_id: userId,
@@ -78,44 +88,48 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
         },
         pageInfo: {
           pageNum: 1,
-          pageSize: 10,
+          pageSize: 5,
           totalItems: 0,
           totalPages: 0,
         },
       });
-      setProjects(response.data.pageData);
+      setProjects(
+        response.data.pageData.map((project: ProjectSearch) => ({
+          label: `${project.project_code} | ${project.project_name} `,
+          value: project._id,
+        }))
+      );
       return response.data;
     } catch (error) {
       console.log(error);
     }
   };
 
-  useEffect(() => {
-    fetchProjects();
-  }, []);
-
   const fetchUserList = async (search: string) => {
     if (!search) return;
-    setFetching(true);
     const response = await getUsers(
       {
         keyword: search,
         role_code: "A003",
         user_id: userId,
       },
-      { pageNum: 1, pageSize: 10 }
+      { pageNum: 1, pageSize: 5 }
     );
-    console.log(response.data.pageData);
     setApprovals(
       response.data.pageData.map((user: any) => ({
         label: `${user.user_name} | (${user.email})`,
         value: user._id,
       }))
     );
-    setFetching(false);
   };
-
-  const debounceFetcher = useMemo(() => debounce(fetchUserList, 300), []);
+  const handleSearchApproval = useCallback(debounce((value: string) => {
+    fetchUserList(value);
+  }, 300), [values]);
+  const handleSearchProjects = useCallback(debounce((value: string) => {
+    fetchProjects(value);
+  }, 300), [values]);
+  // const debounceFetcher = useCallback(() => debounce(fetchUserList, 300), [approvals]);
+  // const debounceFetchProject = useCallback(() => debounce(fetchProjects, 300), [projects]);
 
 
   const handleClaimRequestDataChange = (
@@ -140,7 +154,7 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
       const formData: ClaimRequestDataField = {
         ...claimRequestData,
         approval_id: values.approval_id.value,
-        project_id: values.project_id,
+        project_id: values.project_id.value,
       };
       const response = await createClaimRequest(formData);
       if (response.success) {
@@ -172,7 +186,7 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
           <span className="text-xl font-light ">Create Claim Request</span>
         }
         okButtonProps={{
-          className: `!py-5 !rounded-xl ${isButtonDisabled ? "!bg-gray-300" : ""
+          className: `!py - 5!rounded - xl ${isButtonDisabled ? "!bg-gray-300" : ""
             }`,
           disabled: isButtonDisabled,
         }}
@@ -207,17 +221,20 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
             rules={[{ required: true, message: "Please select a project" }]}
           >
             <Select
+              showSearch
+              labelInValue
+              placeholder="Search and select project"
+              notFoundContent={"project not found"}
+              filterOption={false}
+              onSearch={(value) => {
+                handleSearchProjects(value);
+              }}
+              options={projects}
+              style={{ width: "100%" }}
               onChange={(value) =>
-                handleClaimRequestDataChange("project_id", value)
+                handleClaimRequestDataChange("project_id", value.value)
               }
-            >
-              {projects &&
-                projects.map((project, index) => (
-                  <Select.Option key={index} value={project._id}>
-                    {project.project_name}
-                  </Select.Option>
-                ))}
-            </Select>
+            />
           </Form.Item>
           <Form.Item
             label={
@@ -230,9 +247,11 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
               showSearch
               labelInValue
               placeholder="Search and select members"
-              notFoundContent={fetching ? <Spin size="small" /> : null}
+              notFoundContent={"approval not found"}
               filterOption={false}
-              onSearch={debounceFetcher}
+              onSearch={(value) => {
+                handleSearchApproval(value);
+              }}
               options={approvals}
               style={{ width: "100%" }}
               onChange={(value) =>

@@ -95,7 +95,7 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({
     );
     setUserOptions(
       response.data.pageData.map((user: any) => ({
-        label: `${user.user_name} | (${user.email})`,
+        label: `${user.email}`,
         value: user._id,
       }))
     );
@@ -172,7 +172,7 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({
             }
             rules={[{ required: true, message: "Enter project name" }]}
             className="w-full"
-          > 
+          >
             <Input placeholder="Enter project name" />
           </Form.Item>
           <Form.Item
@@ -224,6 +224,7 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({
               </span>
             }
             className="w-full"
+            rules={[{ required: true, message: "Select start date" }]}
           >
             <DatePicker className="w-full" />
           </Form.Item>
@@ -235,6 +236,7 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({
               </span>
             }
             className="w-full"
+            rules={[{ required: true, message: "Select end date" }]}
           >
             <DatePicker className="w-full" />
           </Form.Item>

@@ -4,13 +4,17 @@ import { ProjectInfo } from "../../../types/Project";
 import Icons from "../../icon";
 // import EditProject from "../EditProject/EditProject";
 import ProjectDetail from "../../ModalProjectDetail/ProjectDetail";
-import { deleteProject, getAllProject, PageInfo, SearchConditionProject } from "../../../services/projectService";
+import {
+  deleteProject,
+  getAllProject,
+  PageInfo,
+  SearchConditionProject,
+} from "../../../services/projectService";
 import ModalAddProject from "../ModalAddProject/ModalAddProject";
 import { debounce } from "lodash";
 import DeleteConfirmModal from "../../DeleteConfirmModal/DeleteConfirmModal";
 import { toast } from "react-toastify";
 import { formatDate } from "../../../utils/formatDate";
-
 
 const TableProject: React.FC = () => {
   const [projects, setProjects] = useState<ProjectInfo[]>([]);
@@ -19,12 +23,14 @@ const TableProject: React.FC = () => {
   const [showProjectDetail, setShowProjectDetail] = useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   // const [message, setMessage] = useState<string>("");
-  const [selectedProject, setSelectedProject] = useState<ProjectInfo | null>(
-  );
+  const [selectedProject, setSelectedProject] = useState<ProjectInfo | null>();
   // const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [searchValue, setSearchValue] = useState<string>("");
   const [totalItems, setTotalItems] = useState<number>(1);
-  const [isAddModalOpen, setIsAddModalOpen] = useState<{ isOpen: boolean; formStatus: 'add' | 'edit' | undefined }>({ isOpen: false, formStatus: undefined });
+  const [isAddModalOpen, setIsAddModalOpen] = useState<{
+    isOpen: boolean;
+    formStatus: "add" | "edit" | undefined;
+  }>({ isOpen: false, formStatus: undefined });
 
   const handlePageChange = (page: number, pageSize?: number) => {
     setCurrentPage(page);
@@ -40,7 +46,6 @@ const TableProject: React.FC = () => {
     []
   );
 
-
   const projectDetail = (data: ProjectInfo): ProjectInfo => ({
     _id: data._id,
     project_name: data.project_name,
@@ -48,9 +53,9 @@ const TableProject: React.FC = () => {
     project_start_date: data.project_start_date,
     project_end_date: data.project_end_date,
     project_status: data.project_status,
-    project_members: data.project_members.map(member => ({
+    project_members: data.project_members.map((member) => ({
       user_id: member.user_id,
-      project_role: member.project_role
+      project_role: member.project_role,
     })),
     project_department: data.project_department,
     created_at: new Date().toISOString(),
@@ -100,16 +105,14 @@ const TableProject: React.FC = () => {
     setSelectedProject(editedProject);
     setIsAddModalOpen({
       isOpen: true,
-      formStatus: "edit"
-    }
-    );
+      formStatus: "edit",
+    });
   };
 
   const handleShowProjectDetail = (project: ProjectInfo) => {
     setSelectedProject(project);
     setShowProjectDetail(true);
   };
-
 
   const handleDelete = (project: ProjectInfo) => {
     setSelectedProject(project);
@@ -118,13 +121,13 @@ const TableProject: React.FC = () => {
 
   const handleConfirmDelete = async () => {
     if (selectedProject?._id) {
-      const response = await deleteProject(selectedProject._id)
+      const response = await deleteProject(selectedProject._id);
       if (response.success) {
-        toast.success(`Delete Project ${selectedProject.project_name}`)
+        toast.success(`Delete Project ${selectedProject.project_name}`);
       }
       setShowConfirmModal(false);
       setSelectedProject(null);
-      fetchProjects()
+      fetchProjects();
     }
   };
 
@@ -133,11 +136,10 @@ const TableProject: React.FC = () => {
     setShowConfirmModal(false);
     setIsAddModalOpen({
       isOpen: false,
-      formStatus: undefined
-    })
-    selectedProject !== null ?
-      setSelectedProject(null) : null
-    fetchProjects()
+      formStatus: undefined,
+    });
+    selectedProject !== null ? setSelectedProject(null) : null;
+    fetchProjects();
   };
 
   const handleStatusChangeHTML = (status: string) => {
@@ -153,12 +155,10 @@ const TableProject: React.FC = () => {
     }
   };
   const handleAddProject = () => {
-    setIsAddModalOpen(
-      {
-        isOpen: true,
-        formStatus: 'add'
-      }
-    );
+    setIsAddModalOpen({
+      isOpen: true,
+      formStatus: "add",
+    });
   };
 
   const users = ["dngoc", "haaus", "ntdn"];
@@ -212,7 +212,9 @@ const TableProject: React.FC = () => {
               key={item._id}
               className="h-[70px] bg-white overflow-hidden text-center border-collapse hover:shadow-brand-orange !rounded-2xl cursor-pointer"
             >
-              <td className="px-4 py-2 rounded-l-2xl">{item.project_name}</td>
+              <td className="px-4 py-2 rounded-l-2xl text-[#ff914d] underline">
+                {item.project_name}
+              </td>
               <td className="px-4 py-2">{formatDate(item.created_at || "")}</td>
               <td className="px-4 py-2">{formatDate(item.project_end_date)}</td>
               <td className="px-4 py-2">{item.project_department}</td>
@@ -276,7 +278,7 @@ const TableProject: React.FC = () => {
           pageSize={pageSize}
           total={totalItems}
           onChange={handlePageChange}
-          showSizeChanger = {false} 
+          showSizeChanger={false}
           onShowSizeChange={handlePageChange}
           pageSizeOptions={["5", "10", "20", "50"]}
         />

@@ -15,15 +15,14 @@ const AdminHeader: React.FC = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const userData = useUserStore((state) => state.user);
-  console.log(userData);
 
   const userRole =
     APP_CONSTANTS.roleNames[
-    userData?.role_code as keyof typeof APP_CONSTANTS.roleNames
+      userData?.role_code as keyof typeof APP_CONSTANTS.roleNames
     ] || "Guest";
   const currentTitle =
     APP_CONSTANTS.pageTitles[
-    location.pathname as keyof typeof APP_CONSTANTS.pageTitles
+      location.pathname as keyof typeof APP_CONSTANTS.pageTitles
     ] || "Home";
 
   const handleLogout = () => {
@@ -67,7 +66,7 @@ const AdminHeader: React.FC = () => {
         {/* 🔔 Notification + User Dropdown */}
         <div className="flex items-center gap-4 bg-white rounded-full p-2">
           <button className="p-2 bg-gray-200 hover:bg-brand-gradient rounded-full group">
-            <Icons.Bell className="text-black group-hover:text-white" />
+            <Icons.Bell className="text-black group-hover:text-white w-7 h-7" />
           </button>
 
           <div className="relative" ref={dropdownRef}>
@@ -79,7 +78,7 @@ const AdminHeader: React.FC = () => {
                 <img
                   src={userData.avatarUrl}
                   alt="User Avatar"
-                  className="w-10 h-10 rounded-full object-cover"
+                  className="w-8 h-8 rounded-full object-cover"
                 />
               </button>
             ) : (
@@ -87,7 +86,7 @@ const AdminHeader: React.FC = () => {
                 className="bg-gray-200 p-2 hover:bg-brand-gradient rounded-full group"
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
-                <Icons.User className="text-black group-hover:text-white" />
+                <Icons.User className="text-black group-hover:text-white w-7 h-7" />
               </button>
             )}
             {dropdownOpen && (
@@ -103,7 +102,8 @@ const AdminHeader: React.FC = () => {
                   <img
                     src={userData?.avatarUrl || ""}
                     alt="User Avatar"
-                    className="w-10 h-10 flex-shrink-0 bg-gray-300 rounded-full" />
+                    className="w-10 h-10 flex-shrink-0 bg-gray-300 rounded-full"
+                  />
                   <div className="flex-1">
                     <p className="font-semibold text-gray-800">
                       {userData?.username || "Guest"}

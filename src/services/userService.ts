@@ -15,7 +15,6 @@ export const changePassword = async (old_password: string, new_password: string)
     if (response.success) {
         localStorage.setItem("lastChangedPassword", JSON.stringify({ old_password, new_password }));
     }
-
     return response;
 };
 
@@ -44,8 +43,8 @@ export const changePassword = async (old_password: string, new_password: string)
 
 
 // Hàm lấy tất cả departments
-export const getAllDepartments = async (): Promise<ResponseModel<Department[]>> => {
-    const response = await get(API_CONSTANTS.EMPLOYEE.GET_ALL_DEPARTMENT);
+export const getAllDepartments = async (loading?: boolean): Promise<ResponseModel<Department[]>> => {
+    const response = await get(API_CONSTANTS.EMPLOYEE.GET_ALL_DEPARTMENT, "", loading);
     if (response && response.data) {
         return response as ResponseModel<Department[]>;
     } else {
@@ -54,21 +53,21 @@ export const getAllDepartments = async (): Promise<ResponseModel<Department[]>> 
 };
 
 // Hàm lấy tất cả contracts
-export const getAllContracts = async (): Promise<ResponseModel<Contract[]>> => {
-    const response = await get(API_CONSTANTS.EMPLOYEE.GET_ALL_CONTRACT);
+export const getAllContracts = async (loading?: boolean): Promise<ResponseModel<Contract[]>> => {
+    const response = await get(API_CONSTANTS.EMPLOYEE.GET_ALL_CONTRACT, "", loading);
     if (response && response.data) {
         return response as ResponseModel<Contract[]>;
     } else {
         throw new Error("Failed to fetch contracts");
     }
 };
-export const getAllJobs = async (): Promise<ResponseModel<JobRank[]>> => {
-    const response = await get(API_CONSTANTS.EMPLOYEE.GET_ALL_JOB);
+export const getAllJobs = async (loading?: boolean): Promise<ResponseModel<JobRank[]>> => {
+    const response = await get(API_CONSTANTS.EMPLOYEE.GET_ALL_JOB, "", loading);
     return response as ResponseModel<JobRank[]>;
 };
 // Hàm lấy employee theo userId
-export const getEmployeeByUserId = async (userId: string): Promise<ResponseModel<EmployeeInfo>> => {
-    const response = await get<EmployeeInfo>(`${API_CONSTANTS.EMPLOYEE.GET_EMPLOYEE_BY_USER_ID.replace("${id}", userId)}`);
+export const getEmployeeByUserId = async (userId: string, loading?: boolean): Promise<ResponseModel<EmployeeInfo>> => {
+    const response = await get<EmployeeInfo>(`${API_CONSTANTS.EMPLOYEE.GET_EMPLOYEE_BY_USER_ID.replace("${id}", userId)}`, "", loading);
     if (response && response.data) {
         return response as ResponseModel<EmployeeInfo>;
     } else {
