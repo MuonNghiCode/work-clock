@@ -267,7 +267,7 @@ const UserDashboardPage = () => {
                         <Button
                           className="!border-none"
                           onClick={() => navigate("/user/request")}
-                          title="View Calendar"
+                          title="View Details"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
