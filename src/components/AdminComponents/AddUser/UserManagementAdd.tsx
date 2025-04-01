@@ -107,10 +107,9 @@ const UserManagementAdd: React.FC<UserManagementAddProps> = React.memo(
             }
             rules={[
               { required: true, message: "Email is required" },
-              { type: "email", message: "Please enter valid email" },
               {
-                pattern: /^[a-zA-Z0-9._%+-]+@gmail\.com$/,
-                message: "Only @gmail.com emails allowed",
+                pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                message: "Please enter a valid email address",
               },
             ]}
           >
