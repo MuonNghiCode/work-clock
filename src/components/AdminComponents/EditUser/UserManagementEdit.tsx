@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Input, message } from "antd";
+import { Form, Input } from "antd";
 import { MailOutlined, UserOutlined } from "@ant-design/icons";
 import { User } from "../../../pages/AdminPage/AdminUser/AdminUserManagement";
 import { updateUser } from "../../../services/userAuth";
@@ -34,10 +34,9 @@ const UserManagementEdit: React.FC<UserManagementEditProps> = ({
       };
 
       onSubmit(updatedUser);
-      // message.success("User information updated successfully");
       onClose();
     } catch (error) {
-      message.error("Failed to update user information");
+      // Error will be handled by the toast notification system
     }
   };
 
@@ -81,8 +80,8 @@ const UserManagementEdit: React.FC<UserManagementEditProps> = ({
             rules={[
               { required: true, message: "Email is required" },
               {
-                pattern: /^[a-zA-Z0-9._%+-]+@gmail\.com$/,
-                message: "Only @gmail.com emails allowed",
+                pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                message: "Please enter a valid email address",
               },
             ]}
           >
