@@ -77,8 +77,8 @@ const UserManagementEdit: React.FC<UserManagementEditProps> = ({
             rules={[
               { required: true, message: "Email is required" },
               {
-                pattern: /^[a-zA-Z0-9._%+-]+@gmail\.com$/,
-                message: "Only @gmail.com emails allowed",
+                pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                message: "Please enter a valid email address",
               },
             ]}
           >
