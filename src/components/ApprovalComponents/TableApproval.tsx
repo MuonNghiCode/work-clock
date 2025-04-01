@@ -128,6 +128,12 @@ const TableApproval: React.FC = () => {
     setShowConfirmModal(false);
   }
 
+  const handleReturnClaim = (id: string) => {
+    setClaimId(id);
+    setMessage("Return");
+    setShowConfirmModal(true);
+  }
+
   const handleStatusChangeHTML = (status: string) => {
     switch (status) {
       case "Pending Approval":
@@ -211,7 +217,7 @@ const TableApproval: React.FC = () => {
                       onClick={(e) => e.stopPropagation()}
                     >
                       <div className="w-full flex justify-center gap-2 items-center space-x-2">
-                        <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
+                        <div className="flex justify-center items-center w-10 h-10 ">
                           <Button className="!bg-transparent !border-none !p-2">
                             <span className="hover:scale-105">
                               <Icons.CircleCheck
@@ -222,12 +228,23 @@ const TableApproval: React.FC = () => {
                             </span>
                           </Button>
                         </div>
-                        <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
+                        <div className="flex justify-center items-center w-10 h-10 ">
                           <Button className="!bg-transparent !border-none !p-2">
                             <span className="hover:scale-105">
                               <Icons.CircleReject
                                 color="red"
                                 onClick={() => handleReject(item._id)}
+                                className="w-10 h-10"
+                              />
+                            </span>
+                          </Button>
+                        </div>
+                        <div className="flex justify-center items-center w-10 h-10 ">
+                          <Button className="!bg-transparent !border-none !p-2">
+                            <span className="hover:scale-105">
+                              <Icons.Return
+                                color="blue"
+                                onClick={() => handleReturnClaim(item._id)}
                                 className="w-10 h-10"
                               />
                             </span>
@@ -249,7 +266,7 @@ const TableApproval: React.FC = () => {
           pageSize={pageSize}
           total={totalItems}
           onChange={handlePageChange}
-          showSizeChanger
+          showSizeChanger = {false}
           onShowSizeChange={handlePageChange}
           pageSizeOptions={["5", "10", "20", "50"]}
         />

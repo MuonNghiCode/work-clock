@@ -23,10 +23,10 @@ export const logout = () => {
   localStorage.removeItem("token");
   localStorage.removeItem("role");
   localStorage.removeItem("user");
-  // sessionStorage.setItem("toastMessage", JSON.stringify({
-  //   type: "success",
-  //   message: "Logout Successfully!",
-  // }));
+  sessionStorage.setItem("toastMessage", JSON.stringify({
+    type: "success",
+    message: "Logout Successfully!",
+  }));
   logoutApi();
   window.location.href = "/";
 };

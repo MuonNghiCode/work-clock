@@ -95,7 +95,7 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({
     );
     setUserOptions(
       response.data.pageData.map((user: any) => ({
-        label: `${user.user_name} | (${user.email})`,
+        label: `${user.email}`,
         value: user._id,
       }))
     );
@@ -144,7 +144,7 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({
     if (formCheck === "edit") setFormCheck(undefined);
     onClose();
   };
-  const optionStatus = ["New", "Processing", "Pending", "Complete"];
+  const optionStatus = ["New", "Active", "Pending", "Closed"];
 
   return (
     <Modal
@@ -165,7 +165,11 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({
         <div className="grid grid-cols-2 gap-4">
           <Form.Item
             name="project_name"
-            label="Project Name"
+            label={
+              <span>
+                Project Name <span className="text-red-600">*</span>
+              </span>
+            }
             rules={[{ required: true, message: "Enter project name" }]}
             className="w-full"
           >
@@ -173,7 +177,11 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({
           </Form.Item>
           <Form.Item
             name="project_code"
-            label="Project Code"
+            label={
+              <span>
+                Project Code <span className="text-red-600">*</span>
+              </span>
+            }
             rules={[{ required: true, message: "Enter project code" }]}
             className="w-full"
           >
@@ -184,7 +192,11 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({
         <div className="grid grid-cols-2 gap-4">
           <Form.Item
             name="project_department"
-            label="Department"
+            label={
+              <span>
+                Department <span className="text-red-600">*</span>
+              </span>
+            }
             rules={[{ required: true, message: "Enter department" }]}
             className="w-full"
           >
@@ -206,15 +218,25 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({
         <div className="grid grid-cols-2 gap-4">
           <Form.Item
             name="project_start_date"
-            label="Start Date"
+            label={
+              <span>
+                Start Date <span className="text-red-600">*</span>
+              </span>
+            }
             className="w-full"
+            rules={[{ required: true, message: "Select start date" }]}
           >
             <DatePicker className="w-full" />
           </Form.Item>
           <Form.Item
             name="project_end_date"
-            label="End Date"
+            label={
+              <span>
+                End Date <span className="text-red-600">*</span>
+              </span>
+            }
             className="w-full"
+            rules={[{ required: true, message: "Select end date" }]}
           >
             <DatePicker className="w-full" />
           </Form.Item>

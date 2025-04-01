@@ -51,8 +51,9 @@ export const login = async (email: string, password: string): Promise<ResponseMo
   return response;
 };
 
-export const getUserInfobyToken = async (): Promise<ResponseModel<UserInfo>> => {
-  const response = await get<UserInfo>(API_CONSTANTS.AUTH.USER_INFO);
+export const getUserInfobyToken = async (loading?: boolean): Promise<ResponseModel<UserInfo>> => {
+  const response = await get<UserInfo>(API_CONSTANTS.AUTH.USER_INFO, "", loading);
+  // useLoadingStore.setState({ isLoadingFlag: false });
   return response;
 };
 

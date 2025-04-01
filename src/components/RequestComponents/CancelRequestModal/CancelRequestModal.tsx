@@ -1,5 +1,6 @@
 import React from 'react';
 import { Modal } from 'antd';
+import { motion } from "framer-motion";
 
 interface ClaimRequest {
   key: string;
@@ -32,10 +33,21 @@ const CancelRequestModal: React.FC<CancelModalProps> = ({ isOpen, onOk, onCancel
       cancelText="No"
       okButtonProps={{ danger: true }}
     >
-      <p>
-        Are you sure you want to cancel the claim request "
-        <span className="font-semibold">{cancelingRecord?.claimname || 'Unknown'}</span>"?
-      </p>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.9 }}
+        transition={{
+          duration: 0.3,
+          type: "spring",
+          stiffness: 100,
+        }}
+      >
+        <p>
+          Are you sure you want to cancel the claim request "
+          <span className="font-semibold">{cancelingRecord?.claimname || 'Unknown'}</span>"?
+        </p>
+      </motion.div>
     </Modal>
   );
 };

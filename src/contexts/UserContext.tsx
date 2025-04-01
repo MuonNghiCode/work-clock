@@ -15,6 +15,7 @@ interface User {
   updated_at: string;
   is_deleted: boolean;
   __v: number;
+  avatarUrl: string;
 }
 
 interface UserContextType {
@@ -35,9 +36,25 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     const userData = useUserStore.getState().user;
     const storedUser = userData?.token;
     // console.log("Stored user:", storedUser);
-    if (storedUser) {
+    const token = localStorage.getItem("token");
+    if (token && storedUser) {
       try {
-        const parsedUser: User = JSON.parse(storedUser);
+        const parsedUser: User = {
+          _id: userData.id || "",
+          email: userData.email || "",
+          user_name: userData.username || "",
+          role_code: userData.role_code || "",
+          is_verified: false,
+          verification_token: "",
+          verification_token_expires: "",
+          token_version: 0,
+          is_blocked: false,
+          created_at: "",
+          updated_at: "",
+          is_deleted: false,
+          __v: 0,
+          avatarUrl: userData.avatarUrl || "",
+        };
         setUser(parsedUser);
       } catch (error) {
         console.error("Error parsing stored user:", error);

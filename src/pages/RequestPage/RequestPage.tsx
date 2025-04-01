@@ -19,6 +19,8 @@ import { toast } from "react-toastify";
 import { Search } from "lucide-react";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { motion } from "framer-motion";
+import ModalAddNewClaim from "../../components/UserComponents/ModalAddNewClaim";
 
 interface ClaimRequest {
   key: string;
@@ -52,6 +54,14 @@ const RequestPage: React.FC = () => {
   const [apiData, setApiData] = useState<ClaimRequest[]>([]);
   const [totalItems, setTotalItems] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [isOpenModalAddNewClaim, setIsOpenModalAddNewClaim] = useState(false);
+
+  const handleOpenModalAddNewClaim = () => {
+    setIsOpenModalAddNewClaim(true);
+  };
+  const handleCloseModalAddNewClaim = () => {
+    setIsOpenModalAddNewClaim(false);
+  };
 
   useEffect(() => {
     AOS.init({
@@ -195,7 +205,7 @@ const RequestPage: React.FC = () => {
         claim_status: "Pending Approval",
         comment: comment || "",
       };
-      const response = await updateClaimStatus(payload);
+      const response = await updateClaimStatus(payload, false);
       if (response.success) {
         toast.success("Request approval sent successfully");
         fetchClaims();
@@ -225,7 +235,7 @@ const RequestPage: React.FC = () => {
         claim_status: "Canceled",
         comment: "",
       };
-      const response = await updateClaimStatus(payload);
+      const response = await updateClaimStatus(payload, loading);
       if (response.success) {
         toast.success("Claim canceled successfully");
         fetchClaims();
@@ -233,7 +243,6 @@ const RequestPage: React.FC = () => {
         throw new Error(response.message || "Failed to cancel claim");
       }
     } catch (error: any) {
-      console.error("Failed to cancel claim:", error);
       toast.error(error.message || "Failed to cancel claim");
     } finally {
       setLoading(false);
@@ -241,13 +250,36 @@ const RequestPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 rounded-lg">
-      <div
+    <motion.div
+      className="p-6 rounded-lg"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.5 }}
+    >
+      <motion.div
         className="flex justify-between items-center mb-4"
         data-aos="fade-down"
         data-aos-duration="1000"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: { opacity: 0, x: -50 },
+          visible: {
+            opacity: 1,
+            x: 0,
+            transition: { staggerChildren: 0.2 },
+          },
+        }}
       >
-        <div>
+        <div className="gap-2 flex items-center">
+          <button
+            onClick={handleOpenModalAddNewClaim}
+            className="bg-[#FFB17A] text-white px-6 py-2 rounded-full hover:bg-[#FF9147] flex items-center gap-2 text-lg"
+          >
+            <span>+</span>
+            Add New Claim
+          </button>
           <select
             value={statusFilter}
             onChange={handleStatusChange}
@@ -274,8 +306,14 @@ const RequestPage: React.FC = () => {
             size={20}
           />
         </div>
-      </div>
-      <div data-aos="fade-up" data-aos-duration="1000">
+      </motion.div>
+      <motion.div
+        data-aos="fade-up"
+        data-aos-duration="1000"
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+      >
         <TableRequest
           apiData={apiData}
           totalItems={totalItems}
@@ -292,7 +330,7 @@ const RequestPage: React.FC = () => {
             onCancel: handleCancelRequest,
           }}
         />
-      </div>
+      </motion.div>
       <EditRequestModal
         isOpen={isEditModalOpen}
         onCancel={handleEditModalCancel}
@@ -314,7 +352,11 @@ const RequestPage: React.FC = () => {
         approvingRecord={approvingRecord}
         loading={loading}
       />
-    </div>
+      <ModalAddNewClaim
+        isOpen={isOpenModalAddNewClaim}
+        onClose={handleCloseModalAddNewClaim}
+      />
+    </motion.div>
   );
 };
 

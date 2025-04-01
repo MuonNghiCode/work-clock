@@ -24,7 +24,7 @@ const ImageUploader = ({ onImageUploaded = () => {} }: ImageUploaderProps) => {
         onImageUploaded(imageUrl);
       }
     } catch (error) {
-      console.error('Error uploading image:', error);
+      console.error("Error uploading image:", error);
     } finally {
       setLoading(false);
     }
@@ -34,7 +34,7 @@ const ImageUploader = ({ onImageUploaded = () => {} }: ImageUploaderProps) => {
     <div className="flex flex-col items-center justify-center p-6">
       <label
         htmlFor="file-upload"
-        className="relative w-32 h-32 rounded-full border-4 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-blue-500 transition-all overflow-hidden"
+        className="relative w-32 h-32 rounded-full border-4 border-dashed border-gray-300 flex items-center justify-center cursor-pointer group-hover:border-[#ff914d]/50 transition-all overflow-hidden"
       >
         {image ? (
           <img
@@ -43,7 +43,7 @@ const ImageUploader = ({ onImageUploaded = () => {} }: ImageUploaderProps) => {
             className="w-full h-full object-cover rounded-full"
           />
         ) : (
-          <Camera className="w-10 h-10 text-gray-400" />
+          <Camera className="w-10 h-10 text-gray-400 group-hover:text-[#ff914d]/50" />
         )}
         <input
           id="file-upload"
