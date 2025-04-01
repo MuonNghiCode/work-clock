@@ -35,7 +35,6 @@ interface ClaimRequest {
   timeFrom: string;
   timeTo: string;
   status: string;
-  approval_name: string;
 }
 
 const StatCard = ({
@@ -65,7 +64,6 @@ const UserDashboardPage = () => {
   const [isOpenModalAddNewClaim, setIsOpenModalAddNewClaim] = useState(false);
   const [claimsData, setClaimsData] = useState<ClaimRequest[]>([]);
   const [loading, setLoading] = useState(true);
-  const [setClaimsCount] = useState(0);
   const [MainClaimsCount, setMainClaimsCount] = useState(0);
   const [draftClaimsCount, setDraftClaimsCount] = useState(0);
   const [pendingClaimsCount, setPendingClaimsCount] = useState(0);
@@ -121,7 +119,8 @@ const UserDashboardPage = () => {
           end_date: item.claim_end_date
             ? new Date(item.claim_end_date).toLocaleDateString("en-US")
             : "N/A",
-          total_work_time: item.total_work_time || "0",
+          total_work_time: String(item.total_work_time || "0"),
+
           timeFrom: item.claim_start_date
             ? new Date(item.claim_start_date).toLocaleTimeString("en-US", {
                 hour: "2-digit",
@@ -141,13 +140,13 @@ const UserDashboardPage = () => {
         }));
 
         // Sort claims by `start_date` in descending order
-        const claims = claims.sort((a, b) => {
+        const sortclaims = claims.sort((a, b) => {
           const dateA = new Date(a.start_date).getTime();
           const dateB = new Date(b.start_date).getTime();
           return dateB - dateA;
         });
 
-        setClaimsData(claims);
+        setClaimsData(sortclaims);
       } else {
         console.warn("API returned no data for this search:", searchCondition);
       }
