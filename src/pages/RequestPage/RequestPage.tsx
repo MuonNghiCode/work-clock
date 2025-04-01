@@ -61,6 +61,7 @@ const RequestPage: React.FC = () => {
   };
   const handleCloseModalAddNewClaim = () => {
     setIsOpenModalAddNewClaim(false);
+    fetchClaims();
   };
 
   useEffect(() => {
@@ -272,14 +273,8 @@ const RequestPage: React.FC = () => {
           },
         }}
       >
+
         <div className="gap-2 flex items-center">
-          <button
-            onClick={handleOpenModalAddNewClaim}
-            className="bg-[#FFB17A] text-white px-6 py-2 rounded-full hover:bg-[#FF9147] flex items-center gap-2 text-lg"
-          >
-            <span>+</span>
-            Add New Claim
-          </button>
           <select
             value={statusFilter}
             onChange={handleStatusChange}
@@ -294,7 +289,7 @@ const RequestPage: React.FC = () => {
             <option value="Paid">Paid</option>
           </select>
         </div>
-        <div className="relative w-[300px]">
+        <div className="flex gap-2"><div className="relative w-[300px] ">
           <input
             type="text"
             placeholder="Search claim name"
@@ -305,7 +300,16 @@ const RequestPage: React.FC = () => {
             className="absolute right-3 top-2.5 text-gray-400"
             size={20}
           />
+
         </div>
+          <button
+            onClick={handleOpenModalAddNewClaim}
+            className="bg-[#FFB17A] text-white px-6 py-2 rounded-full hover:bg-[#FF9147] flex items-center flexgap-2 text-lg"
+          >
+            <span className="mr-2z">+</span>
+            Add New Claim
+          </button></div>
+
       </motion.div>
       <motion.div
         data-aos="fade-up"
