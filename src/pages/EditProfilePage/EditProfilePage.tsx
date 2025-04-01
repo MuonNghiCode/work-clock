@@ -79,7 +79,9 @@ const EditProfilePage: React.FC = () => {
   const [form] = Form.useForm();
   const [userId, setUserId] = useState<string | null>(null);
   const [previewAvatar, setPreviewAvatar] = useState("");
-
+  const [visibleOld, setVisibleOld] = useState(false);
+  const [visibleNew, setVisibleNew] = useState(false);
+  const [visibleConfirm, setVisibleConfirm] = useState(false);
   useEffect(() => {
     const userData = useUserStore.getState().user;
     const storedUserId = userData?.id;
@@ -444,13 +446,22 @@ const EditProfilePage: React.FC = () => {
                 { min: 6, message: "Password must be at least 6 characters" },
               ]}
             >
-              <Input.Password
-                name="oldPassword"
-                value={passwordData.oldPassword}
-                onChange={handlePasswordChange}
-                placeholder="Old Password"
-                iconRender={(visible) => (visible ? <FaEyeSlash /> : <FaEye />)}
-              />
+              <div className="relative">
+                <Input
+                  type={visibleOld ? "text" : "password"}
+                  name="oldPassword"
+                  value={passwordData.oldPassword}
+                  onChange={handlePasswordChange}
+                  placeholder="Old Password"
+                />
+                <button
+                  type="button"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-2xl z-10"
+                  onClick={() => setVisibleOld(!visibleOld)}
+                >
+                  {visibleOld ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
             </Form.Item>
 
             <Form.Item
@@ -462,16 +473,27 @@ const EditProfilePage: React.FC = () => {
               name="newPassword"
               rules={[
                 { required: true, message: "New Password is required!" },
-                { min: 6, message: "Password must be at least 6 characters" },
+                { min: 8, message: "Password must be at least 8 characters" },
+                { pattern: /[A-Z]/, message: "Password must contain at least one uppercase letter" },
+                { pattern: /[#@!$%^&*]/, message: "Password must contain at least one special character (#, @, $)" },
               ]}
             >
-              <Input.Password
-                name="newPassword"
-                value={passwordData.newPassword}
-                onChange={handlePasswordChange}
-                placeholder="New Password"
-                iconRender={(visible) => (visible ? <FaEyeSlash /> : <FaEye />)}
-              />
+              <div className="relative">
+                <Input
+                  type={visibleNew ? "text" : "password"}
+                  name="newPassword"
+                  value={passwordData.newPassword}
+                  onChange={handlePasswordChange}
+                  placeholder="New Password"
+                />
+                <button
+                  type="button"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-2xl z-10"
+                  onClick={() => setVisibleNew(!visibleNew)}
+                >
+                  {visibleNew ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
             </Form.Item>
 
             <Form.Item
@@ -495,14 +517,26 @@ const EditProfilePage: React.FC = () => {
                 }),
               ]}
             >
-              <Input.Password
-                name="confirmPassword"
-                value={passwordData.confirmPassword}
-                onChange={handlePasswordChange}
-                placeholder="Confirm Password"
-                iconRender={(visible) => (visible ? <FaEyeSlash /> : <FaEye />)}
-              />
+              <div className="relative">
+                <Input
+                  type={visibleConfirm ? "text" : "password"}
+                  name="confirmPassword"
+                  value={passwordData.confirmPassword}
+                  onChange={handlePasswordChange}
+                  placeholder="Confirm Password"
+                />
+                <button
+                  type="button"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-2xl z-10"
+                  onClick={() => setVisibleConfirm(!visibleConfirm)}
+                >
+                  {visibleConfirm ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
             </Form.Item>
+
+
+
 
             <Form.Item className="col-span-2 flex justify-end mt-4">
               <Button
