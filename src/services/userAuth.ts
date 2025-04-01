@@ -40,12 +40,13 @@ interface UserResponse {
 // Lấy danh sách người dùng với phân trang và tìm kiếm
 export const getUsers = async (
   searchCondition: SearchCondition,
-  pageInfo: PageInfo
+  pageInfo: PageInfo,
+  loading: boolean
 ): Promise<ResponseModel<UserResponse>> => {
   return post(API_CONSTANTS.USERS.SEARCH_USER, {
     searchCondition,
     pageInfo,
-  });
+  }, loading);
 };
 
 // Tạo người dùng mới

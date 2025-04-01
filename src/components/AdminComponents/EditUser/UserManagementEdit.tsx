@@ -18,26 +18,23 @@ const UserManagementEdit: React.FC<UserManagementEditProps> = ({
   const [form] = Form.useForm();
 
   const handleUpdateBasicInfo = async (values: any) => {
-    try {
-      const updateData = {
-        user_id: user.id,
-        user_name: values.user_name,
-        email: values.email,
-      };
+    const updateData = {
+      user_id: user.id,
+      user_name: values.user_name,
+      email: values.email,
+    };
 
-      await updateUser(user.id, updateData);
+    await updateUser(user.id, updateData);
 
-      const updatedUser: User<string> = {
-        ...user,
-        user_name: updateData.user_name,
-        email: updateData.email,
-      };
+    const updatedUser: User<string> = {
+      ...user,
+      user_name: updateData.user_name,
+      email: updateData.email,
+    };
 
-      onSubmit(updatedUser);
-      onClose();
-    } catch (error) {
-      // Error will be handled by the toast notification system
-    }
+    onSubmit(updatedUser);
+    // message.success("User information updated successfully");
+    onClose();
   };
 
   return (

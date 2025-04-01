@@ -72,10 +72,8 @@ axiosInstance.interceptors.response.use(
         }
       }
     } else if (error.request) {
-      // Request was made but no response received
       toast.error("No response from server");
     } else {
-      // Something else happened
       toast.error("An error occurred");
     }
 

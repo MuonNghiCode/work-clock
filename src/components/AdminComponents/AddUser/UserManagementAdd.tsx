@@ -40,24 +40,12 @@ const UserManagementAdd: React.FC<UserManagementAddProps> = React.memo(
         if (response.success) {
           toast.success("User created successfully");
           onSuccess(userData);
-
-          try {
-            toast.success("Verification email sent successfully");
-          } catch (error) {
-            console.error("Error sending verification email:", error);
-            toast.warning("User created but failed to send verification email");
-          }
-
           setTimeout(() => {
             onClose();
           }, 1000);
         }
       } catch (error: any) {
         console.error("Error creating user:", error);
-        // Handle 400 error specifically
-        if (error.response?.status === 400) {
-          toast.error(error.response.data.message || "Username already exists");
-        }
       } finally {
         setIsSubmitting(false);
       }

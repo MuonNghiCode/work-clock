@@ -77,7 +77,7 @@ const UserDashboardPage = () => {
           project_end_date: "",
         },
         pageInfo: { pageNum: 1, pageSize: 30 },
-      });
+      }, true);
       const data = response.data.pageData.map((item: any) => ({
         key: item._id,
         claimname: item.claim_name,
@@ -118,7 +118,7 @@ const UserDashboardPage = () => {
           project_end_date: "",
         },
         pageInfo: { pageNum: 1, pageSize: 30 },
-      });
+      }, false);
       setDraftClaimsCount(response.data.pageData.length);
     } catch (error) {
       console.log(error);
@@ -136,7 +136,7 @@ const UserDashboardPage = () => {
           project_end_date: "",
         },
         pageInfo: { pageNum: 1, pageSize: 30 },
-      });
+      }, false);
       setSuccessClaimsCount(response.data.pageData.length);
     } catch (error) {
       console.log(error);
@@ -154,7 +154,7 @@ const UserDashboardPage = () => {
           project_end_date: "",
         },
         pageInfo: { pageNum: 1, pageSize: 10 },
-      });
+      }, false);
       setPendingClaimsCount(response.data.pageData.length);
     } catch (error) {
       console.log(error);
