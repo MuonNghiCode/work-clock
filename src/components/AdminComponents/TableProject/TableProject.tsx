@@ -82,7 +82,7 @@ const TableProject: React.FC = () => {
         totalPages: 0,
       };
 
-      const response = await getAllProject({ searchCondition, pageInfo });
+      const response = await getAllProject({ searchCondition, pageInfo }, true);
       // console.log("Response:", response.data.pageData);
       if (response.success) {
         const projects = response.data.pageData.map(projectDetail);
