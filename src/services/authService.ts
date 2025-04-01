@@ -1,13 +1,14 @@
 import { get, post, put } from "./apiService";
 import { ResponseModel } from "../models/ResponseModel";
 import { API_CONSTANTS } from "../constants/apiConstants";
+import { useUserStore } from "../config/zustand";
 
 interface AuthResponse {
   token: string;
 }
 
 interface UserInfo {
-  id: string;
+  _id: string;
   email: string;
   role_code: string;
 }
@@ -35,25 +36,24 @@ export function parseJwt(token: string): any {
 
 export const login = async (email: string, password: string): Promise<ResponseModel<AuthResponse>> => {
   const response = await post<AuthResponse>(API_CONSTANTS.AUTH.LOGIN, { email, password });
+  const setUser = useUserStore.getState().setUser;
   if (response.success) {
-    const token = response.data.token;
-    localStorage.setItem("token", token);
-    const decoded = parseJwt(token);
-    if (decoded && decoded.id) {
-      localStorage.setItem("userId", decoded.id);
-    } else {
-      console.error("User ID not found in token payload.");
-    }
+    setUser({
+      token: response.data.token,
+      id: "",
+      email: "",
+      role_code: "",
+      username: "",
+      avatarUrl: ""
+    });
   }
-  console.log(response.data.token);
+  console.log(response.data.token)
   return response;
 };
 
-export const getUserInfobyToken = async (): Promise<ResponseModel<UserInfo>> => {
-  const response = await get<UserInfo>(API_CONSTANTS.AUTH.USER_INFO);
-  if (response.success) {
-    localStorage.setItem("user", JSON.stringify(response.data));
-  }
+export const getUserInfobyToken = async (loading?: boolean): Promise<ResponseModel<UserInfo>> => {
+  const response = await get<UserInfo>(API_CONSTANTS.AUTH.USER_INFO, "", loading);
+  // useLoadingStore.setState({ isLoadingFlag: false });
   return response;
 };
 

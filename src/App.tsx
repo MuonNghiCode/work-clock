@@ -14,7 +14,7 @@ import LoginPage from "./pages/LoginPage/LoginPage";
 // import AdminProject from "./pages/AdminPage/AdminProject";
 import AdminProject from "./pages/AdminPage/AdminProject/AdminProject";
 import FinancePage from "./pages/FinancePage/FinancePage";
-import FinanceDashBoardPage from "./pages/FinanceDashBoardPage/FinanceDashBoardPage";
+// import FinanceDashBoardPage from "./pages/FinanceDashBoardPage/FinanceDashBoardPage";
 import UserLayout from "./layouts/UserLayout/UserLayout";
 import AdminUserManagement from "./pages/AdminPage/AdminUser/AdminUserManagement";
 import HomePage from "./pages/HomePage/HomePage";
@@ -124,7 +124,7 @@ const router = createBrowserRouter([
         path: "edit_profile",
         element: <EditProfilePage />,
       },
-      { path: "dashboard", element: <ApprovalDashBoardPage /> },
+      { path: "dashboard", element: <UserDashboardPage /> },
       { path: "approval-management", element: <ApprovalPage /> },
       { path: "/approval/dashboard", element: <ApprovalDashBoardPage /> },
       { path: "/approval/table-approval", element: <TableApproval /> },
@@ -157,7 +157,7 @@ const router = createBrowserRouter([
         path: "edit_profile",
         element: <EditProfilePage />,
       },
-      { path: "dashboard", element: <FinanceDashBoardPage /> },
+      { path: "dashboard", element: <UserDashboardPage /> },
       { path: "paid-management", element: <FinancePage /> },
       {
         path: "request",
@@ -222,18 +222,18 @@ const router = createBrowserRouter([
 ]);
 
 const App: React.FC = () => {
-  const [loading, setLoading] = useState(true);
-  const isLoading = useLoadingStore((state) => state.isLoading);
+  const [loadingFirstTime, setLoadingFirstTime] = useState(true);
+  const loading = useLoadingStore((state) => state.loading);
 
   useEffect(() => {
     const hasVisited = sessionStorage.getItem("visited");
     if (!hasVisited) {
       setTimeout(() => {
-        setLoading(false);
+        setLoadingFirstTime(false);
         sessionStorage.setItem("visited", "true");
       }, 3000);
     } else {
-      setLoading(false);
+      setLoadingFirstTime(false);
     }
   }, []);
 
@@ -243,8 +243,12 @@ const App: React.FC = () => {
     <>
       <UserProvider>
         <AnimatedBackground />
-        {isLoading && <LoadingScreen />}
-        {loading ? <WelcomeScreen /> : <RouterProvider router={router} />}
+        {loading && <LoadingScreen />}
+        {loadingFirstTime ? (
+          <WelcomeScreen />
+        ) : (
+          <RouterProvider router={router} />
+        )}
         <ToastContainer />
       </UserProvider>
     </>

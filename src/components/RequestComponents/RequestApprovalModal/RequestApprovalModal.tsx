@@ -1,5 +1,6 @@
 import React from 'react';
 import { Modal, Input, Button } from 'antd';
+import { motion } from "framer-motion";
 
 interface ClaimRequest {
   key: string;
@@ -52,8 +53,14 @@ const RequestApprovalModal: React.FC<RequestApprovalModalProps> = ({
       width={500}
       className="request-approval-modal"
     >
-      <div className="p-4">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">
+      <motion.div
+        className="p-6 bg-gray-50 rounded-xl"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.8 }}
+        transition={{ duration: 0.4 }}
+      >
+        <h3 className="text-lg font-bold text-[#FF9447] mb-4">
           Request Approval for: {approvingRecord?.claimname || 'N/A'}
         </h3>
         <div className="mb-4">
@@ -65,14 +72,20 @@ const RequestApprovalModal: React.FC<RequestApprovalModalProps> = ({
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             placeholder="Enter your comment here..."
-            className="w-full"
+            className="w-full rounded-md"
           />
         </div>
-        <div className="flex justify-end gap-2">
+        <div className="flex justify-end gap-3">
           <Button
             onClick={handleCancel}
             disabled={loading}
-            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
+            className="px-4 py-2 rounded-md"
+            style={{
+              backgroundColor: '#F3F4F6',
+              color: '#4B5563',
+              border: 'none',
+              fontWeight: 400,
+            }}
           >
             Cancel
           </Button>
@@ -80,12 +93,18 @@ const RequestApprovalModal: React.FC<RequestApprovalModalProps> = ({
             onClick={handleConfirm}
             loading={loading}
             disabled={loading}
-            className="px-4 py-2 bg-[#FF914D] text-white rounded-md hover:bg-[#FEB78A]"
+            className="px-4 py-2 rounded-md"
+            style={{
+              backgroundColor: '#FF9447',
+              color: '#FFFFFF',
+              border: 'none',
+              fontWeight: 400,
+            }}
           >
             Confirm
           </Button>
         </div>
-      </div>
+      </motion.div>
     </Modal>
   );
 };

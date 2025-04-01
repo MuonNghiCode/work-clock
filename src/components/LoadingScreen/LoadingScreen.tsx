@@ -12,11 +12,11 @@ const getLottieOptions = (src: string) => ({
 });
 
 const LoadingScreen: React.FC = () => {
-  const { isLoading } = useLoadingStore();
+  const { loading } = useLoadingStore();
 
   return (
     <AnimatePresence>
-      {isLoading && (
+      {loading && (
         <motion.div
           className="fixed inset-0 z-[9999] flex items-center justify-center h-screen overflow-hidden backdrop-blur-lg bg-black/30"
           initial={{ opacity: 0 }}

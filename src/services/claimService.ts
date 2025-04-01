@@ -73,17 +73,23 @@ export const getClaimerSearch = async (
   });
   return response;
 };
-//                 //
+
 export const getAllClaims = async ({
   searchCondition,
   pageInfo,
-}: ClaimSearchRequest): Promise<
+}: ClaimSearchRequest, loading: boolean): Promise<
   ResponseModel<{ pageData: ClaimInfo[]; pageInfo: PageInfo }>
 > => {
-  const response = await post(API_CONSTANTS.CLAIMS.CLAIMERS_SEARCH, {
-    searchCondition,
+
+  const filteredSearchCondition = {
+    ...searchCondition,
+    claim_status: searchCondition.claim_status || "",
+  };
+
+  const response = await post(API_CONSTANTS.CLAIMS.CLAIMS_SEARCH, {
+    searchCondition: filteredSearchCondition,
     pageInfo,
-  });
+  }, loading);
   return response as ResponseModel<{
     pageData: ClaimInfo[];
     pageInfo: PageInfo;
@@ -101,19 +107,21 @@ export const getClaimDetail = async (
 
 export const updateClaim = async (
   id: string,
-  data: Partial<ClaimItem>
+  data: Partial<ClaimItem>,
+  loading?: boolean
 ): Promise<ResponseModel<ClaimItem>> => {
   const response = await put<ClaimItem>(
     `${API_CONSTANTS.CLAIMS.UPDATE_CLAIM}/${id}`,
-    data
+    data, loading
   );
   return response;
 };
 
 export const updateClaimStatus = async (
-  payload: UpdateClaimStatusPayload
+  payload: UpdateClaimStatusPayload,
+  loading?: boolean
 ): Promise<ResponseModel<null>> => {
-  const response = await put<null>(API_CONSTANTS.CLAIMS.UPDATE_STATUS, payload);
+  const response = await put<null>(API_CONSTANTS.CLAIMS.UPDATE_STATUS, payload, loading);
   return response;
 };
 

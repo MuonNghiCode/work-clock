@@ -10,6 +10,8 @@ import {
   login,
   forgotPassword,
 } from "../../services/authService";
+import { useUserStore } from "../../config/zustand";
+import { getEmployeeByUserId } from "../../services/userService";
 // import { Spin } from "antd";
 
 const LoginPage: React.FC = () => {
@@ -20,11 +22,10 @@ const LoginPage: React.FC = () => {
   const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
-    {}
-  );
-
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const navigate = useNavigate();
+  const setUser = useUserStore((state) => state.setUser); // Access the setUser function from Zustand
+
 
   const validate = () => {
     const newErrors: { email?: string; password?: string } = {};
@@ -42,16 +43,19 @@ const LoginPage: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validate()) {
-      await login(email, password);
-      const token = localStorage.getItem("token");
-      let user;
-      if (token) {
-        user = await getUserInfobyToken();
+
+      const response = await login(email, password);
+      localStorage.setItem("token", response.data.token);
+      if (response.success) {
+        const user = await getUserInfobyToken(false);
+        console.log(user.data._id);
         let role = user.data.role_code;
         if (user && user.data) {
+          const employee = await getEmployeeByUserId(user.data._id, false);
           toast.success("Login successful!");
           setTimeout(() => {
             switch (role) {
@@ -71,6 +75,15 @@ const LoginPage: React.FC = () => {
                 navigate("/");
             }
           }, 1000);
+          setUser({
+            id: user.data._id,
+            email: user.data.email,
+            role_code: user.data.role_code,
+            token: response.data.token,
+            username: employee.data.full_name,
+            avatarUrl: employee.data.avatar_url,
+          });
+
         }
       }
     }
@@ -98,9 +111,8 @@ const LoginPage: React.FC = () => {
 
       {/* Login Form */}
       <div
-        className={`lg:w-230 lg:h-140 w-full h-5/6 flex border border-black rounded-[30px] bg-white z-10 ${
-          isForgotPassword ? "hidden" : ""
-        }`}
+        className={`lg:w-230 lg:h-140 w-full h-5/6 flex border border-black rounded-[30px] bg-white z-10 ${isForgotPassword ? "hidden" : ""
+          }`}
       >
         <motion.div
           initial={{ x: 0, opacity: 0 }}
@@ -146,11 +158,10 @@ const LoginPage: React.FC = () => {
               {/* Email Field */}
               <div className="relative py-10">
                 <span
-                  className={`absolute left-2 top-12 text-gray-500 transition-all pointer-events-none ${
-                    email || isEmailFocused
-                      ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
-                      : "text-base"
-                  }`}
+                  className={`absolute left-2 top-12 text-gray-500 transition-all pointer-events-none ${email || isEmailFocused
+                    ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
+                    : "text-base"
+                    }`}
                 >
                   Email
                 </span>
@@ -176,11 +187,10 @@ const LoginPage: React.FC = () => {
               {/* Password Field */}
               <div className="relative">
                 <span
-                  className={`absolute left-2 top-2 text-gray-500 transition-all pointer-events-none ${
-                    password || isPasswordFocused
-                      ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
-                      : "text-base"
-                  }`}
+                  className={`absolute left-2 top-2 text-gray-500 transition-all pointer-events-none ${password || isPasswordFocused
+                    ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
+                    : "text-base"
+                    }`}
                 >
                   Password
                 </span>
@@ -229,9 +239,8 @@ const LoginPage: React.FC = () => {
 
       {/* Forgot Password Form */}
       <div
-        className={`lg:w-230 lg:h-140 w-full h-5/6 flex border border-black rounded-[30px] bg-white z-20 ${
-          !isForgotPassword ? "hidden" : ""
-        }`}
+        className={`lg:w-230 lg:h-140 w-full h-5/6 flex border border-black rounded-[30px] bg-white z-20 ${!isForgotPassword ? "hidden" : ""
+          }`}
       >
         <motion.div
           initial={{ x: 0, opacity: 0 }}
@@ -257,11 +266,10 @@ const LoginPage: React.FC = () => {
             </h1>
             <div className="lg:mt-10 relative py-4">
               <span
-                className={`  absolute  left-2 top-6 text-gray-500 transition-all pointer-events-none ${
-                  forgotPasswordEmail || isEmailFocused
-                    ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
-                    : "text-base"
-                }`}
+                className={`  absolute  left-2 top-6 text-gray-500 transition-all pointer-events-none ${forgotPasswordEmail || isEmailFocused
+                  ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
+                  : "text-base"
+                  }`}
               >
                 Email
               </span>

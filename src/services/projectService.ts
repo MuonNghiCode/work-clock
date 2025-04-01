@@ -2,6 +2,7 @@ import { get, put, post, del } from "./apiService";
 import { API_CONSTANTS } from "../constants/apiConstants";
 import { ProjectInfo } from "../types/Project";
 import { ResponseModel } from "../models/ResponseModel";
+import { ProjectSearch } from "../components/UserComponents/ModalAddNewClaim";
 export interface PageInfo {
   pageNum: number;
   pageSize: number;
@@ -25,15 +26,30 @@ export interface ProjectSearchRequest {
 export const getAllProject = async ({
   searchCondition,
   pageInfo,
-}: ProjectSearchRequest): Promise<
+}: ProjectSearchRequest, loading: boolean): Promise<
   ResponseModel<{ pageData: ProjectInfo[]; pageInfo: PageInfo }>
+> => {
+  const response = await post(API_CONSTANTS.PROJECT.GET_ALLPROJECT, {
+    searchCondition,
+    pageInfo,
+  }, loading);
+  return response as ResponseModel<{
+    pageData: ProjectInfo[];
+    pageInfo: PageInfo;
+  }>;
+};
+export const searchProject = async ({
+  searchCondition,
+  pageInfo,
+}: ProjectSearchRequest): Promise<
+  ResponseModel<{ pageData: ProjectSearch[]; pageInfo: PageInfo }>
 > => {
   const response = await post(API_CONSTANTS.PROJECT.GET_ALLPROJECT, {
     searchCondition,
     pageInfo,
   });
   return response as ResponseModel<{
-    pageData: ProjectInfo[];
+    pageData: ProjectSearch[];
     pageInfo: PageInfo;
   }>;
 };

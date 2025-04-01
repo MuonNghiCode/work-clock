@@ -15,11 +15,17 @@ const axiosInstance = axios.create({
 // Request Interceptor
 axiosInstance.interceptors.request.use(
   (config: CustomInternalAxiosRequestConfig) => {
-    const { addRequest, skipUrls } = useLoadingStore.getState();
+    const { isLoadingFlag, setLoading } = useLoadingStore.getState();
 
-    // If showLoading is explicitly false, don't show loading
-    if (config.showLoading !== false && !skipUrls.includes(config.url ?? "")) {
-      addRequest(config.url ?? "");
+    // Ensure isLoadingFlag is defined
+    if (isLoadingFlag === undefined) {
+      console.error("isLoadingFlag is undefined. Initializing to false.");
+      useLoadingStore.getState().setIsLoadingFlag(false);
+    }
+
+    // Always set loading to true when a request starts
+    if (isLoadingFlag && config.showLoading !== false) {
+      setLoading(true);
     }
 
     // Attach token if available
@@ -30,33 +36,48 @@ axiosInstance.interceptors.request.use(
     return config;
   },
   (error) => {
-    useLoadingStore.getState().removeRequest(error.config?.url || "");
-    return Promise.reject(
-      new Error(error.response?.data?.message || "An error occurred")
-    );
+    const { isLoadingFlag, setLoading } = useLoadingStore.getState();
+    if (isLoadingFlag) {
+      setLoading(false);
+    }
+    return Promise.reject(error);
   }
 );
 
 // Response Interceptor
 axiosInstance.interceptors.response.use(
   (response) => {
-    useLoadingStore.getState().removeRequest(response.config.url ?? "");
-    if (response.data.errors) {
-      toast.error(response.data.errors[0].message);
+    const { isLoadingFlag, setLoading } = useLoadingStore.getState();
+    if (isLoadingFlag) {
+      setLoading(false);
+    }
+    if (response.data.success) {
+      toast.success(response.data.message);
+    } else {
+      toast.error(response.data.message);
     }
     return response;
   },
   (error) => {
-    if (error.response.data.errors) {
-      error.response.data.errors.forEach((err: any) => {
-        toast.error(err.message);
-      });
+    const { isLoadingFlag, setLoading } = useLoadingStore.getState();
+    if (isLoadingFlag) {
+      setLoading(false);
     }
-    useLoadingStore.getState().removeRequest(error.config?.url || "");
-    toast.error(error.response?.data?.message || error.message || "An error occurred");
-    return Promise.reject(
-      new Error(error.response?.data?.message || error.message || "An error occurred")
-    );
+    if (error.response) {
+      if (error.response.status == 400) {
+        if (error.response.data?.message) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error("An error occurred");
+        }
+      }
+    } else if (error.request) {
+      toast.error("No response from server");
+    } else {
+      toast.error("An error occurred");
+    }
+
+    return Promise.reject(error);
   }
 );
 
