@@ -77,19 +77,19 @@ export const getClaimerSearch = async (
 export const getAllClaims = async ({
   searchCondition,
   pageInfo,
-}: ClaimSearchRequest): Promise<
+}: ClaimSearchRequest, loading: boolean): Promise<
   ResponseModel<{ pageData: ClaimInfo[]; pageInfo: PageInfo }>
 > => {
-  
+
   const filteredSearchCondition = {
     ...searchCondition,
-    claim_status: searchCondition.claim_status || "", 
+    claim_status: searchCondition.claim_status || "",
   };
 
   const response = await post(API_CONSTANTS.CLAIMS.CLAIMS_SEARCH, {
     searchCondition: filteredSearchCondition,
     pageInfo,
-  });
+  }, loading);
   return response as ResponseModel<{
     pageData: ClaimInfo[];
     pageInfo: PageInfo;
@@ -121,7 +121,7 @@ export const updateClaimStatus = async (
   payload: UpdateClaimStatusPayload,
   loading?: boolean
 ): Promise<ResponseModel<null>> => {
-  const response = await put<null>(API_CONSTANTS.CLAIMS.UPDATE_STATUS, payload,loading);
+  const response = await put<null>(API_CONSTANTS.CLAIMS.UPDATE_STATUS, payload, loading);
   return response;
 };
 

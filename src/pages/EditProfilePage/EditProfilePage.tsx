@@ -430,7 +430,6 @@ const EditProfilePage: React.FC = () => {
                 window.location.href = "/login";
               } catch (error) {
                 console.error("Error changing password:", error);
-                toast.error("Error changing password");
               }
             }}
           >

@@ -113,7 +113,8 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
         role_code: "A003",
         user_id: userId,
       },
-      { pageNum: 1, pageSize: 5 }
+      { pageNum: 1, pageSize: 5 },
+      true
     );
     setApprovals(
       response.data.pageData.map((user: any) => ({

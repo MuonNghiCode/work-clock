@@ -36,7 +36,7 @@ const UserProject = () => {
           user_id: user?._id || "",
         },
         pageInfo: { pageNum, pageSize },
-      });
+      }, true);
 
       // Map dữ liệu từ API
       let data = response.data.pageData.map((item: any) => ({
@@ -161,7 +161,7 @@ const UserProject = () => {
               pageSize={pageSize}
               total={projectsCount}
               onChange={handlePageChange}
-              showSizeChanger = {false}
+              showSizeChanger={false}
             />
           )}
         </div>
