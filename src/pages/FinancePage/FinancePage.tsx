@@ -68,8 +68,9 @@ const FinancePage: React.FC = () => {
   const [originalData, setOriginalData] = useState<FinanceData[]>([]);
   const [accountantEmail, setAccountantEmail] = useState<string>("");
   const [showApprovalDetail, setShowApprovalDetail] = useState<boolean>(false);
-  const [selectedApproval, setSelectedApproval] = useState<ClaimInfo | null>(null);
-
+  const [selectedApproval, setSelectedApproval] = useState<ClaimInfo | null>(
+    null
+  );
 
   const datePickerRef = useRef<HTMLDivElement>(null);
 
@@ -185,19 +186,19 @@ const FinancePage: React.FC = () => {
   const handleDownload = (items?: FinanceData[]) => {
     const dataToDownload = items
       ? items.map((item) => ({
-        Project: item.project_info.project_name,
-        Claimer: item.staff_name,
-        Approver: item.approval_info.user_name,
-        Time: item.total_work_time,
-        DateCreate: item.created_at,
-      }))
+          Project: item.project_info.project_name,
+          Claimer: item.staff_name,
+          Approver: item.approval_info.user_name,
+          Time: item.total_work_time,
+          DateCreate: item.created_at,
+        }))
       : dataFinance.map((item) => ({
-        Project: item.project_info.project_name,
-        Claimer: item.staff_name,
-        Approver: item.approval_info.user_name,
-        Time: item.total_work_time,
-        DateCreate: item.created_at,
-      }));
+          Project: item.project_info.project_name,
+          Claimer: item.staff_name,
+          Approver: item.approval_info.user_name,
+          Time: item.total_work_time,
+          DateCreate: item.created_at,
+        }));
 
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("FinanceData");
@@ -246,7 +247,7 @@ const FinancePage: React.FC = () => {
       staff_role: claim.employee_info.account,
       employee_info: {
         ...claim.employee_info,
-        address: "", // Provide appropriate values
+        address: "",
         avatar_url: "",
         contract_type: "",
         end_date: "",
@@ -255,22 +256,22 @@ const FinancePage: React.FC = () => {
         job_rank: "",
         updated_by: "",
         user_id: "",
-        department_code: ""
+        department_code: "",
       },
       approval_info: {
         ...claim.approval_info,
-        _id: "", // Provide a valid _id value
-        is_verified: false, // Provide a valid is_verified value
+        _id: "",
+        is_verified: false,
       },
       project_info: {
         ...claim.project_info,
-        is_deleted: false, // Provide appropriate default value
-        project_description: "", // Provide appropriate default value
-        project_end_date: "", // Provide appropriate default value
-        project_members: [], // Provide appropriate default value
-        project_start_date: "", // Provide appropriate default value
+        is_deleted: false,
+        project_description: "",
+        project_end_date: "",
+        project_members: [],
+        project_start_date: "",
         updated_by: "",
-        project_status: ""
+        project_status: "",
       },
       role_in_project: claim.employee_info.account,
       claim_name: claim.claim_name,
@@ -388,40 +389,51 @@ const FinancePage: React.FC = () => {
           </tr>
         </thead>
         <tbody className="w-full">
-          {dataFinance.map((item) => (
-            <tr
-              onClick={() => handleShowApprovalDetail(item)}
-              key={item._id}
-              className="h-[70px] bg-white overflow-hidden text-center border-collapse hover:shadow-brand-orange !rounded-2xl cursor-pointer"
-            >
-              <td className="px-4 py-2 rounded-l-2xl text-[#ff914d] underline">
-                {item.project_info.project_name}
-              </td>
-              <td className="px-4 py-2 ">{item.claim_name}</td>
-              <td className="px-4 py-2">{item.staff_name}</td>
-              <td className="px-4 py-2">{item.approval_info.user_name}</td>
-              <td className="px-4 py-2">{item.total_work_time}h</td>
-              <td className="px-4 py-2">
-                {format(new Date(item.created_at), "dd/MM/yyyy")}
-              </td>
-              <td className="action px-4 py-4 rounded-r-lg flex justify-center space-x-1" onClick={(e) => e.stopPropagation()}>
-                <button
-                  className="flex items-center justify-center h-10 w-20 text-green-300 rounded-lg cursor-pointer hover:text-green-600 hover:font-bold hover:scale-105 transition-colors duration-200"
-                  onClick={() => handlePay(item)}
-                >
-                  <Icons.Dollar className="mr-1" />
-                  <span className="hidden sm:inline"></span>
-                </button>
-                <button
-                  className="flex items-center justify-center h-10 w-20 text-orange-300 rounded-lg cursor-pointer hover:text-orange-600 hover:font-bold hover:scale-105 transition-colors duration-200"
-                  onClick={() => handleDownload([item])}
-                >
-                  <FaDownload className="mr-1" />
-                  <span className="hidden sm:inline"></span>
-                </button>
+          {dataFinance.length === 0 ? (
+            <tr>
+              <td colSpan={7} className="text-center py-4">
+                No data available
               </td>
             </tr>
-          ))}
+          ) : (
+            dataFinance.map((item) => (
+              <tr
+                onClick={() => handleShowApprovalDetail(item)}
+                key={item._id}
+                className="h-[70px] bg-white overflow-hidden text-center border-collapse hover:shadow-brand-orange !rounded-2xl cursor-pointer"
+              >
+                <td className="px-4 py-2 rounded-l-2xl text-[#ff914d] underline">
+                  {item.project_info.project_name}
+                </td>
+                <td className="px-4 py-2 ">{item.claim_name}</td>
+                <td className="px-4 py-2">{item.staff_name}</td>
+                <td className="px-4 py-2">{item.approval_info.user_name}</td>
+                <td className="px-4 py-2">{item.total_work_time}h</td>
+                <td className="px-4 py-2">
+                  {format(new Date(item.created_at), "dd/MM/yyyy")}
+                </td>
+                <td
+                  className="action px-4 py-4 rounded-r-lg flex justify-center space-x-1"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <button
+                    className="flex items-center justify-center h-10 w-20 text-green-300 rounded-lg cursor-pointer hover:text-green-600 hover:font-bold hover:scale-105 transition-colors duration-200"
+                    onClick={() => handlePay(item)}
+                  >
+                    <Icons.Dollar className="mr-1" />
+                    <span className="hidden sm:inline"></span>
+                  </button>
+                  <button
+                    className="flex items-center justify-center h-10 w-20 text-orange-300 rounded-lg cursor-pointer hover:text-orange-600 hover:font-bold hover:scale-105 transition-colors duration-200"
+                    onClick={() => handleDownload([item])}
+                  >
+                    <FaDownload className="mr-1" />
+                    <span className="hidden sm:inline"></span>
+                  </button>
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
       <div className="flex justify-end mt-4">
@@ -459,15 +471,13 @@ const FinancePage: React.FC = () => {
           onClose={handleStatusModalClose}
         />
       )}
-      {
-        selectedApproval && (
-          <ClaimRequestDetail
-            visible={showApprovalDetail}
-            onClose={handleClose}
-            id={selectedApproval} // Pass the selectedApprovalId here
-          />
-        )
-      }
+      {selectedApproval && (
+        <ClaimRequestDetail
+          visible={showApprovalDetail}
+          onClose={handleClose}
+          id={selectedApproval} // Pass the selectedApprovalId here
+        />
+      )}
     </div>
   );
 };
