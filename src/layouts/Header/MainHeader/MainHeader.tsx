@@ -14,6 +14,7 @@ const Sidebar: React.FC<{ isOpen: boolean; closeMenu: () => void }> = ({
   isOpen,
   closeMenu,
 }) => {
+
   return (
     <>
       {isOpen && (
@@ -23,9 +24,8 @@ const Sidebar: React.FC<{ isOpen: boolean; closeMenu: () => void }> = ({
         ></div>
       )}
       <div
-        className={`fixed top-0 left-0 h-full w-3/4 bg-white p-6 flex flex-col gap-6 shadow-lg z-50 transform ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        } transition-transform duration-500`}
+        className={`fixed top-0 left-0 h-full w-3/4 bg-white p-6 flex flex-col gap-6 shadow-lg z-50 transform ${isOpen ? "translate-x-0" : "-translate-x-full"
+          } transition-transform duration-500`}
       >
         <div>
           <Icons.Reject onClick={closeMenu} />
@@ -108,9 +108,8 @@ const MainHeader: React.FC = () => {
 
   return (
     <div
-      className={`flex justify-between items-center p-4 md:p-6 transition-all duration-300 ${
-        scrolled ? "bg-transparent" : "bg-transparent"
-      }`}
+      className={`flex justify-between items-center p-4 md:p-6 transition-all duration-300 ${scrolled ? "bg-transparent" : "bg-transparent"
+        }`}
     >
       <div className="flex items-center">
         {!isHomePage && (
@@ -126,11 +125,10 @@ const MainHeader: React.FC = () => {
             <a
               key={item.href}
               href={item.href}
-              className={`hover:text-gradient-color ${
-                activeSection === item.href.substring(1)
+              className={`hover:text-gradient-color ${activeSection === item.href.substring(1)
                   ? "text-gradient-color underline"
                   : ""
-              }`}
+                }`}
             >
               {item.label}
             </a>
