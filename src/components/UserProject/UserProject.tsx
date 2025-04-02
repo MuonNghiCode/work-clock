@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Pagination, Modal } from "antd"; // Import Modal from antd
 import { getAllProject } from "../../services/projectService"; // Import the new function
 import { formatDate } from "../../utils/formatDate";
-import { BookOpen, Calendar, CheckCircle, User, X } from "lucide-react";
-import { useUser } from "../../contexts/UserContext";
+import { BookOpen, Calendar, CheckCircle, Search, User, X } from "lucide-react";
 import { motion } from "framer-motion";
+import debounce from "lodash.debounce"; // Import debounce from lodash
+import { useUserStore } from "../../config/zustand";
+
 interface ProjectInfo {
   key: string;
   projectName: string;
@@ -21,24 +23,25 @@ const UserProject = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const { user } = useUser();
   const [selectedProject, setSelectedProject] = useState<ProjectInfo | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [searchText, setSearchText] = useState<string>("");
+
+  const userId = useUserStore((state) => state.user?.id);
 
   const fetchProjects = async (pageNum: number, pageSize: number) => {
     try {
       const response = await getAllProject({
         searchCondition: {
-          keyword: "",
+          keyword: searchText,
           project_start_date: "",
           project_end_date: "",
           is_delete: false,
-          user_id: user?._id || "",
+          user_id: userId || "",
         },
         pageInfo: { pageNum, pageSize },
       });
 
-      // Map dữ liệu từ API
       let data = response.data.pageData.map((item: any) => ({
         key: item._id,
         projectName: item.project_name,
@@ -48,14 +51,11 @@ const UserProject = () => {
         project_description: item.project_description,
       }));
 
-      // Lọc dữ liệu theo statusFilter
       if (statusFilter !== "all") {
         data = data.filter((item) => item.status === statusFilter);
       }
 
       setProjectsData(data);
-
-      // Cập nhật tổng số lượng dự án (sau khi lọc)
       setProjectsCount(data.length);
     } catch (error) {
       console.log(error);
@@ -65,8 +65,8 @@ const UserProject = () => {
   };
 
   useEffect(() => {
-    fetchProjects(currentPage, pageSize); // Fetch projects data
-  }, [currentPage, pageSize, statusFilter, selectedProject]);
+    fetchProjects(currentPage, pageSize);
+  }, [currentPage, pageSize, selectedProject, statusFilter, searchText]);
 
   const handlePageChange = (page: number, newPageSize?: number) => {
     if (newPageSize && newPageSize !== pageSize) {
@@ -104,22 +104,42 @@ const UserProject = () => {
         return <span className="text-gray-600">{status}</span>;
     }
   };
+
+  const handleSearch = useCallback(
+    debounce((value: string) => {
+      setSearchText(value);
+      setCurrentPage(1);
+    }, 1000),
+    []
+  );
+
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-4">
-        <div>
-          <select
-            value={statusFilter}
-            onChange={handleStatusChange}
-            className="px-3 py-1 text-lg border rounded-lg font-squada"
-          >
-            <option value="all">All Status</option>
-            <option value="Active">Active</option>
-            <option value="New">New</option>
-            <option value="Pending">Pending</option>
-            <option value="Closed">Closed</option>
-          </select>
+        <select
+          value={statusFilter}
+          onChange={handleStatusChange}
+          className="px-3 py-1 text-lg border rounded-lg font-squada"
+        >
+          <option value="all">All Status</option>
+          <option value="Active">Active</option>
+          <option value="New">New</option>
+          <option value="Pending">Pending</option>
+          <option value="Closed">Closed</option>
+        </select>
+        <div className="relative w-[300px]">
+          <input
+            type="text"
+            placeholder="Search project name"
+            className="w-full px-4 py-2 border rounded-full pr-10 font-squada"
+            onChange={(e) => handleSearch(e.target.value)}
+          />
+          <Search
+            className="absolute right-3 top-2.5 text-gray-400"
+            size={20}
+          />
         </div>
+
       </div>
       <motion.div
         className="mb-4 request-header"
