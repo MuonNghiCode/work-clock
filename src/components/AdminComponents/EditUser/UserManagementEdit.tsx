@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Input, message } from "antd";
+import { Form, Input } from "antd";
 import { MailOutlined, UserOutlined } from "@ant-design/icons";
 import { User } from "../../../pages/AdminPage/AdminUser/AdminUserManagement";
 import { updateUser } from "../../../services/userAuth";
@@ -18,27 +18,23 @@ const UserManagementEdit: React.FC<UserManagementEditProps> = ({
   const [form] = Form.useForm();
 
   const handleUpdateBasicInfo = async (values: any) => {
-    try {
-      const updateData = {
-        user_id: user.id,
-        user_name: values.user_name,
-        email: values.email,
-      };
+    const updateData = {
+      user_id: user.id,
+      user_name: values.user_name,
+      email: values.email,
+    };
 
-      await updateUser(user.id, updateData);
+    await updateUser(user.id, updateData);
 
-      const updatedUser: User<string> = {
-        ...user,
-        user_name: updateData.user_name,
-        email: updateData.email,
-      };
+    const updatedUser: User<string> = {
+      ...user,
+      user_name: updateData.user_name,
+      email: updateData.email,
+    };
 
-      onSubmit(updatedUser);
-      // message.success("User information updated successfully");
-      onClose();
-    } catch (error) {
-      message.error("Failed to update user information");
-    }
+    onSubmit(updatedUser);
+    // message.success("User information updated successfully");
+    onClose();
   };
 
   return (
@@ -81,8 +77,8 @@ const UserManagementEdit: React.FC<UserManagementEditProps> = ({
             rules={[
               { required: true, message: "Email is required" },
               {
-                pattern: /^[a-zA-Z0-9._%+-]+@gmail\.com$/,
-                message: "Only @gmail.com emails allowed",
+                pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                message: "Please enter a valid email address",
               },
             ]}
           >

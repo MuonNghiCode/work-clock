@@ -68,11 +68,13 @@ const Dashboard = () => {
         // Fetch unlocked and locked users
         const unlockedResponse = await getUsers(
           { keyword: "", is_blocked: false },
-          { pageNum: 1, pageSize: 1 }
+          { pageNum: 1, pageSize: 1 },
+          true
         );
         const lockedResponse = await getUsers(
           { keyword: "", is_blocked: true },
-          { pageNum: 1, pageSize: 1 }
+          { pageNum: 1, pageSize: 1 },
+          false
         );
 
         // Fetch all projects
@@ -85,7 +87,7 @@ const Dashboard = () => {
             is_delete: false,
           },
           pageInfo: { pageNum: 1, pageSize: 1000 },
-        });
+        }, false);
 
         let newProjects = 0;
         let activeProjects = 0;
@@ -128,7 +130,7 @@ const Dashboard = () => {
                 is_delete: false,
               },
               pageInfo: { pageNum: 1, pageSize: 1 },
-            });
+            }, false);
             return response.success
               ? response.data.pageInfo.totalItems || 0
               : 0;
@@ -338,31 +340,28 @@ const Dashboard = () => {
           <div className="flex gap-4">
             <button
               onClick={() => setCurrentCategory("Users")}
-              className={`px-4 py-2 rounded ${
-                currentCategory === "Users"
-                  ? "bg-[#ff914d] text-white"
-                  : "bg-gray-200"
-              }`}
+              className={`px-4 py-2 rounded ${currentCategory === "Users"
+                ? "bg-[#ff914d] text-white"
+                : "bg-gray-200"
+                }`}
             >
               Users
             </button>
             <button
               onClick={() => setCurrentCategory("Projects")}
-              className={`px-4 py-2 rounded ${
-                currentCategory === "Projects"
-                  ? "bg-[#ff914d] text-white"
-                  : "bg-gray-200"
-              }`}
+              className={`px-4 py-2 rounded ${currentCategory === "Projects"
+                ? "bg-[#ff914d] text-white"
+                : "bg-gray-200"
+                }`}
             >
               Projects
             </button>
             <button
               onClick={() => setCurrentCategory("Claims")}
-              className={`px-4 py-2 rounded ${
-                currentCategory === "Claims"
-                  ? "bg-[#ff914d] text-white"
-                  : "bg-gray-200"
-              }`}
+              className={`px-4 py-2 rounded ${currentCategory === "Claims"
+                ? "bg-[#ff914d] text-white"
+                : "bg-gray-200"
+                }`}
             >
               Claims
             </button>
@@ -374,11 +373,10 @@ const Dashboard = () => {
               <button
                 key={status}
                 onClick={() => handleFilterChange(status)}
-                className={`px-4 py-2 rounded ${
-                  selectedFilters.includes(status)
-                    ? "bg-[#ff914d] text-white"
-                    : "bg-gray-200 text-gray-700"
-                }`}
+                className={`px-4 py-2 rounded ${selectedFilters.includes(status)
+                  ? "bg-[#ff914d] text-white"
+                  : "bg-gray-200 text-gray-700"
+                  }`}
               >
                 {status}
               </button>

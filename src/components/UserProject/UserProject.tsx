@@ -40,7 +40,7 @@ const UserProject = () => {
           user_id: userId || "",
         },
         pageInfo: { pageNum, pageSize },
-      });
+      }, true);
 
       let data = response.data.pageData.map((item: any) => ({
         key: item._id,
