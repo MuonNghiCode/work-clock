@@ -25,7 +25,6 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ userId }) =
             }
             );
         };
-
         socket.onerror = (error) => {
             console.error("WebSocket error:", error);
         };
