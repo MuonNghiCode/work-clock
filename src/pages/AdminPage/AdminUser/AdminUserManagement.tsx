@@ -855,25 +855,27 @@ const AdminUserManagement: React.FC = () => {
         {/* </div> */}
 
         {/* Pagination */}
-        <div className="flex items-center justify-end gap-2 mt-4">
-          <Pagination
-            current={currentPage}
-            total={totalItems}
-            pageSize={usersPerPage}
-            onChange={(page) => {
-              setCurrentPage(page);
-            }}
-            showSizeChanger={false}
-            pageSizeOptions={["5", "10", "20"]}
-            onShowSizeChange={(_, size) => {
-              setUsersPerPage(size);
-              setCurrentPage(1);
-            }}
-            className="custom-pagination"
-            size="small"
-            showTotal={() => ""}
-          />
-        </div>
+        {users.length > 0 && (
+          <div className="flex items-center justify-end gap-2 mt-4">
+            <Pagination
+              current={currentPage}
+              total={totalItems}
+              pageSize={usersPerPage}
+              onChange={(page) => {
+                setCurrentPage(page);
+              }}
+              showSizeChanger={false}
+              pageSizeOptions={["5", "10", "20"]}
+              onShowSizeChange={(_, size) => {
+                setUsersPerPage(size);
+                setCurrentPage(1);
+              }}
+              className="custom-pagination"
+              size="small"
+              showTotal={() => ""}
+            />
+          </div>
+        )}
 
         {/* Detail Modal */}
         <AnimatedModal
