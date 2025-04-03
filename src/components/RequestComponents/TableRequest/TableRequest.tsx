@@ -16,6 +16,7 @@ import CancelRequestModal from "../CancelRequestModal/CancelRequestModal";
 import { getClaimLog } from "../../../services/claimService";
 import { ClaimLog } from "../../../types/ClaimType";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router";
 
 interface ClaimRequest {
   key: string;
@@ -62,6 +63,7 @@ const TableRequest: React.FC<TableRequestProps> = ({
   );
   const [claimLogs, setClaimLogs] = useState<ClaimLog[]>([]);
   const [loadingLogs, setLoadingLogs] = useState(false);
+  const navigate = useNavigate();
 
   const fetchClaimLogs = async (claimId: string) => {
     setLoadingLogs(true);
@@ -114,15 +116,19 @@ const TableRequest: React.FC<TableRequestProps> = ({
     setCancelingRecord(null);
   };
 
+  const handleNavigationToEmployee = (userId: string) => {
+    navigate(`/employee-info/${userId}`);
+  };
+
   const getStatusColor = (status: string) =>
-  ({
-    Approved: "text-green-600",
-    Rejected: "text-red-600",
-    Draft: "text-gray-600",
-    "Pending Approval": "text-yellow-600",
-    Canceled: "text-purple-600",
-    Paid: "text-blue-600",
-  }[status] || "text-gray-600");
+    ({
+      Approved: "text-green-600",
+      Rejected: "text-red-600",
+      Draft: "text-gray-600",
+      "Pending Approval": "text-yellow-600",
+      Canceled: "text-purple-600",
+      Paid: "text-blue-600",
+    }[status] || "text-gray-600");
 
   return (
     <div className="request-container">
@@ -447,18 +453,19 @@ const TableRequest: React.FC<TableRequestProps> = ({
                         </span>
                         <span className="w-2/3">
                           <span
-                            className={`px-3 py-1 rounded-full text-sm font-semibold ${selectedClaim.status === "Approved"
-                              ? "bg-green-50 text-green-600"
-                              : selectedClaim.status === "Rejected"
+                            className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                              selectedClaim.status === "Approved"
+                                ? "bg-green-50 text-green-600"
+                                : selectedClaim.status === "Rejected"
                                 ? "bg-red-50 text-red-600"
                                 : selectedClaim.status === "Pending Approval"
-                                  ? "bg-yellow-50 text-yellow-600"
-                                  : selectedClaim.status === "Canceled"
-                                    ? "bg-purple-50 text-purple-600"
-                                    : selectedClaim.status === "Paid"
-                                      ? "bg-blue-50 text-blue-600"
-                                      : "bg-gray-50 text-gray-600"
-                              }`}
+                                ? "bg-yellow-50 text-yellow-600"
+                                : selectedClaim.status === "Canceled"
+                                ? "bg-purple-50 text-purple-600"
+                                : selectedClaim.status === "Paid"
+                                ? "bg-blue-50 text-blue-600"
+                                : "bg-gray-50 text-gray-600"
+                            }`}
                           >
                             {selectedClaim.status}
                           </span>
@@ -492,41 +499,53 @@ const TableRequest: React.FC<TableRequestProps> = ({
                                 {new Date(log.created_at).toLocaleTimeString()}
                               </span>
                               <span className="font-medium">
-                                Changed by: {log.updated_by}
+                                Changed by:{" "}
+                                <span
+                                  className="text-[#ff914d] cursor-pointer"
+                                  onClick={() =>
+                                    handleNavigationToEmployee(
+                                      log.updated_by_user_id
+                                    )
+                                  }
+                                >
+                                  {log.updated_by}
+                                </span>
                               </span>
                             </div>
                           </div>
                           <div className="flex items-center space-x-2">
                             <span
-                              className={`px-2 py-1 rounded text-sm ${log.old_status === "Approved"
-                                ? "bg-green-100 text-green-600"
-                                : log.old_status === "Rejected"
+                              className={`px-2 py-1 rounded text-sm ${
+                                log.old_status === "Approved"
+                                  ? "bg-green-100 text-green-600"
+                                  : log.old_status === "Rejected"
                                   ? "bg-red-100 text-red-600"
                                   : log.old_status === "Pending Approval"
-                                    ? "bg-yellow-100 text-yellow-600"
-                                    : log.old_status === "Canceled"
-                                      ? "bg-purple-100 text-purple-600"
-                                      : log.old_status === "Paid"
-                                        ? "bg-blue-100 text-blue-600"
-                                        : "bg-gray-100 text-gray-600"
-                                }`}
+                                  ? "bg-yellow-100 text-yellow-600"
+                                  : log.old_status === "Canceled"
+                                  ? "bg-purple-100 text-purple-600"
+                                  : log.old_status === "Paid"
+                                  ? "bg-blue-100 text-blue-600"
+                                  : "bg-gray-100 text-gray-600"
+                              }`}
                             >
                               {log.old_status}
                             </span>
                             <span className="text-gray-400">→</span>
                             <span
-                              className={`px-2 py-1 rounded text-sm ${log.new_status === "Approved"
-                                ? "bg-green-100 text-green-600"
-                                : log.new_status === "Rejected"
+                              className={`px-2 py-1 rounded text-sm ${
+                                log.new_status === "Approved"
+                                  ? "bg-green-100 text-green-600"
+                                  : log.new_status === "Rejected"
                                   ? "bg-red-100 text-red-600"
                                   : log.new_status === "Pending Approval"
-                                    ? "bg-yellow-100 text-yellow-600"
-                                    : log.new_status === "Canceled"
-                                      ? "bg-purple-100 text-purple-600"
-                                      : log.new_status === "Paid"
-                                        ? "bg-blue-100 text-blue-600"
-                                        : "bg-gray-100 text-gray-600"
-                                }`}
+                                  ? "bg-yellow-100 text-yellow-600"
+                                  : log.new_status === "Canceled"
+                                  ? "bg-purple-100 text-purple-600"
+                                  : log.new_status === "Paid"
+                                  ? "bg-blue-100 text-blue-600"
+                                  : "bg-gray-100 text-gray-600"
+                              }`}
                             >
                               {log.new_status}
                             </span>
