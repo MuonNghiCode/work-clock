@@ -283,18 +283,22 @@ const TableProject: React.FC = () => {
           ))}
         </tbody>
       </table>
+      {projects.length === 0 ? null  :  (
       <div className="flex justify-end mt-4">
         <Pagination
-          className="!font-squada flex justify-end"
           current={currentPage}
-          pageSize={pageSize}
           total={totalItems}
+          pageSize={pageSize}
           onChange={handlePageChange}
           showSizeChanger={false}
-          onShowSizeChange={handlePageChange}
           pageSizeOptions={["5", "10", "20", "50"]}
+          onShowSizeChange={handlePageChange}
+          className="custom-pagination"
+          size="small"
+          showTotal={() => ""}
         />
       </div>
+          )}
 
       {selectedProject && (
         <ProjectDetail
