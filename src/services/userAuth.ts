@@ -66,15 +66,17 @@ export const getUserById = async (userId: string): Promise<ResponseModel<UserDat
       throw new Error("User ID is required");
     }
 
-    const response = await get<ResponseModel<UserData>>(
+    const response = await get<UserData>(
       API_CONSTANTS.USERS.GET_USER_BY_ID.replace("${id}", userId)
     );
 
-    if (!response.success) {
+    console.log("Raw API Response:", response);
+
+    if (!response.success || !response.data) {
       throw new Error(response.message || "Failed to get user");
     }
 
-    return response.data;
+    return response; 
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(error.message);
