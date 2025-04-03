@@ -11,7 +11,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ userId }) =
     const [notifications, setNotifications] = useState<Notification[]>([]);
 
     useEffect(() => {
-        const socket = new WebSocket(`ws://localhost:8080?userId=${userId}`);
+        const socket = new WebSocket(`https://websocket-notification-mongodb.onrender.com/?userId=${userId}`);
 
         socket.onopen = () => {
             console.log("WebSocket connection established");

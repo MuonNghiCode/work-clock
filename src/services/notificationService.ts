@@ -1,7 +1,7 @@
 
 // Send a notification via WebSocket
 export const sendNotification = (receivedId: string, message: string, type: string) => {
-    const socket = new WebSocket("ws://localhost:8080"); // Replace with your WebSocket server URL
+    const socket = new WebSocket("https://websocket-notification-mongodb.onrender.com/"); // Replace with your WebSocket server URL
     socket.onopen = () => {
         const notification = {
             userId: receivedId, // Notify the approver

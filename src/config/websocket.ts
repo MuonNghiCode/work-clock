@@ -6,7 +6,7 @@ export const connectWebSocket = (
     onMessage: (message: string) => void,
     onError?: (error: Event) => void
 ) => {
-    socket = new WebSocket(`ws://localhost:8080?user=${userId}`);
+    socket = new WebSocket(`https://websocket-notification-mongodb.onrender.com/?user=${userId}`);
 
     socket.onopen = () => {
         console.log('✅ Connected to WebSocket');
