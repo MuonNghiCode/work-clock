@@ -2,7 +2,16 @@ import { useEffect, useState, useCallback } from "react";
 import { Pagination, Modal } from "antd"; // Import Modal from antd
 import { getAllProject } from "../../services/projectService"; // Import the new function
 import { formatDate } from "../../utils/formatDate";
-import { BookOpen, Calendar, CheckCircle, Search, User, X } from "lucide-react";
+import {
+  BookOpen,
+  Calendar,
+  CheckCircle,
+  FolderDot,
+  Search,
+  User,
+  UserCog,
+  X,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import { debounce } from "lodash";
 import { useUserStore } from "../../config/zustand";
@@ -14,6 +23,7 @@ interface ProjectInfo {
   end_date: string;
   status: string;
   project_description: string;
+  project_members: { user_name: string; role: string }[];
 }
 
 const UserProject = () => {
@@ -23,7 +33,9 @@ const UserProject = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [selectedProject, setSelectedProject] = useState<ProjectInfo | null>(null);
+  const [selectedProject, setSelectedProject] = useState<ProjectInfo | null>(
+    null
+  );
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchText, setSearchText] = useState<string>("");
 
@@ -31,16 +43,19 @@ const UserProject = () => {
 
   const fetchProjects = async (pageNum: number, pageSize: number) => {
     try {
-      const response = await getAllProject({
-        searchCondition: {
-          keyword: searchText,
-          project_start_date: "",
-          project_end_date: "",
-          is_delete: false,
-          user_id: userId || "",
+      const response = await getAllProject(
+        {
+          searchCondition: {
+            keyword: searchText,
+            project_start_date: "",
+            project_end_date: "",
+            is_delete: false,
+            user_id: userId || "",
+          },
+          pageInfo: { pageNum, pageSize },
         },
-        pageInfo: { pageNum, pageSize },
-      }, true);
+        true
+      );
 
       let data = response.data.pageData.map((item: any) => ({
         key: item._id,
@@ -49,6 +64,10 @@ const UserProject = () => {
         end_date: formatDate(new Date(item.project_end_date), "DD/MM/YYYY"),
         status: item.project_status,
         project_description: item.project_description,
+        project_members: item.project_members.map((member: any) => ({
+          user_name: member.user_name,
+          role: member.project_role,
+        })),
       }));
 
       if (statusFilter !== "all") {
@@ -139,23 +158,30 @@ const UserProject = () => {
             size={20}
           />
         </div>
-
       </div>
       <motion.div
         className="mb-4 request-header"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}>
+        transition={{ duration: 0.5 }}
+      >
         <motion.table
           className="request-table min-w-full border-separate border-spacing-y-2.5"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}>
+          transition={{ duration: 0.5 }}
+        >
           <thead className="request-table-header bg-gradient-to-r from-[#FEB78A] to-[#FF914D] h-[70px] text-lg text-white rounded-t-lg">
             <tr>
-              <th className="px-4 py-2 request-table-header-cell rounded-tl-2xl">Project Name</th>
-              <th className="px-4 py-2 border-l-2 border-white request-table-header-cell">Start Date</th>
-              <th className="px-4 py-2 border-l-2 border-white request-table-header-cell">End Date</th>
+              <th className="px-4 py-2 request-table-header-cell rounded-tl-2xl">
+                Project Name
+              </th>
+              <th className="px-4 py-2 border-l-2 border-white request-table-header-cell">
+                Start Date
+              </th>
+              <th className="px-4 py-2 border-l-2 border-white request-table-header-cell">
+                End Date
+              </th>
               <th className="px-4 py-2 border-l-2 border-white request-table-header-cell rounded-tr-2xl">
                 Status
               </th>
@@ -167,7 +193,8 @@ const UserProject = () => {
             variants={{
               hidden: { opacity: 0 },
               visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
-            }}>
+            }}
+          >
             {loading ? (
               <tr>
                 <td colSpan={4} className="py-4 text-center">
@@ -188,8 +215,12 @@ const UserProject = () => {
                   <td className="px-4 py-2 request-table-cell rounded-l-2xl">
                     {item.projectName}
                   </td>
-                  <td className="px-4 py-2 request-table-cell">{item.start_date}</td>
-                  <td className="px-4 py-2 request-table-cell">{item.end_date}</td>
+                  <td className="px-4 py-2 request-table-cell">
+                    {item.start_date}
+                  </td>
+                  <td className="px-4 py-2 request-table-cell">
+                    {item.end_date}
+                  </td>
                   <td className="px-4 py-2 request-table-cell rounded-r-2xl">
                     {handleStatusChangeHTML(item.status)}
                   </td>
@@ -197,7 +228,10 @@ const UserProject = () => {
               ))
             ) : (
               <tr>
-                <td colSpan={6} className="py-4 text-center request-table-no-data">
+                <td
+                  colSpan={6}
+                  className="py-4 text-center request-table-no-data"
+                >
                   No Data Available
                 </td>
               </tr>
@@ -247,14 +281,14 @@ const UserProject = () => {
                   </h4>
                   <div className="space-y-4">
                     <div className="flex items-center">
-                      <User
+                      <FolderDot
                         size={18}
                         className="text-[#FF9447] mr-3 flex-shrink-0"
                       />
-                      <span className="w-1/3 font-medium text-gray-600">
+                      <span className="w-1/3 font-medium text-gray-800">
                         Project Name:
                       </span>
-                      <span className="w-2/3 font-semibold text-gray-800 truncate">
+                      <span className="w-2/3 font-semibold text-gray-700">
                         {selectedProject.projectName}
                       </span>
                     </div>
@@ -263,10 +297,10 @@ const UserProject = () => {
                         size={18}
                         className="text-[#FF9447] mr-3 flex-shrink-0"
                       />
-                      <span className="w-1/3 font-medium text-gray-600">
+                      <span className="w-1/3 font-medium text-gray-800">
                         Start Date:
                       </span>
-                      <span className="w-2/3 font-semibold text-gray-800">
+                      <span className="w-2/3 font-semibold text-gray-700">
                         {selectedProject.start_date}
                       </span>
                     </div>
@@ -275,10 +309,10 @@ const UserProject = () => {
                         size={18}
                         className="text-[#FF9447] mr-3 flex-shrink-0"
                       />
-                      <span className="w-1/3 font-medium text-gray-600">
+                      <span className="w-1/3 font-medium text-gray-800">
                         End Date:
                       </span>
-                      <span className="w-2/3 font-semibold text-gray-800">
+                      <span className="w-2/3 font-semibold text-gray-700">
                         {selectedProject.end_date}
                       </span>
                     </div>
@@ -287,40 +321,83 @@ const UserProject = () => {
                         size={18}
                         className="text-[#FF9447] mr-3 flex-shrink-0"
                       />
-                      <span className="w-1/3 font-medium text-gray-600">
+                      <span className="w-1/3 font-medium text-gray-800">
                         Project Description:
                       </span>
-                      <span className="w-2/3 font-semibold text-gray-800">
+                      <span className="w-2/3 font-semibold text-gray-700">
                         {selectedProject.project_description}
                       </span>
                     </div>
-                    <div className="flex items-center">
+                    <div className="flex items-center text-[#FF9447] mb-4 border-b pb-4">
                       <CheckCircle
                         size={18}
                         className="text-[#FF9447] mr-3 flex-shrink-0"
                       />
-                      <span className="w-1/3 font-medium text-gray-600">
+                      <span className="w-1/3 font-medium text-gray-800">
                         Status:
                       </span>
                       <span className="w-2/3">
                         <span
-                          className={`px-3 py-1 rounded-full text-sm font-semibold ${selectedProject.status === "Closed"
-                            ? "bg-[#fbd0d5] text-[#FF0420]"
-                            : selectedProject.status === "Pending"
+                          className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                            selectedProject.status === "Closed"
+                              ? "bg-[#fbd0d5] text-[#FF0420]"
+                              : selectedProject.status === "Pending"
                               ? "bg-[#fef7e3] text-[#FFBF00]"
                               : selectedProject.status === "Active"
-                                ? "bg-[#e6fff9] text-[#00B087]"
-                                : "bg-gray-100 text-gray-600"
-                            }`}
+                              ? "bg-[#e6fff9] text-[#00B087]"
+                              : "bg-gray-100 text-gray-600"
+                          }`}
                         >
                           {selectedProject.status}
                         </span>
                       </span>
                     </div>
+                    <div className="flex items-center">
+                      <div className="w-3/3 font-semibold">
+                        {selectedProject.project_members.length > 0 ? (
+                          <div className="space-y-2">
+                            <div className="grid grid-cols-2 gap-4">
+                              <span className="font-medium text-gray-800 flex items-center">
+                                <User
+                                  size={18}
+                                  className="text-[#FF9447] mr-3 flex-shrink-0"
+                                />
+                                Member
+                              </span>
+                              <span className="font-medium text-gray-800 flex items-center">
+                                <UserCog
+                                  size={18}
+                                  className="text-[#FF9447] mr-3 flex-shrink-0"
+                                />
+                                Role
+                              </span>
+                            </div>
+                            {selectedProject.project_members.map(
+                              (member, index) => (
+                                <div
+                                  key={index}
+                                  className="grid grid-cols-2 gap-4"
+                                >
+                                  <span className="text-sm text-gray-700">
+                                    {member.user_name}
+                                  </span>
+                                  <span className="text-sm text-gray-700">
+                                    {member.role}
+                                  </span>
+                                </div>
+                              )
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-sm text-gray-500">
+                            No members assigned
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-
             </div>
           </div>
         )}
