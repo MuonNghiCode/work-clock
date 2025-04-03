@@ -91,7 +91,8 @@ const ModalAddProject: React.FC<ModalAddProjectProps> = ({
     setFetching(true);
     const response = await getUsers(
       { keyword: search, search_by: "username" },
-      { pageNum: 1, pageSize: 10 }
+      { pageNum: 1, pageSize: 10 },
+      true
     );
     setUserOptions(
       response.data.pageData.map((user: any) => ({

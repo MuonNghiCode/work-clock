@@ -26,13 +26,13 @@ export interface ProjectSearchRequest {
 export const getAllProject = async ({
   searchCondition,
   pageInfo,
-}: ProjectSearchRequest): Promise<
+}: ProjectSearchRequest, loading: boolean): Promise<
   ResponseModel<{ pageData: ProjectInfo[]; pageInfo: PageInfo }>
 > => {
   const response = await post(API_CONSTANTS.PROJECT.GET_ALLPROJECT, {
     searchCondition,
     pageInfo,
-  });
+  }, loading);
   return response as ResponseModel<{
     pageData: ProjectInfo[];
     pageInfo: PageInfo;

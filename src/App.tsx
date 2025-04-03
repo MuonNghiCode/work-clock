@@ -41,6 +41,7 @@ import TableApproval from "./components/ApprovalComponents/TableApproval";
 import UserProject from "./components/UserProject/UserProject";
 import TemplateLayout from "./layouts/TemplateLayout/TemplateLayout";
 import PolicyLayout from "./layouts/PolicyLayout/PolicyLayout";
+import EmployeeInfo from "./components/EmployeeInfo/EmployeeInfo";
 
 const router = createBrowserRouter([
   {
@@ -219,6 +220,11 @@ const router = createBrowserRouter([
     element: <PolicyLayout />,
     errorElement: <ErrorPage />,
   },
+  {
+    path: "/employee-info/:userId",
+    element: <EmployeeInfo />,
+    errorElement: <ErrorPage />,
+  },
 ]);
 
 const App: React.FC = () => {
@@ -249,6 +255,7 @@ const App: React.FC = () => {
         ) : (
           <RouterProvider router={router} />
         )}
+
         <ToastContainer />
       </UserProvider>
     </>

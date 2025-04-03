@@ -185,9 +185,8 @@ const StatusBadge: React.FC<{ type: "role" | "status"; value: string }> = ({
 
     return (
       <span
-        className={`px-3 py-1 rounded-full font-medium ${
-          roleColors[value] || roleColors.default
-        }`}
+        className={`px-3 py-1 rounded-full font-medium ${roleColors[value] || roleColors.default
+          }`}
       >
         {getRoleName(value)}
       </span>
@@ -272,21 +271,21 @@ const AdminUserManagement: React.FC = () => {
             statusFilter === "locked"
               ? true
               : statusFilter === "unlocked"
-              ? false
-              : undefined,
+                ? false
+                : undefined,
           is_verified:
             statusFilter === "verified"
               ? true
               : statusFilter === "unverified"
-              ? false
-              : undefined,
+                ? false
+                : undefined,
           search_by: "username" as const,
         };
         const pageInfo = {
           pageNum: currentPage,
           pageSize: usersPerPage,
         };
-        const response = await getUsers(searchCondition, pageInfo);
+        const response = await getUsers(searchCondition, pageInfo, true);
         if (response.success && response.data) {
           const mappedUsers = response.data.pageData.map((user: UserData) =>
             mapApiUserToUser(user as ApiUser)
@@ -837,7 +836,7 @@ const AdminUserManagement: React.FC = () => {
                             style={{
                               display:
                                 user.email === "admin@gmail.com" ||
-                                user.id === currentAdmin._id
+                                  user.id === currentAdmin._id
                                   ? "none"
                                   : "inline",
                             }}
@@ -856,25 +855,27 @@ const AdminUserManagement: React.FC = () => {
         {/* </div> */}
 
         {/* Pagination */}
-        <div className="flex items-center justify-end gap-2 mt-4">
-          <Pagination
-            current={currentPage}
-            total={totalItems}
-            pageSize={usersPerPage}
-            onChange={(page) => {
-              setCurrentPage(page);
-            }}
-            showSizeChanger={false}
-            pageSizeOptions={["5", "10", "20"]}
-            onShowSizeChange={(_, size) => {
-              setUsersPerPage(size);
-              setCurrentPage(1);
-            }}
-            className="custom-pagination"
-            size="small"
-            showTotal={() => ""}
-          />
-        </div>
+        {users.length > 0 && (
+          <div className="flex items-center justify-end gap-2 mt-4">
+            <Pagination
+              current={currentPage}
+              total={totalItems}
+              pageSize={usersPerPage}
+              onChange={(page) => {
+                setCurrentPage(page);
+              }}
+              showSizeChanger={false}
+              pageSizeOptions={["5", "10", "20"]}
+              onShowSizeChange={(_, size) => {
+                setUsersPerPage(size);
+                setCurrentPage(1);
+              }}
+              className="custom-pagination"
+              size="small"
+              showTotal={() => ""}
+            />
+          </div>
+        )}
 
         {/* Detail Modal */}
         <AnimatedModal
@@ -1007,11 +1008,10 @@ const AdminUserManagement: React.FC = () => {
                         </span>
                         <span className="w-2/3">
                           <span
-                            className={`px-3 py-1 rounded-full text-sm ${
-                              selectedUser.is_verified
-                                ? "bg-green-50 text-green-600"
-                                : "bg-yellow-50 text-yellow-600"
-                            }`}
+                            className={`px-3 py-1 rounded-full text-sm ${selectedUser.is_verified
+                              ? "bg-green-50 text-green-600"
+                              : "bg-yellow-50 text-yellow-600"
+                              }`}
                           >
                             {selectedUser.is_verified
                               ? "Verified"
@@ -1029,11 +1029,10 @@ const AdminUserManagement: React.FC = () => {
                         </span>
                         <span className="w-2/3">
                           <span
-                            className={`px-3 py-1 rounded-full text-sm ${
-                              selectedUser.is_blocked
-                                ? "bg-red-50 text-red-600"
-                                : "bg-green-50 text-green-600"
-                            }`}
+                            className={`px-3 py-1 rounded-full text-sm ${selectedUser.is_blocked
+                              ? "bg-red-50 text-red-600"
+                              : "bg-green-50 text-green-600"
+                              }`}
                           >
                             {selectedUser.is_blocked ? "Blocked" : "Unlocked"}
                           </span>
@@ -1109,8 +1108,8 @@ const AdminUserManagement: React.FC = () => {
                         <span className="w-2/3 text-gray-800">
                           {selectedEmployee?.start_date
                             ? new Date(
-                                selectedEmployee.start_date
-                              ).toLocaleDateString()
+                              selectedEmployee.start_date
+                            ).toLocaleDateString()
                             : ""}
                         </span>
                       </div>
@@ -1125,8 +1124,8 @@ const AdminUserManagement: React.FC = () => {
                         <span className="w-2/3 text-gray-800">
                           {selectedEmployee?.end_date
                             ? new Date(
-                                selectedEmployee.end_date
-                              ).toLocaleDateString()
+                              selectedEmployee.end_date
+                            ).toLocaleDateString()
                             : ""}
                         </span>
                       </div>
@@ -1189,11 +1188,10 @@ const AdminUserManagement: React.FC = () => {
                       : "Edit Information"}
                   </h2>
                   <button
-                    className={`p-2 rounded-full transition-all duration-300 transform hover:scale-110 ${
-                      activeEditTab === "account"
-                        ? "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                        : "bg-[#FF9447] text-white hover:bg-[#FF8347]"
-                    }`}
+                    className={`p-2 rounded-full transition-all duration-300 transform hover:scale-110 ${activeEditTab === "account"
+                      ? "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                      : "bg-[#FF9447] text-white hover:bg-[#FF8347]"
+                      }`}
                     onClick={() =>
                       setActiveEditTab(
                         activeEditTab === "account" ? "information" : "account"
@@ -1220,11 +1218,10 @@ const AdminUserManagement: React.FC = () => {
 
               <div className="relative">
                 <div
-                  className={`transition-all duration-300 transform ${
-                    activeEditTab === "account"
-                      ? "translate-x-0 opacity-100"
-                      : "-translate-x-full opacity-0 absolute inset-0"
-                  }`}
+                  className={`transition-all duration-300 transform ${activeEditTab === "account"
+                    ? "translate-x-0 opacity-100"
+                    : "-translate-x-full opacity-0 absolute inset-0"
+                    }`}
                 >
                   {activeEditTab === "account" && (
                     <UserManagementEdit
@@ -1238,11 +1235,10 @@ const AdminUserManagement: React.FC = () => {
                   )}
                 </div>
                 <div
-                  className={`transition-all duration-300 transform ${
-                    activeEditTab === "information"
-                      ? "translate-x-0 opacity-100"
-                      : "translate-x-full opacity-0 absolute inset-0"
-                  }`}
+                  className={`transition-all duration-300 transform ${activeEditTab === "information"
+                    ? "translate-x-0 opacity-100"
+                    : "translate-x-full opacity-0 absolute inset-0"
+                    }`}
                 >
                   {activeEditTab === "information" && (
                     <EditEmployeeModal

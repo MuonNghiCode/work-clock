@@ -79,7 +79,6 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  console.log(formData);
 
   // Animation states
   // const [isAnimating, setIsAnimating] = useState(false);
@@ -272,7 +271,6 @@ const EditEmployeeModal: React.FC<EditEmployeeModalProps> = ({
     setPreviewAvatar(imageUrl);
     setFormData((prev) => ({ ...prev, avatar_url: imageUrl }));
   };
-  console.log(formData);
 
   if (!isEmbedded) return null;
 

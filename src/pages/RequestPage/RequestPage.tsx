@@ -5,6 +5,7 @@ import RequestApprovalModal from "../../components/RequestComponents/RequestAppr
 import CancelRequestModal from "../../components/RequestComponents/CancelRequestModal/CancelRequestModal";
 import TableRequest from "../../components/RequestComponents/TableRequest/TableRequest";
 import {
+  getClaimDetail,
   getClaimerSearch,
   updateClaimStatus,
 } from "../../services/claimService";
@@ -21,6 +22,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { motion } from "framer-motion";
 import ModalAddNewClaim from "../../components/UserComponents/ModalAddNewClaim";
+import { sendNotification } from "../../services/notificationService";
 
 interface ClaimRequest {
   key: string;
@@ -61,6 +63,7 @@ const RequestPage: React.FC = () => {
   };
   const handleCloseModalAddNewClaim = () => {
     setIsOpenModalAddNewClaim(false);
+    fetchClaims();
   };
 
   useEffect(() => {
@@ -206,7 +209,19 @@ const RequestPage: React.FC = () => {
         comment: comment || "",
       };
       const response = await updateClaimStatus(payload, false);
-      if (response.success) {
+      const claimData = await getClaimDetail(approvingRecord.key);
+      const userData = localStorage.getItem('user');
+      const parsedUserData = userData ? JSON.parse(userData) : null;
+      const name = parsedUserData.username;
+      const approvalId = claimData.data.approval_id;
+      if (response.success && approvalId && name) {
+        if (comment) {
+          sendNotification(
+            approvalId,
+            `Your have new claim request from ${name}. Comment: ${comment}`,
+            "newClaim"
+          );
+        }
         toast.success("Request approval sent successfully");
         fetchClaims();
       } else {
@@ -272,14 +287,8 @@ const RequestPage: React.FC = () => {
           },
         }}
       >
+
         <div className="gap-2 flex items-center">
-          <button
-            onClick={handleOpenModalAddNewClaim}
-            className="bg-[#FFB17A] text-white px-6 py-2 rounded-full hover:bg-[#FF9147] flex items-center gap-2 text-lg"
-          >
-            <span>+</span>
-            Add New Claim
-          </button>
           <select
             value={statusFilter}
             onChange={handleStatusChange}
@@ -294,7 +303,7 @@ const RequestPage: React.FC = () => {
             <option value="Paid">Paid</option>
           </select>
         </div>
-        <div className="relative w-[300px]">
+        <div className="flex gap-2"><div className="relative w-[300px] ">
           <input
             type="text"
             placeholder="Search claim name"
@@ -305,7 +314,16 @@ const RequestPage: React.FC = () => {
             className="absolute right-3 top-2.5 text-gray-400"
             size={20}
           />
+
         </div>
+          <button
+            onClick={handleOpenModalAddNewClaim}
+            className="bg-[#FFB17A] text-white px-6 py-2 rounded-full hover:bg-[#FF9147] flex items-center flexgap-2 text-lg"
+          >
+            <span className="mr-2z">+</span>
+            Add New Claim
+          </button></div>
+
       </motion.div>
       <motion.div
         data-aos="fade-up"
