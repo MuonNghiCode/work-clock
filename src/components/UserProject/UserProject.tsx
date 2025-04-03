@@ -13,7 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { motion } from "framer-motion";
-import { debounce } from "lodash";
+import debounce from "lodash.debounce"; // Import debounce from lodash
 import { useUserStore } from "../../config/zustand";
 
 interface ProjectInfo {
@@ -41,7 +41,7 @@ const UserProject = () => {
 
   const userId = useUserStore((state) => state.user?.id);
 
-  const fetchProjects = async (pageNum: number, pageSize: number) => {
+  const fetchProjects = async () => {
     try {
       const response = await getAllProject(
         {
@@ -52,7 +52,7 @@ const UserProject = () => {
             is_delete: false,
             user_id: userId || "",
           },
-          pageInfo: { pageNum, pageSize },
+          pageInfo: { pageNum: 1, pageSize: 1000 },
         },
         true
       );
@@ -74,7 +74,9 @@ const UserProject = () => {
         data = data.filter((item) => item.status === statusFilter);
       }
 
-      setProjectsData(data);
+      setProjectsData(
+        data.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+      );
       setProjectsCount(data.length);
     } catch (error) {
       console.log(error);
@@ -84,7 +86,7 @@ const UserProject = () => {
   };
 
   useEffect(() => {
-    fetchProjects(currentPage, pageSize);
+    fetchProjects();
   }, [currentPage, pageSize, selectedProject, statusFilter, searchText]);
 
   const handlePageChange = (page: number, newPageSize?: number) => {
