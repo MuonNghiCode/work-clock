@@ -15,6 +15,7 @@ import { debounce } from "lodash";
 import DeleteConfirmModal from "../../DeleteConfirmModal/DeleteConfirmModal";
 import { toast } from "react-toastify";
 import { formatDate } from "../../../utils/formatDate";
+import { FileText } from "lucide-react";
 
 const TableProject: React.FC = () => {
   const [projects, setProjects] = useState<ProjectInfo[]>([]);
@@ -42,6 +43,7 @@ const TableProject: React.FC = () => {
   const handleSearch = useCallback(
     debounce((value: string) => {
       setSearchValue(value);
+      fetchProjects(value);
     }, 500),
     []
   );
@@ -65,10 +67,10 @@ const TableProject: React.FC = () => {
     project_description: data.project_description || "",
   });
 
-  const fetchProjects = async () => {
+  const fetchProjects = async (value: string) => {
     try {
       const searchCondition: SearchConditionProject = {
-        keyword: searchValue,
+        keyword: value,
         project_start_date: "",
         project_end_date: "",
         is_delete: false,
@@ -95,9 +97,9 @@ const TableProject: React.FC = () => {
       console.error("Error fetching projects:", error);
     }
   };
-
+  
   useEffect(() => {
-    fetchProjects();
+    fetchProjects(searchValue);
     // console.log(projects[0])
   }, [currentPage, pageSize, searchValue]); // Add searchValue to dependencies
 
@@ -127,7 +129,7 @@ const TableProject: React.FC = () => {
       }
       setShowConfirmModal(false);
       setSelectedProject(null);
-      fetchProjects();
+      fetchProjects(searchValue);
     }
   };
 
@@ -139,7 +141,7 @@ const TableProject: React.FC = () => {
       formStatus: undefined,
     });
     selectedProject !== null ? setSelectedProject(null) : null;
-    fetchProjects();
+    fetchProjects(searchValue);
   };
 
   const handleStatusChangeHTML = (status: string) => {
@@ -206,7 +208,17 @@ const TableProject: React.FC = () => {
           </tr>
         </thead>
         <tbody className="w-full">
-          {projects.map((item) => (
+          {projects.length === 0 && searchValue ? (
+            <tr>
+              <td colSpan={5} className="px-4 py-8 text-center text-gray-500">
+                <div className="flex flex-col items-center justify-center">
+                  <FileText size={40} className="text-gray-400 mb-2" />
+                  <p className="text-lg">No projects found</p>
+                  <p className="text-sm">Try adjusting your search or filters</p>
+                </div>
+              </td>
+            </tr>
+          ) : projects.map((item) => (
             <tr
               onClick={() => handleShowProjectDetail(item)}
               key={item._id}

@@ -78,6 +78,7 @@ export interface ClaimsRequest {
 export interface ClaimLog {
   _id: string;
   claim_name: string;
+  updated_by_user_id: string;
   updated_by: string;
   old_status: string;
   new_status: string;
