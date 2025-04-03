@@ -60,7 +60,16 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
                 hover:bg-[#FF914D]/50  hover:text-white 
                 transition-all duration-300 border border-gray-200 shadow-md cursor-pointer transform hover:scale-[1.02]"
             >
-              <span className="font-medium">{notification.message}</span>
+              <div className="font-medium whitespace-pre-line">
+                {notification.message.split(".").map((sentence, index) => (
+                  <span key={index}>
+                    {sentence.trim()}
+                    {index !== notification.message.split(".").length - 1 && (
+                      <br />
+                    )}
+                  </span>
+                ))}
+              </div>
               <Divider type="vertical" className="mx-2 border-gray-300" />
               <span className="text-gray-500 text-sm group-hover:text-white">
                 {formatDate(notification.createdAt)}
