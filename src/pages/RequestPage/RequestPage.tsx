@@ -5,6 +5,7 @@ import RequestApprovalModal from "../../components/RequestComponents/RequestAppr
 import CancelRequestModal from "../../components/RequestComponents/CancelRequestModal/CancelRequestModal";
 import TableRequest from "../../components/RequestComponents/TableRequest/TableRequest";
 import {
+  getClaimDetail,
   getClaimerSearch,
   updateClaimStatus,
 } from "../../services/claimService";
@@ -21,6 +22,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { motion } from "framer-motion";
 import ModalAddNewClaim from "../../components/UserComponents/ModalAddNewClaim";
+import { sendNotification } from "../../services/notificationService";
 
 interface ClaimRequest {
   key: string;
@@ -207,7 +209,19 @@ const RequestPage: React.FC = () => {
         comment: comment || "",
       };
       const response = await updateClaimStatus(payload, false);
-      if (response.success) {
+      const claimData = await getClaimDetail(approvingRecord.key);
+      const userData = localStorage.getItem('user');
+      const parsedUserData = userData ? JSON.parse(userData) : null;
+      const name = parsedUserData.username;
+      const approvalId = claimData.data.approval_id;
+      if (response.success && approvalId && name) {
+        if (comment) {
+          sendNotification(
+            approvalId,
+            `Your have new claim request from ${name}. Comment: ${comment}`,
+            "newClaim"
+          );
+        }
         toast.success("Request approval sent successfully");
         fetchClaims();
       } else {

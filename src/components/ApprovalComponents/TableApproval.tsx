@@ -28,7 +28,7 @@ const TableApproval: React.FC = () => {
     null
   );
   const [claimId, setClaimId] = useState<string>("");
-
+  const [receiveId, setReceiveId] = useState<string>("");
   const prevPageRef = useRef(currentPage);
   const prevPageSizeRef = useRef(pageSize);
   const prevStatusFilterRef = useRef(statusFilter);
@@ -108,14 +108,16 @@ const TableApproval: React.FC = () => {
     setShowApprovalDetail(true);
   };
 
-  const handleApprove = (id: string) => {
+  const handleApprove = (id: string, userId: string) => {
     setClaimId(id);
+    setReceiveId(userId);
     setMessage("Approved");
     setShowConfirmModal(true);
   };
 
-  const handleReject = (id: string) => {
+  const handleReject = (id: string, userId: string) => {
     setClaimId(id);
+    setReceiveId(userId);
     setMessage("Rejected");
     setShowConfirmModal(true);
   };
@@ -130,8 +132,9 @@ const TableApproval: React.FC = () => {
     setShowConfirmModal(false);
   };
 
-  const handleReturnClaim = (id: string) => {
+  const handleReturnClaim = (id: string, userId: string) => {
     setClaimId(id);
+    setReceiveId(userId);
     setMessage("Return");
     setShowConfirmModal(true);
   };
@@ -240,8 +243,10 @@ const TableApproval: React.FC = () => {
                             <span className="hover:scale-105">
                               <Icons.Check
                                 color="green"
-                                onClick={() => handleApprove(item._id)}
-                                className="w-8 h-8"
+                                onClick={() =>
+                                  handleApprove(item._id, item.staff_id)
+                                }
+                                className="w-10 h-10"
                               />
                             </span>
                           </Button>
@@ -251,8 +256,10 @@ const TableApproval: React.FC = () => {
                             <span className="hover:scale-105">
                               <Icons.Reject
                                 color="red"
-                                onClick={() => handleReject(item._id)}
-                                className="w-8 h-8"
+                                onClick={() =>
+                                  handleReject(item._id, item.staff_id)
+                                }
+                                className="w-10 h-10"
                               />
                             </span>
                           </Button>
@@ -262,8 +269,10 @@ const TableApproval: React.FC = () => {
                             <span className="hover:scale-105">
                               <Icons.Undo
                                 color="blue"
-                                onClick={() => handleReturnClaim(item._id)}
-                                className="w-8 h-8"
+                                onClick={() =>
+                                  handleReturnClaim(item._id, item.staff_id)
+                                }
+                                className="w-10 h-10"
                               />
                             </span>
                           </Button>
@@ -305,6 +314,7 @@ const TableApproval: React.FC = () => {
         messageProps={{
           message: message,
           id: claimId,
+          receiveId: receiveId,
         }}
       />
     </>

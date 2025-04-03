@@ -15,6 +15,7 @@ import { debounce } from "lodash";
 import DeleteConfirmModal from "../../DeleteConfirmModal/DeleteConfirmModal";
 import { toast } from "react-toastify";
 import { formatDate } from "../../../utils/formatDate";
+import { FileText } from "lucide-react";
 
 const TableProject: React.FC = () => {
   const [projects, setProjects] = useState<ProjectInfo[]>([]);
@@ -42,6 +43,7 @@ const TableProject: React.FC = () => {
   const handleSearch = useCallback(
     debounce((value: string) => {
       setSearchValue(value);
+      fetchProjects(value);
     }, 500),
     []
   );
@@ -65,10 +67,10 @@ const TableProject: React.FC = () => {
     project_description: data.project_description || "",
   });
 
-  const fetchProjects = async () => {
+  const fetchProjects = async (value: string) => {
     try {
       const searchCondition: SearchConditionProject = {
-        keyword: searchValue,
+        keyword: value,
         project_start_date: "",
         project_end_date: "",
         is_delete: false,
@@ -97,7 +99,7 @@ const TableProject: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchProjects();
+    fetchProjects(searchValue);
     // console.log(projects[0])
   }, [currentPage, pageSize, searchValue]); // Add searchValue to dependencies
 
@@ -127,7 +129,7 @@ const TableProject: React.FC = () => {
       }
       setShowConfirmModal(false);
       setSelectedProject(null);
-      fetchProjects();
+      fetchProjects(searchValue);
     }
   };
 
@@ -139,7 +141,7 @@ const TableProject: React.FC = () => {
       formStatus: undefined,
     });
     selectedProject !== null ? setSelectedProject(null) : null;
-    fetchProjects();
+    fetchProjects(searchValue);
   };
 
   const handleStatusChangeHTML = (status: string) => {
@@ -206,69 +208,87 @@ const TableProject: React.FC = () => {
           </tr>
         </thead>
         <tbody className="w-full">
-          {projects.map((item) => (
-            <tr
-              onClick={() => handleShowProjectDetail(item)}
-              key={item._id}
-              className="h-[70px] bg-white overflow-hidden text-center border-collapse hover:shadow-brand-orange !rounded-2xl cursor-pointer"
-            >
-              <td className="px-4 py-2 rounded-l-2xl text-[#ff914d] underline">
-                {item.project_name}
-              </td>
-              <td className="px-4 py-2">{formatDate(item.created_at || "")}</td>
-              <td className="px-4 py-2">{formatDate(item.project_end_date)}</td>
-              <td className="px-4 py-2">{item.project_department}</td>
-              <td className="px-4 py-2">
-                {handleStatusChangeHTML(item.project_status)}
-              </td>
-              <td
-                className="action px-4 py-2 rounded-r-2xl"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="w-full flex justify-center gap-2 items-center space-x-2">
-                  <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
-                    <Button className="!bg-transparent !border-none">
-                      <span className="hover:scale-110">
-                        <Icons.Edit
-                          color="blue"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleEditProject(item);
-                          }}
-                          className="w-5 h-5"
-                        />
-                      </span>
-                    </Button>
-                  </div>
-                  <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
-                    <Button className="!bg-transparent !border-none">
-                      <span className="hover:scale-110">
-                        <Icons.Detail
-                          color="#4CAF50"
-                          onClick={() => handleShowProjectDetail(item)}
-                          className="w-5 h-5"
-                        />
-                      </span>
-                    </Button>
-                  </div>
-                  <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
-                    <Button className="!bg-transparent !border-none ">
-                      <span className="hover:scale-110">
-                        <Icons.Delete
-                          color="red"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDelete(item);
-                          }}
-                          className="w-5 h-5 bg-transparent"
-                        />
-                      </span>
-                    </Button>
-                  </div>
+          {projects.length === 0 && searchValue ? (
+            <tr>
+              <td colSpan={5} className="px-4 py-8 text-center text-gray-500">
+                <div className="flex flex-col items-center justify-center">
+                  <FileText size={40} className="text-gray-400 mb-2" />
+                  <p className="text-lg">No projects found</p>
+                  <p className="text-sm">
+                    Try adjusting your search or filters
+                  </p>
                 </div>
               </td>
             </tr>
-          ))}
+          ) : (
+            projects.map((item) => (
+              <tr
+                onClick={() => handleShowProjectDetail(item)}
+                key={item._id}
+                className="h-[70px] bg-white overflow-hidden text-center border-collapse hover:shadow-brand-orange !rounded-2xl cursor-pointer"
+              >
+                <td className="px-4 py-2 rounded-l-2xl text-[#ff914d] underline">
+                  {item.project_name}
+                </td>
+                <td className="px-4 py-2">
+                  {formatDate(item.created_at || "")}
+                </td>
+                <td className="px-4 py-2">
+                  {formatDate(item.project_end_date)}
+                </td>
+                <td className="px-4 py-2">{item.project_department}</td>
+                <td className="px-4 py-2">
+                  {handleStatusChangeHTML(item.project_status)}
+                </td>
+                <td
+                  className="action px-4 py-2 rounded-r-2xl"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="w-full flex justify-center gap-2 items-center space-x-2">
+                    <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
+                      <Button className="!bg-transparent !border-none">
+                        <span className="hover:scale-110">
+                          <Icons.Edit
+                            color="blue"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEditProject(item);
+                            }}
+                            className="w-5 h-5"
+                          />
+                        </span>
+                      </Button>
+                    </div>
+                    <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
+                      <Button className="!bg-transparent !border-none">
+                        <span className="hover:scale-110">
+                          <Icons.Detail
+                            color="#4CAF50"
+                            onClick={() => handleShowProjectDetail(item)}
+                            className="w-5 h-5"
+                          />
+                        </span>
+                      </Button>
+                    </div>
+                    <div className="flex justify-center items-center w-10 h-10 overflow-hidden">
+                      <Button className="!bg-transparent !border-none ">
+                        <span className="hover:scale-110">
+                          <Icons.Delete
+                            color="red"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDelete(item);
+                            }}
+                            className="w-5 h-5 bg-transparent"
+                          />
+                        </span>
+                      </Button>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
       <div className="flex justify-end mt-4">
