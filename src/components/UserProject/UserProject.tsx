@@ -13,7 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { motion } from "framer-motion";
-import debounce from "lodash.debounce"; // Import debounce from lodash
+import { debounce } from "lodash";
 import { useUserStore } from "../../config/zustand";
 
 interface ProjectInfo {
