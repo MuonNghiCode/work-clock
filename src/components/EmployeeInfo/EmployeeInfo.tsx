@@ -24,22 +24,22 @@ const EmployeeInfo: React.FC = () => {
   const [user, setUser] = useState<UserData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchEmployeeInfo = async () => {
       setError(null);
+      setLoading(true);
       try {
         if (userId) {
-          const employeeResponse = await getEmployeeByUserId(userId);
+          const employeeResponse = await getEmployeeByUserId(userId, true);
           if (employeeResponse.success) {
             setEmployee(employeeResponse.data);
           } else {
             setError("Failed to fetch employee data");
           }
 
-          const userResponse = await getUserById(userId);
-          console.log("User Response:", userResponse);
-          console.log("User Response Data:", userResponse.data);
+          const userResponse = await getUserById(userId, false);
           if (userResponse.success && userResponse.data) {
             setUser(userResponse.data);
           } else {
@@ -49,6 +49,8 @@ const EmployeeInfo: React.FC = () => {
       } catch (err) {
         console.error(err);
         setError("An error occurred while fetching employee data");
+      } finally {
+        setLoading(false); 
       }
     };
     fetchEmployeeInfo();
@@ -57,6 +59,14 @@ const EmployeeInfo: React.FC = () => {
   const handleBackClick = () => {
     navigate(-1);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-brand-orange-light">
+        <div className="text-center text-gray-600">Loading...</div>
+      </div>
+    );
+  }
 
   if (error) {
     return <div className="text-red-600 text-center mt-10">Error: {error}</div>;
