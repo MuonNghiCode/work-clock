@@ -218,7 +218,9 @@ const TableApproval: React.FC = () => {
                 key={item._id}
                 className="h-[70px] bg-white overflow-hidden text-center border-collapse hover:shadow-brand-orange !rounded-2xl"
               >
-                <td className="px-4 py-2 rounded-l-2xl">{item.claim_name}</td>
+                <td className="px-4 py-2 rounded-l-2xl text-[#ff914d] cursor-pointer">
+                  {item.claim_name}
+                </td>
                 <td className="px-4 py-2">{item.staff_name}</td>
                 <td className="px-4 py-2 text-gradient-color">
                   {item.total_work_time} hours
