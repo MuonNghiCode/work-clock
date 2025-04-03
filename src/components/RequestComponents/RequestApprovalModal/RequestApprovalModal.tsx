@@ -36,11 +36,11 @@ const RequestApprovalModal: React.FC<RequestApprovalModalProps> = ({
 
   const handleConfirm = () => {
     onConfirm(comment);
-    setComment(''); 
+    setComment('');
   };
 
   const handleCancel = () => {
-    setComment(''); 
+    setComment('');
     onCancel();
   };
 

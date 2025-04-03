@@ -3,6 +3,7 @@ import Icons from "../icon";
 import { updateClaimStatus } from "../../services/claimService";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
+import { sendNotification } from "../../services/notificationService";
 
 export interface ModalProps {
   visible: boolean;
@@ -13,6 +14,7 @@ export interface ModalProps {
 interface MessageProps {
   message: string;
   id: string;
+  receiveId: string;
 }
 
 interface ConfirmModalProps {
@@ -37,6 +39,14 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   const handleStatusChange = async () => {
     const response = await updateClaimStatus({ _id: id, claim_status: status, comment: comment });
     if (response.success) {
+      if (status === "Approved") {
+        sendNotification(messageProps.receiveId, "Your claim request has been approved", "Approved");
+      } else if (status === "Rejected" && comment) {
+        sendNotification(messageProps.receiveId, `Your claim request has been rejected. Reason: ${comment}`, "Rejected");
+      }
+      else if (message === "Return" && comment) {
+        sendNotification(messageProps.receiveId, `Your claim request has been returned. Reason: ${comment}`, "Return");
+      }
       toast.success(`Claim request has been ${message.toLowerCase()} successfully!`);
     }
     onConfirm();
