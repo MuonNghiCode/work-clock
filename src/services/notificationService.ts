@@ -1,7 +1,7 @@
-
 // Send a notification via WebSocket
 export const sendNotification = (receivedId: string, message: string, type: string) => {
-    const socket = new WebSocket("https://websocket-notification-mongodb.onrender.com/"); // Replace with your WebSocket server URL
+    const socket = new WebSocket(`https://websocket-notification-mongodb.onrender.com/?userId=${receivedId}`); // Replace with your WebSocket server URL
+
     socket.onopen = () => {
         const notification = {
             userId: receivedId, // Notify the approver
@@ -11,12 +11,15 @@ export const sendNotification = (receivedId: string, message: string, type: stri
             read: false,
         };
         socket.send(JSON.stringify(notification));
+        console.log("Notification sent successfully", notification);
         socket.close(); // Close the connection after sending
     };
+
     socket.onerror = (error) => {
         console.error("WebSocket error:", error);
     };
+
     socket.onclose = () => {
         console.log("WebSocket connection closed");
     };
-}
+};

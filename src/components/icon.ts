@@ -30,7 +30,8 @@ import {
   Search,
   Medal, 
   Building, 
-  FileText
+  FileText,
+  Undo2,
 } from "lucide-react";
 import {
   FaUsers,
@@ -105,6 +106,7 @@ const Icons: IconType = {
   Medal: Medal,
   Building: Building,
   FileText: FileText,
+  Undo: Undo2,
 };
 
 export default Icons;
