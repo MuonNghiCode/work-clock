@@ -1,101 +1,91 @@
-# WorkClock – Hệ Thống Quản Lý OT
+cat > README.md << 'EOF'
+# WorkClock – OT Management System
 
 ![WorkClock Logo](https://asset.cloudinary.com/ddr6psgs5/72f55391be30dec17fcf7f8e0903c218)
 
-## 📌 Giới Thiệu
+## 📌 Introduction
 
-**WorkClock** là hệ thống quản lý đơn **OT (overtime)**, giúp nhân viên dễ dàng đăng ký, theo dõi và quản lý thời gian làm thêm.  
-Dự án được phát triển bởi nhóm sinh viên **FPT University**, trong thời gian thực tập tại **FPT Software**.
+**WorkClock** is an **OT (overtime)** management system that helps employees easily register, track, and manage their overtime hours.  
+This project was developed by a group of **FPT University** students during their internship at **FPT Software**.
 
-## 🎯 Mục Tiêu
+## 🎯 Objectives
 
-- ✅ Tự động hóa quy trình đăng ký và duyệt OT.  
-- ✅ Giúp nhân viên theo dõi số giờ làm thêm một cách trực quan.  
-- ✅ Hỗ trợ quản lý OT hiệu quả cho cả nhân viên và quản lý.  
+- ✅ Automate the OT request and approval process.  
+- ✅ Allow employees to track their overtime hours visually.  
+- ✅ Support effective OT management for both employees and managers.  
 
----
-
-## 🛠️ Công Nghệ Sử Dụng
+## 🛠️ Technologies Used
 
 ### **Frontend**
-- 🖥️ **React.js** – Thư viện UI hiện đại.  
-- 🎨 **Tailwind CSS** – Framework CSS giúp tối ưu giao diện.  
-- ⚡ **Vite** – Công cụ build nhanh chóng.  
+- 🖥️ **React.js** – Modern UI library.  
+- 🎨 **Tailwind CSS** – Utility-first CSS framework for styling.  
+- ⚡ **Vite** – Fast development build tool.  
 
 ### **Backend**
-- 🌐 **Node.js & Express.js** – Server backend.  
-- 🗂️ **MongoDB** – Cơ sở dữ liệu NoSQL.  
-- 🔐 **JWT** – Xác thực người dùng.  
+- 🌐 **Node.js & Express.js** – Backend server.  
+- 🗂️ **MongoDB** – NoSQL database.  
+- 🔐 **JWT** – User authentication.  
 
-### **DevOps & Triển Khai**
-- 📦 **Docker** – Container hóa ứng dụng.  
-- ☁️ **AWS / Vercel** – Hosting & Deployment.  
+### **DevOps & Deployment**
+- 📦 **Docker** – Application containerization.  
+- ☁️ **AWS / Vercel** – Hosting & deployment platforms.  
 
----
+## 🚀 Setup & Run Project
 
-## 🚀 Cài Đặt & Chạy Dự Án
-
-### 1️⃣ Clone repository
-```bash
+### 1️⃣ Clone the repository
+\`\`\`bash
 git clone https://github.com/your-repo/workclock.git
 cd workclock
-```
+\`\`\`
 
-### 2️⃣ Cài đặt dependencies
-```bash
+### 2️⃣ Install dependencies
+\`\`\`bash
 npm install
-```
+\`\`\`
 
-### 3️⃣ Chạy ứng dụng
-```bash
+### 3️⃣ Start the app
+\`\`\`bash
 npm run dev
-```
-Ứng dụng sẽ chạy tại **[http://localhost:5173](http://localhost:5173)**.
+\`\`\`
+The app will be running at **http://localhost:5173**.
 
----
+## 🔥 Key Features
 
-## 🔥 Tính Năng Chính
+- ✅ **Login / Register account**  
+- ✅ **Create and submit OT requests**  
+- ✅ **Manage OT request status**  
+- ✅ **View OT history**  
+- ✅ **Manager approval system**  
+- ✅ **User-friendly interface**  
 
-- ✅ **Đăng nhập / Đăng ký tài khoản**  
-- ✅ **Tạo và gửi đơn OT**  
-- ✅ **Quản lý trạng thái đơn OT**  
-- ✅ **Xem lịch sử OT**  
-- ✅ **Hệ thống phê duyệt đơn của quản lý**  
-- ✅ **Giao diện trực quan, dễ sử dụng**  
+## 👨‍💻 Development Team
 
----
+This project was built by a team of **9 members** from **FPT University**, currently interning at **FPT Software**:
 
-## 👨‍💻 Nhóm Phát Triển
+1. **Phạm Minh Quân** – *Role*  
+2. **Nguyễn Đức Hoàng** – *Role*  
+3. **Lương Thị Thùy Trang** – *Role*  
+4. **Nguyễn Tuấn Kiệt** – *Role*  
+5. **Nguyễn Nhật Minh** – *Role*  
+6. **Bùi Quang Vinh** – *Role*  
+7. **Nguyễn Đức Thịnh** – *Role*  
+8. **Lê Hữu Hải Trí** – *Role*  
+9. **Phạm Thế Danh** – *Role*  
 
-Dự án được xây dựng bởi nhóm **9 thành viên** từ **FPT University**, hiện đang thực tập tại **FPT Software**:
+## 🤝 Contributing
 
-1. **Phạm Minh Quân** – *Vai trò*  
-2. **Nguyễn Đức Hoàng** – *Vai trò*  
-3. **Lương Thị Thùy Trang** – *Vai trò*  
-4. **Nguyễn Tuấn Kiệt** – *Vai trò* 
-5. **Nguyễn Nhật Minh** – *Vai trò*  
-6. **Bùi Quang Vinh** – *Vai trò*  
-7. **Nguyễn Đức Thịnh** – *Vai trò*  
-8. **Lê Hữu Hải Trí** – *Vai trò*  
-9. **Phạm Thế Danh** – *Vai trò*  
+We always welcome contributions from the community! If you want to help develop **WorkClock**, follow these steps:
 
----
+1. **Fork** this repository.  
+2. **Create a new branch** (\`feature/feature-name\`).  
+3. **Commit** your changes with a clear description.  
+4. **Submit a Pull Request** for review.  
 
-## 🤝 Đóng Góp
-
-Chúng tôi luôn hoan nghênh sự đóng góp từ cộng đồng! Nếu bạn muốn tham gia phát triển **WorkClock**, hãy làm theo các bước sau:
-
-1. **Fork** repository này.  
-2. **Tạo nhánh mới** (`feature/ten-tinh-nang`).  
-3. **Commit** thay đổi với mô tả rõ ràng.  
-4. **Gửi Pull Request** để nhóm xem xét.  
-
----
-
-## 📞 Liên Hệ
+## 📞 Contact
 
 📧 **Email:** your-email@example.com  
-🌍 **Website:** [work-clock-theta.vercel.app](work-clock-theta.vercel.app)  
-📱 **Facebook:** [WorkClock Official](https://facebook.com/workclock)  
+🌍 **Website:** https://work-clock-theta.vercel.app  
+📱 **Facebook:** https://facebook.com/workclock  
 
-Cảm ơn bạn đã quan tâm đến **WorkClock**! 🚀
+Thank you for your interest in **WorkClock**! 🚀
+EOF
