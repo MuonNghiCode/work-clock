@@ -1,4 +1,3 @@
-cat > README.md << 'EOF'
 # WorkClock – OT Management System
 
 ![WorkClock Logo](https://asset.cloudinary.com/ddr6psgs5/72f55391be30dec17fcf7f8e0903c218)
@@ -88,4 +87,3 @@ We always welcome contributions from the community! If you want to help develop 
 📱 **Facebook:** https://facebook.com/workclock  
 
 Thank you for your interest in **WorkClock**! 🚀
-EOF
