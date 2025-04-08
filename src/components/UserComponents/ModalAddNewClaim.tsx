@@ -157,9 +157,15 @@ const ModalAddNewClaim: React.FC<ModalAddNewClaimProps> = ({
         approval_id: values.approval_id.value,
         project_id: values.project_id.value,
       };
+
+      // Submit the claim request
       const response = await createClaimRequest(formData);
       if (response.success) {
         toast.success("Claim request submitted successfully");
+        // sendNotification(
+        //   formData.approval_id,
+        //   `You have a new claim request from ${userData?.username}`,
+        //   "newClaim")
         form.resetFields();
         onClose();
       }

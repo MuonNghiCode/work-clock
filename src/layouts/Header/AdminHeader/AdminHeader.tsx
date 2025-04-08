@@ -7,22 +7,26 @@ import { APP_CONSTANTS } from "../../../constants/appConstants";
 import { toast } from "react-toastify";
 import { logout } from "../../../utils/userUtils";
 import { motion } from "framer-motion";
+import NotificationDropdown from "../../../components/Notification/NotificationDropDown";
+import { Dropdown } from "antd";
 const AdminHeader: React.FC = () => {
   // const { user } = useUser();
   const { toggleSidebar } = useSidebarStore();
   const location = useLocation();
   const [showConfirm, setShowConfirm] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [notificationOpen, setNotificationOpen] = useState(false); // State to toggle NotificationDropdown
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const notificationRef = useRef<HTMLDivElement>(null); // Ref for NotificationDropdown
   const userData = useUserStore((state) => state.user);
-
+  const id = userData?.id;
   const userRole =
     APP_CONSTANTS.roleNames[
-      userData?.role_code as keyof typeof APP_CONSTANTS.roleNames
+    userData?.role_code as keyof typeof APP_CONSTANTS.roleNames
     ] || "Guest";
   const currentTitle =
     APP_CONSTANTS.pageTitles[
-      location.pathname as keyof typeof APP_CONSTANTS.pageTitles
+    location.pathname as keyof typeof APP_CONSTANTS.pageTitles
     ] || "Home";
 
   const handleLogout = () => {
@@ -41,6 +45,12 @@ const AdminHeader: React.FC = () => {
         !dropdownRef.current.contains(event.target as Node)
       ) {
         setDropdownOpen(false);
+      }
+      if (
+        notificationRef.current &&
+        !notificationRef.current.contains(event.target as Node)
+      ) {
+        setNotificationOpen(false);
       }
     };
 
@@ -63,11 +73,34 @@ const AdminHeader: React.FC = () => {
           <h1 className="text-white text-3xl font-bold">{currentTitle}</h1>
         </div>
 
+
         {/* 🔔 Notification + User Dropdown */}
         <div className="flex items-center gap-4 bg-white rounded-full p-2">
-          <button className="p-2 bg-gray-200 hover:bg-brand-gradient rounded-full group">
-            <Icons.Bell className="text-black group-hover:text-white w-7 h-7" />
-          </button>
+          {/* Notification Icon */}
+          <div className="relative" ref={notificationRef}>
+            {id && (
+              <Dropdown
+                open={notificationOpen}
+                trigger={["click"]}
+                placement="bottomRight"
+                menu={{
+                  items: [
+                    {
+                      key: "notificationDropdown",
+                      label: <NotificationDropdown userId={id} />,
+                    },
+                  ],
+                }}
+              >
+                <button
+                  className="p-2 bg-gray-200 hover:bg-brand-gradient rounded-full group"
+                  onClick={() => setNotificationOpen(!notificationOpen)}
+                >
+                  <Icons.Bell className="text-black group-hover:text-white w-7 h-7" />
+                </button>
+              </Dropdown>
+            )}
+          </div>
 
           <div className="relative" ref={dropdownRef}>
             {userData?.avatarUrl ? (
@@ -132,7 +165,7 @@ const AdminHeader: React.FC = () => {
             )}
           </div>
         </div>
-      </div>
+      </div >
 
       {showConfirm && (
         <div className="fixed inset-0 flex items-center justify-center bg-brand-orange-light backdrop-blur-sm z-50">
@@ -157,7 +190,8 @@ const AdminHeader: React.FC = () => {
             </div>
           </div>
         </div>
-      )}
+      )
+      }
     </>
   );
 };

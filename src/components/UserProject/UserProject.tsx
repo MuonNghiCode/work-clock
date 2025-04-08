@@ -1,9 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Pagination, Modal } from "antd"; // Import Modal from antd
 import { getAllProject } from "../../services/projectService"; // Import the new function
 import { formatDate } from "../../utils/formatDate";
-import { BookOpen, Calendar, CheckCircle, User, X } from "lucide-react";
-import { useUser } from "../../contexts/UserContext";
+import {
+  BookOpen,
+  Calendar,
+  CheckCircle,
+  FolderDot,
+  Search,
+  User,
+  UserCog,
+  X,
+} from "lucide-react";
+import { motion } from "framer-motion";
+import debounce from "lodash.debounce"; // Import debounce from lodash
+import { useUserStore } from "../../config/zustand";
 
 interface ProjectInfo {
   key: string;
@@ -12,6 +23,7 @@ interface ProjectInfo {
   end_date: string;
   status: string;
   project_description: string;
+  project_members: { user_name: string; role: string }[];
 }
 
 const UserProject = () => {
@@ -21,24 +33,30 @@ const UserProject = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const { user } = useUser();
-  const [selectedProject, setSelectedProject] = useState<ProjectInfo | null>(null);
+  const [selectedProject, setSelectedProject] = useState<ProjectInfo | null>(
+    null
+  );
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [searchText, setSearchText] = useState<string>("");
 
-  const fetchProjects = async (pageNum: number, pageSize: number) => {
+  const userId = useUserStore((state) => state.user?.id);
+
+  const fetchProjects = async () => {
     try {
-      const response = await getAllProject({
-        searchCondition: {
-          keyword: "",
-          project_start_date: "",
-          project_end_date: "",
-          is_delete: false,
-          user_id: user?._id || "",
+      const response = await getAllProject(
+        {
+          searchCondition: {
+            keyword: searchText,
+            project_start_date: "",
+            project_end_date: "",
+            is_delete: false,
+            user_id: userId || "",
+          },
+          pageInfo: { pageNum: 1, pageSize: 1000 },
         },
-        pageInfo: { pageNum, pageSize },
-      }, true);
+        true
+      );
 
-      // Map dữ liệu từ API
       let data = response.data.pageData.map((item: any) => ({
         key: item._id,
         projectName: item.project_name,
@@ -46,16 +64,19 @@ const UserProject = () => {
         end_date: formatDate(new Date(item.project_end_date), "DD/MM/YYYY"),
         status: item.project_status,
         project_description: item.project_description,
+        project_members: item.project_members.map((member: any) => ({
+          user_name: member.user_name,
+          role: member.project_role,
+        })),
       }));
 
-      // Lọc dữ liệu theo statusFilter
       if (statusFilter !== "all") {
         data = data.filter((item) => item.status === statusFilter);
       }
 
-      setProjectsData(data);
-
-      // Cập nhật tổng số lượng dự án (sau khi lọc)
+      setProjectsData(
+        data.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+      );
       setProjectsCount(data.length);
     } catch (error) {
       console.log(error);
@@ -65,8 +86,8 @@ const UserProject = () => {
   };
 
   useEffect(() => {
-    fetchProjects(currentPage, pageSize); // Fetch projects data
-  }, [currentPage, pageSize, statusFilter, selectedProject]);
+    fetchProjects();
+  }, [currentPage, pageSize, selectedProject, statusFilter, searchText]);
 
   const handlePageChange = (page: number, newPageSize?: number) => {
     if (newPageSize && newPageSize !== pageSize) {
@@ -92,68 +113,133 @@ const UserProject = () => {
     setSelectedProject(null);
   };
 
+  const handleStatusChangeHTML = (status: string) => {
+    switch (status) {
+      case "Active":
+        return <span className="text-[#00B087]">Active</span>;
+      case "Pending":
+        return <span className="text-[#FFBF00]">Pending</span>;
+      case "Closed":
+        return <span className="text-[#FF0420]">Closed</span>;
+      default:
+        return <span className="text-gray-600">{status}</span>;
+    }
+  };
+
+  const handleSearch = useCallback(
+    debounce((value: string) => {
+      setSearchText(value);
+      setCurrentPage(1);
+    }, 1000),
+    []
+  );
+
   return (
     <div className="p-6">
-      <div className="flex justify-between items-center mb-4">
-        <div>
-          <select
-            value={statusFilter}
-            onChange={handleStatusChange}
-            className="px-3 py-1 border rounded-lg font-squada text-lg"
-          >
-            <option value="all">All Status</option>
-            <option value="Active">Active</option>
-            <option value="New">New</option>
-            <option value="Pending">Pending</option>
-            <option value="Closed">Closed</option>
-          </select>
+      <div className="flex items-center justify-between mb-4">
+        <select
+          value={statusFilter}
+          onChange={handleStatusChange}
+          className="px-3 py-1 text-lg border rounded-lg font-squada"
+        >
+          <option value="all">All Status</option>
+          <option value="Active">Active</option>
+          <option value="New">New</option>
+          <option value="Pending">Pending</option>
+          <option value="Closed">Closed</option>
+        </select>
+        <div className="relative w-[300px]">
+          <input
+            type="text"
+            placeholder="Search project name"
+            className="w-full px-4 py-2 border rounded-full pr-10 font-squada"
+            onChange={(e) => handleSearch(e.target.value)}
+          />
+          <Search
+            className="absolute right-3 top-2.5 text-gray-400"
+            size={20}
+          />
         </div>
       </div>
-      <div className="request-header mb-4">
-        <table className="request-table min-w-full border-separate border-spacing-y-2.5">
+      <motion.div
+        className="mb-4 request-header"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <motion.table
+          className="request-table min-w-full border-separate border-spacing-y-2.5"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
           <thead className="request-table-header bg-gradient-to-r from-[#FEB78A] to-[#FF914D] h-[70px] text-lg text-white rounded-t-lg">
             <tr>
-              <th className="request-table-header-cell px-4 py-2 rounded-tl-2xl">Project Name</th>
-              <th className="request-table-header-cell px-4 py-2 border-l-2 border-white">Start Date</th>
-              <th className="request-table-header-cell px-4 py-2 border-l-2 border-white">End Date</th>
-              <th className="request-table-header-cell px-4 py-2 border-l-2 border-white rounded-tr-2xl">
+              <th className="px-4 py-2 request-table-header-cell rounded-tl-2xl">
+                Project Name
+              </th>
+              <th className="px-4 py-2 border-l-2 border-white request-table-header-cell">
+                Start Date
+              </th>
+              <th className="px-4 py-2 border-l-2 border-white request-table-header-cell">
+                End Date
+              </th>
+              <th className="px-4 py-2 border-l-2 border-white request-table-header-cell rounded-tr-2xl">
                 Status
               </th>
             </tr>
           </thead>
-          <tbody>
+          <motion.tbody
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: { opacity: 0 },
+              visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
+            }}
+          >
             {loading ? (
               <tr>
-                <td colSpan={4} className="text-center py-4">
+                <td colSpan={4} className="py-4 text-center">
                   Loading...
                 </td>
               </tr>
             ) : projectsData.length > 0 ? (
               projectsData.map((item) => (
-                <tr
+                <motion.tr
                   key={item.key}
                   className="request-table-row h-[70px] bg-white text-center hover:shadow-brand-orange rounded-2xl cursor-pointer"
-                  onClick={() => handleProjectClick(item)} // Gọi hàm khi bấm vào project
+                  onClick={() => handleProjectClick(item)}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  <td className="request-table-cell px-4 py-2 rounded-l-2xl">
+                  <td className="px-4 py-2 request-table-cell rounded-l-2xl">
                     {item.projectName}
                   </td>
-                  <td className="request-table-cell px-4 py-2">{item.start_date}</td>
-                  <td className="request-table-cell px-4 py-2">{item.end_date}</td>
-                  <td className="request-table-cell px-4 py-2 rounded-r-2xl">
-                    {item.status}
+                  <td className="px-4 py-2 request-table-cell">
+                    {item.start_date}
                   </td>
-                </tr>
+                  <td className="px-4 py-2 request-table-cell">
+                    {item.end_date}
+                  </td>
+                  <td className="px-4 py-2 request-table-cell rounded-r-2xl">
+                    {handleStatusChangeHTML(item.status)}
+                  </td>
+                </motion.tr>
               ))
             ) : (
               <tr>
-                <td colSpan={6} className="request-table-no-data text-center py-4">
+                <td
+                  colSpan={6}
+                  className="py-4 text-center request-table-no-data"
+                >
                   No Data Available
                 </td>
               </tr>
             )}
-          </tbody>
-        </table>
+          </motion.tbody>
+        </motion.table>
         <div className="flex justify-center mt-4">
           {projectsCount > 0 && (
             <Pagination
@@ -165,7 +251,7 @@ const UserProject = () => {
             />
           )}
         </div>
-      </div>
+      </motion.div>
 
       {/* Modal hiển thị thông tin chi tiết */}
       <Modal
@@ -178,7 +264,7 @@ const UserProject = () => {
       >
         {selectedProject && (
           <div className="p-8 bg-gray-50 rounded-xl">
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex items-center justify-between mb-6">
               <h2 className="text-3xl font-bold text-[#FF9447]">
                 Project Details
               </h2>
@@ -191,20 +277,20 @@ const UserProject = () => {
             </div>
             <div className="gap-10">
               <div className="">
-                <div className="bg-white rounded-lg p-6 shadow-sm h-full">
+                <div className="h-full p-6 bg-white rounded-lg shadow-sm">
                   <h4 className="text-lg font-bold text-[#FF9447] mb-4 border-b pb-2">
                     Project Information
                   </h4>
                   <div className="space-y-4">
                     <div className="flex items-center">
-                      <User
+                      <FolderDot
                         size={18}
                         className="text-[#FF9447] mr-3 flex-shrink-0"
                       />
-                      <span className="w-1/3 font-medium text-gray-600">
+                      <span className="w-1/3 font-medium text-gray-800">
                         Project Name:
                       </span>
-                      <span className="w-2/3 text-gray-800 font-semibold truncate">
+                      <span className="w-2/3 font-semibold text-gray-700">
                         {selectedProject.projectName}
                       </span>
                     </div>
@@ -213,10 +299,10 @@ const UserProject = () => {
                         size={18}
                         className="text-[#FF9447] mr-3 flex-shrink-0"
                       />
-                      <span className="w-1/3 font-medium text-gray-600">
+                      <span className="w-1/3 font-medium text-gray-800">
                         Start Date:
                       </span>
-                      <span className="w-2/3 text-gray-800 font-semibold">
+                      <span className="w-2/3 font-semibold text-gray-700">
                         {selectedProject.start_date}
                       </span>
                     </div>
@@ -225,10 +311,10 @@ const UserProject = () => {
                         size={18}
                         className="text-[#FF9447] mr-3 flex-shrink-0"
                       />
-                      <span className="w-1/3 font-medium text-gray-600">
+                      <span className="w-1/3 font-medium text-gray-800">
                         End Date:
                       </span>
-                      <span className="w-2/3 text-gray-800 font-semibold">
+                      <span className="w-2/3 font-semibold text-gray-700">
                         {selectedProject.end_date}
                       </span>
                     </div>
@@ -237,42 +323,83 @@ const UserProject = () => {
                         size={18}
                         className="text-[#FF9447] mr-3 flex-shrink-0"
                       />
-                      <span className="w-1/3 font-medium text-gray-600">
+                      <span className="w-1/3 font-medium text-gray-800">
                         Project Description:
                       </span>
-                      <span className="w-2/3 text-gray-800 font-semibold">
+                      <span className="w-2/3 font-semibold text-gray-700">
                         {selectedProject.project_description}
                       </span>
                     </div>
-                    <div className="flex items-center">
+                    <div className="flex items-center text-[#FF9447] mb-4 border-b pb-4">
                       <CheckCircle
                         size={18}
                         className="text-[#FF9447] mr-3 flex-shrink-0"
                       />
-                      <span className="w-1/3 font-medium text-gray-600">
+                      <span className="w-1/3 font-medium text-gray-800">
                         Status:
                       </span>
                       <span className="w-2/3">
                         <span
-                          className={`px-3 py-1 rounded-full text-sm font-semibold ${selectedProject.status === "New"
-                            ? "bg-green-50 text-green-600"
-                            : selectedProject.status === "Closed"
-                              ? "bg-red-50 text-red-600"
+                          className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                            selectedProject.status === "Closed"
+                              ? "bg-[#fbd0d5] text-[#FF0420]"
                               : selectedProject.status === "Pending"
-                                ? "bg-yellow-50 text-yellow-600"
-                                : selectedProject.status === "Active"
-                                  ? "bg-blue-50 text-blue-600"
-                                  : "bg-gray-50 text-gray-600"
-                            }`}
+                              ? "bg-[#fef7e3] text-[#FFBF00]"
+                              : selectedProject.status === "Active"
+                              ? "bg-[#e6fff9] text-[#00B087]"
+                              : "bg-gray-100 text-gray-600"
+                          }`}
                         >
                           {selectedProject.status}
                         </span>
                       </span>
                     </div>
+                    <div className="flex items-center">
+                      <div className="w-3/3 font-semibold">
+                        {selectedProject.project_members.length > 0 ? (
+                          <div className="space-y-2">
+                            <div className="grid grid-cols-2 gap-4">
+                              <span className="font-medium text-gray-800 flex items-center">
+                                <User
+                                  size={18}
+                                  className="text-[#FF9447] mr-3 flex-shrink-0"
+                                />
+                                Member
+                              </span>
+                              <span className="font-medium text-gray-800 flex items-center">
+                                <UserCog
+                                  size={18}
+                                  className="text-[#FF9447] mr-3 flex-shrink-0"
+                                />
+                                Role
+                              </span>
+                            </div>
+                            {selectedProject.project_members.map(
+                              (member, index) => (
+                                <div
+                                  key={index}
+                                  className="grid grid-cols-2 gap-4"
+                                >
+                                  <span className="text-sm text-gray-700">
+                                    {member.user_name}
+                                  </span>
+                                  <span className="text-sm text-gray-700">
+                                    {member.role}
+                                  </span>
+                                </div>
+                              )
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-sm text-gray-500">
+                            No members assigned
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-
             </div>
           </div>
         )}

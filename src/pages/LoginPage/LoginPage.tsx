@@ -22,10 +22,11 @@ const LoginPage: React.FC = () => {
   const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
+    {}
+  );
   const navigate = useNavigate();
   const setUser = useUserStore((state) => state.setUser); // Access the setUser function from Zustand
-
 
   const validate = () => {
     const newErrors: { email?: string; password?: string } = {};
@@ -42,7 +43,6 @@ const LoginPage: React.FC = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,13 +111,14 @@ const LoginPage: React.FC = () => {
 
       {/* Login Form */}
       <div
-        className={`lg:w-230 lg:h-140 w-full h-5/6 flex border border-black rounded-[30px] bg-white z-10 ${isForgotPassword ? "hidden" : ""
-          }`}
+        className={`lg:w-230 lg:h-140 w-full h-5/6 flex border border-black rounded-[30px] bg-white z-10 ${
+          isForgotPassword ? "hidden" : ""
+        }`}
       >
         <motion.div
           initial={{ x: 0, opacity: 0 }}
           animate={{
-            x: isForgotPassword ? "70%" : "0%", // Chuyển sang phải khi mở quên mật khẩu
+            x: isForgotPassword ? "55%" : "0%", // Chuyển sang phải khi mở quên mật khẩu
             opacity: 1,
           }}
           exit={{
@@ -137,7 +138,7 @@ const LoginPage: React.FC = () => {
         <motion.div
           initial={{ x: 0, opacity: 0 }}
           animate={{
-            x: isForgotPassword ? "-100%" : "0%",
+            x: isForgotPassword ? "-170%" : "0%",
             opacity: 1,
           }}
           exit={{ x: "100%", opacity: 1 }}
@@ -158,10 +159,11 @@ const LoginPage: React.FC = () => {
               {/* Email Field */}
               <div className="relative py-10">
                 <span
-                  className={`absolute left-2 top-12 text-gray-500 transition-all pointer-events-none ${email || isEmailFocused
-                    ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
-                    : "text-base"
-                    }`}
+                  className={`absolute left-2 top-12 text-gray-500 transition-all pointer-events-none ${
+                    email || isEmailFocused
+                      ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
+                      : "text-base"
+                  }`}
                 >
                   Email
                 </span>
@@ -187,10 +189,11 @@ const LoginPage: React.FC = () => {
               {/* Password Field */}
               <div className="relative">
                 <span
-                  className={`absolute left-2 top-2 text-gray-500 transition-all pointer-events-none ${password || isPasswordFocused
-                    ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
-                    : "text-base"
-                    }`}
+                  className={`absolute left-2 top-2 text-gray-500 transition-all pointer-events-none ${
+                    password || isPasswordFocused
+                      ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
+                      : "text-base"
+                  }`}
                 >
                   Password
                 </span>
@@ -239,13 +242,14 @@ const LoginPage: React.FC = () => {
 
       {/* Forgot Password Form */}
       <div
-        className={`lg:w-230 lg:h-140 w-full h-5/6 flex border border-black rounded-[30px] bg-white z-20 ${!isForgotPassword ? "hidden" : ""
-          }`}
+        className={`lg:w-230 lg:h-140 w-full h-5/6 flex border border-black rounded-[30px] bg-white z-20 ${
+          !isForgotPassword ? "hidden" : ""
+        }`}
       >
         <motion.div
           initial={{ x: 0, opacity: 0 }}
           animate={{
-            x: isForgotPassword ? "0%" : "100%",
+            x: isForgotPassword ? "0%" : "170%",
             opacity: 1,
           }}
           transition={{ duration: 1, ease: "easeOut" }}
@@ -266,10 +270,11 @@ const LoginPage: React.FC = () => {
             </h1>
             <div className="lg:mt-10 relative py-4">
               <span
-                className={`  absolute  left-2 top-6 text-gray-500 transition-all pointer-events-none ${forgotPasswordEmail || isEmailFocused
-                  ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
-                  : "text-base"
-                  }`}
+                className={`  absolute  left-2 top-6 text-gray-500 transition-all pointer-events-none ${
+                  forgotPasswordEmail || isEmailFocused
+                    ? "text-xs -translate-y-7 bg-none px-2 text-blue-500"
+                    : "text-base"
+                }`}
               >
                 Email
               </span>
@@ -307,7 +312,7 @@ const LoginPage: React.FC = () => {
         <motion.div
           initial={{ x: 0, opacity: 0 }}
           animate={{
-            x: isForgotPassword ? "0%" : "-70%",
+            x: isForgotPassword ? "0%" : "-55%",
             opacity: 1,
           }}
           transition={{ duration: 1, ease: "easeOut" }}

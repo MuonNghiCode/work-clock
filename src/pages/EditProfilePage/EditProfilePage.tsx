@@ -472,7 +472,7 @@ const EditProfilePage: React.FC = () => {
               name="newPassword"
               rules={[
                 { required: true, message: "New Password is required!" },
-                { min: 8, message: "Password must be at least 8 characters" },
+                { min: 8, message: "Password must be at least 6 characters" },
                 { pattern: /[A-Z]/, message: "Password must contain at least one uppercase letter" },
                 { pattern: /[#@!$%^&*]/, message: "Password must contain at least one special character (#, @, $)" },
               ]}
@@ -511,7 +511,7 @@ const EditProfilePage: React.FC = () => {
                     if (!value || getFieldValue("newPassword") === value) {
                       return Promise.resolve();
                     }
-                    return Promise.reject(new Error("Passwords do not match!"));
+                    return Promise.reject(new Error("Old password do not match!"));
                   },
                 }),
               ]}
